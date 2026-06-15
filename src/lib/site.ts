@@ -45,7 +45,7 @@ export const site: SiteConfig = {
   email: "razashahid532@gmail.com", // TODO: confirm this is the address to show publicly
   github: "https://github.com/shahid-io",
   linkedin: "", // TODO: add LinkedIn profile URL, e.g. https://www.linkedin.com/in/<handle>
-  org: "https://github.com/BinarySemaphore",
+  org: "https://github.com/BiSemaphore",
 
   // --- Contact form ------------------------------------------------------
   // When empty, the contact section falls back to a mailto button so the
