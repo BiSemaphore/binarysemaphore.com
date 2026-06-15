@@ -1,16 +1,18 @@
 import Image from "next/image";
+import Link from "next/link";
 import { projects, type Project } from "@/lib/site";
 import { SectionHeading } from "@/components/section-heading";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
 
 function ProjectCard({ project }: { project: Project }) {
-  return (
-    <a
-      href={project.href}
-      target="_blank"
-      rel="noreferrer noopener"
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-accent/40 hover:bg-card-hover"
-    >
+  // Projects with a slug get an internal detail page; others link to GitHub.
+  const internal = Boolean(project.slug);
+  const href = internal ? `/projects/${project.slug}` : project.href;
+  const cardClass =
+    "group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-accent/40 hover:bg-card-hover";
+
+  const content = (
+    <>
       {project.image ? (
         <div className="relative aspect-[1200/627] w-full overflow-hidden border-b border-border">
           <Image
@@ -52,6 +54,21 @@ function ProjectCard({ project }: { project: Project }) {
         ))}
       </div>
       </div>
+    </>
+  );
+
+  return internal ? (
+    <Link href={href} className={cardClass} aria-label={`${project.name} — details`}>
+      {content}
+    </Link>
+  ) : (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer noopener"
+      className={cardClass}
+    >
+      {content}
     </a>
   );
 }

@@ -5,17 +5,33 @@
  * Items marked TODO need a real value from Shahid before launch.
  */
 
+export type ProjectDetail = {
+  /** One-sentence summary shown under the title on the detail page. */
+  lede: string;
+  /** Intro paragraphs. */
+  overview: string[];
+  /** Deep-dive sections. */
+  features: { title: string; body: string }[];
+  /** Quick-fact sidebar (label/value pairs). */
+  facts: { label: string; value: string }[];
+};
+
 export type Project = {
   name: string;
   tagline: string;
   description: string;
   tags: string[];
+  /** GitHub repository URL. */
   href: string;
   /** Optional banner image (path under /public), ~1.9:1 aspect. */
   image?: string;
   /** Optional: shown as a small monospace label on the card, e.g. "v0.3". */
   status?: string;
   featured?: boolean;
+  /** When set, the card links to /projects/<slug> and a detail page is built. */
+  slug?: string;
+  /** Long-form content for the detail page. */
+  detail?: ProjectDetail;
 };
 
 export type SiteConfig = {
@@ -71,5 +87,39 @@ export const projects: Project[] = [
     href: "https://github.com/shahid-io/inode",
     image: "/projects/inode.png",
     featured: true,
+    slug: "inode",
+    detail: {
+      lede: "A privacy-focused CLI for storing and retrieving notes, secrets, and commands through natural-language semantic search.",
+      overview: [
+        "inode is a command-line knowledge base you talk to in plain English. Instead of remembering exact filenames or grepping through scattered notes, you ask for what you need — “the staging database password” or “how I deployed the worker last time” — and inode finds it by meaning rather than exact keywords.",
+        "It is local-first by design: everything runs on your machine with no API keys or internet required, so your notes and secrets never leave your laptop. When you want higher-quality results, you can opt into cloud backends without changing how you use it.",
+      ],
+      features: [
+        {
+          title: "Semantic search",
+          body: "Built in Go with vector embeddings and LLM inference for natural-language retrieval. Content is auto-classified into nine strict categories — credentials, commands, snippets, runbooks, and more — so what you store stays organized and what you ask for comes back precise.",
+        },
+        {
+          title: "Local-first architecture",
+          body: "Uses SQLite + sqlite-vec by default, with no API keys or internet required. Optional PostgreSQL/pgvector, Claude API, and Voyage AI backends are available when you want higher-quality embeddings and results.",
+        },
+        {
+          title: "Security by default",
+          body: "Sensitive values are encrypted at rest with AES-256-GCM and masked in output. Ollama provides zero-cost local embeddings and inference, so nothing sensitive is sent anywhere unless you explicitly opt in.",
+        },
+        {
+          title: "AI integration",
+          body: "Ships a read-only Model Context Protocol (MCP) server so tools like Claude Code and Cursor can query your knowledge base directly. Cross-platform binaries are available for macOS, Linux, and Windows.",
+        },
+      ],
+      facts: [
+        { label: "Language", value: "Go" },
+        { label: "Default storage", value: "SQLite + sqlite-vec" },
+        { label: "Optional backends", value: "PostgreSQL/pgvector · Claude · Voyage AI" },
+        { label: "Security", value: "AES-256-GCM, local-first" },
+        { label: "Integrations", value: "MCP (Claude Code, Cursor)" },
+        { label: "Platforms", value: "macOS · Linux · Windows" },
+      ],
+    },
   },
 ];
