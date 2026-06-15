@@ -42,9 +42,9 @@ export const site: SiteConfig = {
 
   // --- Links -------------------------------------------------------------
   // LinkedIn is hidden everywhere until a real URL is set (no broken links).
-  email: "razashahid532@gmail.com", // TODO: confirm this is the address to show publicly
+  email: "razashahid532@gmail.com",
   github: "https://github.com/shahid-io",
-  linkedin: "", // TODO: add LinkedIn profile URL, e.g. https://www.linkedin.com/in/<handle>
+  linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
   org: "https://github.com/BiSemaphore",
 
   // --- Contact form ------------------------------------------------------
