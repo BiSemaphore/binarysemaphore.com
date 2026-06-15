@@ -1,26 +1,91 @@
 @import "tailwindcss";
 
+/* Class-based dark mode (toggle adds `.dark` on <html>) instead of the
+   Tailwind v4 default of prefers-color-scheme. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---- Design tokens --------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbfbfa; /* off-white */
+  --foreground: #0a0a0a; /* near-black */
+  --muted: #57534e; /* secondary text */
+  --subtle: #78716c; /* tertiary text */
+  --border: #e7e5e4; /* hairlines */
+  --card: #ffffff;
+  --card-hover: #fafaf9;
+  --accent: #00a6fb; /* brand blue (decorative: dots, borders) */
+  --accent-strong: #0369a1; /* darker for AA-contrast text/links on light */
+  /* brand blue -> teal gradient for accents */
+  --grad-from: #00a6fb;
+  --grad-to: #14b8a6;
 }
 
+.dark {
+  --background: #0a0a0b;
+  --foreground: #ededed;
+  --muted: #a1a1aa;
+  --subtle: #8b8b94;
+  --border: #232327;
+  --card: #161618;
+  --card-hover: #1c1c1f;
+  --accent: #38bdf8; /* brand blue, brightened for dark bg */
+  --accent-strong: #7dd3fc;
+  --grad-from: #38bdf8;
+  --grad-to: #2dd4bf;
+}
+
+/* ---- Map tokens to Tailwind utilities -------------------------------- */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---- Base ------------------------------------------------------------ */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The accent gradient used by the wordmark and headings. */
+.text-gradient {
+  background-image: linear-gradient(100deg, var(--grad-from), var(--grad-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Accent-tinted, keyboard-visible focus ring. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
