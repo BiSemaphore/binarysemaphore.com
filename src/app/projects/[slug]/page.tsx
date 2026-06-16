@@ -111,8 +111,37 @@ export default async function ProjectPage({
           </div>
         </header>
 
-        {/* Banner */}
-        {project.image ? (
+        {/* Statement band (brand voice) */}
+        {detail.statements && detail.statements.length > 0 ? (
+          <div
+            className="relative mt-10 overflow-hidden rounded-panel p-8 sm:p-12"
+            style={{
+              background: "linear-gradient(135deg, var(--blue), var(--violet))",
+            }}
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-15"
+              style={{
+                backgroundImage: "radial-gradient(#fff 1.5px, transparent 1.5px)",
+                backgroundSize: "20px 20px",
+              }}
+            />
+            <div className="relative space-y-1.5">
+              {detail.statements.map((s) => (
+                <p
+                  key={s}
+                  className="font-display text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl"
+                >
+                  {s}
+                </p>
+              ))}
+            </div>
+            <p className="relative mt-6 inline-flex items-center rounded-full bg-white/95 px-4 py-2 font-mono text-sm font-semibold text-neutral-900">
+              $ go install inode
+            </p>
+          </div>
+        ) : project.image ? (
           <div className="relative mt-10 aspect-[1200/627] w-full overflow-hidden rounded-panel border border-border shadow-soft">
             <Image
               src={project.image}

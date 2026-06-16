@@ -8,6 +8,8 @@
 export type ProjectDetail = {
   /** One-sentence summary shown under the title on the detail page. */
   lede: string;
+  /** Punchy brand statements shown as a bold band near the top. */
+  statements?: string[];
   /** Intro paragraphs. */
   overview: string[];
   /** Numbered "how it works" pipeline steps. */
@@ -394,11 +396,14 @@ export const projects: Project[] = [
       "Stores your notes, secrets, and commands and retrieves them by meaning using vector search and an LLM. Runs fully on your machine by default (Ollama + SQLite), with an optional Postgres/pgvector backend and an MCP server so tools like Claude Code can query it directly.",
     tags: ["Go", "RAG", "pgvector", "MCP", "Ollama"],
     href: "https://github.com/shahid-io/inode",
-    image: "/projects/inode.png",
     featured: true,
     slug: "inode",
     detail: {
       lede: "A privacy-focused CLI for storing and retrieving notes, secrets, and commands through natural-language semantic search.",
+      statements: [
+        "Save anything. Ask in plain English.",
+        "Local-first. Encrypted. Yours.",
+      ],
       overview: [
         "Every developer accumulates a pile of scattered knowledge: the staging database password, the exact flags for a deploy, a snippet you wrote once and will need again. It ends up in notes apps, shell history, password managers, and stray text files. The problem is rarely storing it. The problem is finding it again, weeks later, when you no longer remember the exact words you used.",
         "inode is a command-line knowledge base that solves the finding problem. You talk to it in plain English. Instead of grepping for an exact string, you ask for what you mean, like “the staging database password” or “how I deployed the worker last time”, and it returns the right entry even when none of those words appear in it. It matches meaning, not characters.",
@@ -442,20 +447,24 @@ export const projects: Project[] = [
       ],
       usage: [
         {
-          command: 'inode add "staging db password is hunter2_stg"',
-          description: "Store a value. inode classifies it as a credential and encrypts it at rest.",
+          command: 'inode add "My Stripe test key is sk_test_xxxxx"',
+          description: "Save anything. The LLM auto-detects the category (credentials), adds tags, and flags it sensitive, then encrypts it at rest.",
         },
         {
-          command: 'inode "how did I deploy the worker last time?"',
-          description: "Ask in plain English. inode returns the matching runbook ranked by meaning.",
+          command: 'inode get "stripe test key"',
+          description: "Ask in plain English. inode embeds the query, finds the closest notes by meaning, and answers from them. Aliases: ask, find, search.",
         },
         {
-          command: "inode show staging-db",
-          description: "Reveal a masked secret explicitly, only when you intend to.",
+          command: 'inode get "stripe test key" --reveal',
+          description: "Sensitive values are masked by default. --reveal prompts for confirmation, then prints the plaintext.",
         },
         {
-          command: "inode serve --mcp",
-          description: "Start the read-only MCP server so your editor's AI can query the knowledge base.",
+          command: "inode list --category credentials",
+          description: "Browse by category or tag. inode sorts everything into nine strict categories.",
+        },
+        {
+          command: "inode mcp",
+          description: "Run the read-only MCP server over stdio so Claude Code or Cursor can read your knowledge base.",
         },
       ],
       facts: [
