@@ -1,4 +1,6 @@
-/** Small monospace section label + heading used across sections. */
+import { Underline } from "@/components/doodle";
+
+/** Small monospace section label + doodle-underlined display heading. */
 export function SectionHeading({
   label,
   title,
@@ -11,8 +13,8 @@ export function SectionHeading({
       <p className="mb-2 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
         {label}
       </p>
-      <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-        {title}
+      <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        <Underline>{title}</Underline>
       </h2>
     </div>
   );

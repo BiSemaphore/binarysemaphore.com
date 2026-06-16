@@ -1,4 +1,5 @@
 import { site } from "@/lib/site";
+import { Highlight } from "@/components/doodle";
 import {
   ArrowUpRightIcon,
   GitHubIcon,
@@ -9,18 +10,20 @@ import {
 export function Hero() {
   return (
     <section id="top" className="pt-20 pb-16 sm:pt-28 sm:pb-24">
-      <p className="mb-5 inline-flex items-center gap-2 font-mono text-xs text-subtle">
+      <p className="mb-5 inline-flex items-center gap-2 font-hand text-lg text-subtle">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-        Available for interesting problems
+        available for interesting problems
       </p>
 
       <h1 className="text-balance text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl">
         {site.name}
       </h1>
 
-      <p className="mt-4 max-w-xl text-balance text-lg text-muted sm:text-xl">
+      <p className="mt-5 max-w-xl text-balance text-lg text-muted sm:text-xl">
         {site.role}.{" "}
-        <span className="text-foreground">{site.tagline}</span>
+        <Highlight className="bg-accent/15">
+          <span className="text-foreground">{site.tagline}</span>
+        </Highlight>
       </p>
 
       <div className="mt-8 flex flex-wrap items-center gap-3">

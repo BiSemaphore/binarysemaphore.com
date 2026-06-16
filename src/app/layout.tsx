@@ -1,16 +1,32 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Shantell_Sans, Caveat } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
+// Body / UI — clean and highly legible.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
+// Code, labels, and metadata.
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Display — a marker/doodle variable font for headings and brand moments.
+const shantellSans = Shantell_Sans({
+  variable: "--font-shantell",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Handwritten — for annotations, asides, and doodle accents.
+const caveat = Caveat({
+  variable: "--font-caveat",
   subsets: ["latin"],
   display: "swap",
 });
@@ -75,7 +91,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${shantellSans.variable} ${caveat.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
