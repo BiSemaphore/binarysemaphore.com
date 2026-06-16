@@ -10,8 +10,12 @@ export type ProjectDetail = {
   lede: string;
   /** Intro paragraphs. */
   overview: string[];
+  /** Numbered "how it works" pipeline steps. */
+  howItWorks?: { step: string; body: string }[];
   /** Deep-dive sections. */
   features: { title: string; body: string }[];
+  /** Example commands with explanations. */
+  usage?: { command: string; description: string }[];
   /** Quick-fact sidebar (label/value pairs). */
   facts: { label: string; value: string }[];
 };
@@ -396,33 +400,72 @@ export const projects: Project[] = [
     detail: {
       lede: "A privacy-focused CLI for storing and retrieving notes, secrets, and commands through natural-language semantic search.",
       overview: [
-        "inode is a command-line knowledge base you talk to in plain English. Instead of remembering exact filenames or grepping through scattered notes, you ask for what you need, like “the staging database password” or “how I deployed the worker last time”, and inode finds it by meaning rather than exact keywords.",
-        "Everything runs on your machine by default, with no API keys or internet required, so your notes and secrets never leave your laptop. When you want higher-quality results, you can switch to cloud backends without changing how you use it.",
+        "Every developer accumulates a pile of scattered knowledge: the staging database password, the exact flags for a deploy, a snippet you wrote once and will need again. It ends up in notes apps, shell history, password managers, and stray text files. The problem is rarely storing it. The problem is finding it again, weeks later, when you no longer remember the exact words you used.",
+        "inode is a command-line knowledge base that solves the finding problem. You talk to it in plain English. Instead of grepping for an exact string, you ask for what you mean, like “the staging database password” or “how I deployed the worker last time”, and it returns the right entry even when none of those words appear in it. It matches meaning, not characters.",
+        "It is built to run entirely on your machine. By default there are no API keys, no accounts, and no network calls: embeddings and language-model inference run locally through Ollama, and everything is stored in a single SQLite file you own. When you want higher-quality results, you can point it at cloud backends without changing a single command you type.",
+      ],
+      howItWorks: [
+        {
+          step: "Capture and classify",
+          body: "When you add an entry, inode classifies it into one of nine strict categories (credential, command, snippet, runbook, note, and so on) so retrieval stays precise and sensitive types can be handled differently.",
+        },
+        {
+          step: "Embed",
+          body: "The text is turned into a vector embedding, a list of numbers that captures its meaning. Local embeddings run through Ollama at zero cost; Voyage AI or Claude can be used for higher quality.",
+        },
+        {
+          step: "Store",
+          body: "Vectors and content live in SQLite with the sqlite-vec extension by default, or PostgreSQL with pgvector when you want a shared, larger store. Credentials are encrypted at rest before they touch disk.",
+        },
+        {
+          step: "Retrieve and rerank",
+          body: "Your query is embedded the same way and matched by nearest-neighbor (cosine) similarity. The top candidates are then handed to an LLM that reads them and returns the answer that is actually there, rather than trusting the raw vector score alone.",
+        },
       ],
       features: [
         {
-          title: "Semantic search",
-          body: "Built in Go with vector embeddings and LLM inference for natural-language retrieval. Content is auto-classified into nine strict categories (credentials, commands, snippets, runbooks, and more), so what you store stays organized and what you ask for comes back precise.",
+          title: "Semantic search that understands intent",
+          body: "Retrieval is built on vector embeddings and LLM reranking, so a query like “prod logging config” surfaces the right runbook even if it was titled “observability setup”. Content is auto-classified into nine categories, which keeps results sharp and lets inode treat a credential differently from a note.",
         },
         {
-          title: "Runs on your machine",
-          body: "Uses SQLite + sqlite-vec by default, with no API keys or internet required. Optional PostgreSQL/pgvector, Claude API, and Voyage AI backends are available when you want higher-quality embeddings and results.",
+          title: "Local-first, with cloud as an opt-in",
+          body: "The default stack is SQLite + sqlite-vec + Ollama: no API keys, no internet, nothing leaves your laptop. The same commands work unchanged against PostgreSQL/pgvector for storage and Claude or Voyage AI for embeddings when you want more power. The architecture treats backends as a swappable detail, not a rewrite.",
         },
         {
-          title: "Security by default",
-          body: "Sensitive values are encrypted at rest with AES-256-GCM and masked in output. Ollama provides zero-cost local embeddings and inference, so nothing sensitive is sent anywhere unless you explicitly opt in.",
+          title: "Secrets handled like secrets",
+          body: "Sensitive values are encrypted at rest with AES-256-GCM and masked in terminal output by default, so a screen-share or a scrollback never leaks them. You reveal a value explicitly, only when you mean to.",
         },
         {
-          title: "AI integration",
-          body: "Ships a read-only Model Context Protocol (MCP) server so tools like Claude Code and Cursor can query your knowledge base directly. Cross-platform binaries are available for macOS, Linux, and Windows.",
+          title: "An MCP server your editor can read",
+          body: "inode ships a read-only Model Context Protocol server, so assistants like Claude Code and Cursor can query your knowledge base directly and answer from your real notes and runbooks. Read-only by design: the model can look, but it cannot rewrite or delete what you have stored.",
+        },
+      ],
+      usage: [
+        {
+          command: 'inode add "staging db password is hunter2_stg"',
+          description: "Store a value. inode classifies it as a credential and encrypts it at rest.",
+        },
+        {
+          command: 'inode "how did I deploy the worker last time?"',
+          description: "Ask in plain English. inode returns the matching runbook ranked by meaning.",
+        },
+        {
+          command: "inode show staging-db",
+          description: "Reveal a masked secret explicitly, only when you intend to.",
+        },
+        {
+          command: "inode serve --mcp",
+          description: "Start the read-only MCP server so your editor's AI can query the knowledge base.",
         },
       ],
       facts: [
         { label: "Language", value: "Go" },
         { label: "Default storage", value: "SQLite + sqlite-vec" },
         { label: "Optional backends", value: "PostgreSQL/pgvector · Claude · Voyage AI" },
+        { label: "Embeddings", value: "Ollama (local) · Voyage AI" },
         { label: "Security", value: "AES-256-GCM, on-device" },
         { label: "Integrations", value: "MCP (Claude Code, Cursor)" },
+        { label: "Categories", value: "9 (credentials, commands, runbooks, …)" },
         { label: "Platforms", value: "macOS · Linux · Windows" },
       ],
     },

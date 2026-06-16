@@ -156,10 +156,37 @@ export default async function ProjectPage({
           </dl>
         </section>
 
-        {/* Features */}
+        {/* How it works (pipeline) */}
+        {detail.howItWorks && detail.howItWorks.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              How it works
+            </h2>
+            <ol className="space-y-6 border-l border-border pl-6">
+              {detail.howItWorks.map((s, i) => (
+                <li key={s.step} className="relative">
+                  <span
+                    aria-hidden
+                    className="absolute -left-[2.05rem] flex h-7 w-7 items-center justify-center rounded-full bg-accent font-mono text-xs font-bold text-white ring-4 ring-background"
+                  >
+                    {i + 1}
+                  </span>
+                  <h3 className="text-base font-semibold text-foreground">
+                    {s.step}
+                  </h3>
+                  <p className="mt-1.5 text-[15px] leading-7 text-muted">
+                    {s.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ) : null}
+
+        {/* Capabilities */}
         <section className="mt-12">
           <h2 className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
-            How it works
+            Capabilities
           </h2>
           <div className="space-y-8">
             {detail.features.map((feature, i) => (
@@ -182,6 +209,32 @@ export default async function ProjectPage({
             ))}
           </div>
         </section>
+
+        {/* Usage */}
+        {detail.usage && detail.usage.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-6 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              Usage
+            </h2>
+            <ul className="space-y-4">
+              {detail.usage.map((u) => (
+                <li
+                  key={u.command}
+                  className="overflow-hidden rounded-card border border-border bg-card shadow-soft"
+                >
+                  <pre className="overflow-x-auto border-b border-border bg-background px-4 py-3 font-mono text-[13px] text-foreground">
+                    <code>
+                      <span className="text-accent-strong">$</span> {u.command}
+                    </code>
+                  </pre>
+                  <p className="px-4 py-3 text-sm leading-6 text-muted">
+                    {u.description}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         {/* Bottom CTA */}
         <section className="mt-14 rounded-panel border border-border bg-card p-6 shadow-soft sm:flex sm:items-center sm:justify-between sm:gap-6">
