@@ -178,6 +178,7 @@ export const team: TeamMember[] = [
       "Leads core development — turning ideas into working software and shipping the details that make it feel right.",
     email: "razashahid@gmail.com",
     linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
+    github: "https://github.com/shahid-io",
   },
   {
     name: "Sanny Kumar",
