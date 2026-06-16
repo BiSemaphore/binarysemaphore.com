@@ -34,6 +34,8 @@ Run `lint` and `typecheck` before committing; CI runs both.
 - Write like a human, not AI. Plain, concrete, slightly conversational.
 - **Never use em dashes (—) in copy.** Use commas, periods, parentheses, or rewrite. (MDX article prose is the owner's editorial writing; leave it alone.)
 - No marketing slogans ("from brainstorm to production", "engineered into real software", etc.). No rainbow gradient-text headlines.
+- **Never write "local-first" / "local first" in site copy.** Use "runs on your machine", "on-device", or "offline by default". (Exception: the existing `what-local-first-buys-you.mdx` thread, which is about the concept.)
+- Prefer plain, principled CS-fundamentals language (reliability/scalability/maintainability, essential vs accidental complexity, honest abstractions, Unix philosophy), used naturally, never as jargon name-dropping.
 - Identity is the **company** (Binary Semaphore), not a person. The team is listed in the Team section, but the site speaks as the studio ("we").
 
 ## Deploys

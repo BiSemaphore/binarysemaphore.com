@@ -54,6 +54,9 @@ export default async function ProjectPage({
   if (!project?.detail) notFound();
 
   const { detail } = project;
+  // Display label for the repo link, derived from the project's own href so it
+  // works for any GitHub owner (not just shahid-io).
+  const repoLabel = project.href.replace(/^https?:\/\//, "");
 
   return (
     <>
@@ -111,8 +114,39 @@ export default async function ProjectPage({
           </div>
         </header>
 
-        {/* Banner */}
-        {project.image ? (
+        {/* Statement band (brand voice) */}
+        {detail.statements && detail.statements.length > 0 ? (
+          <div
+            className="relative mt-10 overflow-hidden rounded-panel p-8 sm:p-12"
+            style={{
+              background: "linear-gradient(135deg, var(--blue), var(--violet))",
+            }}
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-15"
+              style={{
+                backgroundImage: "radial-gradient(#fff 1.5px, transparent 1.5px)",
+                backgroundSize: "20px 20px",
+              }}
+            />
+            <div className="relative space-y-1.5">
+              {detail.statements.map((s) => (
+                <p
+                  key={s}
+                  className="font-display text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl"
+                >
+                  {s}
+                </p>
+              ))}
+            </div>
+            {/* inode-specific install pill. Only inode sets `statements`, so this
+                band is skipped for other products; revisit if that changes. */}
+            <p className="relative mt-6 inline-flex items-center rounded-full bg-white/95 px-4 py-2 font-mono text-sm font-semibold text-neutral-900">
+              $ go install inode
+            </p>
+          </div>
+        ) : project.image ? (
           <div className="relative mt-10 aspect-[1200/627] w-full overflow-hidden rounded-panel border border-border shadow-soft">
             <Image
               src={project.image}
@@ -253,7 +287,7 @@ export default async function ProjectPage({
             className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-card-hover sm:mt-0"
           >
             <GitHubIcon className="h-4 w-4" />
-            github.com/shahid-io/{project.name}
+            {repoLabel}
             <ArrowUpRightIcon className="h-3.5 w-3.5 text-subtle" />
           </a>
         </section>
