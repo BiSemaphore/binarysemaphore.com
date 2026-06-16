@@ -78,7 +78,7 @@ export function Projects() {
   return (
     <section id="projects" className="section scroll-mt-20">
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
-        <SectionHeading label="Projects" title="What we're building" />
+        <SectionHeading label="Products" title="What we've built" />
 
         <div className="grid gap-5 lg:grid-cols-2">
           {projects.map((project, i) => (

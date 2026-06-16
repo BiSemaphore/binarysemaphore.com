@@ -65,7 +65,9 @@ export type SiteConfig = {
   };
   /** Tech "built with" strip under the hero. */
   builtWith: string[];
-  /** Product value props shown as a card grid. */
+  /** Studio domains — terse cards shown in the hero. */
+  capabilities: Feature[];
+  /** How we work — the approach, shown as alternating panels. */
   features: Feature[];
 };
 
@@ -113,24 +115,41 @@ export const site: SiteConfig = {
     secondary: { label: "View on GitHub", href: "https://github.com/BiSemaphore" },
   },
 
-  builtWith: ["Go", "SQLite", "pgvector", "Ollama", "MCP"],
+  builtWith: ["Go", "Python", "TypeScript", "PostgreSQL", "Kafka", "Kubernetes", "LLMs"],
 
+  // What we work on — shown as quick cards in the hero.
+  capabilities: [
+    {
+      title: "Applied AI",
+      body: "LLMs, retrieval, and semantic search put to work inside real products.",
+    },
+    {
+      title: "Distributed systems",
+      body: "Reliable, observable backends and infrastructure built to scale.",
+    },
+    {
+      title: "Developer tools",
+      body: "Small, fast tools that do one thing well and get out of the way.",
+    },
+  ],
+
+  // How we work — the studio's approach, shown as alternating panels.
   features: [
     {
-      title: "Runs locally",
-      body: "By default there are no API keys and no network calls — notes and secrets stay on your machine. Cloud backends are opt-in.",
+      title: "Start with the business",
+      body: "We sit with the problem and the people it affects before writing any code, so what we ship maps to a real outcome — not just a feature list.",
     },
     {
-      title: "Semantic search",
-      body: "Retrieves notes, commands, and secrets from a description of what you want, not an exact keyword match.",
+      title: "Brainstorm to prototype",
+      body: "Promising ideas get explored fast and turned into working prototypes you can actually try, instead of slide decks and roadmaps.",
     },
     {
-      title: "Encrypted storage",
-      body: "Sensitive values are stored with AES-256-GCM encryption and masked when printed to the terminal.",
+      title: "Engineered for scale",
+      body: "Distributed systems done carefully: reliable, observable, and ready for production load from the first release.",
     },
     {
-      title: "MCP server",
-      body: "Exposes a read-only MCP server, so Claude Code, Cursor, and similar tools can read from your knowledge base.",
+      title: "Ship and iterate",
+      body: "We release early and improve in the open — the same way we built inode, our CLI knowledge base.",
     },
   ],
 };

@@ -5,8 +5,8 @@ import { Wordmark } from "@/components/wordmark";
 
 // Absolute hrefs so the links also work from sub-pages (e.g. /projects/inode).
 const navLinks = [
-  { href: "/#features", label: "Features" },
-  { href: "/#projects", label: "Projects" },
+  { href: "/#features", label: "Approach" },
+  { href: "/#projects", label: "Products" },
   { href: "/threads", label: "Threads" },
   { href: "/#contact", label: "Contact" },
 ];
