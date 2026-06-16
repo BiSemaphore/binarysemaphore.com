@@ -132,8 +132,8 @@ export const site: SiteConfig = {
   // --- Behind the work ---------------------------------------------------
   // DRAFT — edit freely. Frames the maker behind the studio.
   about: [
-    "Binary Semaphore is a small software team working across AI and distributed systems. We start with the business problem, then design and build software that fits it.",
-    "Our work spans applied AI, distributed systems, and developer tools. Right now the focus is inode, a CLI knowledge base that finds your notes, secrets, and commands by meaning instead of exact keywords. It's written in Go.",
+    "Binary Semaphore is a small software team, named after the simplest synchronization primitive there is. We treat software the same way: small, well-defined parts that coordinate cleanly and hide the right details behind each interface.",
+    "We work across applied AI, distributed systems, and developer tools. We spend our effort on the essential complexity of a problem and refuse to let the accidental kind pile up, designing for reliability and maintainability from the start rather than bolting them on later. The current focus is inode, a CLI knowledge base that retrieves by meaning, written in Go.",
   ],
 
   // --- Landing hero ------------------------------------------------------
@@ -141,7 +141,7 @@ export const site: SiteConfig = {
     headline: "We build software for",
     headlineAccent: "AI and distributed systems",
     subhead:
-      "We're a small team that takes on projects across AI, data, and backend systems. Tell us the problem and we'll figure out what to build.",
+      "A small team that cares about the fundamentals: correct concurrency, honest abstractions, and systems that stay reliable as they scale.",
     primary: { label: "See our work", href: "/#projects" },
     secondary: { label: "View on GitHub", href: "https://github.com/BiSemaphore" },
   },
@@ -152,35 +152,35 @@ export const site: SiteConfig = {
   capabilities: [
     {
       title: "Applied AI",
-      body: "AI features that do a real job: LLMs, search, and retrieval.",
+      body: "Retrieval, embeddings, and language models grounded in your own data, applied where they earn their keep rather than where they look impressive.",
     },
     {
       title: "Distributed systems",
-      body: "Backends and infrastructure that hold up when traffic shows up.",
+      body: "Services designed for the three properties that matter under load: reliability, scalability, and maintainability. We assume failure and design for it.",
     },
     {
       title: "Developer tools",
-      body: "Small, fast tools that stay out of your way.",
+      body: "Small, sharp programs in the Unix tradition. Each does one thing well and composes with the rest of your workflow.",
     },
   ],
 
   // How we work, shown as alternating panels.
   features: [
     {
-      title: "Start with the problem",
-      body: "We learn the problem and who it affects before writing code, so we build the right thing instead of a long list of features.",
+      title: "Separate the essential from the accidental",
+      body: "Most of the difficulty in software is the problem itself, not the tooling around it. We spend our effort on the essential complexity and keep the accidental kind from accumulating.",
     },
     {
-      title: "Prototype early",
-      body: "Good ideas get built into working prototypes quickly, so you can try them out instead of reading a roadmap.",
+      title: "Keep abstractions honest",
+      body: "A good interface hides what changes and exposes what stays stable. We draw boundaries so the hard parts stay contained and everything built on top stays simple.",
     },
     {
-      title: "Build for real traffic",
-      body: "We write backends that stay reliable and easy to watch when real load shows up.",
+      title: "Design for failure and scale",
+      body: "Distributed systems fail in parts, not all at once. We make systems degrade gracefully, measure before optimizing, and keep them observable in production.",
     },
     {
-      title: "Ship and keep going",
-      body: "We release early and keep improving in the open, the way we built inode, our CLI knowledge base.",
+      title: "Ship small, iterate in the open",
+      body: "Working software over speculation. We keep the feedback loop short, release early, and improve in the open, the way we built inode.",
     },
   ],
 
@@ -190,40 +190,67 @@ export const site: SiteConfig = {
 
   // Dense capability list grid (Superlist-style "everyday superpowers").
   featureList: [
-    { label: "LLM features", body: "Retrieval, search, and agents wired into real products." },
-    { label: "Vector search", body: "Semantic search over your own data, not keyword matching." },
-    { label: "Distributed backends", body: "Services that stay reliable under real load." },
-    { label: "Event streaming", body: "Kafka and queues for systems that talk to each other." },
-    { label: "APIs", body: "Clean, documented interfaces other teams can build on." },
-    { label: "Observability", body: "Logs, metrics, and traces so problems are easy to see." },
-    { label: "Developer tools", body: "Small, fast CLIs that stay out of your way." },
-    { label: "Local-first", body: "Tools that work on your machine, offline by default." },
-    { label: "Cloud native", body: "Containers and infrastructure that scale when you do." },
+    {
+      label: "Retrieval-augmented generation",
+      body: "Language-model answers grounded in your data, so the output is sourced rather than guessed.",
+    },
+    {
+      label: "Semantic search",
+      body: "Nearest-neighbor search over embeddings, matching meaning even when the keywords don't.",
+    },
+    {
+      label: "Fault tolerance",
+      body: "Systems that degrade gracefully when a dependency fails instead of falling over with it.",
+    },
+    {
+      label: "Event-driven design",
+      body: "Services decoupled through durable logs and queues, so producers and consumers evolve independently.",
+    },
+    {
+      label: "Honest interfaces",
+      body: "APIs defined by a clear contract, so other teams can build on them without reading the source.",
+    },
+    {
+      label: "Observability",
+      body: "Logs, metrics, and traces, so you can reason about the system's behavior in production.",
+    },
+    {
+      label: "Unix-philosophy tooling",
+      body: "Small composable programs that each do one thing well and pipe cleanly into the next.",
+    },
+    {
+      label: "Local-first",
+      body: "Works on your machine and offline by default, with your data staying on disk and yours.",
+    },
+    {
+      label: "Horizontal scalability",
+      body: "Stateless services and partitioned data, so capacity grows by adding machines, not rewrites.",
+    },
   ],
 
   // PLACEHOLDER testimonials. Replace with real quotes before launch.
   testimonials: [
     {
       quote:
-        "They understood the problem before touching code, and shipped something we actually use every day.",
+        "They modeled the problem before writing a line of code, and the design held up as requirements changed. That's rarer than it should be.",
       name: "Placeholder Name",
       role: "Engineering lead, Company",
     },
     {
       quote:
-        "Fast, clear, and easy to work with. The prototype was in our hands within a week.",
+        "We had a working prototype in a week, and it was the simplest thing that could possibly work, not a pile of premature abstraction.",
       name: "Placeholder Name",
       role: "Founder, Startup",
     },
     {
       quote:
-        "Solid distributed systems work. It held up the day traffic spiked and nobody had to scramble.",
+        "The system degraded gracefully the day traffic spiked. Nobody had to scramble, because it was designed for failure from the start.",
       name: "Placeholder Name",
       role: "CTO, Company",
     },
     {
       quote:
-        "inode quietly became the tool I reach for first. It finds things I'd have spent ten minutes grepping for.",
+        "inode quietly became the tool I reach for first. It retrieves by meaning, so I find things I'd have spent ten minutes grepping for.",
       name: "Placeholder Name",
       role: "Backend developer",
     },

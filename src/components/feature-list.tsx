@@ -17,7 +17,7 @@ export function FeatureList() {
             What we bring
           </p>
           <h2 className="text-4xl text-foreground sm:text-5xl">
-            Everyday superpowers
+            Fundamentals we build on
           </h2>
         </div>
 

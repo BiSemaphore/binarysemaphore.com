@@ -23,7 +23,7 @@ export function Features() {
             Approach
           </p>
           <h2 className="text-4xl text-foreground sm:text-5xl">
-            How we work
+            Principles we work by
           </h2>
         </div>
 
