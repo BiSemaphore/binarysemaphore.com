@@ -6,7 +6,7 @@ tags: ["mcp", "ai", "devtools", "go"]
 ---
 
 Your notes are useful to you. They'd be more useful if the AI in your editor could read
-them too — so that "how did I deploy the worker last time?" gets answered from *your*
+them too, so that "how did I deploy the worker last time?" gets answered from *your*
 runbook, not a generic guess.
 
 That's what the **Model Context Protocol (MCP)** is for. It's a small, open standard for
@@ -18,9 +18,9 @@ your stuff in a structured way instead of you copy-pasting context every time.
 MCP is a client/server protocol. Your tool runs a **server** that advertises a few
 **capabilities**; the AI client connects and uses them.
 
-- **Tools** — functions the model can call (e.g. `search_notes(query)`).
-- **Resources** — data the model can read (files, records, docs).
-- **Prompts** — reusable prompt templates the server provides.
+- **Tools**: functions the model can call (e.g. `search_notes(query)`).
+- **Resources**: data the model can read (files, records, docs).
+- **Prompts**: reusable prompt templates the server provides.
 
 The client handles discovery: it asks the server what it offers, then the model decides
 when to call a tool, passing arguments and getting structured results back.
@@ -34,12 +34,12 @@ Claude Code ──connect──▶ your MCP server
 
 ## Why read-only is the right default
 
-It is tempting to expose write tools too — let the model file notes, edit secrets, run
+It is tempting to expose write tools too: let the model file notes, edit secrets, run
 commands. Resist that by default. A read-only server has a small, boring blast radius: the
 worst case is the model *reads* something, not that it *changes* or *deletes* something on a
 hallucinated tool call.
 
-> Start read-only. Add write capabilities deliberately, one at a time, with confirmation —
+> Start read-only. Add write capabilities deliberately, one at a time, with confirmation,
 > not as a convenience.
 
 ## What it looks like for a notes CLI
@@ -50,7 +50,7 @@ a specific entry. Nothing writes, nothing deletes, and sensitive values stay mas
 way they are in the terminal.
 
 The result is that your editor's assistant can answer from your real notes, commands, and
-runbooks — while the knowledge base stays the single source of truth on your machine, not
+runbooks, while the knowledge base stays the single source of truth on your machine, not
 something a model can quietly rewrite.
 
 MCP is the thin, well-defined seam between "the AI in my editor" and "my own tools." Keep

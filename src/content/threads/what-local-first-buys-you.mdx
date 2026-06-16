@@ -7,7 +7,7 @@ tags: ["local-first", "architecture", "devtools"]
 
 "Local-first" gets thrown around as a vibe, but it describes something concrete: the
 **source of truth lives on your machine**, and the network is an enhancement rather than a
-requirement. The cloud can still be there — for sync, backup, or heavier compute — but the
+requirement. The cloud can still be there, for sync, backup, or heavier compute, but the
 app keeps working without it.
 
 That single constraint changes three things that matter day to day.
@@ -25,7 +25,7 @@ remote copy that mattered more than the local one.
 
 A local read is microseconds. A network round trip is tens to hundreds of milliseconds, on
 a good connection. Tools that hit the network on every keystroke feel laggy because they
-*are* laggy — you're paying for the speed of light and a load balancer on every interaction.
+*are* laggy. You're paying for the speed of light and a load balancer on every interaction.
 
 | Operation        | Local (SQLite) | Remote API call |
 | ---------------- | -------------- | --------------- |
@@ -33,7 +33,7 @@ a good connection. Tools that hit the network on every keystroke feel laggy beca
 | Works offline    | yes            | no              |
 | Cost per query   | zero           | metered         |
 
-When the common case is local, the tool feels instant — and instant tools get used.
+When the common case is local, the tool feels instant, and instant tools get used.
 
 ## 3. It works when the network doesn't
 
@@ -55,4 +55,4 @@ explicitly turn one on. The default costs nothing, needs no API key, and never s
 notes anywhere.
 
 The point isn't purity. It's that the fast, private, offline path should be the one you get
-for free — and the cloud should be something you opt into, not the other way around.
+for free, and the cloud should be something you opt into, not the other way around.
