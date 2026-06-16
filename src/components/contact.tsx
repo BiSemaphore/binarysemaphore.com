@@ -101,7 +101,7 @@ function MailtoCard() {
       className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-base font-semibold text-neutral-900 shadow-soft transition-transform hover:-translate-y-0.5"
     >
       <MailIcon className="h-4 w-4" />
-      {site.email}
+      Email us
     </a>
   );
 }
