@@ -249,8 +249,8 @@ export const site: SiteConfig = {
       body: "Small composable programs that each do one thing well and pipe cleanly into the next.",
     },
     {
-      label: "Local-first",
-      body: "Works on your machine and offline by default, with your data staying on disk and yours.",
+      label: "On-device by default",
+      body: "Computation and data stay on your machine, offline by default, so nothing leaves the host unless you choose a remote backend.",
     },
     {
       label: "Horizontal scalability",
@@ -326,7 +326,7 @@ export const team: TeamMember[] = [
       "Leads core development, turning ideas into working software and sweating the details that make it feel right.",
     bio: [
       "Shahid leads core development at Binary Semaphore. He spends most of his time on the essential complexity of a problem: modeling it well, drawing clean boundaries, and turning that into software that holds up.",
-      "He works mostly in Go, with a soft spot for local-first tools and the Unix philosophy. inode, the studio's CLI knowledge base, started as one of his side projects and became the team's main focus.",
+      "He works mostly in Go, with a soft spot for tools that run on your own machine and the Unix philosophy. inode, the studio's CLI knowledge base, started as one of his side projects and became the team's main focus.",
     ],
     skills: ["Go", "Distributed systems", "CLI tooling", "Vector search", "System design"],
     email: "razashahid@gmail.com",
@@ -402,7 +402,7 @@ export const projects: Project[] = [
       lede: "A privacy-focused CLI for storing and retrieving notes, secrets, and commands through natural-language semantic search.",
       statements: [
         "Save anything. Ask in plain English.",
-        "Local-first. Encrypted. Yours.",
+        "Runs on your machine. Encrypted. Yours.",
       ],
       overview: [
         "Every developer accumulates a pile of scattered knowledge: the staging database password, the exact flags for a deploy, a snippet you wrote once and will need again. It ends up in notes apps, shell history, password managers, and stray text files. The problem is rarely storing it. The problem is finding it again, weeks later, when you no longer remember the exact words you used.",
@@ -433,7 +433,7 @@ export const projects: Project[] = [
           body: "Retrieval is built on vector embeddings and LLM reranking, so a query like “prod logging config” surfaces the right runbook even if it was titled “observability setup”. Content is auto-classified into nine categories, which keeps results sharp and lets inode treat a credential differently from a note.",
         },
         {
-          title: "Local-first, with cloud as an opt-in",
+          title: "Runs on your machine, cloud is opt-in",
           body: "The default stack is SQLite + sqlite-vec + Ollama: no API keys, no internet, nothing leaves your laptop. The same commands work unchanged against PostgreSQL/pgvector for storage and Claude or Voyage AI for embeddings when you want more power. The architecture treats backends as a swappable detail, not a rewrite.",
         },
         {
