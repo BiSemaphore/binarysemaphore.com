@@ -1,9 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
 import { Blob, DotGrid, GradientWash } from "@/components/decoration";
-
-const capabilityAccents = ["bg-coral", "bg-blue", "bg-violet"];
 
 export function Hero() {
   return (
@@ -51,20 +50,28 @@ export function Hero() {
           </a>
         </div>
 
-        {/* What we do — quick capability cards */}
-        <div className="mx-auto mt-16 grid max-w-5xl gap-5 text-left sm:grid-cols-3">
-          {site.capabilities.map((cap, i) => (
-            <div
-              key={cap.title}
-              className="rounded-panel border border-border bg-card/80 p-6 shadow-soft backdrop-blur transition-transform duration-200 hover:-translate-y-1"
-            >
-              <span
-                className={`mb-4 block h-1.5 w-10 rounded-full ${capabilityAccents[i % capabilityAccents.length]}`}
-              />
-              <h2 className="text-xl text-foreground">{cap.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-muted">{cap.body}</p>
+        {/* Large product screenshot in a faux-window frame */}
+        <div className="relative mx-auto mt-16 max-w-5xl">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-10 -bottom-6 top-8 -z-10 rounded-blob bg-gradient-to-tr from-coral/30 to-violet/30 blur-2xl"
+          />
+          <div className="overflow-hidden rounded-panel border border-border bg-card shadow-soft">
+            <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+              <span className="h-3 w-3 rounded-full bg-coral/70" />
+              <span className="h-3 w-3 rounded-full bg-sun/80" />
+              <span className="h-3 w-3 rounded-full bg-lime/80" />
+              <span className="ml-3 font-mono text-xs text-subtle">inode</span>
             </div>
-          ))}
+            <Image
+              src="/projects/inode.png"
+              alt="inode, the CLI knowledge base, in action"
+              width={1200}
+              height={627}
+              priority
+              className="w-full"
+            />
+          </div>
         </div>
       </div>
     </section>

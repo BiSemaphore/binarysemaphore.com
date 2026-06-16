@@ -8,81 +8,95 @@ import {
   MailIcon,
 } from "@/components/icons";
 
-// Absolute hrefs so they also work from sub-pages (e.g. /threads).
-const footerLinks = [
-  { href: "/#features", label: "Approach" },
-  { href: "/#projects", label: "Products" },
-  { href: "/#team", label: "Team" },
-  { href: "/threads", label: "Threads" },
-  { href: "/#contact", label: "Contact" },
-];
+function FooterLink({ href, label }: { href: string; label: string }) {
+  const external = /^https?:\/\//.test(href);
+  const className =
+    "text-sm text-muted transition-colors hover:text-foreground";
+  return external ? (
+    <a href={href} target="_blank" rel="noreferrer noopener" className={className}>
+      {label}
+    </a>
+  ) : (
+    <Link href={href} className={className}>
+      {label}
+    </Link>
+  );
+}
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="flex flex-col gap-8 border-t border-border py-10">
-      <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer">
-        {footerLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="text-sm text-muted transition-colors hover:text-foreground"
-          >
-            {link.label}
-          </Link>
-        ))}
-      </nav>
-
-      <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+    <footer className="border-t border-border py-12">
+      <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
+        {/* Brand column */}
         <div>
           <Wordmark />
-          <p className="mt-2 font-mono text-xs text-subtle">
-            © {year} {site.wordmark}
+          <p className="mt-4 max-w-xs text-sm leading-6 text-muted">
+            {site.tagline}
           </p>
+          <div className="mt-5 flex items-center gap-1">
+            <a
+              href={`mailto:${site.email}`}
+              aria-label="Email"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+            >
+              <MailIcon className="h-[18px] w-[18px]" />
+            </a>
+            <a
+              href={site.org}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="GitHub"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+            >
+              <GitHubIcon className="h-[18px] w-[18px]" />
+            </a>
+            {site.linkedin ? (
+              <a
+                href={site.linkedin}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label="LinkedIn"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+              >
+                <LinkedInIcon className="h-[18px] w-[18px]" />
+              </a>
+            ) : null}
+            {site.instagram ? (
+              <a
+                href={site.instagram}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label="Instagram"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+              >
+                <InstagramIcon className="h-[18px] w-[18px]" />
+              </a>
+            ) : null}
+          </div>
         </div>
 
-        <div className="flex items-center gap-1">
-          <a
-            href={`mailto:${site.email}`}
-            aria-label="Email"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
-          >
-            <MailIcon className="h-[18px] w-[18px]" />
-          </a>
-          <a
-            href={site.org}
-            target="_blank"
-            rel="noreferrer noopener"
-            aria-label="GitHub"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
-          >
-            <GitHubIcon className="h-[18px] w-[18px]" />
-          </a>
-          {site.linkedin ? (
-            <a
-              href={site.linkedin}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="LinkedIn"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
-            >
-              <LinkedInIcon className="h-[18px] w-[18px]" />
-            </a>
-          ) : null}
-          {site.instagram ? (
-            <a
-              href={site.instagram}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Instagram"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
-            >
-              <InstagramIcon className="h-[18px] w-[18px]" />
-            </a>
-          ) : null}
-        </div>
+        {/* Link columns */}
+        {site.footerColumns.map((col) => (
+          <div key={col.title}>
+            <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-subtle">
+              {col.title}
+            </h3>
+            <ul className="mt-4 space-y-3">
+              {col.links.map((link) => (
+                <li key={link.href + link.label}>
+                  <FooterLink href={link.href} label={link.label} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
+
+      <p className="mt-12 border-t border-border pt-6 font-mono text-xs text-subtle">
+        © {year} {site.wordmark}
+      </p>
     </footer>
   );
 }
