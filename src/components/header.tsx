@@ -14,20 +14,20 @@ const navLinks = [
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/75 backdrop-blur-md">
+    <header className="sticky top-0 z-50 bg-[#0d0f17] text-white">
       <div className="mx-auto flex h-18 w-full max-w-7xl items-center justify-between px-6 py-3 lg:px-10">
         <Link href="/" className="rounded-full" aria-label="Binary Semaphore home">
-          <Wordmark />
+          <Wordmark forceDark />
         </Link>
 
         <nav className="flex items-center gap-2 sm:gap-3">
           {/* Pill-grouped nav links */}
-          <ul className="hidden items-center gap-1 rounded-full border border-border bg-card/70 p-1 sm:flex">
+          <ul className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 sm:flex">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="rounded-full px-3.5 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+                  className="rounded-full px-3.5 py-1.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
                 >
                   {link.label}
                 </Link>
@@ -35,12 +35,12 @@ export function Header() {
             ))}
           </ul>
 
-          <ThemeToggle />
+          <ThemeToggle className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white" />
 
           {/* Prominent primary CTA */}
           <Link
             href={site.hero.primary.href}
-            className="inline-flex items-center rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background shadow-soft transition-transform hover:-translate-y-0.5"
+            className="inline-flex items-center rounded-full bg-coral px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-coral/20 transition-transform hover:-translate-y-0.5"
           >
             {site.hero.primary.label}
           </Link>

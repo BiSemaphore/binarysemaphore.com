@@ -8,7 +8,7 @@ import { MoonIcon, SunIcon } from "@/components/icons";
  * Which icon shows is driven purely by CSS (`dark:` variants) off that class,
  * so there's no React state and no SSR/CSR mismatch.
  */
-export function ThemeToggle() {
+export function ThemeToggle({ className = "" }: { className?: string }) {
   function toggle() {
     const root = document.documentElement;
     const next = !root.classList.contains("dark");
@@ -22,7 +22,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label="Toggle dark mode"
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+      className={`inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${className || "border-border text-muted hover:bg-card-hover hover:text-foreground"}`}
     >
       <SunIcon className="hidden h-[18px] w-[18px] dark:block" />
       <MoonIcon className="h-[18px] w-[18px] dark:hidden" />
