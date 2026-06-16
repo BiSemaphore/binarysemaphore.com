@@ -52,6 +52,15 @@ export type CTA = { label: string; href: string };
 
 export type Feature = { title: string; body: string };
 
+export type FeatureItem = { label: string; body: string };
+
+export type Testimonial = { quote: string; name: string; role: string };
+
+export type FooterColumn = {
+  title: string;
+  links: { label: string; href: string }[];
+};
+
 export type SiteConfig = {
   name: string;
   wordmark: string;
@@ -79,10 +88,18 @@ export type SiteConfig = {
   };
   /** Tech "built with" strip under the hero. */
   builtWith: string[];
-  /** Studio domains — terse cards shown in the hero. */
+  /** Studio domains, shown as the 3 use-case columns. */
   capabilities: Feature[];
-  /** How we work — the approach, shown as alternating panels. */
+  /** How we work, shown in the feature showcase. */
   features: Feature[];
+  /** Client/company names for the "used by" row (placeholders for now). */
+  clients: string[];
+  /** Dense capability list grid. */
+  featureList: FeatureItem[];
+  /** Testimonials wall (placeholders for now). */
+  testimonials: Testimonial[];
+  /** Footer link columns. */
+  footerColumns: FooterColumn[];
 };
 
 export const site: SiteConfig = {
@@ -164,6 +181,78 @@ export const site: SiteConfig = {
     {
       title: "Ship and keep going",
       body: "We release early and keep improving in the open, the way we built inode, our CLI knowledge base.",
+    },
+  ],
+
+  // PLACEHOLDER client/company names for the "used by" row. Replace with real
+  // client names or swap the component to render logo images.
+  clients: ["Acme Labs", "Northwind", "Globex", "Initech", "Umbrella", "Hooli"],
+
+  // Dense capability list grid (Superlist-style "everyday superpowers").
+  featureList: [
+    { label: "LLM features", body: "Retrieval, search, and agents wired into real products." },
+    { label: "Vector search", body: "Semantic search over your own data, not keyword matching." },
+    { label: "Distributed backends", body: "Services that stay reliable under real load." },
+    { label: "Event streaming", body: "Kafka and queues for systems that talk to each other." },
+    { label: "APIs", body: "Clean, documented interfaces other teams can build on." },
+    { label: "Observability", body: "Logs, metrics, and traces so problems are easy to see." },
+    { label: "Developer tools", body: "Small, fast CLIs that stay out of your way." },
+    { label: "Local-first", body: "Tools that work on your machine, offline by default." },
+    { label: "Cloud native", body: "Containers and infrastructure that scale when you do." },
+  ],
+
+  // PLACEHOLDER testimonials. Replace with real quotes before launch.
+  testimonials: [
+    {
+      quote:
+        "They understood the problem before touching code, and shipped something we actually use every day.",
+      name: "Placeholder Name",
+      role: "Engineering lead, Company",
+    },
+    {
+      quote:
+        "Fast, clear, and easy to work with. The prototype was in our hands within a week.",
+      name: "Placeholder Name",
+      role: "Founder, Startup",
+    },
+    {
+      quote:
+        "Solid distributed systems work. It held up the day traffic spiked and nobody had to scramble.",
+      name: "Placeholder Name",
+      role: "CTO, Company",
+    },
+    {
+      quote:
+        "inode quietly became the tool I reach for first. It finds things I'd have spent ten minutes grepping for.",
+      name: "Placeholder Name",
+      role: "Backend developer",
+    },
+  ],
+
+  // Footer link columns. Internal anchors point at home-page sections.
+  footerColumns: [
+    {
+      title: "Studio",
+      links: [
+        { label: "Approach", href: "/#features" },
+        { label: "Products", href: "/#projects" },
+        { label: "Team", href: "/#team" },
+      ],
+    },
+    {
+      title: "Work",
+      links: [
+        { label: "inode", href: "/projects/inode" },
+        { label: "Threads", href: "/threads" },
+        { label: "GitHub", href: "https://github.com/BiSemaphore" },
+      ],
+    },
+    {
+      title: "Contact",
+      links: [
+        { label: "Get in touch", href: "/#contact" },
+        { label: "Instagram", href: "https://www.instagram.com/binary.semaphore/" },
+      ],
     },
   ],
 };
