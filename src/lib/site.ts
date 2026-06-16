@@ -34,27 +34,51 @@ export type Project = {
   detail?: ProjectDetail;
 };
 
+export type CTA = { label: string; href: string };
+
+export type Feature = { title: string; body: string };
+
 export type SiteConfig = {
   name: string;
   wordmark: string;
+  eyebrow: string;
   role: string;
   tagline: string;
   email: string;
   github: string;
   linkedin: string;
   org: string;
+  /** Public Instagram profile URL ("" hides Instagram links/feed). */
+  instagram: string;
+  /** Handle without the @, used for labels. */
+  instagramHandle: string;
   formspreeId: string;
   about: string[];
+  /** Product-led landing hero. */
+  hero: {
+    headline: string;
+    /** Trailing phrase rendered with the accent gradient. */
+    headlineAccent: string;
+    subhead: string;
+    primary: CTA;
+    secondary: CTA;
+  };
+  /** Tech "built with" strip under the hero. */
+  builtWith: string[];
+  /** Product value props shown as a card grid. */
+  features: Feature[];
 };
 
 export const site: SiteConfig = {
   name: "Shahid Raza",
-  /** Org / wordmark shown in the header. */
+  /** Org / wordmark shown in the header and used as the hero headline. */
   wordmark: "Binary Semaphore",
-  /** One-line hero statement. */
+  /** Small status line above the hero headline. */
+  eyebrow: "developer tools · shipped in public",
+  /** One-line studio statement (hero subhead + metadata). */
   role: "Software engineer building developer tools",
   tagline:
-    "I build small, fast tools that respect your machine and your attention — and I ship them in public.",
+    "A workshop building small, fast developer tools that respect your machine and your attention — released early and built in the open.",
 
   // --- Links -------------------------------------------------------------
   // LinkedIn is hidden everywhere until a real URL is set (no broken links).
@@ -62,6 +86,8 @@ export const site: SiteConfig = {
   github: "https://github.com/shahid-io",
   linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
   org: "https://github.com/BiSemaphore",
+  instagram: "https://www.instagram.com/binary.semaphore/",
+  instagramHandle: "binary.semaphore",
 
   // --- Contact form ------------------------------------------------------
   // When empty, the contact section falls back to a mailto button so the
@@ -69,11 +95,42 @@ export const site: SiteConfig = {
   // "/f/" in your endpoint) to switch on the real form.
   formspreeId: "", // TODO: e.g. "xrgkabcd" from https://formspree.io/f/xrgkabcd
 
-  // --- About -------------------------------------------------------------
-  // DRAFT — edit freely.
+  // --- Behind the work ---------------------------------------------------
+  // DRAFT — edit freely. Frames the maker behind the studio.
   about: [
-    "I'm a software engineer who builds developer tools. I like small, fast programs that run locally, do one thing well, and get out of the way.",
-    "Lately I've been building inode — a CLI knowledge base that retrieves your notes, secrets, and commands by meaning instead of exact keywords. I work mostly in Go, care about ergonomics and performance, and I ship in public: releasing early, writing about the process, and iterating in the open.",
+    "Binary Semaphore is the workshop of Shahid Raza, a software engineer who builds developer tools — small, fast programs that run locally, do one thing well, and get out of the way.",
+    "The current focus is inode, a CLI knowledge base that retrieves your notes, secrets, and commands by meaning instead of exact keywords. Everything here is built mostly in Go, with care for ergonomics and performance, and shipped in public: released early, written about along the way, and iterated on in the open.",
+  ],
+
+  // --- Landing hero ------------------------------------------------------
+  hero: {
+    headline: "Small, fast developer tools,",
+    headlineAccent: "built in the open.",
+    subhead:
+      "Binary Semaphore is a workshop for local-first developer tools. First up: inode, a CLI knowledge base that finds your notes, secrets, and commands by meaning.",
+    primary: { label: "Explore inode", href: "/projects/inode" },
+    secondary: { label: "View on GitHub", href: "https://github.com/BiSemaphore" },
+  },
+
+  builtWith: ["Go", "SQLite", "pgvector", "Ollama", "MCP"],
+
+  features: [
+    {
+      title: "Runs locally",
+      body: "By default there are no API keys and no network calls — notes and secrets stay on your machine. Cloud backends are opt-in.",
+    },
+    {
+      title: "Semantic search",
+      body: "Retrieves notes, commands, and secrets from a description of what you want, not an exact keyword match.",
+    },
+    {
+      title: "Encrypted storage",
+      body: "Sensitive values are stored with AES-256-GCM encryption and masked when printed to the terminal.",
+    },
+    {
+      title: "MCP server",
+      body: "Exposes a read-only MCP server, so Claude Code, Cursor, and similar tools can read from your knowledge base.",
+    },
   ],
 };
 
