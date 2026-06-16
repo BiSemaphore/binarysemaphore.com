@@ -1,0 +1,58 @@
+---
+title: "What \"local-first\" actually buys you"
+description: "Local-first isn't about being anti-cloud. It's about who owns the data, how fast the tool feels, and what still works when the network doesn't."
+date: 2026-06-15
+tags: ["local-first", "architecture", "devtools"]
+---
+
+"Local-first" gets thrown around as a vibe, but it describes something concrete: the
+**source of truth lives on your machine**, and the network is an enhancement rather than a
+requirement. The cloud can still be there — for sync, backup, or heavier compute — but the
+app keeps working without it.
+
+That single constraint changes three things that matter day to day.
+
+## 1. Ownership
+
+When the data lives in a file on your disk, it is yours in a way a hosted account never is.
+You can read it, back it up, grep it, move it to another tool, or keep it after the company
+behind the app disappears. There's no export button to beg for, because there was never a
+remote copy that mattered more than the local one.
+
+> If you can't open your data without logging in, you don't really own it.
+
+## 2. Speed
+
+A local read is microseconds. A network round trip is tens to hundreds of milliseconds, on
+a good connection. Tools that hit the network on every keystroke feel laggy because they
+*are* laggy — you're paying for the speed of light and a load balancer on every interaction.
+
+| Operation        | Local (SQLite) | Remote API call |
+| ---------------- | -------------- | --------------- |
+| Read a record    | ~10µs          | ~50–200ms       |
+| Works offline    | yes            | no              |
+| Cost per query   | zero           | metered         |
+
+When the common case is local, the tool feels instant — and instant tools get used.
+
+## 3. It works when the network doesn't
+
+Planes, trains, bad hotel wifi, a flaky VPN. A local-first tool doesn't care. The feature
+set doesn't shrink when you go offline because the offline path *is* the main path.
+
+## Where the cloud still helps
+
+Local-first is not anti-cloud. The pragmatic version is **local by default, cloud by
+choice**:
+
+- Sync across your own devices.
+- Off-machine backup.
+- Optional heavier compute you don't want to run locally.
+
+This is the line [inode](https://github.com/BiSemaphore) draws: it runs entirely on your
+machine with SQLite and a local model, and only reaches for a cloud backend if you
+explicitly turn one on. The default costs nothing, needs no API key, and never sends your
+notes anywhere.
+
+The point isn't purity. It's that the fast, private, offline path should be the one you get
+for free — and the cloud should be something you opt into, not the other way around.

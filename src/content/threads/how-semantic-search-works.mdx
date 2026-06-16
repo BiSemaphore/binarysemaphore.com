@@ -1,0 +1,66 @@
+---
+title: "How semantic search finds things you can't grep"
+description: "Keyword search matches characters; semantic search matches meaning. A short tour of embeddings, vectors, and why \"the staging db password\" can find a note that never used those words."
+date: 2026-06-11
+tags: ["search", "embeddings", "rag", "fundamentals"]
+---
+
+`grep` is wonderful and it will never find the note you're thinking of unless you remember
+the exact words you wrote. Type "staging database password" and a note titled "RDS creds —
+pre-prod" stays hidden, because not one of those characters matches.
+
+**Semantic search** fixes that by matching *meaning* instead of *characters*. The trick is
+to stop comparing text and start comparing numbers.
+
+## Text becomes vectors
+
+An **embedding model** turns a piece of text into a list of numbers — a **vector** — that
+represents where that text sits in "meaning space". Things that mean similar things land
+near each other, even with no words in common.
+
+```text
+"staging database password"  ->  [0.02, -0.41, 0.18, ... ]   (768 numbers)
+"RDS creds — pre-prod"        ->  [0.03, -0.39, 0.21, ... ]   (close by!)
+"recipe for banana bread"     ->  [-0.55, 0.12, -0.30, ... ]  (far away)
+```
+
+The first two end up close together because the model learned, from huge amounts of text,
+that "staging" and "pre-prod" are related, and that "creds" and "password" are near
+synonyms.
+
+## Closeness = relevance
+
+To search, you embed the query the same way, then find the stored vectors nearest to it.
+"Nearest" is usually **cosine similarity** — the angle between two vectors:
+
+- angle near 0° → very similar
+- angle near 90° → unrelated
+
+```text
+score = cos(θ) between query vector and each stored vector
+return the top N highest scores
+```
+
+That's the whole idea. No keyword has to match; the geometry does the work.
+
+## Why it's fast at scale
+
+Comparing your query against every vector is fine for hundreds of notes but slow for
+millions. A **vector index** (HNSW, IVF, and friends) trades a tiny bit of accuracy for a
+huge speedup, so lookups stay quick as the collection grows.
+
+| Backend        | Where it runs | Good for                  |
+| -------------- | ------------- | ------------------------- |
+| sqlite-vec     | on your disk  | local, single-user        |
+| pgvector       | Postgres      | shared / larger datasets  |
+
+[inode](https://github.com/BiSemaphore) uses `sqlite-vec` by default so the index lives in
+the same local file as your data, and can switch to `pgvector` when you want a bigger,
+shared store.
+
+## The catch
+
+Semantic search is *fuzzy* on purpose, so it can surface something almost-right with
+confidence. The fix most tools use — including inode — is to hand the top matches to an LLM
+that re-reads them and answers from what's actually there, rather than trusting the vector
+score alone. Vectors find the candidates; the model picks the answer.
