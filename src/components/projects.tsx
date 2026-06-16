@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { projects, type Project } from "@/lib/site";
+import { projects, site, type Project } from "@/lib/site";
 import { SectionHeading } from "@/components/section-heading";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
 
@@ -75,31 +75,30 @@ function ProjectCard({ project }: { project: Project }) {
 
 export function Projects() {
   return (
-    <section
-      id="projects"
-      className="scroll-mt-20 border-t border-border py-16 sm:py-20"
-    >
-      <SectionHeading label="02 / projects" title="Things I've shipped" />
+    <section id="projects" className="scroll-mt-20 border-t border-border">
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
+        <SectionHeading label="What we're building" title="Shipped in public" />
 
-      <div className="grid gap-4 sm:grid-cols-1">
-        {projects.map((project) => (
-          <ProjectCard key={project.name} project={project} />
-        ))}
+        <div className="grid gap-5 lg:grid-cols-2">
+          {projects.map((project) => (
+            <ProjectCard key={project.name} project={project} />
+          ))}
+        </div>
+
+        <p className="mt-8 text-sm text-subtle">
+          Everything is open source on{" "}
+          <a
+            href={site.org}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="inline-flex items-center gap-1 text-accent-strong underline-offset-4 hover:underline"
+          >
+            <GitHubIcon className="h-3.5 w-3.5" />
+            GitHub
+          </a>
+          .
+        </p>
       </div>
-
-      <p className="mt-6 text-sm text-subtle">
-        More on{" "}
-        <a
-          href="https://github.com/shahid-io"
-          target="_blank"
-          rel="noreferrer noopener"
-          className="inline-flex items-center gap-1 text-accent-strong underline-offset-4 hover:underline"
-        >
-          <GitHubIcon className="h-3.5 w-3.5" />
-          GitHub
-        </a>
-        .
-      </p>
     </section>
   );
 }

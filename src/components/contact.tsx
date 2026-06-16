@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from "react";
 import { site } from "@/lib/site";
-import { SectionHeading } from "@/components/section-heading";
 import { MailIcon } from "@/components/icons";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -40,7 +39,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid max-w-xl gap-4">
+    <form onSubmit={onSubmit} className="grid w-full max-w-xl gap-4 text-left">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm">
           <span className="text-muted">Name</span>
@@ -108,20 +107,32 @@ function MailtoCard() {
 
 export function Contact() {
   return (
-    <section
-      id="contact"
-      className="scroll-mt-20 border-t border-border py-16 sm:py-20"
-    >
-      <SectionHeading label="03 / contact" title="Let's talk" />
-      <p className="mb-6 max-w-xl text-base leading-7 text-muted">
-        Building something, hiring, or just want to compare notes on developer
-        tools? Drop me a line.
-      </p>
-      {site.formspreeId ? (
-        <ContactForm formspreeId={site.formspreeId} />
-      ) : (
-        <MailtoCard />
-      )}
+    <section id="contact" className="scroll-mt-20 border-t border-border">
+      <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-card px-6 py-14 text-center sm:px-12">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-64 max-w-md bg-[radial-gradient(closest-side,var(--color-accent),transparent)] opacity-[0.12] blur-2xl"
+          />
+          <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Let&apos;s build something
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted">
+            Using the tools, building something, or just want to compare notes
+            on developer tooling? Get in touch.
+          </p>
+          <div className="mt-8 flex justify-center">
+            {site.formspreeId ? (
+              <ContactForm formspreeId={site.formspreeId} />
+            ) : (
+              <MailtoCard />
+            )}
+          </div>
+          <p className="mt-10 font-mono text-xs text-subtle">
+            Built by {site.name}, in the open.
+          </p>
+        </div>
+      </div>
     </section>
   );
 }

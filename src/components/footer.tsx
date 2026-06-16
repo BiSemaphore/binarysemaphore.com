@@ -1,6 +1,11 @@
 import { site } from "@/lib/site";
 import { Wordmark } from "@/components/wordmark";
-import { GitHubIcon, LinkedInIcon, MailIcon } from "@/components/icons";
+import {
+  GitHubIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  MailIcon,
+} from "@/components/icons";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -41,6 +46,17 @@ export function Footer() {
               className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-card-hover hover:text-foreground"
             >
               <LinkedInIcon className="h-[18px] w-[18px]" />
+            </a>
+          ) : null}
+          {site.instagram ? (
+            <a
+              href={site.instagram}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Instagram"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+            >
+              <InstagramIcon className="h-[18px] w-[18px]" />
             </a>
           ) : null}
         </div>

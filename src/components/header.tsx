@@ -4,16 +4,16 @@ import { Wordmark } from "@/components/wordmark";
 
 // Absolute hrefs so the links also work from sub-pages (e.g. /projects/inode).
 const navLinks = [
-  { href: "/threads", label: "Threads" },
+  { href: "/#features", label: "Features" },
   { href: "/#projects", label: "Projects" },
-  { href: "/#about", label: "About" },
+  { href: "/threads", label: "Threads" },
   { href: "/#contact", label: "Contact" },
 ];
 
 export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
         <Link href="/" className="rounded-md" aria-label="Binary Semaphore — home">
           <Wordmark />
         </Link>

@@ -32,45 +32,47 @@ const caveat = Caveat({
 });
 
 const siteUrl = "https://binarysemaphore.com";
-const description = `${site.name} — ${site.role}. ${site.tagline}`;
+const brandTitle = `${site.wordmark} — developer tools, shipped in public`;
+const description = `${site.wordmark}: ${site.tagline}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${site.name} — ${site.role}`,
-    template: `%s · ${site.name}`,
+    default: brandTitle,
+    template: `%s · ${site.wordmark}`,
   },
   description,
   keywords: [
-    "Shahid Raza",
     "Binary Semaphore",
-    "software engineer",
     "developer tools",
+    "local-first",
     "Go",
     "inode",
-    "RAG",
     "CLI",
+    "semantic search",
+    "Shahid Raza",
   ],
   authors: [{ name: site.name, url: site.github }],
   creator: site.name,
+  publisher: site.wordmark,
   openGraph: {
     type: "website",
     url: siteUrl,
     siteName: site.wordmark,
-    title: `${site.name} — ${site.role}`,
+    title: brandTitle,
     description,
     images: [
       {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: `${site.wordmark} — ${site.name}`,
+        alt: brandTitle,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} — ${site.role}`,
+    title: brandTitle,
     description,
     images: ["/og.png"],
   },
