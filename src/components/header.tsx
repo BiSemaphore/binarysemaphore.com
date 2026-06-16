@@ -20,22 +20,23 @@ export function Header() {
           <Wordmark forceDark />
         </Link>
 
-        <nav className="flex items-center gap-2 sm:gap-3">
-          {/* Pill-grouped nav links */}
-          <ul className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 sm:flex">
+        <nav className="flex items-center gap-5 sm:gap-7">
+          {/* Plain nav links with an animated underline on hover. */}
+          <ul className="hidden items-center gap-7 sm:flex">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="rounded-full px-3.5 py-1.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                  className="group/nav relative text-sm font-medium text-white/70 transition-colors hover:text-white"
                 >
                   {link.label}
+                  <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-coral transition-transform duration-200 group-hover/nav:scale-x-100" />
                 </Link>
               </li>
             ))}
           </ul>
 
-          <ThemeToggle className="border-white/20 text-white/70 hover:bg-white/10 hover:text-white" />
+          <ThemeToggle className="border-white/15 text-white/70 hover:bg-white/10 hover:text-white" />
 
           {/* Prominent primary CTA */}
           <Link

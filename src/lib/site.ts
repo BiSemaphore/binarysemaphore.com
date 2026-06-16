@@ -36,12 +36,18 @@ export type Project = {
 
 export type TeamMember = {
   name: string;
+  /** URL slug for the detail page (/team/<slug>). */
+  slug: string;
   /** Primary title/role — edit freely. */
   role: string;
   /** Optional second line: the broader hat / contribution they wear. */
   focus?: string;
   /** Short one-line description shown on the card. */
   description?: string;
+  /** Longer bio paragraphs for the detail page. DRAFT — edit freely. */
+  bio?: string[];
+  /** Skills / focus areas shown as chips on the detail page. */
+  skills?: string[];
   /** Optional contact / profile links (omit any to hide that icon). */
   email?: string;
   linkedin?: string;
@@ -284,49 +290,79 @@ export const site: SiteConfig = {
   ],
 };
 
-// The team. Add github/linkedin per member to show profile links on a card.
+// The team. `bio` paragraphs are DRAFTS (LinkedIn can't be read automatically);
+// edit them or paste real profile text. Detail pages live at /team/<slug>.
 export const team: TeamMember[] = [
   {
     name: "Shahid Raza",
+    slug: "shahid-raza",
     role: "Software Engineer",
     focus: "Core development",
     description:
       "Leads core development, turning ideas into working software and sweating the details that make it feel right.",
+    bio: [
+      "Shahid leads core development at Binary Semaphore. He spends most of his time on the essential complexity of a problem: modeling it well, drawing clean boundaries, and turning that into software that holds up.",
+      "He works mostly in Go, with a soft spot for local-first tools and the Unix philosophy. inode, the studio's CLI knowledge base, started as one of his side projects and became the team's main focus.",
+    ],
+    skills: ["Go", "Distributed systems", "CLI tooling", "Vector search", "System design"],
     email: "razashahid@gmail.com",
     linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
     github: "https://github.com/shahid-io",
   },
   {
     name: "Sanny Kumar",
+    slug: "sanny-kumar",
     role: "Software Engineer",
     focus: "Core development",
     description:
       "Works hands-on across the codebase, building and refining the core product alongside the team.",
+    bio: [
+      "Sanny works hands-on across the stack, building and refining the core product alongside Shahid. He cares about code that reads well and abstractions that stay honest as the system grows.",
+      "He enjoys the parts other people avoid: tightening hot paths, paying down accidental complexity, and making the tooling pleasant to work in.",
+    ],
+    skills: ["Backend", "APIs", "Testing", "Performance", "Refactoring"],
     email: "ksanny556@gmail.com",
     linkedin: "https://www.linkedin.com/in/supersanny/",
     github: "https://github.com/SuperSanny",
   },
   {
     name: "Anand Singh",
+    slug: "anand-singh",
     role: "Software Engineer",
     focus: "Business analysis & requirements",
     description:
       "Builds features while shaping requirements and helping steer the decisions that keep projects on track.",
+    bio: [
+      "Anand sits between the code and the problem. He builds features while shaping requirements, translating what a business actually needs into something the team can design and ship.",
+      "He keeps projects honest about scope and trade-offs, and helps steer the decisions that decide whether a system ages well or not.",
+    ],
+    skills: ["Business analysis", "Requirements", "Project planning", "Backend", "Stakeholder comms"],
     email: "anandmevaparajitah04@gmail.com",
     linkedin: "https://www.linkedin.com/in/anand-singh-03ab70201",
     github: "https://github.com/hawkeyemehawk",
   },
   {
     name: "Sanjita Sahu",
+    slug: "sanjita-sahu",
     role: "Product Manager & Data Analyst",
     focus: "Business problems & delivery",
     description:
       "Turns business problems into clear plans and reads the data that points to what we build next.",
+    bio: [
+      "Sanjita turns fuzzy business problems into clear plans the team can act on. She works closely with Anand on requirements and keeps delivery moving without losing sight of the goal.",
+      "As a data analyst she reads what the numbers are actually saying, so decisions about what to build next come from evidence rather than hunches.",
+    ],
+    skills: ["Product management", "Data analysis", "Roadmapping", "SQL", "Delivery"],
     email: "sahusanjita4@gmail.com",
     linkedin: "https://www.linkedin.com/in/sanjitasahu/",
     github: "https://github.com/sahu130",
   },
 ];
+
+/** Find a team member by slug (for the detail page). */
+export function getTeamMember(slug: string): TeamMember | undefined {
+  return team.find((m) => m.slug === slug);
+}
 
 export const projects: Project[] = [
   {
