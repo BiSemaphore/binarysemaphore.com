@@ -59,7 +59,7 @@ function ProjectCard({ project }: { project: Project }) {
   );
 
   return internal ? (
-    <Link href={href} className={cardClass} aria-label={`${project.name} — details`}>
+    <Link href={href} className={cardClass} aria-label={`${project.name} details`}>
       {content}
     </Link>
   ) : (

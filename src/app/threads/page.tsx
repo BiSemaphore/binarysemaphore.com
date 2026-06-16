@@ -42,7 +42,7 @@ export default function ThreadsPage() {
 
           <p className="mt-6 max-w-xl text-lg leading-7 text-muted">
             Notes and deep-dives on backend &amp; systems, Go, developer tools,
-            and learning in public. Think of each one as a thread you can pull —
+            and learning in public. Think of each one as a thread you can pull:
             short ideas and long build logs alike.
           </p>
         </section>

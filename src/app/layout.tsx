@@ -46,7 +46,7 @@ const caveat = Caveat({
 });
 
 const siteUrl = "https://binarysemaphore.com";
-const brandTitle = `${site.wordmark} — developer tools`;
+const brandTitle = `${site.wordmark}, software for AI and distributed systems`;
 const description = `${site.wordmark}: ${site.tagline}`;
 
 export const metadata: Metadata = {
