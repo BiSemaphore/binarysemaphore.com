@@ -1,8 +1,14 @@
 import type { SVGProps } from "react";
+import Link from "next/link";
 import { team, type TeamMember } from "@/lib/site";
 import { SectionHeading } from "@/components/section-heading";
 import { Reveal } from "@/components/reveal";
-import { GitHubIcon, LinkedInIcon, MailIcon } from "@/components/icons";
+import {
+  ArrowUpRightIcon,
+  GitHubIcon,
+  LinkedInIcon,
+  MailIcon,
+} from "@/components/icons";
 import { Underline } from "@/components/doodle";
 
 /* ---- Sticker icons (small, scattered on the cover) ------------------- */
@@ -99,7 +105,15 @@ function TeamCard({ member, index }: { member: TeamMember; index: number }) {
   const onLight = a.ink !== "#fff";
 
   return (
-    <article className="group/card flex h-full w-full flex-col overflow-hidden rounded-panel border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg">
+    <article className="group/card relative flex h-full w-full flex-col overflow-hidden rounded-panel border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg">
+      {/* Stretched link: whole card navigates to the detail page. Interactive
+          children (social icons) sit above it with relative z-10. */}
+      <Link
+        href={`/team/${member.slug}`}
+        className="absolute inset-0 z-0"
+        aria-label={`${member.name}, ${member.role}`}
+      />
+
       {/* Role cover: name + role + scattered stickers */}
       <div
         className="relative h-48 overflow-hidden"
@@ -171,8 +185,9 @@ function TeamCard({ member, index }: { member: TeamMember; index: number }) {
           </p>
         ) : null}
 
-        {member.email || member.linkedin || member.github ? (
-          <div className="mt-auto flex items-center gap-2 border-t border-border pt-4">
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-border pt-4">
+          {/* Social links sit above the stretched card link (relative z-10). */}
+          <div className="relative z-10 flex items-center gap-1">
             {member.linkedin ? (
               <a
                 href={member.linkedin}
@@ -205,7 +220,13 @@ function TeamCard({ member, index }: { member: TeamMember; index: number }) {
               </a>
             ) : null}
           </div>
-        ) : null}
+
+          {/* Profile cue (decorative; the whole card is the link). */}
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-strong transition-transform duration-200 group-hover/card:translate-x-0.5">
+            Profile
+            <ArrowUpRightIcon className="h-3.5 w-3.5" />
+          </span>
+        </div>
       </div>
     </article>
   );
