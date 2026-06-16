@@ -88,7 +88,7 @@ export default async function ThreadPage({
               {thread.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-md bg-card px-2 py-1 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
+                  className="rounded-full bg-card px-2.5 py-1 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
                 >
                   #{tag}
                 </span>

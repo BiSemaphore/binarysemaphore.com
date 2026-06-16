@@ -5,33 +5,60 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---- Design tokens --------------------------------------------------- */
+/* Superlist-inspired: warm cream canvas, coral brand, a saturated candy
+   palette for full-bleed feature panels, generous radii, soft shadows. */
 :root {
-  --background: #fbfbfa; /* off-white */
-  --foreground: #0a0a0a; /* near-black */
-  --muted: #57534e; /* secondary text */
-  --subtle: #78716c; /* tertiary text */
-  --border: #e7e5e4; /* hairlines */
-  --card: #ffffff;
-  --card-hover: #fafaf9;
-  --accent: #00a6fb; /* brand blue (decorative: dots, borders) */
-  --accent-strong: #0369a1; /* darker for AA-contrast text/links on light */
-  /* brand blue -> teal gradient for accents */
-  --grad-from: #00a6fb;
-  --grad-to: #14b8a6;
+  /* Canvas */
+  --background: #f8f4ec; /* warm cream */
+  --foreground: #1b1714; /* warm near-black ink */
+  --muted: #5b524a; /* secondary text */
+  --subtle: #8a7f74; /* tertiary text */
+  --border: #e8e0d3; /* warm hairline */
+  --card: #fffdf8; /* raised surface */
+  --card-hover: #fbf7ef;
+
+  /* Brand accent (links, focus, dots) */
+  --accent: #ff5c39; /* coral — primary brand */
+  --accent-strong: #d23c1c; /* darker coral for AA text/links on cream */
+
+  /* Candy panel palette (full-bleed feature panels) */
+  --coral: #ff5c39;
+  --lime: #aee04a;
+  --blue: #2e6ff2;
+  --violet: #8b5cf6;
+  --sun: #ffc23c;
+
+  /* coral -> violet gradient for wordmark + headline accents */
+  --grad-from: #ff5c39;
+  --grad-to: #8b5cf6;
+
+  /* Soft layered shadow */
+  --shadow-soft: 0 1px 2px rgba(27, 23, 20, 0.04),
+    0 10px 34px rgba(27, 23, 20, 0.09);
 }
 
 .dark {
-  --background: #0a0a0b;
-  --foreground: #ededed;
-  --muted: #a1a1aa;
-  --subtle: #8b8b94;
-  --border: #232327;
-  --card: #161618;
-  --card-hover: #1c1c1f;
-  --accent: #38bdf8; /* brand blue, brightened for dark bg */
-  --accent-strong: #7dd3fc;
-  --grad-from: #38bdf8;
-  --grad-to: #2dd4bf;
+  --background: #14110f; /* warm near-black */
+  --foreground: #f3ede2;
+  --muted: #b1a89c;
+  --subtle: #8a8076;
+  --border: #2b2622;
+  --card: #1d1916;
+  --card-hover: #251f1b;
+
+  --accent: #ff7a5c; /* brightened coral for dark bg */
+  --accent-strong: #ff9b84;
+
+  --coral: #ff7a5c;
+  --lime: #c2ec5f;
+  --blue: #5b8cff;
+  --violet: #a78bfa;
+  --sun: #ffd166;
+
+  --grad-from: #ff7a5c;
+  --grad-to: #a78bfa;
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 44px rgba(0, 0, 0, 0.5);
 }
 
 /* ---- Map tokens to Tailwind utilities -------------------------------- */
@@ -45,9 +72,28 @@
   --color-card-hover: var(--card-hover);
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
+
+  /* Candy panel colors -> bg-coral, text-blue, etc. */
+  --color-coral: var(--coral);
+  --color-lime: var(--lime);
+  --color-blue: var(--blue);
+  --color-violet: var(--violet);
+  --color-sun: var(--sun);
+
+  /* Generous radii -> rounded-card, rounded-panel, rounded-blob */
+  --radius-card: 1.25rem;
+  --radius-panel: 2rem;
+  --radius-blob: 2.5rem;
+
+  /* Soft shadow -> shadow-soft */
+  --shadow-soft: var(--shadow-soft);
+
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
-  --font-display: var(--font-shantell), ui-rounded, "Segoe UI", system-ui, sans-serif;
+  --font-display: var(--font-display), var(--font-inter), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-doodle: var(--font-shantell), ui-rounded, "Segoe UI", system-ui,
+    sans-serif;
   --font-hand: var(--font-caveat), "Comic Sans MS", ui-rounded, cursive;
 }
 
@@ -64,6 +110,27 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Headings default to the heavy display face with tight, Superlist-style
+   tracking. Components can still override per element. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+}
+
+/* Vertical rhythm for full-width landing sections. */
+.section {
+  padding-block: 5rem;
+}
+@media (min-width: 1024px) {
+  .section {
+    padding-block: 7rem;
+  }
+}
+
 /* The accent gradient used by the wordmark and headings. */
 .text-gradient {
   background-image: linear-gradient(100deg, var(--grad-from), var(--grad-to));
@@ -72,10 +139,29 @@ body {
   color: transparent;
 }
 
+/* Scroll-reveal: subtle fade + rise, driven by <Reveal>. */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+  will-change: opacity, transform;
+}
+.reveal[data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+}
+
 /* Respect users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
   *,
   *::before,
@@ -97,11 +183,12 @@ body {
   overflow-x: auto;
   margin: 1.5rem 0;
   border: 1px solid var(--border);
-  border-radius: 0.6rem;
+  border-radius: 0.9rem;
   background: var(--card);
   padding: 1rem 1.1rem;
   font-size: 0.85rem;
   line-height: 1.6;
+  box-shadow: var(--shadow-soft);
 }
 .thread pre code {
   display: grid; /* one row per line */

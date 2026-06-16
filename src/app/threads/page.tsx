@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Highlight, Squiggle, Arrow } from "@/components/doodle";
+import { Reveal } from "@/components/reveal";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
 import { getAllThreads, formatDate } from "@/lib/threads";
 import { site } from "@/lib/site";
@@ -47,46 +48,48 @@ export default function ThreadsPage() {
         </section>
 
         {threads.length > 0 ? (
-          <section className="border-t border-border">
-            <ul>
-              {threads.map((thread) => (
-                <li key={thread.slug} className="border-b border-border">
-                  <Link
-                    href={`/threads/${thread.slug}`}
-                    className="group block py-7 transition-opacity"
-                  >
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-subtle">
-                      <time dateTime={thread.date}>
-                        {formatDate(thread.date)}
-                      </time>
-                      <span aria-hidden="true">·</span>
-                      <span>{thread.readingMinutes} min read</span>
-                    </div>
-
-                    <h2 className="mt-2 flex items-start justify-between gap-3 font-display text-2xl font-semibold tracking-tight text-foreground">
-                      <span className="transition-colors group-hover:text-accent-strong">
-                        {thread.title}
-                      </span>
-                      <ArrowUpRightIcon className="mt-1.5 h-4 w-4 shrink-0 text-subtle transition-colors group-hover:text-accent" />
-                    </h2>
-
-                    <p className="mt-2 text-[15px] leading-7 text-muted">
-                      {thread.description}
-                    </p>
-
-                    {thread.tags.length > 0 ? (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {thread.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-md bg-card px-2 py-1 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
-                          >
-                            #{tag}
-                          </span>
-                        ))}
+          <section>
+            <ul className="grid gap-5">
+              {threads.map((thread, i) => (
+                <li key={thread.slug}>
+                  <Reveal delay={(i % 2) * 80}>
+                    <Link
+                      href={`/threads/${thread.slug}`}
+                      className="group block rounded-panel border border-border bg-card p-6 shadow-soft transition-transform duration-200 hover:-translate-y-1 sm:p-7"
+                    >
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-subtle">
+                        <time dateTime={thread.date}>
+                          {formatDate(thread.date)}
+                        </time>
+                        <span aria-hidden="true">·</span>
+                        <span>{thread.readingMinutes} min read</span>
                       </div>
-                    ) : null}
-                  </Link>
+
+                      <h2 className="mt-2 flex items-start justify-between gap-3 font-display text-2xl font-bold tracking-tight text-foreground">
+                        <span className="transition-colors group-hover:text-accent-strong">
+                          {thread.title}
+                        </span>
+                        <ArrowUpRightIcon className="mt-1.5 h-4 w-4 shrink-0 text-subtle transition-colors group-hover:text-accent" />
+                      </h2>
+
+                      <p className="mt-2 text-[15px] leading-7 text-muted">
+                        {thread.description}
+                      </p>
+
+                      {thread.tags.length > 0 ? (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {thread.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full bg-background px-2.5 py-1 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </Link>
+                  </Reveal>
                 </li>
               ))}
             </ul>
@@ -118,20 +121,20 @@ export default function ThreadsPage() {
         )}
 
         {/* Build-in-public note */}
-        <section className="mt-12 rounded-xl border border-dashed border-border p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
+        <section className="mt-12 rounded-panel border border-dashed border-border p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
           <div>
             <p className="font-hand text-2xl text-foreground">
               more threads in progress
             </p>
             <p className="mt-1 text-sm text-muted">
-              The building happens in the open.
+              New notes and build logs as they&apos;re ready.
             </p>
           </div>
           <a
-            href={site.github}
+            href={site.org}
             target="_blank"
             rel="noreferrer noopener"
-            className="mt-4 inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-card-hover sm:mt-0"
+            className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-card-hover sm:mt-0"
           >
             <GitHubIcon className="h-4 w-4" />
             Follow on GitHub

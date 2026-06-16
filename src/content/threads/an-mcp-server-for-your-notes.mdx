@@ -1,0 +1,57 @@
+---
+title: "Giving your knowledge base an MCP server"
+description: "The Model Context Protocol lets your editor's AI read from your own tools. Here's what MCP is, why read-only is the safe default, and how a notes CLI exposes one."
+date: 2026-06-08
+tags: ["mcp", "ai", "devtools", "go"]
+---
+
+Your notes are useful to you. They'd be more useful if the AI in your editor could read
+them too — so that "how did I deploy the worker last time?" gets answered from *your*
+runbook, not a generic guess.
+
+That's what the **Model Context Protocol (MCP)** is for. It's a small, open standard for
+exposing tools and data to AI clients like Claude Code and Cursor, so they can call into
+your stuff in a structured way instead of you copy-pasting context every time.
+
+## The shape of it
+
+MCP is a client/server protocol. Your tool runs a **server** that advertises a few
+**capabilities**; the AI client connects and uses them.
+
+- **Tools** — functions the model can call (e.g. `search_notes(query)`).
+- **Resources** — data the model can read (files, records, docs).
+- **Prompts** — reusable prompt templates the server provides.
+
+The client handles discovery: it asks the server what it offers, then the model decides
+when to call a tool, passing arguments and getting structured results back.
+
+```text
+Claude Code ──connect──▶ your MCP server
+            ◀─advertise─ tools: [ search_notes, get_note ]
+            ──call──────▶ search_notes("staging db password")
+            ◀─results─── [ { title, snippet, id }, ... ]
+```
+
+## Why read-only is the right default
+
+It is tempting to expose write tools too — let the model file notes, edit secrets, run
+commands. Resist that by default. A read-only server has a small, boring blast radius: the
+worst case is the model *reads* something, not that it *changes* or *deletes* something on a
+hallucinated tool call.
+
+> Start read-only. Add write capabilities deliberately, one at a time, with confirmation —
+> not as a convenience.
+
+## What it looks like for a notes CLI
+
+[inode](https://github.com/BiSemaphore) ships a read-only MCP server. Point an MCP client at
+it and the model gets exactly two abilities: search the knowledge base by meaning, and fetch
+a specific entry. Nothing writes, nothing deletes, and sensitive values stay masked the same
+way they are in the terminal.
+
+The result is that your editor's assistant can answer from your real notes, commands, and
+runbooks — while the knowledge base stays the single source of truth on your machine, not
+something a model can quietly rewrite.
+
+MCP is the thin, well-defined seam between "the AI in my editor" and "my own tools." Keep
+the seam small and read-only, and it's almost all upside.

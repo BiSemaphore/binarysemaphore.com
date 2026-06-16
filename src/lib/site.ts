@@ -34,6 +34,20 @@ export type Project = {
   detail?: ProjectDetail;
 };
 
+export type TeamMember = {
+  name: string;
+  /** Primary title/role — edit freely. */
+  role: string;
+  /** Optional second line: the broader hat / contribution they wear. */
+  focus?: string;
+  /** Short one-line description shown on the card. */
+  description?: string;
+  /** Optional contact / profile links (omit any to hide that icon). */
+  email?: string;
+  linkedin?: string;
+  github?: string;
+};
+
 export type CTA = { label: string; href: string };
 
 export type Feature = { title: string; body: string };
@@ -65,26 +79,29 @@ export type SiteConfig = {
   };
   /** Tech "built with" strip under the hero. */
   builtWith: string[];
-  /** Product value props shown as a card grid. */
+  /** Studio domains — terse cards shown in the hero. */
+  capabilities: Feature[];
+  /** How we work — the approach, shown as alternating panels. */
   features: Feature[];
 };
 
 export const site: SiteConfig = {
-  name: "Shahid Raza",
+  name: "Binary Semaphore",
   /** Org / wordmark shown in the header and used as the hero headline. */
   wordmark: "Binary Semaphore",
   /** Small status line above the hero headline. */
-  eyebrow: "developer tools · shipped in public",
+  eyebrow: "AI · distributed systems · developer tools",
   /** One-line studio statement (hero subhead + metadata). */
-  role: "Software engineer building developer tools",
+  role: "A small software team building AI and distributed systems",
   tagline:
-    "A workshop building small, fast developer tools that respect your machine and your attention — released early and built in the open.",
+    "A small software team working across AI, distributed systems, and developer tools.",
 
   // --- Links -------------------------------------------------------------
   // LinkedIn is hidden everywhere until a real URL is set (no broken links).
   email: "razashahid532@gmail.com",
   github: "https://github.com/shahid-io",
-  linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
+  // Personal LinkedIn hidden — set a company LinkedIn URL here to show the link.
+  linkedin: "",
   org: "https://github.com/BiSemaphore",
   instagram: "https://www.instagram.com/binary.semaphore/",
   instagramHandle: "binary.semaphore",
@@ -98,41 +115,102 @@ export const site: SiteConfig = {
   // --- Behind the work ---------------------------------------------------
   // DRAFT — edit freely. Frames the maker behind the studio.
   about: [
-    "Binary Semaphore is the workshop of Shahid Raza, a software engineer who builds developer tools — small, fast programs that run locally, do one thing well, and get out of the way.",
-    "The current focus is inode, a CLI knowledge base that retrieves your notes, secrets, and commands by meaning instead of exact keywords. Everything here is built mostly in Go, with care for ergonomics and performance, and shipped in public: released early, written about along the way, and iterated on in the open.",
+    "Binary Semaphore is a small software team working across AI and distributed systems. We start with the business problem, then design and build software that fits it.",
+    "Our work spans applied AI, distributed systems, and developer tools. Right now the focus is inode, a CLI knowledge base that finds your notes, secrets, and commands by meaning instead of exact keywords. It's written in Go.",
   ],
 
   // --- Landing hero ------------------------------------------------------
   hero: {
-    headline: "Small, fast developer tools,",
-    headlineAccent: "built in the open.",
+    headline: "We build software for",
+    headlineAccent: "AI and distributed systems",
     subhead:
-      "Binary Semaphore is a workshop for local-first developer tools. First up: inode, a CLI knowledge base that finds your notes, secrets, and commands by meaning.",
-    primary: { label: "Explore inode", href: "/projects/inode" },
+      "We're a small team that takes on projects across AI, data, and backend systems. Tell us the problem and we'll figure out what to build.",
+    primary: { label: "See our work", href: "/#projects" },
     secondary: { label: "View on GitHub", href: "https://github.com/BiSemaphore" },
   },
 
-  builtWith: ["Go", "SQLite", "pgvector", "Ollama", "MCP"],
+  builtWith: ["Go", "Python", "TypeScript", "PostgreSQL", "Kafka", "Kubernetes", "LLMs"],
 
+  // What we work on, shown as quick cards in the hero.
+  capabilities: [
+    {
+      title: "Applied AI",
+      body: "AI features that do a real job: LLMs, search, and retrieval.",
+    },
+    {
+      title: "Distributed systems",
+      body: "Backends and infrastructure that hold up when traffic shows up.",
+    },
+    {
+      title: "Developer tools",
+      body: "Small, fast tools that stay out of your way.",
+    },
+  ],
+
+  // How we work, shown as alternating panels.
   features: [
     {
-      title: "Runs locally",
-      body: "By default there are no API keys and no network calls — notes and secrets stay on your machine. Cloud backends are opt-in.",
+      title: "Start with the problem",
+      body: "We learn the problem and who it affects before writing code, so we build the right thing instead of a long list of features.",
     },
     {
-      title: "Semantic search",
-      body: "Retrieves notes, commands, and secrets from a description of what you want, not an exact keyword match.",
+      title: "Prototype early",
+      body: "Good ideas get built into working prototypes quickly, so you can try them out instead of reading a roadmap.",
     },
     {
-      title: "Encrypted storage",
-      body: "Sensitive values are stored with AES-256-GCM encryption and masked when printed to the terminal.",
+      title: "Build for real traffic",
+      body: "We write backends that stay reliable and easy to watch when real load shows up.",
     },
     {
-      title: "MCP server",
-      body: "Exposes a read-only MCP server, so Claude Code, Cursor, and similar tools can read from your knowledge base.",
+      title: "Ship and keep going",
+      body: "We release early and keep improving in the open, the way we built inode, our CLI knowledge base.",
     },
   ],
 };
+
+// The team. Add github/linkedin per member to show profile links on a card.
+export const team: TeamMember[] = [
+  {
+    name: "Shahid Raza",
+    role: "Software Engineer",
+    focus: "Core development",
+    description:
+      "Leads core development, turning ideas into working software and sweating the details that make it feel right.",
+    email: "razashahid@gmail.com",
+    linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
+    github: "https://github.com/shahid-io",
+  },
+  {
+    name: "Sanny Kumar",
+    role: "Software Engineer",
+    focus: "Core development",
+    description:
+      "Works hands-on across the codebase, building and refining the core product alongside the team.",
+    email: "ksanny556@gmail.com",
+    linkedin: "https://www.linkedin.com/in/supersanny/",
+    github: "https://github.com/SuperSanny",
+  },
+  {
+    name: "Anand Singh",
+    role: "Software Engineer",
+    focus: "Business analysis & requirements",
+    description:
+      "Builds features while shaping requirements and helping steer the decisions that keep projects on track.",
+    email: "anandmevaparajitah04@gmail.com",
+    linkedin: "https://www.linkedin.com/in/anand-singh-03ab70201",
+    github: "https://github.com/hawkeyemehawk",
+  },
+  {
+    name: "Sanjita Sahu",
+    role: "Product Manager & Data Analyst",
+    focus: "Business problems & delivery",
+    description:
+      "Turns business problems into clear plans and reads the data that points to what we build next.",
+    email: "sahusanjita4@gmail.com",
+    linkedin: "https://www.linkedin.com/in/sanjitasahu/",
+    github: "https://github.com/sahu130",
+  },
+];
 
 export const projects: Project[] = [
   {
@@ -148,16 +226,16 @@ export const projects: Project[] = [
     detail: {
       lede: "A privacy-focused CLI for storing and retrieving notes, secrets, and commands through natural-language semantic search.",
       overview: [
-        "inode is a command-line knowledge base you talk to in plain English. Instead of remembering exact filenames or grepping through scattered notes, you ask for what you need — “the staging database password” or “how I deployed the worker last time” — and inode finds it by meaning rather than exact keywords.",
-        "It is local-first by design: everything runs on your machine with no API keys or internet required, so your notes and secrets never leave your laptop. When you want higher-quality results, you can opt into cloud backends without changing how you use it.",
+        "inode is a command-line knowledge base you talk to in plain English. Instead of remembering exact filenames or grepping through scattered notes, you ask for what you need, like “the staging database password” or “how I deployed the worker last time”, and inode finds it by meaning rather than exact keywords.",
+        "Everything runs on your machine by default, with no API keys or internet required, so your notes and secrets never leave your laptop. When you want higher-quality results, you can switch to cloud backends without changing how you use it.",
       ],
       features: [
         {
           title: "Semantic search",
-          body: "Built in Go with vector embeddings and LLM inference for natural-language retrieval. Content is auto-classified into nine strict categories — credentials, commands, snippets, runbooks, and more — so what you store stays organized and what you ask for comes back precise.",
+          body: "Built in Go with vector embeddings and LLM inference for natural-language retrieval. Content is auto-classified into nine strict categories (credentials, commands, snippets, runbooks, and more), so what you store stays organized and what you ask for comes back precise.",
         },
         {
-          title: "Local-first architecture",
+          title: "Runs on your machine",
           body: "Uses SQLite + sqlite-vec by default, with no API keys or internet required. Optional PostgreSQL/pgvector, Claude API, and Voyage AI backends are available when you want higher-quality embeddings and results.",
         },
         {
@@ -173,7 +251,7 @@ export const projects: Project[] = [
         { label: "Language", value: "Go" },
         { label: "Default storage", value: "SQLite + sqlite-vec" },
         { label: "Optional backends", value: "PostgreSQL/pgvector · Claude · Voyage AI" },
-        { label: "Security", value: "AES-256-GCM, local-first" },
+        { label: "Security", value: "AES-256-GCM, on-device" },
         { label: "Integrations", value: "MCP (Claude Code, Cursor)" },
         { label: "Platforms", value: "macOS · Linux · Windows" },
       ],

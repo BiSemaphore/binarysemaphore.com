@@ -3,6 +3,7 @@ import { Hero } from "@/components/hero";
 import { BuiltWith } from "@/components/built-with";
 import { Features } from "@/components/features";
 import { Projects } from "@/components/projects";
+import { Team } from "@/components/team";
 import { Instagram } from "@/components/instagram";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
@@ -16,6 +17,7 @@ export default function Home() {
         <BuiltWith />
         <Features />
         <Projects />
+        <Team />
         <Instagram />
         <Contact />
       </main>

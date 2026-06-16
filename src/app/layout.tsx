@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Shantell_Sans, Caveat } from "next/font/google";
+import {
+  Inter,
+  JetBrains_Mono,
+  Bricolage_Grotesque,
+  Shantell_Sans,
+  Caveat,
+} from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -17,7 +23,14 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-// Display — a marker/doodle variable font for headings and brand moments.
+// Display — a heavy, expressive grotesque for big headlines and brand moments.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-display",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Doodle accent — a marker variable font for the occasional hand-drawn moment.
 const shantellSans = Shantell_Sans({
   variable: "--font-shantell",
   subsets: ["latin"],
@@ -32,7 +45,7 @@ const caveat = Caveat({
 });
 
 const siteUrl = "https://binarysemaphore.com";
-const brandTitle = `${site.wordmark} — developer tools, shipped in public`;
+const brandTitle = `${site.wordmark} — developer tools`;
 const description = `${site.wordmark}: ${site.tagline}`;
 
 export const metadata: Metadata = {
@@ -45,15 +58,13 @@ export const metadata: Metadata = {
   keywords: [
     "Binary Semaphore",
     "developer tools",
-    "local-first",
     "Go",
     "inode",
     "CLI",
     "semantic search",
-    "Shahid Raza",
   ],
-  authors: [{ name: site.name, url: site.github }],
-  creator: site.name,
+  authors: [{ name: site.wordmark, url: siteUrl }],
+  creator: site.wordmark,
   publisher: site.wordmark,
   openGraph: {
     type: "website",
@@ -92,8 +103,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${inter.variable} ${jetbrainsMono.variable} ${shantellSans.variable} ${caveat.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${bricolage.variable} ${shantellSans.variable} ${caveat.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
