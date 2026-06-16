@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { AnchorHTMLAttributes } from "react";
 
 /**
- * Global MDX element styling for article content. Required by @next/mdx in the
+ * Global MDX element styling for thread content. Required by @next/mdx in the
  * App Router. Code blocks (pre/code) are intentionally left to CSS in
  * globals.css so rehype-pretty-code's output is preserved.
  */

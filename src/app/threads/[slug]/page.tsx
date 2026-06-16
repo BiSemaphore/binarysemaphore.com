@@ -99,7 +99,7 @@ export default async function ThreadPage({
 
         <hr className="my-10 border-0 border-t border-border" />
 
-        <article className="article">
+        <article className="thread">
           <Post />
         </article>
 
