@@ -48,6 +48,24 @@ export type TeamMember = {
   bio?: string[];
   /** Skills / focus areas shown as chips on the detail page. */
   skills?: string[];
+  /** Work experience (paste from LinkedIn). Rendered only when present. */
+  experience?: {
+    role: string;
+    company: string;
+    /** e.g. "2023 - Present" or "Jun 2022 - Jan 2024". */
+    period?: string;
+    summary?: string;
+  }[];
+  /** Projects (paste from LinkedIn). Rendered only when present. */
+  projects?: { name: string; description?: string; href?: string }[];
+  /** Certifications (paste from LinkedIn). Rendered only when present. */
+  certifications?: {
+    name: string;
+    issuer?: string;
+    /** Issue year or date. */
+    year?: string;
+    href?: string;
+  }[];
   /** Optional contact / profile links (omit any to hide that icon). */
   email?: string;
   linkedin?: string;

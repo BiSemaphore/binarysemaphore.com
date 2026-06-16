@@ -150,6 +150,134 @@ export default async function TeamMemberPage({
           </section>
         ) : null}
 
+        {/* Experience */}
+        {member.experience && member.experience.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              Experience
+            </h2>
+            <ol className="space-y-6 border-l border-border pl-6">
+              {member.experience.map((job, i) => (
+                <li key={i} className="relative">
+                  <span
+                    aria-hidden
+                    className="absolute -left-[1.65rem] top-1.5 h-2.5 w-2.5 rounded-full bg-accent ring-4 ring-background"
+                  />
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                    <h3 className="text-base font-semibold text-foreground">
+                      {job.role}
+                    </h3>
+                    {job.period ? (
+                      <span className="font-mono text-xs text-subtle">
+                        {job.period}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="text-sm font-medium text-accent-strong">
+                    {job.company}
+                  </p>
+                  {job.summary ? (
+                    <p className="mt-1.5 text-[15px] leading-7 text-muted">
+                      {job.summary}
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          </section>
+        ) : null}
+
+        {/* Projects */}
+        {member.projects && member.projects.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              Projects
+            </h2>
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {member.projects.map((proj, i) => {
+                const inner = (
+                  <>
+                    <h3 className="flex items-center gap-1.5 text-base font-semibold text-foreground">
+                      {proj.name}
+                      {proj.href ? (
+                        <ArrowUpRightIcon className="h-3.5 w-3.5 text-subtle" />
+                      ) : null}
+                    </h3>
+                    {proj.description ? (
+                      <p className="mt-1.5 text-sm leading-6 text-muted">
+                        {proj.description}
+                      </p>
+                    ) : null}
+                  </>
+                );
+                return (
+                  <li key={i}>
+                    {proj.href ? (
+                      <a
+                        href={proj.href}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="block h-full rounded-card border border-border bg-card p-5 shadow-soft transition-transform duration-200 hover:-translate-y-1"
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <div className="h-full rounded-card border border-border bg-card p-5 shadow-soft">
+                        {inner}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ) : null}
+
+        {/* Certifications */}
+        {member.certifications && member.certifications.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              Certifications
+            </h2>
+            <ul className="space-y-3">
+              {member.certifications.map((cert, i) => {
+                const label = (
+                  <>
+                    <span className="font-medium text-foreground">
+                      {cert.name}
+                    </span>
+                    {cert.issuer ? (
+                      <span className="text-muted"> · {cert.issuer}</span>
+                    ) : null}
+                    {cert.year ? (
+                      <span className="text-subtle"> · {cert.year}</span>
+                    ) : null}
+                  </>
+                );
+                return (
+                  <li
+                    key={i}
+                    className="rounded-card border border-border bg-card px-5 py-3.5 text-sm shadow-soft"
+                  >
+                    {cert.href ? (
+                      <a
+                        href={cert.href}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="transition-colors hover:text-accent-strong"
+                      >
+                        {label}
+                      </a>
+                    ) : (
+                      label
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ) : null}
+
         {/* Skills */}
         {member.skills && member.skills.length > 0 ? (
           <section className="mt-12">
