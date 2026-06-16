@@ -191,7 +191,7 @@ export function Team() {
                       ) : null}
 
                       {member.email || member.linkedin || member.github ? (
-                        <div className="mt-5 flex items-center gap-2 border-t border-border pt-4">
+                        <div className="mt-auto flex items-center gap-2 border-t border-border pt-4">
                           {member.linkedin ? (
                             <a
                               href={member.linkedin}
