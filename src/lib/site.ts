@@ -214,9 +214,9 @@ export const site: SiteConfig = {
     },
   ],
 
-  // PLACEHOLDER client/company names for the "used by" row. Replace with real
-  // client names or swap the component to render logo images.
-  clients: ["Acme Labs", "Northwind", "Globex", "Initech", "Umbrella", "Hooli"],
+  // No public client list yet. The Clients component renders nothing while this
+  // is empty. Add real names (or logo images) when there's something honest to show.
+  clients: [],
 
   // Dense capability list grid (Superlist-style "everyday superpowers").
   featureList: [
@@ -258,33 +258,9 @@ export const site: SiteConfig = {
     },
   ],
 
-  // PLACEHOLDER testimonials. Replace with real quotes before launch.
-  testimonials: [
-    {
-      quote:
-        "They modeled the problem before writing a line of code, and the design held up as requirements changed. That's rarer than it should be.",
-      name: "Placeholder Name",
-      role: "Engineering lead, Company",
-    },
-    {
-      quote:
-        "We had a working prototype in a week, and it was the simplest thing that could possibly work, not a pile of premature abstraction.",
-      name: "Placeholder Name",
-      role: "Founder, Startup",
-    },
-    {
-      quote:
-        "The system degraded gracefully the day traffic spiked. Nobody had to scramble, because it was designed for failure from the start.",
-      name: "Placeholder Name",
-      role: "CTO, Company",
-    },
-    {
-      quote:
-        "inode quietly became the tool I reach for first. It retrieves by meaning, so I find things I'd have spent ten minutes grepping for.",
-      name: "Placeholder Name",
-      role: "Backend developer",
-    },
-  ],
+  // No testimonials yet. The Testimonials component renders nothing while this
+  // is empty. Add real, attributable quotes when we have them.
+  testimonials: [],
 
   // Footer link columns. Internal anchors point at home-page sections.
   footerColumns: [
@@ -328,10 +304,100 @@ export const team: TeamMember[] = [
       "Shahid leads core development at Binary Semaphore. He spends most of his time on the essential complexity of a problem: modeling it well, drawing clean boundaries, and turning that into software that holds up.",
       "He works mostly in Go, with a soft spot for tools that run on your own machine and the Unix philosophy. inode, the studio's CLI knowledge base, started as one of his side projects and became the team's main focus.",
     ],
-    skills: ["Go", "Distributed systems", "CLI tooling", "Vector search", "System design"],
+    skills: [
+      "Go",
+      "Node.js",
+      "Next.js",
+      "Microservices",
+      "REST & GraphQL APIs",
+      "PostgreSQL",
+      "Retrieval-augmented generation",
+      "System design",
+    ],
     email: "razashahid@gmail.com",
     linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
     github: "https://github.com/shahid-io",
+    experience: [
+      {
+        role: "Software Engineer",
+        company: "SkillSnap Learning",
+        period: "Jun 2026 - Present",
+        summary:
+          "Founding engineer working across product strategy, architecture, and full-stack development. Partners with leadership to define the product and make the technical calls behind it, taking features from idea to production.",
+      },
+      {
+        role: "Full Stack Developer",
+        company: "NewAgeSys Solutions",
+        period: "Nov 2025 - May 2026",
+        summary:
+          "Built across frontend, backend, and databases to ship reliable, scalable products.",
+      },
+      {
+        role: "Software Developer",
+        company: "TechwareLab",
+        period: "Apr 2024 - Oct 2025",
+        summary:
+          "Designed and built scalable backend services, mostly in Node.js and TypeScript.",
+      },
+      {
+        role: "Junior Software Developer",
+        company: "TechwareLab",
+        period: "Apr 2023 - Apr 2024",
+        summary:
+          "Worked across the backend, learning to write code that holds up in production.",
+      },
+    ],
+    projects: [
+      {
+        name: "inode",
+        description:
+          "A CLI knowledge base in Go. Save anything from the terminal, retrieve it later in plain English. End-to-end RAG pipeline over a pluggable adapter architecture: SQLite + sqlite-vec by default, Postgres + pgvector as a zero-CGO alternative, with swappable embedding and LLM providers. Encrypted at rest, and it exposes a read-only MCP server so AI clients can query it.",
+        href: "https://github.com/shahid-io/inode",
+      },
+      {
+        name: "Urban Waddle",
+        description:
+          "A Go backend service handling authentication, products, and orders over a REST API.",
+        href: "https://github.com/shahid-io/urban-waddle",
+      },
+    ],
+    certifications: [
+      {
+        name: "Go for Developers: Practical Techniques for Effective Coding",
+        issuer: "LinkedIn",
+        year: "2025",
+      },
+      {
+        name: "Learning Go",
+        issuer: "LinkedIn",
+        year: "2025",
+      },
+      {
+        name: "Backend Engineering Launchpad",
+        issuer: "Airtribe",
+        year: "2024",
+      },
+      {
+        name: "Introduction to Back-End Development",
+        issuer: "Meta",
+        year: "2022",
+      },
+      {
+        name: "Spring Framework for Beginners with Spring Boot",
+        issuer: "Udemy",
+        year: "2022",
+      },
+      {
+        name: "Introduction to Cloud Computing",
+        issuer: "IBM",
+        year: "2022",
+      },
+      {
+        name: "NDG Linux Essentials",
+        issuer: "Cisco Networking Academy",
+        year: "2022",
+      },
+    ],
   },
   {
     name: "Sanny Kumar",
@@ -476,6 +542,70 @@ export const projects: Project[] = [
         { label: "Integrations", value: "MCP (Claude Code, Cursor)" },
         { label: "Categories", value: "9 (credentials, commands, runbooks, …)" },
         { label: "Platforms", value: "macOS · Linux · Windows" },
+      ],
+    },
+  },
+  {
+    name: "Booking.go",
+    tagline: "Slot-based booking for small businesses, multi-tenant from the start.",
+    description:
+      "A scheduling platform for salons, clinics, gyms, and independent consultants. One backend serves many businesses, each with its own services, hours, and bookable slots. In active development.",
+    tags: ["TypeScript", "Node.js", "Next.js", "PostgreSQL", "Redis", "SaaS"],
+    href: "https://github.com/Booking-Go",
+    slug: "booking-go",
+    status: "In development",
+    detail: {
+      lede: "A multi-tenant SaaS for slot-based booking, built so a single backend can serve many independent businesses without their data ever crossing.",
+      overview: [
+        "Small businesses that run on appointments (a salon, a physiotherapy clinic, a personal trainer, a freelance consultant) all face the same scheduling problem: publish when you are available, let clients book a slot, and keep two people from claiming the same one. Most reach for a calendar and a phone, which works until it doesn't.",
+        "Booking.go is a platform that solves this once, for many businesses at the same time. It is multi-tenant: each business owns its services, working hours, holidays, and bookable slots, and one deployment serves all of them while keeping each tenant's data cleanly separated. The data model and access paths are designed around that boundary rather than bolting it on later.",
+        "It is two services. The backend (booking-go-engine) is a Node.js and TypeScript API on Express, with a layered architecture that keeps routing, business logic, and data access in separate places. The frontend (booking-go-web) is a Next.js and React app that talks to it. Both are open source and still being built, so the surface is changing as the model settles.",
+      ],
+      howItWorks: [
+        {
+          step: "Authenticate the tenant",
+          body: "A business owner registers and signs in. Auth issues short-lived access tokens and longer-lived refresh tokens (JWT), and every request is scoped to the tenant it belongs to.",
+        },
+        {
+          step: "Describe the business",
+          body: "Each business defines its services, working hours, and holidays. This is the configuration that everything else is generated from, so it is modeled as first-class data rather than free text.",
+        },
+        {
+          step: "Generate and query slots",
+          body: "From a business's hours and services, the engine generates the slots clients can actually book. Availability queries are read-heavy and repetitive, so results are cached in Redis instead of recomputed on every request.",
+        },
+        {
+          step: "Run the booking lifecycle",
+          body: "A booking moves through clear states: booked, confirmed, cancelled, completed. The rules that guard those transitions (no double-booking a slot, no booking outside hours) live in the service layer, not scattered across routes.",
+        },
+      ],
+      features: [
+        {
+          title: "Multi-tenant by design",
+          body: "One backend serves many businesses, with each tenant's services, hours, and bookings kept separate. Tenancy is part of the data model and the access paths from the start, which is far cheaper than retrofitting isolation onto a single-tenant app later.",
+        },
+        {
+          title: "Layered backend with honest boundaries",
+          body: "The engine follows a strict path: route to service to repository to database. Routing handles HTTP, services hold the business rules, repositories own data access. Each layer has one job, so the rules that matter stay in one place and are easy to test.",
+        },
+        {
+          title: "The right store for each job",
+          body: "PostgreSQL holds the relational core (businesses, services, slots, bookings) where consistency matters. MongoDB takes the append-heavy activity logs and notifications. Redis caches sessions and slot availability. Each datastore does what it is good at instead of forcing everything into one.",
+        },
+        {
+          title: "Typed end to end",
+          body: "TypeScript spans both services, and inputs are validated with Zod at the edges, so a malformed request is rejected before it reaches the business logic. The frontend is a Next.js and React app using React Query for server state and NextAuth for sessions.",
+        },
+      ],
+      facts: [
+        { label: "Type", value: "Multi-tenant SaaS, slot-based booking" },
+        { label: "Backend", value: "booking-go-engine (Express + TypeScript)" },
+        { label: "Frontend", value: "booking-go-web (Next.js 15 + React 19)" },
+        { label: "Databases", value: "PostgreSQL · MongoDB · Redis" },
+        { label: "Auth", value: "JWT access + refresh tokens" },
+        { label: "Validation", value: "Zod (shared across both services)" },
+        { label: "Infra", value: "Docker Compose" },
+        { label: "Status", value: "In active development" },
       ],
     },
   },

@@ -54,6 +54,9 @@ export default async function ProjectPage({
   if (!project?.detail) notFound();
 
   const { detail } = project;
+  // Display label for the repo link, derived from the project's own href so it
+  // works for any GitHub owner (not just shahid-io).
+  const repoLabel = project.href.replace(/^https?:\/\//, "");
 
   return (
     <>
@@ -137,6 +140,8 @@ export default async function ProjectPage({
                 </p>
               ))}
             </div>
+            {/* inode-specific install pill. Only inode sets `statements`, so this
+                band is skipped for other products; revisit if that changes. */}
             <p className="relative mt-6 inline-flex items-center rounded-full bg-white/95 px-4 py-2 font-mono text-sm font-semibold text-neutral-900">
               $ go install inode
             </p>
@@ -282,7 +287,7 @@ export default async function ProjectPage({
             className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-card-hover sm:mt-0"
           >
             <GitHubIcon className="h-4 w-4" />
-            github.com/shahid-io/{project.name}
+            {repoLabel}
             <ArrowUpRightIcon className="h-3.5 w-3.5 text-subtle" />
           </a>
         </section>
