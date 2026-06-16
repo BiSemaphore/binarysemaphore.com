@@ -36,11 +36,16 @@ export type Project = {
 
 export type TeamMember = {
   name: string;
-  /** Title/role — edit freely. */
+  /** Primary title/role — edit freely. */
   role: string;
-  /** Optional profile links (omit to hide). */
-  github?: string;
+  /** Optional second line: the broader hat / contribution they wear. */
+  focus?: string;
+  /** Short one-line description shown on the card. */
+  description?: string;
+  /** Optional contact / profile links (omit any to hide that icon). */
+  email?: string;
   linkedin?: string;
+  github?: string;
 };
 
 export type CTA = { label: string; href: string };
@@ -163,12 +168,36 @@ export const site: SiteConfig = {
   ],
 };
 
-// The team. Roles are placeholders — edit to taste. Add github/linkedin per
-// member to show profile links on their card.
+// The team. Add github/linkedin per member to show profile links on a card.
 export const team: TeamMember[] = [
-  { name: "Sanny Kumar", role: "AI Engineer" },
-  { name: "Anand Singh", role: "Backend & Distributed Systems" },
-  { name: "Sanjita Sahu", role: "Full-stack Engineer" },
+  {
+    name: "Shahid Raza",
+    role: "Software Engineer",
+    focus: "Core development",
+    description:
+      "Leads core development — turning ideas into working software and shipping the details that make it feel right.",
+  },
+  {
+    name: "Sanny Kumar",
+    role: "Software Engineer",
+    focus: "Core development",
+    description:
+      "Works hands-on across the codebase, building and refining the core product alongside the team.",
+  },
+  {
+    name: "Anand Singh",
+    role: "Software Engineer",
+    focus: "Business analysis & requirements",
+    description:
+      "Builds features while shaping requirements and helping steer the decisions that keep projects on track.",
+  },
+  {
+    name: "Sanjita Sahu",
+    role: "Product Manager & Data Analyst",
+    focus: "Business problems & delivery",
+    description:
+      "Turns business problems into clear plans and reads the data that points to what we build next.",
+  },
 ];
 
 export const projects: Project[] = [

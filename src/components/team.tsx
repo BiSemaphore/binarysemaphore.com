@@ -1,10 +1,18 @@
 import { team } from "@/lib/site";
 import { SectionHeading } from "@/components/section-heading";
 import { Reveal } from "@/components/reveal";
-import { GitHubIcon, LinkedInIcon } from "@/components/icons";
+import { GitHubIcon, LinkedInIcon, MailIcon } from "@/components/icons";
 
-/** Avatar accent color per card, cycling the candy palette. */
-const accents = ["bg-coral", "bg-blue", "bg-violet"];
+/**
+ * Per-card accent. `ink` is the text color used on the solid avatar so it
+ * stays legible (dark ink on the light/yellow accents).
+ */
+const accents = [
+  { color: "var(--coral)", ink: "#fff" },
+  { color: "var(--blue)", ink: "#fff" },
+  { color: "var(--violet)", ink: "#fff" },
+  { color: "var(--sun)", ink: "var(--foreground)" },
+];
 
 /** First letters of the first two words, e.g. "Sanny Kumar" -> "SK". */
 function initials(name: string): string {
@@ -24,51 +32,105 @@ export function Team() {
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
         <SectionHeading label="Team" title="The people behind it" />
 
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {team.map((member, i) => (
-            <li key={member.name} className="flex">
-              <Reveal delay={(i % 3) * 80} className="flex w-full">
-                <div className="flex w-full flex-col items-start rounded-panel border border-border bg-card p-7 shadow-soft transition-transform duration-200 hover:-translate-y-1">
-                  <span
-                    className={`flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold text-white ${accents[i % accents.length]}`}
-                    aria-hidden
-                  >
-                    {initials(member.name)}
-                  </span>
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {team.map((member, i) => {
+            const a = accents[i % accents.length];
+            return (
+              <li key={member.name} className="flex">
+                <Reveal delay={(i % 4) * 80} className="flex w-full">
+                  <article className="group flex w-full flex-col overflow-hidden rounded-panel border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg">
+                    {/* Colored header band with halftone dots */}
+                    <div
+                      className="relative h-24"
+                      style={{
+                        background: `linear-gradient(135deg, ${a.color}, color-mix(in oklab, ${a.color} 60%, #ffffff))`,
+                      }}
+                    >
+                      <div
+                        aria-hidden
+                        className="absolute inset-0 opacity-25"
+                        style={{
+                          backgroundImage:
+                            "radial-gradient(#fff 1.5px, transparent 1.5px)",
+                          backgroundSize: "18px 18px",
+                        }}
+                      />
+                    </div>
 
-                  <h3 className="mt-5 text-xl text-foreground">{member.name}</h3>
-                  <p className="mt-1 text-sm text-muted">{member.role}</p>
+                    {/* Avatar overlapping the band */}
+                    <div className="px-7">
+                      <span
+                        className="-mt-11 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl border-4 border-card text-2xl font-extrabold shadow-soft transition-transform duration-300 group-hover:-rotate-3"
+                        style={{ backgroundColor: a.color, color: a.ink }}
+                        aria-hidden
+                      >
+                        {initials(member.name)}
+                      </span>
+                    </div>
 
-                  {member.github || member.linkedin ? (
-                    <div className="mt-4 flex items-center gap-1">
-                      {member.github ? (
-                        <a
-                          href={member.github}
-                          target="_blank"
-                          rel="noreferrer noopener"
-                          aria-label={`${member.name} on GitHub`}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
-                        >
-                          <GitHubIcon className="h-4 w-4" />
-                        </a>
+                    {/* Details */}
+                    <div className="flex flex-1 flex-col px-7 pb-7 pt-4">
+                      <h3 className="font-display text-xl font-bold leading-tight text-foreground">
+                        {member.name}
+                      </h3>
+                      <p
+                        className="mt-1 text-sm font-semibold"
+                        style={{ color: a.color }}
+                      >
+                        {member.role}
+                      </p>
+                      {member.focus ? (
+                        <p className="mt-0.5 text-xs uppercase tracking-wider text-subtle">
+                          {member.focus}
+                        </p>
                       ) : null}
-                      {member.linkedin ? (
-                        <a
-                          href={member.linkedin}
-                          target="_blank"
-                          rel="noreferrer noopener"
-                          aria-label={`${member.name} on LinkedIn`}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
-                        >
-                          <LinkedInIcon className="h-4 w-4" />
-                        </a>
+                      {member.description ? (
+                        <p className="mt-3 text-sm leading-6 text-muted">
+                          {member.description}
+                        </p>
+                      ) : null}
+
+                      {member.email || member.linkedin || member.github ? (
+                        <div className="mt-5 flex items-center gap-2 border-t border-border pt-4">
+                          {member.linkedin ? (
+                            <a
+                              href={member.linkedin}
+                              target="_blank"
+                              rel="noreferrer noopener"
+                              aria-label={`${member.name} on LinkedIn`}
+                              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+                            >
+                              <LinkedInIcon className="h-4 w-4" />
+                            </a>
+                          ) : null}
+                          {member.email ? (
+                            <a
+                              href={`mailto:${member.email}`}
+                              aria-label={`Email ${member.name}`}
+                              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+                            >
+                              <MailIcon className="h-4 w-4" />
+                            </a>
+                          ) : null}
+                          {member.github ? (
+                            <a
+                              href={member.github}
+                              target="_blank"
+                              rel="noreferrer noopener"
+                              aria-label={`${member.name} on GitHub`}
+                              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+                            >
+                              <GitHubIcon className="h-4 w-4" />
+                            </a>
+                          ) : null}
+                        </div>
                       ) : null}
                     </div>
-                  ) : null}
-                </div>
-              </Reveal>
-            </li>
-          ))}
+                  </article>
+                </Reveal>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
