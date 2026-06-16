@@ -198,6 +198,7 @@ export const team: TeamMember[] = [
       "Builds features while shaping requirements and helping steer the decisions that keep projects on track.",
     email: "anandmevaparajitah04@gmail.com",
     linkedin: "https://www.linkedin.com/in/anand-singh-03ab70201",
+    github: "https://github.com/hawkeyemehawk",
   },
   {
     name: "Sanjita Sahu",

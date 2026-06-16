@@ -3,6 +3,7 @@ import { team } from "@/lib/site";
 import { SectionHeading } from "@/components/section-heading";
 import { Reveal } from "@/components/reveal";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "@/components/icons";
+import { Underline } from "@/components/doodle";
 
 /* ---- Sticker icons (small, scattered on the cover) ------------------- */
 type IconProps = SVGProps<SVGSVGElement>;
@@ -149,16 +150,22 @@ export function Team() {
                       {/* name + role */}
                       <div className="absolute inset-x-0 bottom-0 p-5 pr-20">
                         <h3
-                          className={`font-display text-xl font-extrabold leading-tight ${
+                          className={`font-hand text-[1.7rem] font-bold leading-none ${
                             onLight
                               ? "text-foreground"
-                              : "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]"
+                              : "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]"
                           }`}
                         >
-                          {member.name}
+                          <Underline
+                            className={
+                              onLight ? "text-foreground/40" : "text-white/70"
+                            }
+                          >
+                            {member.name}
+                          </Underline>
                         </h3>
                         <p
-                          className={`text-sm font-semibold ${
+                          className={`mt-2 text-sm font-semibold ${
                             onLight ? "text-foreground/80" : "text-white/90"
                           }`}
                         >
