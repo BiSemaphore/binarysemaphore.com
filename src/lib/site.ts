@@ -176,6 +176,8 @@ export const team: TeamMember[] = [
     focus: "Core development",
     description:
       "Leads core development — turning ideas into working software and shipping the details that make it feel right.",
+    email: "razashahid@gmail.com",
+    linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
   },
   {
     name: "Sanny Kumar",
@@ -190,6 +192,8 @@ export const team: TeamMember[] = [
     focus: "Business analysis & requirements",
     description:
       "Builds features while shaping requirements and helping steer the decisions that keep projects on track.",
+    email: "anandmevaparajitah04@gmail.com",
+    linkedin: "https://www.linkedin.com/in/anand-singh-03ab70201",
   },
   {
     name: "Sanjita Sahu",
