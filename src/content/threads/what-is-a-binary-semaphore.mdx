@@ -1,0 +1,92 @@
+---
+title: "What a binary semaphore actually is"
+description: "The concurrency primitive behind the name — what a binary semaphore does, how it differs from a mutex, and how to build one in Go."
+date: 2026-06-16
+tags: ["concurrency", "fundamentals", "go"]
+---
+
+A **semaphore** is one of the oldest tools in concurrent programming: a counter that
+coordinates access to a shared resource. A **binary semaphore** is the simplest version
+of that idea — its counter can only ever be `0` or `1`. It is either *available* or
+*taken*, like a single key that one thread holds at a time.
+
+It has exactly two operations, originally named by Edsger Dijkstra as **P** and **V**, and
+more readably today as **wait** (acquire) and **signal** (release):
+
+- **wait** — if the value is `1`, set it to `0` and continue; otherwise block until it
+  becomes `1`.
+- **signal** — set the value back to `1`, waking a waiting thread if there is one.
+
+Because only one thread can move past `wait` until someone calls `signal`, a binary
+semaphore enforces **mutual exclusion**: at most one thread in the critical section at a
+time.
+
+## Binary vs. counting semaphores
+
+The general form is a **counting semaphore**, whose value can go up to some `N`. That lets
+`N` threads through at once — useful for things like a connection pool with a fixed number
+of slots.
+
+| Type     | Range   | Lets through        | Typical use                |
+| -------- | ------- | ------------------- | -------------------------- |
+| Binary   | 0–1     | one thread          | mutual exclusion, signaling |
+| Counting | 0–N     | up to `N` threads   | bounded pools, rate limits |
+
+A binary semaphore is just a counting semaphore with `N = 1`.
+
+## "Isn't that just a mutex?"
+
+Almost — and this is the distinction worth remembering. A **mutex** has the notion of
+**ownership**: the thread that locks it is the one that must unlock it. A semaphore has no
+owner. *Any* thread can signal it, including a different thread than the one that waited.
+
+That difference makes the semaphore better at **signaling between threads** — one thread
+can wait for an event that a completely different thread signals — while a mutex is the
+right tool for *protecting* a section of code.
+
+> Rule of thumb: reach for a mutex to guard data, and a semaphore to coordinate events.
+
+## Building one in Go
+
+Go doesn't ship a semaphore type, but a buffered channel *is* one. A channel with capacity
+one is a binary semaphore: sending takes the single slot, receiving frees it.
+
+```go
+// A binary semaphore built from a buffered channel of size 1.
+type Semaphore chan struct{}
+
+func New() Semaphore {
+	return make(Semaphore, 1)
+}
+
+// Acquire blocks until the slot is free (the "wait" / P operation).
+func (s Semaphore) Acquire() {
+	s <- struct{}{}
+}
+
+// Release hands the slot back (the "signal" / V operation).
+func (s Semaphore) Release() {
+	<-s
+}
+```
+
+Using it looks like this:
+
+```go
+sem := New()
+
+sem.Acquire()
+// critical section: only one goroutine gets here at a time
+sem.Release()
+```
+
+The `struct{}` element type is deliberate — an empty struct takes **zero bytes**, so the
+channel carries pure signal and no data. Want a counting semaphore instead? Change the
+capacity from `1` to `N` in `make(Semaphore, N)` and you can let `N` goroutines through at
+once.
+
+## Why the name
+
+This site is called *Binary Semaphore* because the primitive is a tidy metaphor for good
+software: a small, well-defined thing that coordinates everything around it without getting
+in the way. That's the bar these write-ups aim for too.

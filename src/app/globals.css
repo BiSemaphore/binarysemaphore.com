@@ -91,3 +91,43 @@ body {
   outline-offset: 2px;
   border-radius: 2px;
 }
+
+/* ---- Article (MDX) code blocks --------------------------------------- */
+.article pre {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--card);
+  padding: 1rem 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.article pre code {
+  display: grid; /* one row per line */
+  font-family: var(--font-mono);
+}
+.article :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  padding: 0.1em 0.35em;
+}
+.article figure[data-rehype-pretty-code-figure] figcaption {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--subtle);
+}
+
+/* rehype-pretty-code dual theme: pick the right colour per mode. */
+.article code[data-theme],
+.article code[data-theme] span {
+  color: var(--shiki-light);
+}
+.dark .article code[data-theme],
+.dark .article code[data-theme] span {
+  color: var(--shiki-dark);
+}
