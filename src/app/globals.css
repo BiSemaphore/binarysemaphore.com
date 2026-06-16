@@ -139,21 +139,6 @@ h3 {
   color: transparent;
 }
 
-/* Team marquee: continuous right-to-left slide. Cards carry their own right
-   margin (no flex gap), so translating the duplicated track by -50% loops
-   seamlessly. */
-@keyframes team-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-.team-marquee {
-  animation: team-marquee 40s linear infinite;
-}
-
 /* Scroll-reveal: subtle fade + rise, driven by <Reveal>. */
 .reveal {
   opacity: 0;
@@ -177,9 +162,6 @@ h3 {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
-  }
-  .team-marquee {
-    animation: none !important;
   }
   *,
   *::before,

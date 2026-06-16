@@ -20,10 +20,10 @@ export function Features() {
         {/* Centered intro */}
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
-            How we work
+            Approach
           </p>
           <h2 className="text-4xl text-foreground sm:text-5xl">
-            From brainstorm to <span className="text-gradient">production</span>
+            How we work
           </h2>
         </div>
 

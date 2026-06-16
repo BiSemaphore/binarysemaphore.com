@@ -24,7 +24,7 @@ export function Hero() {
         {/* Oversized headline */}
         <h1 className="mx-auto max-w-4xl text-balance text-5xl text-foreground sm:text-6xl lg:text-7xl">
           {site.hero.headline}{" "}
-          <span className="text-gradient">{site.hero.headlineAccent}</span>
+          <span className="text-accent-strong">{site.hero.headlineAccent}</span>
         </h1>
 
         <p className="mx-auto mt-7 max-w-2xl text-balance text-lg leading-8 text-muted sm:text-xl">

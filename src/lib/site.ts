@@ -92,9 +92,9 @@ export const site: SiteConfig = {
   /** Small status line above the hero headline. */
   eyebrow: "AI · distributed systems · developer tools",
   /** One-line studio statement (hero subhead + metadata). */
-  role: "A software studio for AI and distributed systems",
+  role: "A small software team building AI and distributed systems",
   tagline:
-    "A software studio working across AI, distributed systems, and developer tools — from brainstorm to production.",
+    "A small software team working across AI, distributed systems, and developer tools.",
 
   // --- Links -------------------------------------------------------------
   // LinkedIn is hidden everywhere until a real URL is set (no broken links).
@@ -115,55 +115,55 @@ export const site: SiteConfig = {
   // --- Behind the work ---------------------------------------------------
   // DRAFT — edit freely. Frames the maker behind the studio.
   about: [
-    "Binary Semaphore is a software studio working across AI and distributed systems. We take ideas from brainstorm to production — sitting with the business problem first, then engineering software that fits it.",
-    "Our work spans applied AI, distributed systems, and developer tools. The current focus is inode, a CLI knowledge base that retrieves your notes, secrets, and commands by meaning instead of exact keywords — built in Go, with care for ergonomics and performance.",
+    "Binary Semaphore is a small software team working across AI and distributed systems. We start with the business problem, then design and build software that fits it.",
+    "Our work spans applied AI, distributed systems, and developer tools. Right now the focus is inode, a CLI knowledge base that finds your notes, secrets, and commands by meaning instead of exact keywords. It's written in Go.",
   ],
 
   // --- Landing hero ------------------------------------------------------
   hero: {
-    headline: "Ideas, engineered into",
-    headlineAccent: "real software.",
+    headline: "We build software for",
+    headlineAccent: "AI and distributed systems",
     subhead:
-      "Binary Semaphore is a software studio working across AI and distributed systems. We take ideas from brainstorm to production — and build each one around the business it needs to serve.",
+      "We're a small team that takes on projects across AI, data, and backend systems. Tell us the problem and we'll figure out what to build.",
     primary: { label: "See our work", href: "/#projects" },
     secondary: { label: "View on GitHub", href: "https://github.com/BiSemaphore" },
   },
 
   builtWith: ["Go", "Python", "TypeScript", "PostgreSQL", "Kafka", "Kubernetes", "LLMs"],
 
-  // What we work on — shown as quick cards in the hero.
+  // What we work on, shown as quick cards in the hero.
   capabilities: [
     {
       title: "Applied AI",
-      body: "LLMs, retrieval, and semantic search put to work inside real products.",
+      body: "AI features that do a real job: LLMs, search, and retrieval.",
     },
     {
       title: "Distributed systems",
-      body: "Reliable, observable backends and infrastructure built to scale.",
+      body: "Backends and infrastructure that hold up when traffic shows up.",
     },
     {
       title: "Developer tools",
-      body: "Small, fast tools that do one thing well and get out of the way.",
+      body: "Small, fast tools that stay out of your way.",
     },
   ],
 
-  // How we work — the studio's approach, shown as alternating panels.
+  // How we work, shown as alternating panels.
   features: [
     {
-      title: "Start with the business",
-      body: "We sit with the problem and the people it affects before writing any code, so what we ship maps to a real outcome — not just a feature list.",
+      title: "Start with the problem",
+      body: "We learn the problem and who it affects before writing code, so we build the right thing instead of a long list of features.",
     },
     {
-      title: "Brainstorm to prototype",
-      body: "Promising ideas get explored fast and turned into working prototypes you can actually try, instead of slide decks and roadmaps.",
+      title: "Prototype early",
+      body: "Good ideas get built into working prototypes quickly, so you can try them out instead of reading a roadmap.",
     },
     {
-      title: "Engineered for scale",
-      body: "Distributed systems done carefully: reliable, observable, and ready for production load from the first release.",
+      title: "Build for real traffic",
+      body: "We write backends that stay reliable and easy to watch when real load shows up.",
     },
     {
-      title: "Ship and iterate",
-      body: "We release early and improve in the open — the same way we built inode, our CLI knowledge base.",
+      title: "Ship and keep going",
+      body: "We release early and keep improving in the open, the way we built inode, our CLI knowledge base.",
     },
   ],
 };
@@ -175,7 +175,7 @@ export const team: TeamMember[] = [
     role: "Software Engineer",
     focus: "Core development",
     description:
-      "Leads core development — turning ideas into working software and shipping the details that make it feel right.",
+      "Leads core development, turning ideas into working software and sweating the details that make it feel right.",
     email: "razashahid@gmail.com",
     linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
     github: "https://github.com/shahid-io",
@@ -226,13 +226,13 @@ export const projects: Project[] = [
     detail: {
       lede: "A privacy-focused CLI for storing and retrieving notes, secrets, and commands through natural-language semantic search.",
       overview: [
-        "inode is a command-line knowledge base you talk to in plain English. Instead of remembering exact filenames or grepping through scattered notes, you ask for what you need — “the staging database password” or “how I deployed the worker last time” — and inode finds it by meaning rather than exact keywords.",
+        "inode is a command-line knowledge base you talk to in plain English. Instead of remembering exact filenames or grepping through scattered notes, you ask for what you need, like “the staging database password” or “how I deployed the worker last time”, and inode finds it by meaning rather than exact keywords.",
         "Everything runs on your machine by default, with no API keys or internet required, so your notes and secrets never leave your laptop. When you want higher-quality results, you can switch to cloud backends without changing how you use it.",
       ],
       features: [
         {
           title: "Semantic search",
-          body: "Built in Go with vector embeddings and LLM inference for natural-language retrieval. Content is auto-classified into nine strict categories — credentials, commands, snippets, runbooks, and more — so what you store stays organized and what you ask for comes back precise.",
+          body: "Built in Go with vector embeddings and LLM inference for natural-language retrieval. Content is auto-classified into nine strict categories (credentials, commands, snippets, runbooks, and more), so what you store stays organized and what you ask for comes back precise.",
         },
         {
           title: "Runs on your machine",

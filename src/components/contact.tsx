@@ -34,7 +34,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
   if (status === "success") {
     return (
       <p className="rounded-xl border border-accent/30 bg-card p-6 text-sm text-foreground">
-        Thanks — your message is on its way. I&apos;ll get back to you soon.
+        Thanks, your message is on its way. I&apos;ll get back to you soon.
       </p>
     );
   }
@@ -82,7 +82,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
         </button>
         {status === "error" ? (
           <span className="text-sm text-red-500">
-            Something went wrong — email me directly at{" "}
+            Something went wrong. Email me directly at{" "}
             <a href={`mailto:${site.email}`} className="underline">
               {site.email}
             </a>

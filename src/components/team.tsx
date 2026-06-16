@@ -1,6 +1,7 @@
 import type { SVGProps } from "react";
 import { team, type TeamMember } from "@/lib/site";
 import { SectionHeading } from "@/components/section-heading";
+import { Reveal } from "@/components/reveal";
 import { GitHubIcon, LinkedInIcon, MailIcon } from "@/components/icons";
 import { Underline } from "@/components/doodle";
 
@@ -91,27 +92,14 @@ const slots = [
   "right-1/4 top-14 -rotate-6 group-hover/card:-translate-y-1.5 group-hover/card:-rotate-12",
 ];
 
-function TeamCard({
-  member,
-  index,
-  duplicate = false,
-}: {
-  member: TeamMember;
-  index: number;
-  /** Second (visual-only) copy in the marquee: hide from a11y + tab order. */
-  duplicate?: boolean;
-}) {
+function TeamCard({ member, index }: { member: TeamMember; index: number }) {
   const a = accents[index % accents.length];
   const stickers = stickersFor(member.role);
   const stickerInk = `color-mix(in oklab, ${a.color} 72%, var(--foreground))`;
   const onLight = a.ink !== "#fff";
-  const linkTab = duplicate ? -1 : undefined;
 
   return (
-    <article
-      aria-hidden={duplicate || undefined}
-      className="group/card mr-6 flex w-[84vw] max-w-[24rem] shrink-0 flex-col overflow-hidden rounded-panel border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg sm:w-[22rem] lg:w-[24rem]"
-    >
+    <article className="group/card flex h-full w-full flex-col overflow-hidden rounded-panel border border-border bg-card shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg">
       {/* Role cover: name + role + scattered stickers */}
       <div
         className="relative h-48 overflow-hidden"
@@ -191,7 +179,6 @@ function TeamCard({
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={`${member.name} on LinkedIn`}
-                tabIndex={linkTab}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:bg-card-hover hover:text-foreground"
               >
                 <LinkedInIcon className="h-4 w-4" />
@@ -201,7 +188,6 @@ function TeamCard({
               <a
                 href={`mailto:${member.email}`}
                 aria-label={`Email ${member.name}`}
-                tabIndex={linkTab}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:bg-card-hover hover:text-foreground"
               >
                 <MailIcon className="h-4 w-4" />
@@ -213,7 +199,6 @@ function TeamCard({
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={`${member.name} on GitHub`}
-                tabIndex={linkTab}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:bg-card-hover hover:text-foreground"
               >
                 <GitHubIcon className="h-4 w-4" />
@@ -230,36 +215,19 @@ export function Team() {
   if (team.length === 0) return null;
 
   return (
-    <section id="team" className="section scroll-mt-20 overflow-hidden">
+    <section id="team" className="section scroll-mt-20">
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
         <SectionHeading label="Team" title="The people behind it" />
-      </div>
 
-      {/* Marquee: continuous right-to-left slide, paused on hover */}
-      <div className="group/marquee relative mt-10 overflow-hidden">
-        {/* edge fades */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent lg:w-32"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent lg:w-32"
-        />
-
-        <div className="team-marquee flex w-max items-stretch group-hover/marquee:[animation-play-state:paused]">
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((member, i) => (
-            <TeamCard key={`a-${member.name}`} member={member} index={i} />
+            <li key={member.name} className="flex">
+              <Reveal delay={(i % 4) * 80} className="flex w-full">
+                <TeamCard member={member} index={i} />
+              </Reveal>
+            </li>
           ))}
-          {team.map((member, i) => (
-            <TeamCard
-              key={`b-${member.name}`}
-              member={member}
-              index={i}
-              duplicate
-            />
-          ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
