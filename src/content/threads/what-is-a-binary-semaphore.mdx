@@ -1,21 +1,21 @@
 ---
 title: "What a binary semaphore actually is"
-description: "The concurrency primitive behind the name — what a binary semaphore does, how it differs from a mutex, and how to build one in Go."
+description: "The concurrency primitive behind the name: what a binary semaphore does, how it differs from a mutex, and how to build one in Go."
 date: 2026-06-16
 tags: ["concurrency", "fundamentals", "go"]
 ---
 
 A **semaphore** is one of the oldest tools in concurrent programming: a counter that
 coordinates access to a shared resource. A **binary semaphore** is the simplest version
-of that idea — its counter can only ever be `0` or `1`. It is either *available* or
+of that idea: its counter can only ever be `0` or `1`. It is either *available* or
 *taken*, like a single key that one thread holds at a time.
 
 It has exactly two operations, originally named by Edsger Dijkstra as **P** and **V**, and
 more readably today as **wait** (acquire) and **signal** (release):
 
-- **wait** — if the value is `1`, set it to `0` and continue; otherwise block until it
+- **wait**: if the value is `1`, set it to `0` and continue; otherwise block until it
   becomes `1`.
-- **signal** — set the value back to `1`, waking a waiting thread if there is one.
+- **signal**: set the value back to `1`, waking a waiting thread if there is one.
 
 Because only one thread can move past `wait` until someone calls `signal`, a binary
 semaphore enforces **mutual exclusion**: at most one thread in the critical section at a
@@ -24,7 +24,7 @@ time.
 ## Binary vs. counting semaphores
 
 The general form is a **counting semaphore**, whose value can go up to some `N`. That lets
-`N` threads through at once — useful for things like a connection pool with a fixed number
+`N` threads through at once, useful for things like a connection pool with a fixed number
 of slots.
 
 | Type     | Range   | Lets through        | Typical use                |
@@ -36,12 +36,12 @@ A binary semaphore is just a counting semaphore with `N = 1`.
 
 ## "Isn't that just a mutex?"
 
-Almost — and this is the distinction worth remembering. A **mutex** has the notion of
+Almost, and this is the distinction worth remembering. A **mutex** has the notion of
 **ownership**: the thread that locks it is the one that must unlock it. A semaphore has no
 owner. *Any* thread can signal it, including a different thread than the one that waited.
 
-That difference makes the semaphore better at **signaling between threads** — one thread
-can wait for an event that a completely different thread signals — while a mutex is the
+That difference makes the semaphore better at **signaling between threads**: one thread
+can wait for an event that a completely different thread signals, while a mutex is the
 right tool for *protecting* a section of code.
 
 > Rule of thumb: reach for a mutex to guard data, and a semaphore to coordinate events.
@@ -80,7 +80,7 @@ sem.Acquire()
 sem.Release()
 ```
 
-The `struct{}` element type is deliberate — an empty struct takes **zero bytes**, so the
+The `struct{}` element type is deliberate: an empty struct takes **zero bytes**, so the
 channel carries pure signal and no data. Want a counting semaphore instead? Change the
 capacity from `1` to `N` in `make(Semaphore, N)` and you can let `N` goroutines through at
 once.
