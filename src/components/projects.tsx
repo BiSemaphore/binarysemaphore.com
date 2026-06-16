@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { projects, site, type Project } from "@/lib/site";
 import { SectionHeading } from "@/components/section-heading";
+import { Reveal } from "@/components/reveal";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
 
 function ProjectCard({ project }: { project: Project }) {
@@ -9,7 +10,7 @@ function ProjectCard({ project }: { project: Project }) {
   const internal = Boolean(project.slug);
   const href = internal ? `/projects/${project.slug}` : project.href;
   const cardClass =
-    "group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-accent/40 hover:bg-card-hover";
+    "group relative flex w-full flex-col overflow-hidden rounded-panel border border-border bg-card shadow-soft transition-transform duration-200 hover:-translate-y-1";
 
   const content = (
     <>
@@ -30,7 +31,7 @@ function ProjectCard({ project }: { project: Project }) {
         <h3 className="flex items-center gap-2 font-mono text-lg font-medium text-foreground">
           {project.name}
           {project.featured ? (
-            <span className="rounded-full border border-accent/30 px-2 py-0.5 font-sans text-[10px] uppercase tracking-wider text-accent-strong">
+            <span className="rounded-full bg-accent px-2.5 py-0.5 font-sans text-[10px] font-semibold uppercase tracking-wider text-white">
               Featured
             </span>
           ) : null}
@@ -47,7 +48,7 @@ function ProjectCard({ project }: { project: Project }) {
         {project.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-md bg-background px-2 py-1 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
+            className="rounded-full bg-background px-2.5 py-1 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
           >
             {tag}
           </span>
@@ -75,13 +76,15 @@ function ProjectCard({ project }: { project: Project }) {
 
 export function Projects() {
   return (
-    <section id="projects" className="scroll-mt-20 border-t border-border">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
-        <SectionHeading label="What we're building" title="Shipped in public" />
+    <section id="projects" className="section scroll-mt-20">
+      <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
+        <SectionHeading label="Projects" title="What we're building" />
 
         <div className="grid gap-5 lg:grid-cols-2">
-          {projects.map((project) => (
-            <ProjectCard key={project.name} project={project} />
+          {projects.map((project, i) => (
+            <Reveal key={project.name} delay={(i % 2) * 80} className="flex">
+              <ProjectCard project={project} />
+            </Reveal>
           ))}
         </div>
 

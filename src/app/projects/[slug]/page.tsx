@@ -77,7 +77,7 @@ export default async function ProjectPage({
               {project.name}
             </h1>
             {project.featured ? (
-              <span className="rounded-full border border-accent/30 px-2 py-0.5 font-sans text-[10px] uppercase tracking-wider text-accent-strong">
+              <span className="rounded-full bg-accent px-2.5 py-0.5 font-sans text-[10px] font-semibold uppercase tracking-wider text-white">
                 Featured
               </span>
             ) : null}
@@ -92,7 +92,7 @@ export default async function ProjectPage({
               href={project.href}
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-soft transition-transform hover:-translate-y-0.5"
             >
               <GitHubIcon className="h-4 w-4" />
               View on GitHub
@@ -102,7 +102,7 @@ export default async function ProjectPage({
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-md bg-card px-2 py-1 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
+                  className="rounded-full bg-card px-2.5 py-1 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
                 >
                   {tag}
                 </span>
@@ -113,7 +113,7 @@ export default async function ProjectPage({
 
         {/* Banner */}
         {project.image ? (
-          <div className="relative mt-10 aspect-[1200/627] w-full overflow-hidden rounded-xl border border-border">
+          <div className="relative mt-10 aspect-[1200/627] w-full overflow-hidden rounded-panel border border-border shadow-soft">
             <Image
               src={project.image}
               alt={`${project.name} preview`}
@@ -144,7 +144,7 @@ export default async function ProjectPage({
           <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
             At a glance
           </h2>
-          <dl className="grid gap-x-6 gap-y-4 rounded-xl border border-border bg-card p-6 sm:grid-cols-2">
+          <dl className="grid gap-x-6 gap-y-4 rounded-panel border border-border bg-card p-6 shadow-soft sm:grid-cols-2">
             {detail.facts.map((fact) => (
               <div key={fact.label}>
                 <dt className="font-mono text-xs uppercase tracking-wider text-subtle">
@@ -165,7 +165,7 @@ export default async function ProjectPage({
             {detail.features.map((feature, i) => (
               <div
                 key={feature.title}
-                className="flex gap-4 border-l-2 border-border pl-5"
+                className="flex gap-4 border-l-2 border-accent/40 pl-5"
               >
                 <div className="flex-1">
                   <h3 className="flex items-baseline gap-2 text-base font-medium text-foreground">
@@ -184,7 +184,7 @@ export default async function ProjectPage({
         </section>
 
         {/* Bottom CTA */}
-        <section className="mt-14 rounded-xl border border-border bg-card p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
+        <section className="mt-14 rounded-panel border border-border bg-card p-6 shadow-soft sm:flex sm:items-center sm:justify-between sm:gap-6">
           <div>
             <p className="text-sm font-medium text-foreground">
               Want the code?
@@ -197,7 +197,7 @@ export default async function ProjectPage({
             href={project.href}
             target="_blank"
             rel="noreferrer noopener"
-            className="mt-4 inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-card-hover sm:mt-0"
+            className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-card-hover sm:mt-0"
           >
             <GitHubIcon className="h-4 w-4" />
             github.com/shahid-io/{project.name}

@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { site } from "@/lib/site";
 import { MailIcon } from "@/components/icons";
+import { DotGrid } from "@/components/decoration";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -32,7 +33,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
 
   if (status === "success") {
     return (
-      <p className="rounded-lg border border-accent/30 bg-card p-6 text-sm text-foreground">
+      <p className="rounded-xl border border-accent/30 bg-card p-6 text-sm text-foreground">
         Thanks — your message is on its way. I&apos;ll get back to you soon.
       </p>
     );
@@ -48,7 +49,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
             type="text"
             required
             autoComplete="name"
-            className="rounded-lg border border-border bg-card px-3 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
+            className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
           />
         </label>
         <label className="grid gap-1.5 text-sm">
@@ -58,7 +59,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
             type="email"
             required
             autoComplete="email"
-            className="rounded-lg border border-border bg-card px-3 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
+            className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
           />
         </label>
       </div>
@@ -68,14 +69,14 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
           name="message"
           required
           rows={4}
-          className="resize-y rounded-lg border border-border bg-card px-3 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
+          className="resize-y rounded-xl border border-border bg-background px-3.5 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
         />
       </label>
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5 disabled:opacity-60"
         >
           {status === "submitting" ? "Sending…" : "Send message"}
         </button>
@@ -97,7 +98,7 @@ function MailtoCard() {
   return (
     <a
       href={`mailto:${site.email}`}
-      className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+      className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-base font-semibold text-neutral-900 shadow-soft transition-transform hover:-translate-y-0.5"
     >
       <MailIcon className="h-4 w-4" />
       {site.email}
@@ -106,30 +107,35 @@ function MailtoCard() {
 }
 
 export function Contact() {
+  const hasForm = Boolean(site.formspreeId);
   return (
-    <section id="contact" className="scroll-mt-20 border-t border-border">
-      <div className="mx-auto w-full max-w-7xl px-6 py-20 lg:px-10 lg:py-28">
-        <div className="relative overflow-hidden rounded-2xl border border-border bg-card px-6 py-14 text-center sm:px-12">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 -top-24 mx-auto h-64 max-w-md bg-[radial-gradient(closest-side,var(--color-accent),transparent)] opacity-[0.12] blur-2xl"
-          />
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+    <section id="contact" className="section scroll-mt-20">
+      <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
+        <div
+          className="relative overflow-hidden rounded-blob px-6 py-16 text-center shadow-soft sm:px-12 sm:py-20"
+          style={{
+            background: "linear-gradient(120deg, var(--coral), var(--violet))",
+          }}
+        >
+          <DotGrid className="text-white/15" />
+          <h2 className="text-balance text-4xl text-white sm:text-5xl lg:text-6xl">
             Let&apos;s build something
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-muted">
+          <p className="mx-auto mt-5 max-w-xl text-balance text-lg leading-8 text-white/85">
             Using the tools, building something, or just want to compare notes
             on developer tooling? Get in touch.
           </p>
-          <div className="mt-8 flex justify-center">
-            {site.formspreeId ? (
-              <ContactForm formspreeId={site.formspreeId} />
+          <div className="mt-9 flex justify-center">
+            {hasForm ? (
+              <div className="w-full max-w-xl rounded-panel bg-card p-6 text-left shadow-soft sm:p-8">
+                <ContactForm formspreeId={site.formspreeId} />
+              </div>
             ) : (
               <MailtoCard />
             )}
           </div>
-          <p className="mt-10 font-mono text-xs text-subtle">
-            Built by {site.name}, in the open.
+          <p className="mt-10 font-mono text-xs text-white/70">
+            {site.wordmark} · open source, built in Go.
           </p>
         </div>
       </div>

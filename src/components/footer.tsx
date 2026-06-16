@@ -16,7 +16,7 @@ export function Footer() {
         <div>
           <Wordmark />
           <p className="mt-2 font-mono text-xs text-subtle">
-            © {year} {site.name}
+            © {year} {site.wordmark}
           </p>
         </div>
 
@@ -24,16 +24,16 @@ export function Footer() {
           <a
             href={`mailto:${site.email}`}
             aria-label="Email"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
           >
             <MailIcon className="h-[18px] w-[18px]" />
           </a>
           <a
-            href={site.github}
+            href={site.org}
             target="_blank"
             rel="noreferrer noopener"
             aria-label="GitHub"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
           >
             <GitHubIcon className="h-[18px] w-[18px]" />
           </a>
@@ -43,7 +43,7 @@ export function Footer() {
               target="_blank"
               rel="noreferrer noopener"
               aria-label="LinkedIn"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
             >
               <LinkedInIcon className="h-[18px] w-[18px]" />
             </a>
@@ -54,7 +54,7 @@ export function Footer() {
               target="_blank"
               rel="noreferrer noopener"
               aria-label="Instagram"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-card-hover hover:text-foreground"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-card-hover hover:text-foreground"
             >
               <InstagramIcon className="h-[18px] w-[18px]" />
             </a>
