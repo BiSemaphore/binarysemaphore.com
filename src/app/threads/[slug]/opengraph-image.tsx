@@ -3,7 +3,7 @@ import { getAllThreads, getThread } from "@/lib/threads";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Binary Semaphore — Threads";
+export const alt = "Binary Semaphore Threads";
 
 // Prerender an OG image for every thread.
 export function generateStaticParams() {
