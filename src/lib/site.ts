@@ -34,6 +34,15 @@ export type Project = {
   detail?: ProjectDetail;
 };
 
+export type TeamMember = {
+  name: string;
+  /** Title/role — edit freely. */
+  role: string;
+  /** Optional profile links (omit to hide). */
+  github?: string;
+  linkedin?: string;
+};
+
 export type CTA = { label: string; href: string };
 
 export type Feature = { title: string; body: string };
@@ -153,6 +162,14 @@ export const site: SiteConfig = {
     },
   ],
 };
+
+// The team. Roles are placeholders — edit to taste. Add github/linkedin per
+// member to show profile links on their card.
+export const team: TeamMember[] = [
+  { name: "Sanny Kumar", role: "AI Engineer" },
+  { name: "Anand Singh", role: "Backend & Distributed Systems" },
+  { name: "Sanjita Sahu", role: "Full-stack Engineer" },
+];
 
 export const projects: Project[] = [
   {

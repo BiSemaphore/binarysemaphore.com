@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { site } from "@/lib/site";
 import { Wordmark } from "@/components/wordmark";
 import {
@@ -7,11 +8,32 @@ import {
   MailIcon,
 } from "@/components/icons";
 
+// Absolute hrefs so they also work from sub-pages (e.g. /threads).
+const footerLinks = [
+  { href: "/#features", label: "Approach" },
+  { href: "/#projects", label: "Products" },
+  { href: "/#team", label: "Team" },
+  { href: "/threads", label: "Threads" },
+  { href: "/#contact", label: "Contact" },
+];
+
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border py-10">
+    <footer className="flex flex-col gap-8 border-t border-border py-10">
+      <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer">
+        {footerLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="text-sm text-muted transition-colors hover:text-foreground"
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
+
       <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
         <div>
           <Wordmark />
