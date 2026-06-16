@@ -185,6 +185,9 @@ export const team: TeamMember[] = [
     focus: "Core development",
     description:
       "Works hands-on across the codebase, building and refining the core product alongside the team.",
+    email: "ksanny556@gmail.com",
+    linkedin: "https://www.linkedin.com/in/supersanny/",
+    github: "https://github.com/SuperSanny",
   },
   {
     name: "Anand Singh",
@@ -201,6 +204,9 @@ export const team: TeamMember[] = [
     focus: "Business problems & delivery",
     description:
       "Turns business problems into clear plans and reads the data that points to what we build next.",
+    email: "sahusanjita4@gmail.com",
+    linkedin: "https://www.linkedin.com/in/sanjitasahu/",
+    github: "https://github.com/sahu130",
   },
 ];
 
