@@ -161,7 +161,7 @@ export const site: SiteConfig = {
 
   // --- Links -------------------------------------------------------------
   // LinkedIn is hidden everywhere until a real URL is set (no broken links).
-  email: "razashahid532@gmail.com",
+  email: "shahid@binarysemaphore.com",
   github: "https://github.com/shahid-io",
   // Company LinkedIn page.
   linkedin: "https://www.linkedin.com/company/binary-semaphore/",
