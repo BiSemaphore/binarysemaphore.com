@@ -31,7 +31,7 @@ export function HeroPanel({ className = "" }: { className?: string }) {
         />
       </div>
 
-      <div className="absolute right-4 top-4 flex max-w-[78%] flex-wrap justify-end gap-2 sm:right-6 sm:top-6">
+      <div className="absolute right-4 top-4 flex max-w-[17rem] flex-wrap justify-end gap-2 sm:right-6 sm:top-6 sm:max-w-[27rem]">
         {heroTags.map((tag) => (
           <span
             key={tag}
