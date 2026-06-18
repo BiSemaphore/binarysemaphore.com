@@ -5,60 +5,71 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---- Design tokens --------------------------------------------------- */
-/* Superlist-inspired: warm cream canvas, coral brand, a saturated candy
-   palette for full-bleed feature panels, generous radii, soft shadows. */
+/* Adoxin-inspired: clean neutral-white canvas, near-black ink, a single deep
+   red accent, and dark contrast bands (#111 / #1e1e1e) for hero/footer drama.
+   Generous radii, soft shadows. */
 :root {
   /* Canvas */
-  --background: #f8f4ec; /* warm cream */
-  --foreground: #1b1714; /* warm near-black ink */
-  --muted: #5b524a; /* secondary text */
-  --subtle: #8a7f74; /* tertiary text */
-  --border: #e8e0d3; /* warm hairline */
-  --card: #fffdf8; /* raised surface */
-  --card-hover: #fbf7ef;
+  --background: #f6f6f4; /* neutral white-smoke */
+  --foreground: #111111; /* near-black ink */
+  --muted: #525252; /* secondary text (dark-gray) */
+  --subtle: #999999; /* tertiary text */
+  --border: #e6e6e6; /* hairline */
+  --card: #ffffff; /* raised surface */
+  --card-hover: #fafafa;
 
-  /* Brand accent (links, focus, dots) */
-  --accent: #ff5c39; /* coral — primary brand */
-  --accent-strong: #d23c1c; /* darker coral for AA text/links on cream */
+  /* Dark contrast bands (hero / CTA / footer) */
+  --band: #111111;
+  --band-deep: #1e1e1e;
+  --band-border: #272626;
 
-  /* Candy panel palette (full-bleed feature panels) */
-  --coral: #ff5c39;
+  /* Brand accent (links, focus, dots, primary buttons) */
+  --accent: #a80000; /* deep red — primary brand */
+  --accent-strong: #a80000; /* AA on white for text/links */
+
+  /* Panel palette. Kept for variety, but coral now reads as the brand red so
+     primary CTAs and bg-coral surfaces pick up the accent. */
+  --coral: #a80000;
   --lime: #aee04a;
   --blue: #2e6ff2;
   --violet: #8b5cf6;
   --sun: #ffc23c;
 
-  /* coral -> violet gradient for wordmark + headline accents */
-  --grad-from: #ff5c39;
-  --grad-to: #8b5cf6;
+  /* Wordmark + headline accent. Solid red (no rainbow gradient). */
+  --grad-from: #a80000;
+  --grad-to: #cc1212;
 
   /* Soft layered shadow */
-  --shadow-soft: 0 1px 2px rgba(27, 23, 20, 0.04),
-    0 10px 34px rgba(27, 23, 20, 0.09);
+  --shadow-soft: 0 1px 2px rgba(17, 17, 17, 0.04),
+    0 10px 34px rgba(17, 17, 17, 0.08);
 }
 
 .dark {
-  --background: #14110f; /* warm near-black */
-  --foreground: #f3ede2;
-  --muted: #b1a89c;
-  --subtle: #8a8076;
-  --border: #2b2622;
-  --card: #1d1916;
-  --card-hover: #251f1b;
+  --background: #1e1e1e; /* deep neutral */
+  --foreground: #f5f5f5;
+  --muted: #d1d1d1; /* light-grey */
+  --subtle: #999999;
+  --border: #272626; /* dark-border */
+  --card: #111111;
+  --card-hover: #161616;
 
-  --accent: #ff7a5c; /* brightened coral for dark bg */
-  --accent-strong: #ff9b84;
+  --band: #111111;
+  --band-deep: #1e1e1e;
+  --band-border: #272626;
 
-  --coral: #ff7a5c;
+  --accent: #ff5747; /* brightened red for dark bg */
+  --accent-strong: #ff6b5c;
+
+  --coral: #ff5747;
   --lime: #c2ec5f;
   --blue: #5b8cff;
   --violet: #a78bfa;
   --sun: #ffd166;
 
-  --grad-from: #ff7a5c;
-  --grad-to: #a78bfa;
+  --grad-from: #ff5747;
+  --grad-to: #ff8a3d;
 
-  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 44px rgba(0, 0, 0, 0.5);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 44px rgba(0, 0, 0, 0.55);
 }
 
 /* ---- Map tokens to Tailwind utilities -------------------------------- */
@@ -72,6 +83,11 @@
   --color-card-hover: var(--card-hover);
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
+
+  /* Dark contrast bands -> bg-band, bg-band-deep, border-band-border */
+  --color-band: var(--band);
+  --color-band-deep: var(--band-deep);
+  --color-band-border: var(--band-border);
 
   /* Candy panel colors -> bg-coral, text-blue, etc. */
   --color-coral: var(--coral);
@@ -112,13 +128,15 @@ body {
 
 /* Headings default to the heavy display face with tight, Superlist-style
    tracking. Components can still override per element. */
-h1,
-h2,
-h3 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.04;
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.06;
+  }
 }
 
 /* Vertical rhythm for full-width landing sections. */
@@ -137,6 +155,106 @@ h3 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Page-load fade, echoing the reference site's body fade-in. */
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+body {
+  animation: page-fade-in 0.45s ease both;
+}
+
+/* Per-letter nav "roll" hover (see RollText). A clipped duplicate row sits
+   just below; on hover both rows roll up, staggered by per-letter delay. */
+.roll {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1.45;
+}
+.roll-row {
+  display: inline-flex;
+  white-space: pre;
+}
+.roll-row--clone {
+  position: absolute;
+  inset: 0;
+}
+.roll-letter {
+  display: inline-block;
+  transform: translateY(0);
+  transition:
+    transform 0.45s cubic-bezier(0.7, 0, 0.2, 1),
+    color 0.3s ease;
+}
+/* The incoming (clone) row is the accent color, so the word rolls in red. */
+.roll-row--clone .roll-letter {
+  transform: translateY(100%);
+  color: var(--accent);
+}
+.roll-link:hover .roll-row .roll-letter {
+  transform: translateY(-100%);
+  color: var(--accent);
+}
+.roll-link:hover .roll-row--clone .roll-letter {
+  transform: translateY(0);
+}
+
+/* Hero brand panel: a static binary-semaphore diagram (see SemaphorePanel).
+   Colors come from currentColor (= --foreground) and --accent, so the panel
+   inverts cleanly between light and dark themes. No motion. */
+.sem-op {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  fill: currentColor;
+  fill-opacity: 0.88;
+  letter-spacing: -0.02em;
+}
+.sem-cap {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  fill: currentColor;
+  fill-opacity: 0.42;
+  letter-spacing: 0.04em;
+}
+.sem-count {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  fill: currentColor;
+  fill-opacity: 0.7;
+  letter-spacing: -0.01em;
+}
+.sem-token {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--accent) 45%, transparent));
+}
+
+/* Loading shimmer skeleton, shown behind images until they paint (see Photo).
+   Subtle by design; disabled under prefers-reduced-motion by the block below. */
+.shimmer {
+  background: linear-gradient(
+    100deg,
+    var(--card) 30%,
+    var(--card-hover) 50%,
+    var(--card) 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
 }
 
 /* Scroll-reveal: subtle fade + rise, driven by <Reveal>. */

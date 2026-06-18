@@ -1,63 +1,65 @@
 import Link from "next/link";
+import Image from "next/image";
 import { site } from "@/lib/site";
 import { ArrowUpRightIcon } from "@/components/icons";
+import { HeroPanel } from "@/components/hero-panel";
 
 /**
- * Typography-led, centered hero on a deep indigo gradient. No faked product
- * shot. A tiny line at the bottom nods to the current product (inode).
+ * Hero modeled on the reference site's service banner: a light canvas with a
+ * huge, tightly-tracked left-aligned headline, a large supporting line, a
+ * circular outlined call-to-action top-right, and a wide rounded brand panel
+ * below (standing in for the reference's full-bleed photo).
  */
 export function Hero() {
   return (
-    <section
-      id="top"
-      className="relative overflow-hidden text-white"
-      style={{
-        background:
-          "radial-gradient(120% 90% at 50% -10%, #1d1f44 0%, #0e0f1c 55%, #0a0b12 100%)",
-      }}
-    >
-      <div className="relative mx-auto flex w-full max-w-4xl flex-col items-center px-6 py-28 text-center lg:py-36">
-        <p className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 font-mono text-xs uppercase tracking-[0.18em] text-white/70">
-          <span className="h-1.5 w-1.5 rounded-full bg-coral" />
-          {site.eyebrow}
-        </p>
+    <section id="top" className="relative bg-background">
+      <div className="mx-auto w-full max-w-7xl px-6 pt-16 pb-14 lg:px-10 lg:pt-20 lg:pb-20">
+        {/* Headline + circular CTA */}
+        <div className="flex items-start justify-between gap-8">
+          <div className="min-w-0">
+            <h1 className="flex flex-wrap items-center gap-x-5 gap-y-1 font-display font-normal leading-[1.1] tracking-[-0.0328em] text-foreground text-[clamp(2.75rem,9vw,7.25rem)]">
+              <Image
+                src="/brand/mark.svg"
+                alt=""
+                aria-hidden
+                width={120}
+                height={120}
+                priority
+                unoptimized
+                className="h-[0.78em] w-[0.78em] rounded-[0.16em] ring-1 ring-black/5 dark:ring-white/10"
+              />
+              {site.wordmark}
+            </h1>
 
-        <h1 className="text-balance text-5xl font-extrabold leading-[1.0] tracking-tight sm:text-6xl lg:text-[4.75rem]">
-          {site.hero.headline}{" "}
-          <span className="text-coral">{site.hero.headlineAccent}</span>
-        </h1>
+            <p className="mt-7 max-w-2xl text-balance text-xl font-medium leading-snug tracking-[-0.02em] text-foreground sm:text-2xl lg:text-[1.9375rem] lg:leading-[1.3]">
+              {site.hero.subhead}
+            </p>
+          </div>
 
-        <p className="mt-7 max-w-xl text-balance text-lg leading-8 text-white/65 sm:text-xl">
-          {site.hero.subhead}
-        </p>
-
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          {/* Circular outlined CTA, matching the reference's "Start Work" mark. */}
           <Link
             href={site.hero.primary.href}
-            className="inline-flex items-center gap-2 rounded-full bg-coral px-8 py-4 text-base font-semibold text-white shadow-lg shadow-coral/20 transition-transform hover:-translate-y-0.5"
+            className="group hidden shrink-0 flex-col items-center justify-center gap-2 rounded-full border border-[#d1d1d1] text-foreground transition-colors duration-300 hover:border-foreground hover:bg-foreground hover:text-background lg:flex dark:border-white/20"
+            style={{ width: 140, height: 140 }}
           >
-            {site.hero.primary.label}
+            <ArrowUpRightIcon className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <span className="text-base font-medium">{site.hero.primary.label}</span>
           </Link>
-          <a
-            href={site.hero.secondary.href}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="inline-flex items-center gap-2 rounded-full px-6 py-4 text-base font-semibold text-white/80 transition-colors hover:text-white"
-          >
-            {site.hero.secondary.label}
-            <ArrowUpRightIcon className="h-3.5 w-3.5 text-white/40" />
-          </a>
         </div>
 
-        {/* Tiny nod to the current product */}
-        <Link
-          href="/projects/inode"
-          className="group mt-14 inline-flex items-center gap-2 font-mono text-xs text-white/45 transition-colors hover:text-white/80"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80" />
-          Currently building inode, a CLI knowledge base that retrieves by meaning
-          <ArrowUpRightIcon className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-        </Link>
+        {/* Wide rounded brand panel: a full-bleed photo. */}
+        <HeroPanel className="mt-12 lg:mt-16" />
+
+        {/* Mobile CTA (the circular mark is desktop-only). */}
+        <div className="mt-8 flex items-center gap-3 lg:hidden">
+          <Link
+            href={site.hero.primary.href}
+            className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-base font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
+          >
+            {site.hero.primary.label}
+            <ArrowUpRightIcon className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );

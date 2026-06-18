@@ -107,6 +107,22 @@ export type SiteConfig = {
   instagramHandle: string;
   formspreeId: string;
   about: string[];
+  /** Short "how we work" band: a lead line plus a couple of process notes. */
+  howWeWork: {
+    label: string;
+    title: string;
+    lead: string;
+    steps: { title: string; body: string }[];
+  };
+  /** Services page: the areas we work in. */
+  services: {
+    label: string;
+    title: string;
+    lead: string;
+    items: { title: string; body: string }[];
+  };
+  /** Honest at-a-glance facts shown under the hero. */
+  stats: { value: string; label: string }[];
   /** Product-led landing hero. */
   hero: {
     headline: string;
@@ -164,6 +180,52 @@ export const site: SiteConfig = {
   about: [
     "Binary Semaphore is a small software team, named after the simplest synchronization primitive there is. We treat software the same way: small, well-defined parts that coordinate cleanly and hide the right details behind each interface.",
     "We work across applied AI, distributed systems, and developer tools. We spend our effort on the essential complexity of a problem and refuse to let the accidental kind pile up, designing for reliability and maintainability from the start rather than bolting them on later. The current focus is inode, a CLI knowledge base that retrieves by meaning, written in Go.",
+  ],
+
+  // --- How we work -------------------------------------------------------
+  howWeWork: {
+    label: "How we work",
+    title: "Small parts, coordinated well",
+    lead: "We keep the moving parts few and the boundaries between them clear. Most of a project is understanding the real problem before writing the code that solves it.",
+    steps: [
+      {
+        title: "Start from the problem",
+        body: "We map the actual problem and its constraints first, so we build the thing that's needed and not the longest feature list.",
+      },
+      {
+        title: "Build the honest version",
+        body: "Simple, legible parts with interfaces that tell the truth. We spend the effort on the essential complexity and keep the accidental kind out.",
+      },
+    ],
+  },
+
+  // --- Services ----------------------------------------------------------
+  services: {
+    label: "Services",
+    title: "What we work on",
+    lead: "We take on a small number of problems at a time and see them through, from the first design to something reliable in production.",
+    items: [
+      {
+        title: "Applied AI",
+        body: "Retrieval, embeddings, and LLM features built into real tools. We focus on systems that are useful day to day and honest about what the model can and can't do.",
+      },
+      {
+        title: "Distributed systems",
+        body: "Services that stay correct under concurrency and load. We design for failure, keep state consistent, and make the behaviour easy to reason about.",
+      },
+      {
+        title: "Developer tools",
+        body: "CLIs, libraries, and workflows that respect your time: fast, scriptable, and happy to run on your own machine, in the spirit of the Unix philosophy.",
+      },
+    ],
+  },
+
+  // --- At-a-glance stats (honest, not vanity metrics) --------------------
+  stats: [
+    { value: "100%", label: "Open source" },
+    { value: "Go", label: "Primary language" },
+    { value: "3", label: "Focus areas" },
+    { value: "2", label: "Products in the open" },
   ],
 
   // --- Landing hero ------------------------------------------------------
@@ -262,28 +324,29 @@ export const site: SiteConfig = {
   // is empty. Add real, attributable quotes when we have them.
   testimonials: [],
 
-  // Footer link columns. Internal anchors point at home-page sections.
+  // Footer link columns. Internal links point at dedicated pages.
   footerColumns: [
     {
-      title: "Studio",
+      title: "Company",
       links: [
-        { label: "Approach", href: "/#features" },
-        { label: "Products", href: "/#projects" },
-        { label: "Team", href: "/#team" },
+        { label: "About", href: "/about" },
+        { label: "Services", href: "/services" },
+        { label: "Team", href: "/team" },
       ],
     },
     {
       title: "Work",
       links: [
+        { label: "Products", href: "/projects" },
         { label: "inode", href: "/projects/inode" },
         { label: "Threads", href: "/threads" },
-        { label: "GitHub", href: "https://github.com/BiSemaphore" },
       ],
     },
     {
       title: "Contact",
       links: [
-        { label: "Get in touch", href: "/#contact" },
+        { label: "Get in touch", href: "/contact" },
+        { label: "GitHub", href: "https://github.com/BiSemaphore" },
         { label: "Instagram", href: "https://www.instagram.com/binary.semaphore/" },
       ],
     },

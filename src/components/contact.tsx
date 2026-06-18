@@ -3,7 +3,8 @@
 import { useState, type FormEvent } from "react";
 import { site } from "@/lib/site";
 import { MailIcon } from "@/components/icons";
-import { DotGrid } from "@/components/decoration";
+import { Photo } from "@/components/photo";
+import notesDark from "@/images/notes-dark.jpg";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -111,13 +112,26 @@ export function Contact() {
   return (
     <section id="contact" className="section scroll-mt-20">
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
-        <div
-          className="relative overflow-hidden rounded-blob px-6 py-16 text-center shadow-soft sm:px-12 sm:py-20"
-          style={{
-            background: "linear-gradient(120deg, var(--coral), var(--violet))",
-          }}
-        >
-          <DotGrid className="text-white/15" />
+        <div className="relative overflow-hidden rounded-blob border border-band-border bg-band px-6 py-16 text-center shadow-soft sm:px-12 sm:py-20">
+          {/* Atmospheric photo behind a darkening wash so text stays legible. */}
+          <div className="absolute inset-0">
+            <Photo
+              src={notesDark}
+              alt=""
+              sizes="(min-width: 1280px) 1216px, 100vw"
+              className="h-full w-full"
+            />
+          </div>
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(120% 120% at 50% -10%, rgba(30,30,30,0.80) 0%, rgba(17,17,17,0.93) 70%)",
+            }}
+          />
+
+          <div className="relative z-10">
           <h2 className="text-balance text-4xl text-white sm:text-5xl lg:text-6xl">
             Let&apos;s build something
           </h2>
@@ -137,6 +151,7 @@ export function Contact() {
           <p className="mt-10 font-mono text-xs text-white/70">
             {site.wordmark} · open source, built in Go.
           </p>
+          </div>
         </div>
       </div>
     </section>

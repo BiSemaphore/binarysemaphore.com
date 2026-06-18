@@ -6,6 +6,8 @@ import { Highlight, Squiggle, Arrow } from "@/components/doodle";
 import { Reveal } from "@/components/reveal";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
 import { getAllThreads, formatDate } from "@/lib/threads";
+import { threadCovers } from "@/lib/thread-covers";
+import { Photo } from "@/components/photo";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -55,8 +57,18 @@ export default function ThreadsPage() {
                   <Reveal delay={(i % 2) * 80}>
                     <Link
                       href={`/threads/${thread.slug}`}
-                      className="group block rounded-panel border border-border bg-card p-6 shadow-soft transition-transform duration-200 hover:-translate-y-1 sm:p-7"
+                      className="group block overflow-hidden rounded-panel border border-border bg-card shadow-soft transition-transform duration-200 hover:-translate-y-1"
                     >
+                      {threadCovers[thread.slug] ? (
+                        <Photo
+                          src={threadCovers[thread.slug]}
+                          alt=""
+                          sizes="(min-width: 768px) 768px, 100vw"
+                          className="aspect-[2/1] w-full border-b border-border"
+                          imgClassName="transition-transform duration-300 group-hover:scale-[1.02]"
+                        />
+                      ) : null}
+                      <div className="p-6 sm:p-7">
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-subtle">
                         <time dateTime={thread.date}>
                           {formatDate(thread.date)}
@@ -88,6 +100,7 @@ export default function ThreadsPage() {
                           ))}
                         </div>
                       ) : null}
+                      </div>
                     </Link>
                   </Reveal>
                 </li>
@@ -143,9 +156,7 @@ export default function ThreadsPage() {
         </section>
       </main>
 
-      <div className="mx-auto w-full max-w-3xl px-6">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }

@@ -5,7 +5,7 @@ import { Reveal } from "@/components/reveal";
  * Three use-case columns (Superlist's "manage your entire life" section),
  * adapted to the studio's service areas. Driven by site.capabilities.
  */
-const accents = ["bg-coral", "bg-blue", "bg-violet"];
+const accents = ["bg-coral", "bg-band", "bg-coral"];
 
 export function UseCases() {
   if (site.capabilities.length === 0) return null;

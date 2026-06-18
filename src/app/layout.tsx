@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import {
-  Inter,
+  Inter_Tight,
   JetBrains_Mono,
-  Bricolage_Grotesque,
+  Plus_Jakarta_Sans,
   Shantell_Sans,
   Caveat,
 } from "next/font/google";
@@ -10,10 +10,12 @@ import { Analytics } from "@vercel/analytics/next";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-// Body / UI — clean and highly legible.
-const inter = Inter({
-  variable: "--font-inter",
+// Display / headlines — Inter Tight, matching the reference site's huge,
+// tightly-tracked hero and section titles.
+const inter = Inter_Tight({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -24,9 +26,10 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-// Display — a heavy, expressive grotesque for big headlines and brand moments.
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-display",
+// Body / UI / nav — Plus Jakarta Sans: an open, geometric-humanist face
+// standing in for Google Sans (which isn't freely licensable).
+const bricolage = Plus_Jakarta_Sans({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });

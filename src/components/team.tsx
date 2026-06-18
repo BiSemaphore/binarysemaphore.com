@@ -232,13 +232,15 @@ function TeamCard({ member, index }: { member: TeamMember; index: number }) {
   );
 }
 
-export function Team() {
+export function Team({ showHeading = true }: { showHeading?: boolean }) {
   if (team.length === 0) return null;
 
   return (
     <section id="team" className="section scroll-mt-20">
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
-        <SectionHeading label="Team" title="The people behind it" />
+        {showHeading ? (
+          <SectionHeading label="Team" title="The people behind it" />
+        ) : null}
 
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((member, i) => (

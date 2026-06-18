@@ -7,10 +7,10 @@ import { Reveal } from "@/components/reveal";
  * feature gets a color from the candy palette.
  */
 const palette = [
+  { tile: "var(--band)", ink: "#fff" },
   { tile: "var(--coral)", ink: "#fff" },
-  { tile: "var(--blue)", ink: "#fff" },
-  { tile: "var(--lime)", ink: "var(--foreground)" },
-  { tile: "var(--violet)", ink: "#fff" },
+  { tile: "var(--band-deep)", ink: "#fff" },
+  { tile: "var(--coral)", ink: "#fff" },
 ];
 
 export function Features() {

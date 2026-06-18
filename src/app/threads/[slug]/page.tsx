@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAllThreads, getThread, formatDate } from "@/lib/threads";
+import { threadCovers } from "@/lib/thread-covers";
+import { Photo } from "@/components/photo";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
@@ -97,6 +99,16 @@ export default async function ThreadPage({
           ) : null}
         </header>
 
+        {threadCovers[slug] ? (
+          <Photo
+            src={threadCovers[slug]}
+            alt=""
+            priority
+            sizes="(min-width: 768px) 768px, 100vw"
+            className="mt-8 aspect-[2/1] w-full rounded-panel border border-border shadow-soft"
+          />
+        ) : null}
+
         <hr className="my-10 border-0 border-t border-border" />
 
         <article className="thread">
@@ -113,9 +125,7 @@ export default async function ThreadPage({
         </div>
       </main>
 
-      <div className="mx-auto w-full max-w-3xl px-6">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }

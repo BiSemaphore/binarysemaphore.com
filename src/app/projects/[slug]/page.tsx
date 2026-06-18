@@ -293,9 +293,7 @@ export default async function ProjectPage({
         </section>
       </main>
 
-      <div className="mx-auto w-full max-w-3xl px-6">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }

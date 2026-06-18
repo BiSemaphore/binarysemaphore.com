@@ -16,6 +16,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "**.cdninstagram.com" },
       { protocol: "https", hostname: "**.fbcdn.net" },
+      // Hero panel photo (Unsplash CDN).
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
 };
