@@ -57,7 +57,7 @@ function ContactForm() {
             type="text"
             required
             autoComplete="name"
-            className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/50"
+            className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/70"
           />
         </label>
         <label className="grid gap-1.5 text-sm">
@@ -67,7 +67,7 @@ function ContactForm() {
             type="email"
             required
             autoComplete="email"
-            className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/50"
+            className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/70"
           />
         </label>
       </div>
@@ -77,7 +77,7 @@ function ContactForm() {
           name="message"
           required
           rows={4}
-          className="resize-y rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/50"
+          className="resize-y rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/70"
         />
       </label>
       <div className="flex flex-wrap items-center gap-3">
