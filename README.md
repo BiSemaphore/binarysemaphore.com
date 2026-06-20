@@ -92,6 +92,27 @@ curl -X POST http://localhost:3000/api/contact \
   -d '{"name":"Ada","email":"ada@example.com","message":"hi"}'
 ```
 
+### Auth
+
+Sign-in uses Supabase Auth with **GitHub** and **Google** OAuth. Flow: `/login`
+(buttons) -> provider -> `/auth/callback` (exchanges the code for a session) ->
+`/account`. Sign out posts to `/auth/signout`. Gate any page by calling
+`getCurrentUser()` from [`src/utils/supabase/auth.ts`](src/utils/supabase/auth.ts)
+and redirecting to `/login` when it is null (see `src/app/account/page.tsx`).
+
+To enable the providers (one-time, in dashboards):
+
+1. **Supabase -> Authentication -> Providers:** enable GitHub and Google and
+   paste each provider's Client ID/Secret.
+   - **GitHub:** create an OAuth App at
+     `https://github.com/settings/developers`. Authorization callback URL:
+     `https://<project-ref>.supabase.co/auth/v1/callback`.
+   - **Google:** create an OAuth client in Google Cloud Console (APIs & Services
+     -> Credentials). Authorized redirect URI: the same Supabase callback URL.
+2. **Supabase -> Authentication -> URL Configuration:** set the Site URL to the
+   production URL and add redirect URLs `https://binarysemaphore.com/auth/callback`
+   and `http://localhost:3000/auth/callback`.
+
 ## Workflow
 
 Work on a feature branch and open a pull request; `main` is updated only by
