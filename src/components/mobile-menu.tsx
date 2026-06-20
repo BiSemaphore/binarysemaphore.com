@@ -10,7 +10,13 @@ import type { NavItem } from "@/components/header";
  * Mirrors the desktop company structure, with dropdown groups shown as labeled
  * sections. Closes on Escape, on navigation, and locks body scroll while open.
  */
-export function MobileMenu({ items }: { items: NavItem[] }) {
+export function MobileMenu({
+  items,
+  authed = false,
+}: {
+  items: NavItem[];
+  authed?: boolean;
+}) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -80,6 +86,15 @@ export function MobileMenu({ items }: { items: NavItem[] }) {
                   </li>
                 ),
               )}
+              <li>
+                <Link
+                  href={authed ? "/account" : "/login"}
+                  onClick={close}
+                  className="block border-b border-border py-4 text-2xl font-medium tracking-[-0.02em] text-foreground"
+                >
+                  {authed ? "Account" : "Sign in"}
+                </Link>
+              </li>
             </ul>
             <Link
               href="/contact"

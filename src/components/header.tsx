@@ -4,6 +4,7 @@ import { Wordmark } from "@/components/wordmark";
 import { ArrowUpRightIcon, ChevronDownIcon } from "@/components/icons";
 import { RollText } from "@/components/roll-text";
 import { MobileMenu } from "@/components/mobile-menu";
+import { getCurrentUser } from "@/utils/supabase/auth";
 
 export type NavItem =
   | { type: "link"; href: string; label: string }
@@ -28,7 +29,8 @@ export const navItems: NavItem[] = [
   { type: "link", href: "/threads", label: "Threads" },
 ];
 
-export function Header() {
+export async function Header() {
+  const user = await getCurrentUser();
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
@@ -83,6 +85,12 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <Link
+            href={user ? "/account" : "/login"}
+            className="hidden text-sm font-medium text-foreground transition-colors hover:text-accent-strong md:inline-flex"
+          >
+            {user ? "Account" : "Sign in"}
+          </Link>
           <ThemeToggle />
           <Link
             href="/contact"
@@ -91,7 +99,7 @@ export function Header() {
             Get in touch
             <ArrowUpRightIcon className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
-          <MobileMenu items={navItems} />
+          <MobileMenu items={navItems} authed={Boolean(user)} />
         </div>
       </div>
     </header>
