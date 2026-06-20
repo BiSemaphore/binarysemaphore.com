@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { PageIntro } from "@/components/page-intro";
 import { Contact } from "@/components/contact";
 
 export const metadata: Metadata = {
@@ -16,12 +15,7 @@ export default function ContactPage() {
     <>
       <Header />
       <main className="flex-1">
-        <PageIntro
-          label="Contact"
-          title="Get in touch"
-          lead="Using the tools, building something, or just want to compare notes on developer tooling? We'd like to hear from you."
-        />
-        <Contact />
+        <Contact withForm />
       </main>
       <Footer />
     </>

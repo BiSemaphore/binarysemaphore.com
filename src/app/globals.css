@@ -40,8 +40,8 @@
   --grad-to: #cc1212;
 
   /* Soft layered shadow */
-  --shadow-soft: 0 1px 2px rgba(17, 17, 17, 0.04),
-    0 10px 34px rgba(17, 17, 17, 0.08);
+  --shadow-soft:
+    0 1px 2px rgba(17, 17, 17, 0.04), 0 10px 34px rgba(17, 17, 17, 0.08);
 }
 
 .dark {
@@ -106,10 +106,10 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
-  --font-display: var(--font-display), var(--font-inter), ui-sans-serif,
-    system-ui, sans-serif;
-  --font-doodle: var(--font-shantell), ui-rounded, "Segoe UI", system-ui,
-    sans-serif;
+  --font-display:
+    var(--font-display), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-doodle:
+    var(--font-shantell), ui-rounded, "Segoe UI", system-ui, sans-serif;
   --font-hand: var(--font-caveat), "Comic Sans MS", ui-rounded, cursive;
 }
 
@@ -233,7 +233,9 @@ body {
 }
 .sem-token {
   fill: var(--accent);
-  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--accent) 45%, transparent));
+  filter: drop-shadow(
+    0 0 7px color-mix(in srgb, var(--accent) 45%, transparent)
+  );
 }
 
 /* Loading shimmer skeleton, shown behind images until they paint (see Photo).
@@ -289,11 +291,15 @@ body {
   }
 }
 
-/* Accent-tinted, keyboard-visible focus ring. */
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 2px;
+/* Accent-tinted, keyboard-visible focus ring. In @layer base so components can
+   opt out via utilities (e.g. the dark contact inputs use a white border
+   instead). */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }
 
 /* ---- Article (MDX) code blocks --------------------------------------- */
