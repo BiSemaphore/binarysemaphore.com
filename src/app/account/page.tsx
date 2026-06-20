@@ -26,24 +26,21 @@ export default async function AccountPage() {
           Account
         </p>
         <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground">
-          You&apos;re signed in
+          {name ? `Welcome, ${name.split(" ")[0]}` : "Welcome"}
         </h1>
+        <p className="mt-3 max-w-xl leading-7 text-muted">
+          You&apos;re signed in to Binary Semaphore.
+        </p>
 
         <div className="mt-8 rounded-panel border border-border bg-card p-6 shadow-soft">
           <div className="font-medium text-foreground">{name}</div>
           <div className="mt-1 text-sm text-muted">{user.email}</div>
           {provider ? (
-            <div className="mt-2 font-mono text-xs text-subtle">
-              signed in via {provider}
+            <div className="mt-2 text-xs capitalize text-subtle">
+              Signed in with {provider}
             </div>
           ) : null}
         </div>
-
-        <p className="mt-8 max-w-xl leading-7 text-muted">
-          This is a members-only page. It exists as the pattern for gating
-          features behind sign-in: any page can call <code>getCurrentUser()</code>{" "}
-          and redirect to <code>/login</code> when there is no session.
-        </p>
 
         <form action="/auth/signout" method="post" className="mt-8">
           <button
