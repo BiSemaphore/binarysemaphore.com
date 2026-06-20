@@ -123,6 +123,13 @@ export type SiteConfig = {
   };
   /** Honest at-a-glance facts shown under the hero. */
   stats: { value: string; label: string }[];
+  /** Grouped tech stack. */
+  techStack: {
+    label: string;
+    title: string;
+    lead: string;
+    groups: { label: string; items: string[] }[];
+  };
   /** Product-led landing hero. */
   hero: {
     headline: string;
@@ -227,6 +234,52 @@ export const site: SiteConfig = {
     { value: "3", label: "Focus areas" },
     { value: "2", label: "Products in the open" },
   ],
+
+  // --- Tech stack --------------------------------------------------------
+  techStack: {
+    label: "Tech stack",
+    title: "What we build with",
+    lead: "We choose tools that fit the problem and stay reliable in production, rather than whatever is trendy. Here is what we reach for most.",
+    groups: [
+      {
+        label: "Languages & frameworks",
+        items: [
+          "Go",
+          "Python",
+          "TypeScript",
+          "Java",
+          "Node.js",
+          "NestJS",
+          "React",
+          "Next.js",
+          "Angular",
+        ],
+      },
+      {
+        label: "AI & data",
+        items: [
+          "RAG",
+          "Agents",
+          "Pipelines",
+          "MCP",
+          "LangChain",
+          "LangGraph",
+          "pandas",
+          "NumPy",
+          "scikit-learn",
+          "Jupyter",
+        ],
+      },
+      {
+        label: "Databases",
+        items: ["PostgreSQL", "MongoDB", "Prisma", "Mongoose", "Sequelize"],
+      },
+      {
+        label: "Practices",
+        items: ["Agile delivery", "System design"],
+      },
+    ],
+  },
 
   // --- Landing hero ------------------------------------------------------
   hero: {

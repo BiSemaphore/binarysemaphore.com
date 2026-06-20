@@ -20,12 +20,12 @@ export const navItems: NavItem[] = [
     items: [
       { href: "/about", label: "About" },
       { href: "/team", label: "Team" },
-      { href: "/threads", label: "Threads" },
       { href: "/contact", label: "Contact" },
     ],
   },
   { type: "link", href: "/services", label: "Services" },
   { type: "link", href: "/projects", label: "Products" },
+  { type: "link", href: "/threads", label: "Threads" },
 ];
 
 export function Header() {

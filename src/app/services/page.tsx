@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { PageIntro } from "@/components/page-intro";
 import { Services } from "@/components/services";
+import { TechStack } from "@/components/tech-stack";
 import { ArrowUpRightIcon } from "@/components/icons";
 import { site } from "@/lib/site";
 
@@ -23,6 +24,8 @@ export default function ServicesPage() {
         <PageIntro label={label} title={title} lead={lead} />
 
         <Services showHeading={false} />
+
+        <TechStack />
 
         <section className="mx-auto w-full max-w-7xl px-6 pb-4 lg:px-10">
           <Link
