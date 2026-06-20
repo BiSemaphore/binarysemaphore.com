@@ -39,7 +39,7 @@ function ContactForm() {
 
   if (status === "success") {
     return (
-      <p className="rounded-xl border border-accent/30 bg-card p-6 text-sm text-foreground">
+      <p className="rounded-xl border border-white/20 bg-white/5 p-6 text-sm text-white">
         Thanks, your message is on its way. We&apos;ll get back to you soon.
       </p>
     );
@@ -49,47 +49,47 @@ function ContactForm() {
     <form onSubmit={onSubmit} className="grid w-full max-w-xl gap-4 text-left">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm">
-          <span className="text-muted">Name</span>
+          <span className="text-white/70">Name</span>
           <input
             name="name"
             type="text"
             required
             autoComplete="name"
-            className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
+            className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/50"
           />
         </label>
         <label className="grid gap-1.5 text-sm">
-          <span className="text-muted">Email</span>
+          <span className="text-white/70">Email</span>
           <input
             name="email"
             type="email"
             required
             autoComplete="email"
-            className="rounded-xl border border-border bg-background px-3.5 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
+            className="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/50"
           />
         </label>
       </div>
       <label className="grid gap-1.5 text-sm">
-        <span className="text-muted">Message</span>
+        <span className="text-white/70">Message</span>
         <textarea
           name="message"
           required
           rows={4}
-          className="resize-y rounded-xl border border-border bg-background px-3.5 py-2.5 text-foreground outline-none transition-colors focus:border-accent"
+          className="resize-y rounded-xl border border-white/15 bg-white/5 px-3.5 py-2.5 text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/50"
         />
       </label>
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-neutral-900 transition-transform hover:-translate-y-0.5 disabled:opacity-60"
         >
           {status === "submitting" ? "Sending…" : "Send message"}
         </button>
         {status === "error" ? (
-          <span className="text-sm text-red-500">
+          <span className="text-sm text-red-300">
             Something went wrong. Email us directly at{" "}
-            <a href={`mailto:${site.email}`} className="underline">
+            <a href={`mailto:${site.email}`} className="text-white underline">
               {site.email}
             </a>
             .
@@ -132,9 +132,7 @@ export function Contact() {
             on developer tooling? Get in touch.
           </p>
           <div className="mt-9 flex justify-center">
-            <div className="w-full max-w-xl rounded-panel bg-card p-6 text-left shadow-soft sm:p-8">
-              <ContactForm />
-            </div>
+            <ContactForm />
           </div>
           <p className="mt-10 font-mono text-xs text-white/70">
             {site.wordmark} · built in Go.
