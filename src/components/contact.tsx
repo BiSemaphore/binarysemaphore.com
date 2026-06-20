@@ -2,24 +2,29 @@
 
 import { useState, type FormEvent } from "react";
 import { site } from "@/lib/site";
-import { MailIcon } from "@/components/icons";
 import { Photo } from "@/components/photo";
 import notesDark from "@/images/notes-dark.jpg";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-function ContactForm({ formspreeId }: { formspreeId: string }) {
+function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
+    const data = new FormData(form);
+    const payload = {
+      name: String(data.get("name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      message: String(data.get("message") ?? ""),
+    };
     setStatus("submitting");
     try {
-      const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+      const res = await fetch("/api/contact", {
         method: "POST",
-        body: new FormData(form),
-        headers: { Accept: "application/json" },
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
         form.reset();
@@ -35,7 +40,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
   if (status === "success") {
     return (
       <p className="rounded-xl border border-accent/30 bg-card p-6 text-sm text-foreground">
-        Thanks, your message is on its way. I&apos;ll get back to you soon.
+        Thanks, your message is on its way. We&apos;ll get back to you soon.
       </p>
     );
   }
@@ -83,7 +88,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
         </button>
         {status === "error" ? (
           <span className="text-sm text-red-500">
-            Something went wrong. Email me directly at{" "}
+            Something went wrong. Email us directly at{" "}
             <a href={`mailto:${site.email}`} className="underline">
               {site.email}
             </a>
@@ -95,20 +100,7 @@ function ContactForm({ formspreeId }: { formspreeId: string }) {
   );
 }
 
-function MailtoCard() {
-  return (
-    <a
-      href={`mailto:${site.email}`}
-      className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-base font-semibold text-neutral-900 shadow-soft transition-transform hover:-translate-y-0.5"
-    >
-      <MailIcon className="h-4 w-4" />
-      Email us
-    </a>
-  );
-}
-
 export function Contact() {
-  const hasForm = Boolean(site.formspreeId);
   return (
     <section id="contact" className="section scroll-mt-20">
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
@@ -140,13 +132,9 @@ export function Contact() {
             on developer tooling? Get in touch.
           </p>
           <div className="mt-9 flex justify-center">
-            {hasForm ? (
-              <div className="w-full max-w-xl rounded-panel bg-card p-6 text-left shadow-soft sm:p-8">
-                <ContactForm formspreeId={site.formspreeId} />
-              </div>
-            ) : (
-              <MailtoCard />
-            )}
+            <div className="w-full max-w-xl rounded-panel bg-card p-6 text-left shadow-soft sm:p-8">
+              <ContactForm />
+            </div>
           </div>
           <p className="mt-10 font-mono text-xs text-white/70">
             {site.wordmark} · built in Go.
