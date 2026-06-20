@@ -1,0 +1,7 @@
+package-lock.json
+.next/
+public/
+src/images/
+playwright-report/
+test-results/
+*.svg
