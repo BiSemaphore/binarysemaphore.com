@@ -119,7 +119,19 @@ export type SiteConfig = {
     label: string;
     title: string;
     lead: string;
-    items: { title: string; body: string }[];
+    items: {
+      /** URL slug for the detail page (/services/<slug>). */
+      slug: string;
+      title: string;
+      /** Short blurb shown on the card. */
+      body: string;
+      /** One-line summary at the top of the detail page. */
+      lede: string;
+      /** Intro paragraphs on the detail page. */
+      overview: string[];
+      /** "What this involves" sub-areas on the detail page. */
+      offerings: { title: string; body: string }[];
+    }[];
   };
   /** Honest at-a-glance facts shown under the hero. */
   stats: { value: string; label: string }[];
@@ -229,16 +241,76 @@ export const site: SiteConfig = {
     lead: "We take on a small number of problems at a time and see them through, from the first design to something reliable in production.",
     items: [
       {
+        slug: "applied-ai",
         title: "Applied AI",
         body: "Retrieval, embeddings, and LLM features built into real tools. We focus on systems that are useful day to day and honest about what the model can and can't do.",
+        lede: "Retrieval, embeddings, and language-model features built into software people actually use.",
+        overview: [
+          "We treat a model as one component in a larger system, not the whole product. The interesting work is usually around it: getting the right context to it, handling the cases where it is wrong, and measuring whether it genuinely helps before shipping.",
+          "We have built this from the inside out with inode, a knowledge base that retrieves by meaning, so we know where retrieval quality, latency, and cost actually bite.",
+        ],
+        offerings: [
+          {
+            title: "Retrieval and semantic search",
+            body: "Embeddings, vector search, and ranking that find the right thing even when the words do not match. We tune for precision on real queries, not benchmark scores.",
+          },
+          {
+            title: "Agents and pipelines",
+            body: "Multi-step flows that call tools, with clear boundaries so a wrong step fails safely instead of cascading, and a human stays in the loop where it matters.",
+          },
+          {
+            title: "Honest evaluation",
+            body: "We measure whether a feature helps before it ships, and we are upfront about what the model can and cannot do.",
+          },
+        ],
       },
       {
+        slug: "distributed-systems",
         title: "Distributed systems",
         body: "Services that stay correct under concurrency and load. We design for failure, keep state consistent, and make the behaviour easy to reason about.",
+        lede: "Services that stay correct when traffic, concurrency, and failure all show up at once.",
+        overview: [
+          "Most outages are not exotic. They are the ordinary cases that were never designed for: a slow dependency, a retry storm, two writers racing for the same row. We design for those from the start.",
+          "We keep state consistent, make failure modes explicit, and prefer systems whose behaviour you can reason about over clever ones you cannot.",
+        ],
+        offerings: [
+          {
+            title: "Concurrency and correctness",
+            body: "Coordination that holds under load: the right locks, queues, and idempotency so the system does the right thing when everything happens at once.",
+          },
+          {
+            title: "Resilience and failure design",
+            body: "Timeouts, backpressure, and graceful degradation, so a slow or failing dependency does not take the whole service down with it.",
+          },
+          {
+            title: "Observability",
+            body: "Metrics, traces, and logs that show what the system is actually doing, so problems are visible before users feel them.",
+          },
+        ],
       },
       {
+        slug: "developer-tools",
         title: "Developer tools",
         body: "CLIs, libraries, and workflows that respect your time: fast, scriptable, and happy to run on your own machine, in the spirit of the Unix philosophy.",
+        lede: "Fast, scriptable tools that respect the time of the people using them.",
+        overview: [
+          "Good tools disappear. They start fast, do one thing well, compose with everything else, and never make you wait. We build in that spirit, following the Unix philosophy rather than fighting it.",
+          "These are the tools we reach for ourselves, which is why we sweat the small details: startup time, sensible defaults, and output you can pipe straight into the next thing.",
+        ],
+        offerings: [
+          {
+            title: "CLIs and libraries",
+            body: "Command-line tools and libraries that are fast to start, scriptable, and predictable, with output designed to compose.",
+          },
+          {
+            title: "Internal tooling",
+            body: "The scripts, services, and workflows a team leans on every day, built to be reliable and easy to change as the team grows.",
+          },
+          {
+            title: "On-device and offline",
+            body: "Tools that run on your own machine and keep working when the network does not, so your workflow does not depend on someone else's uptime.",
+          },
+        ],
       },
     ],
   },
@@ -641,6 +713,11 @@ export const team: TeamMember[] = [
 /** Find a team member by slug (for the detail page). */
 export function getTeamMember(slug: string): TeamMember | undefined {
   return team.find((m) => m.slug === slug);
+}
+
+/** Find a service area by slug (for the detail page). */
+export function getService(slug: string) {
+  return site.services.items.find((s) => s.slug === slug);
 }
 
 export const projects: Project[] = [
