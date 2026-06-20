@@ -123,12 +123,14 @@ export type SiteConfig = {
   };
   /** Honest at-a-glance facts shown under the hero. */
   stats: { value: string; label: string }[];
-  /** Grouped tech stack. */
+  /** Tech stack: logo'd tools (marquee) plus concept items shown as text. */
   techStack: {
     label: string;
     title: string;
     lead: string;
-    groups: { label: string; items: string[] }[];
+    /** `slug` matches an SVG at /public/tech/<slug>.svg. */
+    tools: { slug: string; name: string }[];
+    concepts: string[];
   };
   /** Product-led landing hero. */
   hero: {
@@ -240,44 +242,35 @@ export const site: SiteConfig = {
     label: "Tech stack",
     title: "What we build with",
     lead: "We choose tools that fit the problem and stay reliable in production, rather than whatever is trendy. Here is what we reach for most.",
-    groups: [
-      {
-        label: "Languages & frameworks",
-        items: [
-          "Go",
-          "Python",
-          "TypeScript",
-          "Java",
-          "Node.js",
-          "NestJS",
-          "React",
-          "Next.js",
-          "Angular",
-        ],
-      },
-      {
-        label: "AI & data",
-        items: [
-          "RAG",
-          "Agents",
-          "Pipelines",
-          "MCP",
-          "LangChain",
-          "LangGraph",
-          "pandas",
-          "NumPy",
-          "scikit-learn",
-          "Jupyter",
-        ],
-      },
-      {
-        label: "Databases",
-        items: ["PostgreSQL", "MongoDB", "Prisma", "Mongoose", "Sequelize"],
-      },
-      {
-        label: "Practices",
-        items: ["Agile delivery", "System design"],
-      },
+    tools: [
+      { slug: "go", name: "Go" },
+      { slug: "python", name: "Python" },
+      { slug: "typescript", name: "TypeScript" },
+      { slug: "java", name: "Java" },
+      { slug: "nodejs", name: "Node.js" },
+      { slug: "nestjs", name: "NestJS" },
+      { slug: "react", name: "React" },
+      { slug: "nextjs", name: "Next.js" },
+      { slug: "angular", name: "Angular" },
+      { slug: "postgresql", name: "PostgreSQL" },
+      { slug: "mongodb", name: "MongoDB" },
+      { slug: "prisma", name: "Prisma" },
+      { slug: "mongoose", name: "Mongoose" },
+      { slug: "sequelize", name: "Sequelize" },
+      { slug: "pandas", name: "pandas" },
+      { slug: "numpy", name: "NumPy" },
+      { slug: "scikitlearn", name: "scikit-learn" },
+      { slug: "jupyter", name: "Jupyter" },
+    ],
+    concepts: [
+      "RAG",
+      "Agents",
+      "Pipelines",
+      "MCP",
+      "LangChain",
+      "LangGraph",
+      "Agile delivery",
+      "System design",
     ],
   },
 
