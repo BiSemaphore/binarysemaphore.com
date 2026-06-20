@@ -69,8 +69,10 @@ Unit tests live next to the code as `*.test.ts`; smoke tests live in `e2e/`.
 ## Workflow
 
 Work on a feature branch and open a pull request; `main` is updated only by
-merging a reviewed PR. A `pre-commit` hook runs ESLint on staged files and a
-`pre-push` hook runs typecheck and unit tests (via Husky + lint-staged).
+merging a reviewed PR. Husky hooks enforce quality locally: `pre-commit` runs
+lint-staged (ESLint + Prettier on staged files), `commit-msg` checks the message
+against [Conventional Commits](https://www.conventionalcommits.org)
+(`feat:`, `fix:`, `chore:`, ...), and `pre-push` runs typecheck and unit tests.
 
 ## CI/CD
 
