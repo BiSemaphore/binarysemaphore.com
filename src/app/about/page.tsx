@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Binary Semaphore is a small software team working across applied AI, distributed systems, and developer tools.",
+    "Binary Semaphore builds software across applied AI, distributed systems, and developer tools.",
   alternates: { canonical: "/about" },
 };
 
