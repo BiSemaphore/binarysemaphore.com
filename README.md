@@ -66,6 +66,32 @@ npm run test:e2e   # Playwright smoke tests (key routes, nav, contact)
 
 Unit tests live next to the code as `*.test.ts`; smoke tests live in `e2e/`.
 
+## Backend (Supabase)
+
+The backend is [Supabase](https://supabase.com) (hosted Postgres + Auth), called
+from inside the app via `@supabase/ssr`. No separate service to host.
+
+1. Create a Supabase project and run [`supabase/schema.sql`](supabase/schema.sql)
+   in its SQL editor.
+2. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL` and
+   `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (Project Settings -> API). Add the same
+   vars to the Vercel project env for production.
+3. Clients live under [`src/utils/supabase/`](src/utils/supabase): `server.ts`
+   (Server Components / Route Handlers / server actions), `client.ts` (browser),
+   and `middleware.ts` (session refresh, wired in `src/proxy.ts` — Next 16's
+   renamed middleware convention). They use the publishable key and respect
+   row-level security.
+
+Worked example: `POST /api/contact`
+([`src/app/api/contact/route.ts`](src/app/api/contact/route.ts)) validates a
+submission and inserts it into the `contact_messages` table.
+
+```bash
+curl -X POST http://localhost:3000/api/contact \
+  -H 'content-type: application/json' \
+  -d '{"name":"Ada","email":"ada@example.com","message":"hi"}'
+```
+
 ## Workflow
 
 Work on a feature branch and open a pull request; `main` is updated only by
