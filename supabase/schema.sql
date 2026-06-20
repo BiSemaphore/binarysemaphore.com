@@ -11,7 +11,13 @@ create table if not exists public.contact_messages (
   message text not null
 );
 
--- Lock the table down. The API route writes with the service-role key, which
--- bypasses row-level security; with RLS enabled and no policies, the anon and
--- authenticated roles can neither read nor write directly.
 alter table public.contact_messages enable row level security;
+
+-- Anyone may submit a message (the API writes with the publishable/anon role),
+-- but there is no select/update/delete policy, so messages cannot be read back
+-- through the API. Read them in the Supabase dashboard or with a secret key.
+create policy "Anyone can submit a contact message"
+  on public.contact_messages
+  for insert
+  to anon, authenticated
+  with check (true);
