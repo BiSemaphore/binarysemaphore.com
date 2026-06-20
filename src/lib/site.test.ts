@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { site, projects, team, getTeamMember } from "./site";
+import { site, projects, team, getTeamMember, getService } from "./site";
 
 describe("site config", () => {
   it("has the core identity fields", () => {
@@ -43,6 +43,25 @@ describe("team", () => {
   it("is resolvable by slug via getTeamMember", () => {
     for (const m of team) {
       expect(getTeamMember(m.slug)?.name).toBe(m.name);
+    }
+  });
+});
+
+describe("services", () => {
+  it("has unique kebab-case slugs and detail content", () => {
+    const slugs = site.services.items.map((s) => s.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    for (const s of site.services.items) {
+      expect(s.slug).toMatch(/^[a-z0-9-]+$/);
+      expect(s.lede).toBeTruthy();
+      expect(s.overview.length).toBeGreaterThan(0);
+      expect(s.offerings.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("is resolvable by slug via getService", () => {
+    for (const s of site.services.items) {
+      expect(getService(s.slug)?.title).toBe(s.title);
     }
   });
 });
