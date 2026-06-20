@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAllThreads, getThread, formatDate } from "@/lib/threads";
+import {
+  getAllThreads,
+  getThread,
+  getRelatedThreads,
+  formatDate,
+} from "@/lib/threads";
 import { threadCovers } from "@/lib/thread-covers";
 import { Photo } from "@/components/photo";
 import { Header } from "@/components/header";
@@ -55,6 +60,7 @@ export default async function ThreadPage({
   if (!thread) notFound();
 
   const { default: Post } = await import(`@/content/threads/${slug}.mdx`);
+  const related = getRelatedThreads(slug);
 
   return (
     <>
@@ -114,6 +120,31 @@ export default async function ThreadPage({
         <article className="thread">
           <Post />
         </article>
+
+        {related.length > 0 ? (
+          <section className="mt-14 border-t border-border pt-8">
+            <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-subtle">
+              Related threads
+            </h2>
+            <ul className="mt-5 grid gap-4 sm:grid-cols-2">
+              {related.map((r) => (
+                <li key={r.slug}>
+                  <Link
+                    href={`/threads/${r.slug}`}
+                    className="group block rounded-panel border border-border bg-card p-5 shadow-soft transition-transform duration-200 hover:-translate-y-1"
+                  >
+                    <div className="font-mono text-xs text-subtle">
+                      {formatDate(r.date)} · {r.readingMinutes} min read
+                    </div>
+                    <h3 className="mt-2 font-display text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-accent-strong">
+                      {r.title}
+                    </h3>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <div className="mt-14 border-t border-border pt-8">
           <Link

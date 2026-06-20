@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { Highlight, Squiggle, Arrow } from "@/components/doodle";
 import { Reveal } from "@/components/reveal";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
-import { getAllThreads, formatDate } from "@/lib/threads";
+import { getAllThreads, getAllTags, formatDate } from "@/lib/threads";
 import { threadCovers } from "@/lib/thread-covers";
 import { Photo } from "@/components/photo";
 import { site } from "@/lib/site";
@@ -24,8 +24,18 @@ const topics = [
   "Learning in public",
 ];
 
-export default function ThreadsPage() {
-  const threads = getAllThreads();
+export default async function ThreadsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tag?: string }>;
+}) {
+  const { tag } = await searchParams;
+  const tags = getAllTags();
+  const activeTag = tag && tags.includes(tag) ? tag : undefined;
+  const allThreads = getAllThreads();
+  const threads = activeTag
+    ? allThreads.filter((t) => t.tags.includes(activeTag))
+    : allThreads;
 
   return (
     <>
@@ -48,6 +58,37 @@ export default function ThreadsPage() {
             short ideas and long build logs alike.
           </p>
         </section>
+
+        {tags.length > 0 ? (
+          <nav
+            aria-label="Filter threads by tag"
+            className="mb-8 flex flex-wrap gap-2"
+          >
+            <Link
+              href="/threads"
+              className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
+                activeTag
+                  ? "border-border text-muted hover:text-foreground"
+                  : "border-foreground bg-foreground text-background"
+              }`}
+            >
+              All
+            </Link>
+            {tags.map((t) => (
+              <Link
+                key={t}
+                href={`/threads?tag=${encodeURIComponent(t)}`}
+                className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
+                  activeTag === t
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-muted hover:text-foreground"
+                }`}
+              >
+                #{t}
+              </Link>
+            ))}
+          </nav>
+        ) : null}
 
         {threads.length > 0 ? (
           <section>
