@@ -5,3 +5,7 @@ src/images/
 playwright-report/
 test-results/
 *.svg
+
+# Vendored agent skills (managed by the skills CLI; do not reformat)
+.agents/
+skills-lock.json
