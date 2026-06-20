@@ -123,12 +123,14 @@ export type SiteConfig = {
   };
   /** Honest at-a-glance facts shown under the hero. */
   stats: { value: string; label: string }[];
-  /** Grouped tech stack. */
+  /** Tech stack: logo'd tools (marquee) plus concept items shown as text. */
   techStack: {
     label: string;
     title: string;
     lead: string;
-    groups: { label: string; items: string[] }[];
+    /** `slug` matches an SVG at /public/tech/<slug>.svg. */
+    tools: { slug: string; name: string }[];
+    concepts: string[];
   };
   /** Product-led landing hero. */
   hero: {
@@ -239,45 +241,70 @@ export const site: SiteConfig = {
   techStack: {
     label: "Tech stack",
     title: "What we build with",
-    lead: "We choose tools that fit the problem and stay reliable in production, rather than whatever is trendy. Here is what we reach for most.",
-    groups: [
-      {
-        label: "Languages & frameworks",
-        items: [
-          "Go",
-          "Python",
-          "TypeScript",
-          "Java",
-          "Node.js",
-          "NestJS",
-          "React",
-          "Next.js",
-          "Angular",
-        ],
-      },
-      {
-        label: "AI & data",
-        items: [
-          "RAG",
-          "Agents",
-          "Pipelines",
-          "MCP",
-          "LangChain",
-          "LangGraph",
-          "pandas",
-          "NumPy",
-          "scikit-learn",
-          "Jupyter",
-        ],
-      },
-      {
-        label: "Databases",
-        items: ["PostgreSQL", "MongoDB", "Prisma", "Mongoose", "Sequelize"],
-      },
-      {
-        label: "Practices",
-        items: ["Agile delivery", "System design"],
-      },
+    lead: "We are not loyal to any one tool. We reach for what fits the problem and what we can keep reliable in production. A fairly complete map of what we work with:",
+    tools: [
+      // Languages
+      { slug: "go", name: "Go" },
+      { slug: "rust", name: "Rust" },
+      { slug: "python", name: "Python" },
+      { slug: "typescript", name: "TypeScript" },
+      { slug: "java", name: "Java" },
+      { slug: "c", name: "C" },
+      { slug: "cpp", name: "C++" },
+      // Frameworks & runtime
+      { slug: "nodejs", name: "Node.js" },
+      { slug: "nestjs", name: "NestJS" },
+      { slug: "react", name: "React" },
+      { slug: "nextjs", name: "Next.js" },
+      { slug: "angular", name: "Angular" },
+      // Data science
+      { slug: "pandas", name: "pandas" },
+      { slug: "numpy", name: "NumPy" },
+      { slug: "scikitlearn", name: "scikit-learn" },
+      { slug: "jupyter", name: "Jupyter" },
+      // Databases & ORMs
+      { slug: "postgresql", name: "PostgreSQL" },
+      { slug: "mongodb", name: "MongoDB" },
+      { slug: "redis", name: "Redis" },
+      { slug: "sqlite", name: "SQLite" },
+      { slug: "elasticsearch", name: "Elasticsearch" },
+      { slug: "prisma", name: "Prisma" },
+      { slug: "mongoose", name: "Mongoose" },
+      { slug: "sequelize", name: "Sequelize" },
+      // Messaging & APIs
+      { slug: "kafka", name: "Kafka" },
+      { slug: "rabbitmq", name: "RabbitMQ" },
+      { slug: "grpc", name: "gRPC" },
+      { slug: "graphql", name: "GraphQL" },
+      // Infrastructure
+      { slug: "docker", name: "Docker" },
+      { slug: "kubernetes", name: "Kubernetes" },
+      { slug: "linux", name: "Linux" },
+      { slug: "nginx", name: "Nginx" },
+      { slug: "terraform", name: "Terraform" },
+      // Observability
+      { slug: "prometheus", name: "Prometheus" },
+      { slug: "grafana", name: "Grafana" },
+      // Tooling
+      { slug: "git", name: "Git" },
+      { slug: "githubactions", name: "GitHub Actions" },
+      { slug: "neovim", name: "Neovim" },
+      { slug: "bash", name: "Bash" },
+      { slug: "vercel", name: "Vercel" },
+    ],
+    concepts: [
+      "RAG",
+      "Agents",
+      "Pipelines",
+      "MCP",
+      "LangChain",
+      "LangGraph",
+      "Protocol Buffers",
+      "OpenTelemetry",
+      "Vector search",
+      "Event-driven",
+      "System design",
+      "Agile delivery",
     ],
   },
 
