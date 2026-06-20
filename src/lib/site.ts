@@ -170,9 +170,9 @@ export const site: SiteConfig = {
   /** Small status line above the hero headline. */
   eyebrow: "AI · distributed systems · developer tools",
   /** One-line studio statement (hero subhead + metadata). */
-  role: "A small software team building AI and distributed systems",
+  role: "Building software across AI, distributed systems, and developer tools",
   tagline:
-    "A small software team working across AI, distributed systems, and developer tools.",
+    "We build software across AI, distributed systems, and developer tools.",
 
   // --- Links -------------------------------------------------------------
   // LinkedIn is hidden everywhere until a real URL is set (no broken links).
@@ -193,7 +193,7 @@ export const site: SiteConfig = {
   // --- Behind the work ---------------------------------------------------
   // DRAFT — edit freely. Frames the maker behind the studio.
   about: [
-    "Binary Semaphore is a small software team, named after the simplest synchronization primitive there is. We treat software the same way: small, well-defined parts that coordinate cleanly and hide the right details behind each interface.",
+    "Binary Semaphore takes its name from the simplest synchronization primitive there is, and we treat software the same way: small, well-defined parts that coordinate cleanly and hide the right details behind each interface.",
     "We work across applied AI, distributed systems, and developer tools. We spend our effort on the essential complexity of a problem and refuse to let the accidental kind pile up, designing for reliability and maintainability from the start rather than bolting them on later. The current focus is inode, a CLI knowledge base that retrieves by meaning, written in Go.",
   ],
 
@@ -245,10 +245,10 @@ export const site: SiteConfig = {
 
   // --- At-a-glance stats (honest, not vanity metrics) --------------------
   stats: [
-    { value: "100%", label: "Open source" },
     { value: "Go", label: "Primary language" },
     { value: "3", label: "Focus areas" },
-    { value: "2", label: "Products in the open" },
+    { value: "2", label: "Products shipped" },
+    { value: "100%", label: "Type-safe" },
   ],
 
   // --- Tech stack --------------------------------------------------------
@@ -329,7 +329,7 @@ export const site: SiteConfig = {
     items: [
       {
         q: "What kind of work do you take on?",
-        a: "Two kinds. We build and maintain our own open-source tools and products, and we build software for a specific need when a team brings us a real problem. Most of it sits across applied AI, distributed systems, and developer tools.",
+        a: "Two kinds. We build and maintain our own tools and products, and we build software for a specific need when a team brings us a real problem. Most of it sits across applied AI, distributed systems, and developer tools.",
       },
       {
         q: "Is everything open source?",
@@ -359,7 +359,7 @@ export const site: SiteConfig = {
     headline: "We build software for",
     headlineAccent: "AI and distributed systems",
     subhead:
-      "A small team that cares about the fundamentals: correct concurrency, honest abstractions, and systems that stay reliable as they scale.",
+      "We build on the fundamentals: correct concurrency, honest abstractions, and systems that stay reliable as they scale.",
     primary: { label: "See our work", href: "/#projects" },
     secondary: { label: "View on GitHub", href: "https://github.com/BiSemaphore" },
   },

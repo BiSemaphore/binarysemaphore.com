@@ -149,7 +149,7 @@ export function Contact() {
             )}
           </div>
           <p className="mt-10 font-mono text-xs text-white/70">
-            {site.wordmark} · open source, built in Go.
+            {site.wordmark} · built in Go.
           </p>
           </div>
         </div>
