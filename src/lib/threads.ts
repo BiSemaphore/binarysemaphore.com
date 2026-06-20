@@ -70,6 +70,35 @@ export function getThread(slug: string): ThreadMeta | undefined {
   return getAllThreads().find((t) => t.slug === slug);
 }
 
+/** All tags used across threads, de-duplicated and alphabetically sorted. */
+export function getAllTags(): string[] {
+  const tags = new Set<string>();
+  for (const t of getAllThreads()) for (const tag of t.tags) tags.add(tag);
+  return [...tags].sort();
+}
+
+/**
+ * Threads most related to `slug` by number of shared tags, with newer posts
+ * winning ties. Returns at most `limit`.
+ */
+export function getRelatedThreads(slug: string, limit = 3): ThreadMeta[] {
+  const all = getAllThreads();
+  const current = all.find((t) => t.slug === slug);
+  if (!current) return [];
+  const currentTags = new Set(current.tags);
+
+  return all
+    .filter((t) => t.slug !== slug)
+    .map((t) => ({
+      thread: t,
+      shared: t.tags.filter((tag) => currentTags.has(tag)).length,
+    }))
+    .filter((x) => x.shared > 0)
+    .sort((a, b) => b.shared - a.shared || (a.thread.date < b.thread.date ? 1 : -1))
+    .slice(0, limit)
+    .map((x) => x.thread);
+}
+
 /** Human-readable date, e.g. "16 Jun 2026". */
 export function formatDate(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);

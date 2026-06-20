@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { getAllThreads, getThread, formatDate } from "./threads";
+import {
+  getAllThreads,
+  getThread,
+  getAllTags,
+  getRelatedThreads,
+  formatDate,
+} from "./threads";
 
 describe("formatDate", () => {
   it("formats an ISO date as day month year (UTC)", () => {
@@ -46,5 +52,29 @@ describe("getThread", () => {
 
   it("returns undefined for an unknown slug", () => {
     expect(getThread("does-not-exist")).toBeUndefined();
+  });
+});
+
+describe("getAllTags", () => {
+  it("returns unique, alphabetically sorted tags", () => {
+    const tags = getAllTags();
+    expect(tags.length).toBeGreaterThan(0);
+    expect(new Set(tags).size).toBe(tags.length);
+    expect(tags).toEqual([...tags].sort());
+  });
+});
+
+describe("getRelatedThreads", () => {
+  it("excludes the current thread and only returns tag matches", () => {
+    const first = getAllThreads()[0];
+    const related = getRelatedThreads(first.slug);
+    expect(related.every((r) => r.slug !== first.slug)).toBe(true);
+    for (const r of related) {
+      expect(r.tags.some((tag) => first.tags.includes(tag))).toBe(true);
+    }
+  });
+
+  it("returns an empty array for an unknown slug", () => {
+    expect(getRelatedThreads("does-not-exist")).toEqual([]);
   });
 });
