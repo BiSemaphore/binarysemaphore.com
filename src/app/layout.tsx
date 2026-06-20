@@ -97,7 +97,8 @@ export const metadata: Metadata = {
 
 // Runs synchronously before first paint to set the theme class, avoiding a
 // flash of the wrong theme. See Next.js "preventing flash before hydration".
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;var e=document.documentElement;e.classList.toggle('dark',d);e.style.colorScheme=d?'dark':'light';}catch(e){}})();`;
+// Default to light; dark only applies when the visitor has explicitly chosen it.
+const themeScript = `(function(){try{var t=localStorage.getItem('theme');var d=t==='dark';var e=document.documentElement;e.classList.toggle('dark',d);e.style.colorScheme=d?'dark':'light';}catch(e){}})();`;
 
 export default function RootLayout({
   children,
