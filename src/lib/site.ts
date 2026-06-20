@@ -132,6 +132,12 @@ export type SiteConfig = {
     tools: { slug: string; name: string }[];
     concepts: string[];
   };
+  /** Frequently asked questions (honest Q&A accordion). */
+  faq: {
+    label: string;
+    title: string;
+    items: { q: string; a: string }[];
+  };
   /** Product-led landing hero. */
   hero: {
     headline: string;
@@ -198,12 +204,20 @@ export const site: SiteConfig = {
     lead: "We keep the moving parts few and the boundaries between them clear. Most of a project is understanding the real problem before writing the code that solves it.",
     steps: [
       {
-        title: "Start from the problem",
-        body: "We map the actual problem and its constraints first, so we build the thing that's needed and not the longest feature list.",
+        title: "Understand the problem",
+        body: "We map the real problem and its constraints before writing code, so we build what is needed and not the longest feature list.",
       },
       {
-        title: "Build the honest version",
-        body: "Simple, legible parts with interfaces that tell the truth. We spend the effort on the essential complexity and keep the accidental kind out.",
+        title: "Design the shape",
+        body: "We decide the few well-defined parts and the boundaries between them. Most mistakes are cheaper to fix here than after the code is written.",
+      },
+      {
+        title: "Build it honestly",
+        body: "Simple, legible code with interfaces that tell the truth. We spend the effort on the essential complexity and keep the accidental kind out.",
+      },
+      {
+        title: "Ship and keep it reliable",
+        body: "We get it into production in small steps, watch how it behaves, and design for failure so it holds up as it grows.",
       },
     ],
   },
@@ -305,6 +319,38 @@ export const site: SiteConfig = {
       "Event-driven",
       "System design",
       "Agile delivery",
+    ],
+  },
+
+  // --- FAQ ---------------------------------------------------------------
+  faq: {
+    label: "FAQ",
+    title: "Questions, answered plainly",
+    items: [
+      {
+        q: "What kind of work do you take on?",
+        a: "Two kinds. We build and maintain our own open-source tools and products, and we build software for a specific need when a team brings us a real problem. Most of it sits across applied AI, distributed systems, and developer tools.",
+      },
+      {
+        q: "Is everything open source?",
+        a: "What we build for ourselves usually is. Work we do for a client belongs to the client; whether any of it is open-sourced is their call, and we are happy either way.",
+      },
+      {
+        q: "How do you engage on a project?",
+        a: "We take on a small number of things at a time and see them through, from the first design to something reliable in production. We scope each piece of work to the problem rather than selling fixed packages.",
+      },
+      {
+        q: "Do you do design too?",
+        a: "We are engineering-led. We keep interfaces simple and honest and can take a product end to end, but for heavy visual or brand design we would rather partner with someone who does that full time.",
+      },
+      {
+        q: "What does your stack look like?",
+        a: "We lean on Go for backends and systems work, with Python and TypeScript where they fit. We are not loyal to any one tool; the tech-stack section above is a fair map of what we reach for.",
+      },
+      {
+        q: "How do we start?",
+        a: "Get in touch with a short description of the problem. The first conversation is about understanding it, not pitching you a package.",
+      },
     ],
   },
 
