@@ -4,9 +4,11 @@ The portable, canonical description of the **Binary Semaphore** (BS) brand:
 identity, copy voice, design language, and the conventions we hold across
 everything we ship — site, apps, decks, READMEs, social posts.
 
-**Inside this repo** the voice and design rules are already enforced via
-`AGENTS.md` (auto-loaded by Claude Code / agents). This file is the version you
-can carry to **other BS projects** — see [Using this in other projects](#using-this-in-other-projects).
+**Inside this repo** `AGENTS.md` imports this file, so these rules load
+automatically for Claude Code / agents; `AGENTS.md` keeps only the repo-specific
+specifics (commands, file layout, exact tokens, deploys). This file is also the
+version you can carry to **other BS projects** — see
+[Using this in other projects](#using-this-in-other-projects).
 
 The full landing-page playbook lives alongside this at
 [`docs/yc-landing-page-playbook.md`](./yc-landing-page-playbook.md).
