@@ -319,7 +319,7 @@ export const site: SiteConfig = {
   stats: [
     { value: "Go", label: "Primary language" },
     { value: "3", label: "Focus areas" },
-    { value: "2", label: "Products shipped" },
+    { value: "3", label: "Products shipped" },
     { value: "100%", label: "Type-safe" },
   ],
 
@@ -537,6 +537,7 @@ export const site: SiteConfig = {
       links: [
         { label: "Products", href: "/projects" },
         { label: "inode", href: "/projects/inode" },
+        { label: "notchify", href: "/projects/notchify" },
         { label: "Threads", href: "/threads" },
       ],
     },
@@ -614,6 +615,12 @@ export const team: TeamMember[] = [
         description:
           "A CLI knowledge base in Go. Save anything from the terminal, retrieve it later in plain English. End-to-end RAG pipeline over a pluggable adapter architecture: SQLite + sqlite-vec by default, Postgres + pgvector as a zero-CGO alternative, with swappable embedding and LLM providers. Encrypted at rest, and it exposes a read-only MCP server so AI clients can query it.",
         href: "https://github.com/shahid-io/inode",
+      },
+      {
+        name: "notchify",
+        description:
+          "A macOS developer toolbox that lives in the camera notch: a file shelf, clipboard history, a color picker, and port tools. Swift, AppKit, SwiftUI.",
+        href: "https://github.com/BiSemaphore/notchify",
       },
       {
         name: "Urban Waddle",
@@ -808,6 +815,75 @@ export const projects: Project[] = [
         { label: "Integrations", value: "MCP (Claude Code, Cursor)" },
         { label: "Categories", value: "9 (credentials, commands, runbooks, …)" },
         { label: "Platforms", value: "macOS · Linux · Windows" },
+      ],
+    },
+  },
+  {
+    name: "notchify",
+    tagline: "A developer toolbox that lives in your Mac's camera notch.",
+    description:
+      "Stays hidden until you move the cursor to the notch, then drops a panel of small tools you reach for while building: a file shelf you can drag in and out of any app, clipboard history grouped into links, colors, code, and text, a screen color picker and generators (UUID, timestamps), and a port peek that shows what is listening and lets you free it. Runs entirely on your machine, with no dock or menu-bar icon.",
+    tags: ["Swift", "macOS", "AppKit", "SwiftUI"],
+    href: "https://github.com/BiSemaphore/notchify",
+    featured: true,
+    slug: "notchify",
+    detail: {
+      lede: "A small developer toolbox that hides in your Mac's camera notch and drops down when you need it.",
+      statements: [
+        "Hidden until you need it. Gone when you don't.",
+        "Runs on your machine. No dock icon, no account.",
+      ],
+      overview: [
+        "The notch on a modern Mac is mostly dead space. Meanwhile the small things a developer reaches for all day (a spot to park a file mid-drag, the last thing you copied, the hex of a color on screen, the process squatting on a port) are scattered across apps, menu bars, and terminal commands. None is hard on its own. Together they add up to a lot of little context switches.",
+        "notchify puts those tools in the notch. It stays invisible until you move the cursor up to the notch, then a clean panel drops down with four tabs: Shelf, Clipboard, Tools, and Camera. Move away and it tucks back up. There is no dock icon and no menu bar icon, so it stays out of the way until the moment you want it. You open Settings from a gear in the panel to toggle tabs, set launch at login, and tune the hover behavior.",
+        "Everything runs on your machine. There is no account and nothing leaves your Mac. The only permission it ever asks for is the camera, and only when you open the Camera tab. It runs outside the App Sandbox because it shells out to system tools like lsof and reads the screen for the color picker, so it is distributed directly rather than through the Mac App Store. macOS 14 or later, MIT licensed.",
+      ],
+      howItWorks: [
+        {
+          step: "Shelf",
+          body: "Drag a file onto the notch to park it, then drag it back out into any app later (Finder, Mail, Slack, WhatsApp, VS Code). It survives restarts. Hover a file to remove it, or clear the whole shelf at once.",
+        },
+        {
+          step: "Clipboard",
+          body: "Recent copies, newest first, automatically grouped into links, colors, code, and text. A filter row jumps to one type, and clicking an item copies it back.",
+        },
+        {
+          step: "Tools",
+          body: "A screen color picker for any pixel's hex, one-click generators for a UUID, a timestamp, a Unix epoch, a random hex, or lorem, and a port peek that shows what is listening on a port and lets you kill it to free the port.",
+        },
+        {
+          step: "Camera",
+          body: "An optional front-camera mirror for a quick check before a call. Off by default, and it only asks for the camera the first time you open it.",
+        },
+      ],
+      features: [
+        {
+          title: "Lives in the notch, not in your way",
+          body: "notchify is invisible until you move the cursor to the notch, then a panel drops down and tucks back up when you leave. There is no dock icon and no menu bar icon (LSUIElement), so it never adds clutter; you reach Settings from a gear in the panel or by right-clicking it.",
+        },
+        {
+          title: "A shelf that drags into any app",
+          body: "Park a file on the notch mid-task and drag it back out later into Finder, Mail, or Chromium-based apps like Slack, WhatsApp, and VS Code that reject a plain URL. It is built on NSFilePromiseProvider, and the shelf survives restarts.",
+        },
+        {
+          title: "Clipboard that sorts itself",
+          body: "Your recent copies are kept newest first and auto-classified into Links, Colors, Code, and Text, with a filter row to jump straight to one kind. Click any item to copy it back. It is a clipboard you can actually find things in.",
+        },
+        {
+          title: "Runs on your machine",
+          body: "No account, and nothing leaves your Mac. The only permission notchify ever requests is the camera, and only when you open the Camera tab. Each tab can be turned off in Settings, alongside launch at login and the hover behavior.",
+        },
+      ],
+      facts: [
+        { label: "Language", value: "Swift" },
+        { label: "Frameworks", value: "AppKit + SwiftUI" },
+        { label: "Platform", value: "macOS 14 (Sonoma) or later" },
+        { label: "Footprint", value: "No dock or menu bar icon (LSUIElement)" },
+        { label: "Privacy", value: "Runs on your machine, no account" },
+        { label: "Permissions", value: "Camera only, on open" },
+        { label: "Distribution", value: "Direct download, outside the Mac App Store" },
+        { label: "License", value: "MIT" },
+        { label: "Version", value: "0.1.0" },
       ],
     },
   },
