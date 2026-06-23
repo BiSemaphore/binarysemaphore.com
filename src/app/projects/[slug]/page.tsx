@@ -140,11 +140,13 @@ export default async function ProjectPage({
                 </p>
               ))}
             </div>
-            {/* inode-specific install pill. Only inode sets `statements`, so this
-                band is skipped for other products; revisit if that changes. */}
-            <p className="relative mt-6 inline-flex items-center rounded-full bg-white/95 px-4 py-2 font-mono text-sm font-semibold text-neutral-900">
-              $ go install inode
-            </p>
+            {/* inode-specific install pill. Other products can set `statements`
+                too (e.g. notchify), so this is gated to inode by slug. */}
+            {project.slug === "inode" ? (
+              <p className="relative mt-6 inline-flex items-center rounded-full bg-white/95 px-4 py-2 font-mono text-sm font-semibold text-neutral-900">
+                $ go install inode
+              </p>
+            ) : null}
           </div>
         ) : project.image ? (
           <div className="relative mt-10 aspect-[1200/627] w-full overflow-hidden rounded-panel border border-border shadow-soft">
@@ -172,6 +174,31 @@ export default async function ProjectPage({
             ))}
           </div>
         </section>
+
+        {/* Screenshots */}
+        {detail.screenshots && detail.screenshots.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              Screenshots
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {detail.screenshots.map((shot) => (
+                <div
+                  key={shot.src}
+                  className="relative aspect-square overflow-hidden rounded-panel border border-border shadow-soft"
+                >
+                  <Image
+                    src={shot.src}
+                    alt={shot.alt}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {/* At a glance */}
         <section className="mt-12">
