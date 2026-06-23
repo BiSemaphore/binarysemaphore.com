@@ -20,6 +20,8 @@ export type ProjectDetail = {
   usage?: { command: string; description: string }[];
   /** Quick-fact sidebar (label/value pairs). */
   facts: { label: string; value: string }[];
+  /** Optional screenshot gallery (square images, paths under /public). */
+  screenshots?: { src: string; alt: string }[];
 };
 
 export type Project = {
@@ -884,6 +886,20 @@ export const projects: Project[] = [
         { label: "Distribution", value: "Direct download, outside the Mac App Store" },
         { label: "License", value: "MIT" },
         { label: "Version", value: "0.1.0" },
+      ],
+      screenshots: [
+        {
+          src: "/projects/notchify/shelf.png",
+          alt: "The notchify panel open on the Shelf tab, with parked files ready to drag back out.",
+        },
+        {
+          src: "/projects/notchify/clipboard.png",
+          alt: "The Clipboard tab showing recent copies grouped into links, colors, code, and text.",
+        },
+        {
+          src: "/projects/notchify/tools.png",
+          alt: "The Tools tab with the color picker, generators, and the port peek field.",
+        },
       ],
     },
   },
