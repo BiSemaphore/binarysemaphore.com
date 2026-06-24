@@ -824,7 +824,7 @@ export const projects: Project[] = [
     name: "notchify",
     tagline: "A developer toolbox that lives in your Mac's camera notch.",
     description:
-      "Stays hidden until you move the cursor to the notch, then drops a panel of small tools you reach for while building: a file shelf you can drag in and out of any app, clipboard history grouped into links, colors, code, and text, a screen color picker and generators (UUID, timestamps), and a port peek that shows what is listening and lets you free it. Runs entirely on your machine, with no dock or menu-bar icon.",
+      "Stays hidden until you move the cursor to the notch (or press a global hotkey), then drops a panel of small tools you reach for while building: a file shelf you can drag in and out of any app, searchable clipboard history grouped into links, colors, code, and text, format converters for JSON, Base64, and URLs, a screen color picker and generators (UUID, timestamps), and a port peek that shows what is listening and lets you free it. Follows light or dark mode, and runs entirely on your machine with no dock or menu-bar icon.",
     tags: ["Swift", "macOS", "AppKit", "SwiftUI"],
     href: "https://github.com/BiSemaphore/notchify",
     featured: true,
@@ -837,7 +837,7 @@ export const projects: Project[] = [
       ],
       overview: [
         "The notch on a modern Mac is mostly dead space. Meanwhile the small things a developer reaches for all day (a spot to park a file mid-drag, the last thing you copied, the hex of a color on screen, the process squatting on a port) are scattered across apps, menu bars, and terminal commands. None is hard on its own. Together they add up to a lot of little context switches.",
-        "notchify puts those tools in the notch. It stays invisible until you move the cursor up to the notch, then a clean panel drops down with four tabs: Shelf, Clipboard, Tools, and Camera. Move away and it tucks back up. There is no dock icon and no menu bar icon, so it stays out of the way until the moment you want it. You open Settings from a gear in the panel to toggle tabs, set launch at login, and tune the hover behavior.",
+        "notchify puts those tools in the notch. It stays invisible until you move the cursor up to the notch, then a clean panel drops down with five tabs: Shelf, Clipboard, Format, Tools, and Camera. The panel follows your system appearance, light or dark, and you can also bring it up with a global hotkey (⌥⌘N by default, no Accessibility permission needed). Move away and it tucks back up. There is no dock icon and no menu bar icon, so it stays out of the way until the moment you want it. You open Settings from a gear in the panel to toggle tabs, set launch at login, choose the hotkey, and tune the hover behavior.",
         "Everything runs on your machine. There is no account and nothing leaves your Mac. The only permission it ever asks for is the camera, and only when you open the Camera tab. It runs outside the App Sandbox because it shells out to system tools like lsof and reads the screen for the color picker, so it is distributed directly rather than through the Mac App Store. macOS 14 or later, MIT licensed.",
       ],
       howItWorks: [
@@ -847,7 +847,11 @@ export const projects: Project[] = [
         },
         {
           step: "Clipboard",
-          body: "Recent copies, newest first, automatically grouped into links, colors, code, and text. A filter row jumps to one type, and clicking an item copies it back.",
+          body: "Recent copies, newest first, automatically grouped into links, colors, code, and text. A search box narrows the list and a filter row jumps to one type; clicking an item copies it back. In Settings you choose how many items to keep and whether history persists across restarts (off by default).",
+        },
+        {
+          step: "Format",
+          body: "Paste text and transform it in place: pretty-print or minify JSON, Base64 encode and decode, or URL encode and decode. It is a plain-text editor with no smart-quote substitution, so what you paste is what you get, and one click copies the result back.",
         },
         {
           step: "Tools",
@@ -861,7 +865,7 @@ export const projects: Project[] = [
       features: [
         {
           title: "Lives in the notch, not in your way",
-          body: "notchify is invisible until you move the cursor to the notch, then a panel drops down and tucks back up when you leave. There is no dock icon and no menu bar icon (LSUIElement), so it never adds clutter; you reach Settings from a gear in the panel or by right-clicking it.",
+          body: "notchify is invisible until you move the cursor to the notch, or press a global hotkey (⌥⌘N by default, no Accessibility permission needed), then a panel drops down and tucks back up when you leave. It follows your system light or dark appearance. There is no dock icon and no menu bar icon (LSUIElement), so it never adds clutter; you reach Settings from a gear in the panel or by right-clicking it.",
         },
         {
           title: "A shelf that drags into any app",
@@ -869,7 +873,11 @@ export const projects: Project[] = [
         },
         {
           title: "Clipboard that sorts itself",
-          body: "Your recent copies are kept newest first and auto-classified into Links, Colors, Code, and Text, with a filter row to jump straight to one kind. Click any item to copy it back. It is a clipboard you can actually find things in.",
+          body: "Your recent copies are kept newest first and auto-classified into Links, Colors, Code, and Text, with a search box and a filter row to find one fast. Click any item to copy it back. You set how many items to keep and whether the history survives a restart, which is off by default. It is a clipboard you can actually find things in.",
+        },
+        {
+          title: "Format text in place",
+          body: "A Format tab for the conversions you would otherwise paste into some website: pretty-print or minify JSON, Base64 encode and decode, and URL encode and decode. It is a plain-text editor with no smart-quote substitution, so what you paste is what you get.",
         },
         {
           title: "Runs on your machine",
@@ -881,11 +889,13 @@ export const projects: Project[] = [
         { label: "Frameworks", value: "AppKit + SwiftUI" },
         { label: "Platform", value: "macOS 14 (Sonoma) or later" },
         { label: "Footprint", value: "No dock or menu bar icon (LSUIElement)" },
+        { label: "Global shortcut", value: "⌥⌘N toggles the panel" },
+        { label: "Appearance", value: "Follows system light or dark mode" },
         { label: "Privacy", value: "Runs on your machine, no account" },
         { label: "Permissions", value: "Camera only, on open" },
         { label: "Distribution", value: "Direct download, outside the Mac App Store" },
         { label: "License", value: "MIT" },
-        { label: "Version", value: "0.1.0" },
+        { label: "Version", value: "0.2.0" },
       ],
       screenshots: [
         {
