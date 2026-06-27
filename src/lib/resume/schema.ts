@@ -182,3 +182,22 @@ export function isPageSize(value: string): value is PageSize {
 export function pageSizeCss(pageSize: string): string {
   return PAGE_SIZES.find((p) => p.id === pageSize)?.css ?? "A4";
 }
+
+/** CSS pixels per millimetre at 96dpi (the print baseline). */
+export const PX_PER_MM = 96 / 25.4;
+
+/** Physical page dimensions in millimetres, for the WYSIWYG paper + page breaks. */
+export type PageDims = { wMm: number; hMm: number };
+
+const PAGE_DIMS: Record<PageSize, PageDims> = {
+  a4: { wMm: 210, hMm: 297 },
+  letter: { wMm: 215.9, hMm: 279.4 },
+};
+
+/** Page dimensions in mm (defaults to A4). */
+export function pageDims(pageSize: string): PageDims {
+  return PAGE_DIMS[(pageSize as PageSize) in PAGE_DIMS ? (pageSize as PageSize) : "a4"];
+}
+
+/** Fixed horizontal page margin in mm (left/right). Vertical is tunable. */
+export const PAGE_MARGIN_X = 16;

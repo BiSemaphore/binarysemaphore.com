@@ -405,6 +405,26 @@ body {
     0 6px 6px -3px rgba(0, 0, 0, 0.06),
     0 12px 12px -6px rgba(0, 0, 0, 0.06);
 }
+/* Page-break marker on the preview paper: a faint line where the PDF splits. */
+.resume-pagebreak {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed rgba(168, 0, 0, 0.45);
+  pointer-events: none;
+}
+.resume-pagebreak span {
+  position: absolute;
+  right: 8px;
+  top: 5px;
+  border-radius: 4px;
+  background: #fff;
+  padding: 1px 6px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--accent, #a80000);
+  border: 1px solid rgba(168, 0, 0, 0.2);
+}
 
 /* --- Resume PDF export --------------------------------------------------- */
 /* The PDF is rendered server-side by headless Chromium loading /print/[id]

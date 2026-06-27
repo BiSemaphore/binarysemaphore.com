@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { saveResume } from "@/app/resume/(app)/editor/[id]/actions";
 import {
@@ -9,13 +9,16 @@ import {
   DENSITIES,
   PAD_MAX,
   PAD_MIN,
+  PAGE_MARGIN_X,
   PAGE_SIZES,
+  PX_PER_MM,
   SCALE_MAX,
   SCALE_MIN,
   TEMPLATES,
   clampPad,
   clampScale,
   densityForScale,
+  pageDims,
   scaleZoom,
   type PageSize,
   type ResumeContent,
@@ -81,6 +84,32 @@ export function Editor({
   const [tuneOpen, setTuneOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
 
+  // WYSIWYG preview: render the paper at true page size, then scale it to fit
+  // the column so the preview is a faithful miniature of the exported PDF.
+  const stageRef = useRef<HTMLDivElement>(null);
+  const paperRef = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState(1);
+  const [paperPx, setPaperPx] = useState({ w: 0, h: 0 });
+
+  useLayoutEffect(() => {
+    const stage = stageRef.current;
+    const paper = paperRef.current;
+    if (!stage || !paper) return;
+    const STAGE_PAD = 24; // px gutter around the paper (matches the stage padding)
+    const measure = () => {
+      const avail = stage.clientWidth - STAGE_PAD * 2;
+      const w = paper.offsetWidth; // natural px at the page width (untransformed)
+      const h = paper.offsetHeight; // natural content height (untransformed)
+      setPaperPx({ w, h });
+      setFit(w > 0 ? Math.min(1, avail / w) : 1);
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(stage);
+    ro.observe(paper);
+    measure();
+    return () => ro.disconnect();
+  }, []);
+
   // Debounced autosave. Skip the first render (nothing changed yet).
   const first = useRef(true);
   useEffect(() => {
@@ -110,12 +139,20 @@ export function Editor({
     setPadBottom(DEFAULT_PAD);
   }
 
-  // CSS applied to the rendered resume preview: zoom + page margins.
-  const resumeVars = {
-    zoom: scaleZoom(scalePct),
-    "--rpt": `${padTop}mm`,
-    "--rpb": `${padBottom}mm`,
-  } as React.CSSProperties;
+  // Content density only; page margins live on the paper / @page box.
+  const densityStyle = { zoom: scaleZoom(scalePct) } as React.CSSProperties;
+
+  // Page geometry for the paper and the page-break lines.
+  const dims = pageDims(pageSize);
+  const padTopPx = padTop * PX_PER_MM;
+  const padBottomPx = padBottom * PX_PER_MM;
+  // Per-page printable content height (where the PDF actually breaks).
+  const contentAreaPx = Math.max(
+    1,
+    (dims.hMm - padTop - padBottom) * PX_PER_MM,
+  );
+  const contentOnlyPx = Math.max(0, paperPx.h - padTopPx - padBottomPx);
+  const pageCount = Math.max(1, Math.ceil(contentOnlyPx / contentAreaPx));
 
   // Export to PDF: flush any pending edits, then fetch the server-rendered PDF
   // and download it directly (no browser print dialog).
@@ -575,18 +612,49 @@ export function Editor({
           </div>
 
           <div className="overflow-hidden rounded-card border border-border shadow-soft">
-            <div className="resume-stage max-h-[calc(100vh-9rem)] overflow-auto px-6 py-8">
+            <div
+              ref={stageRef}
+              className="resume-stage max-h-[calc(100vh-9rem)] overflow-auto p-6"
+            >
+              {/* Reserves the scaled footprint; the paper is scaled into it. */}
               <div
-                className="resume-frame mx-auto w-full max-w-[210mm] overflow-hidden"
-                style={resumeVars}
+                className="relative mx-auto"
+                style={{ width: paperPx.w * fit, height: paperPx.h * fit }}
               >
-                {renderTemplate(templateId, content)}
+                <div
+                  ref={paperRef}
+                  className="resume-frame absolute left-0 top-0 overflow-hidden"
+                  style={{
+                    width: `${dims.wMm}mm`,
+                    paddingTop: `${padTop}mm`,
+                    paddingBottom: `${padBottom}mm`,
+                    paddingLeft: `${PAGE_MARGIN_X}mm`,
+                    paddingRight: `${PAGE_MARGIN_X}mm`,
+                    transform: `scale(${fit})`,
+                    transformOrigin: "top left",
+                  }}
+                >
+                  <div style={densityStyle}>
+                    {renderTemplate(templateId, content)}
+                  </div>
+
+                  {/* Page-break lines: where the PDF actually splits. */}
+                  {Array.from({ length: pageCount - 1 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="resume-pagebreak"
+                      style={{ top: padTopPx + (i + 1) * contentAreaPx }}
+                      aria-hidden
+                    >
+                      <span>Page {i + 2}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </main>
   );
 }

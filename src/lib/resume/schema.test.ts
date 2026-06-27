@@ -4,7 +4,9 @@ import {
   DEFAULT_SCALE,
   DEFAULT_TEMPLATE,
   DENSITIES,
+  PAGE_MARGIN_X,
   PAGE_SIZES,
+  PX_PER_MM,
   TEMPLATES,
   clampPad,
   clampScale,
@@ -13,6 +15,7 @@ import {
   isPageSize,
   isTemplateId,
   normalizeResume,
+  pageDims,
   pageSizeCss,
   scaleZoom,
 } from "./schema";
@@ -108,5 +111,18 @@ describe("page size", () => {
     expect(pageSizeCss("a4")).toBe("A4");
     expect(pageSizeCss("letter")).toBe("letter");
     expect(pageSizeCss("nonsense")).toBe("A4");
+  });
+});
+
+describe("page geometry", () => {
+  it("gives mm dimensions per page size (unknown -> A4)", () => {
+    expect(pageDims("a4")).toEqual({ wMm: 210, hMm: 297 });
+    expect(pageDims("letter")).toEqual({ wMm: 215.9, hMm: 279.4 });
+    expect(pageDims("nonsense")).toEqual({ wMm: 210, hMm: 297 });
+  });
+
+  it("exposes the px-per-mm constant and a fixed horizontal margin", () => {
+    expect(PX_PER_MM).toBeCloseTo(3.7795, 3);
+    expect(PAGE_MARGIN_X).toBe(16);
   });
 });

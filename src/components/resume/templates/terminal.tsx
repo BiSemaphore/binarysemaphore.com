@@ -23,7 +23,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
   }
 
   return (
-    <article className="mx-auto w-full max-w-[210mm] bg-white px-[16mm] pt-[var(--rpt,15mm)] pb-[var(--rpb,15mm)] font-mono text-[12.5px] leading-relaxed text-neutral-800">
+    <article className="w-full bg-white font-mono text-[12.5px] leading-relaxed text-neutral-800">
       {/* Prompt header */}
       <p className="text-[12px]">
         <span className="text-emerald-600">{user}</span>

@@ -64,11 +64,11 @@ export async function GET(
     await page.goto(printUrl, { waitUntil: "networkidle0", timeout: 30000 });
     await page.emulateMediaType("print");
 
+    // Page size and margins come from the print page's @page rule.
     const pdf = await page.pdf({
       format: resume.pageSize === "letter" ? "letter" : "a4",
       printBackground: true,
       preferCSSPageSize: true,
-      margin: { top: "0", right: "0", bottom: "0", left: "0" },
     });
 
     const filename = `${(resume.title || "resume")
