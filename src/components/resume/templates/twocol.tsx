@@ -17,7 +17,7 @@ export function TwoColTemplate({ content }: TemplateProps) {
   const first = parts.join(" ");
 
   return (
-    <article className="mx-auto w-full max-w-[210mm] bg-white px-10 pt-[var(--rpt,2.5rem)] pb-[var(--rpb,2.5rem)] font-sans text-[13px] leading-relaxed text-neutral-800">
+    <article className="mx-auto w-full max-w-[210mm] bg-white px-[16mm] pt-[var(--rpt,15mm)] pb-[var(--rpb,15mm)] font-sans text-[13px] leading-relaxed text-neutral-800">
       {/* Header */}
       <header>
         <h1

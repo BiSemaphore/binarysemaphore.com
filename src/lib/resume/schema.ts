@@ -124,7 +124,10 @@ export const DEFAULT_SCALE = 100;
 
 export const PAD_MIN = 0;
 export const PAD_MAX = 40;
-export const DEFAULT_PAD = 12;
+// Default vertical page margin in mm. Matches the reference (resumex) paper,
+// which uses ~15mm top/bottom and 16mm left/right (the horizontal margin is
+// fixed in the templates; only top/bottom are tunable).
+export const DEFAULT_PAD = 15;
 
 export function clampScale(pct: number): number {
   if (!Number.isFinite(pct)) return DEFAULT_SCALE;

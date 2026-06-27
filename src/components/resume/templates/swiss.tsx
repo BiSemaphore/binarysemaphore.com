@@ -106,7 +106,7 @@ export function SwissTemplate({ content }: TemplateProps) {
     });
 
   return (
-    <article className="mx-auto w-full max-w-[210mm] bg-white px-12 pt-[var(--rpt,3rem)] pb-[var(--rpb,3rem)] font-sans text-[13px] leading-relaxed text-neutral-800">
+    <article className="mx-auto w-full max-w-[210mm] bg-white px-[16mm] pt-[var(--rpt,15mm)] pb-[var(--rpb,15mm)] font-sans text-[13px] leading-relaxed text-neutral-800">
       {/* Header */}
       <header className="flex items-start justify-between gap-6 border-b border-neutral-900 pb-5">
         <div className="flex gap-4">

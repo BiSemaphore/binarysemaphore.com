@@ -382,6 +382,30 @@ body {
   outline-offset: 3px;
 }
 
+/* --- Resume editor stage + paper ---------------------------------------- */
+/* The editor preview sits the resume "paper" on a patterned stage, like the
+   reference (resumex). Same idea, our own pattern: a faint engineering grid in
+   brand ink on a warm gray, instead of their dot grid. */
+.resume-stage {
+  background-color: #ecebe5;
+  background-image:
+    linear-gradient(to right, rgba(20, 20, 19, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(20, 20, 19, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+/* The paper: white sheet, hairline border, layered soft shadow, rounded. */
+.resume-frame {
+  background: #fff;
+  border: 1px solid rgba(20, 20, 19, 0.1);
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 1px 1px -0.5px rgba(0, 0, 0, 0.06),
+    0 3px 3px -1.5px rgba(0, 0, 0, 0.06),
+    0 6px 6px -3px rgba(0, 0, 0, 0.06),
+    0 12px 12px -6px rgba(0, 0, 0, 0.06);
+}
+
 /* --- Resume PDF export --------------------------------------------------- */
 /* The PDF is rendered server-side by headless Chromium loading /print/[id]
    (see src/app/api/resume/[id]/pdf/route.ts), so there is no client print

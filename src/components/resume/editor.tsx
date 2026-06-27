@@ -575,8 +575,13 @@ export function Editor({
           </div>
 
           <div className="overflow-hidden rounded-card border border-border shadow-soft">
-            <div className="max-h-[calc(100vh-9rem)] overflow-auto bg-neutral-100 p-4">
-              <div style={resumeVars}>{renderTemplate(templateId, content)}</div>
+            <div className="resume-stage max-h-[calc(100vh-9rem)] overflow-auto px-6 py-8">
+              <div
+                className="resume-frame mx-auto w-full max-w-[210mm] overflow-hidden"
+                style={resumeVars}
+              >
+                {renderTemplate(templateId, content)}
+              </div>
             </div>
           </div>
         </div>
