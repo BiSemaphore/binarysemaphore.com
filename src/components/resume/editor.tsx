@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { saveResume } from "@/app/resume/editor/[id]/actions";
+import { saveResume } from "@/app/resume/(app)/editor/[id]/actions";
 import {
   DEFAULT_PAD,
   DEFAULT_SCALE,
@@ -17,7 +16,6 @@ import {
   clampPad,
   clampScale,
   densityForScale,
-  pageSizeCss,
   scaleZoom,
   type PageSize,
   type ResumeContent,
@@ -81,13 +79,7 @@ export function Editor({
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [tuneOpen, setTuneOpen] = useState(false);
-  // The print container is portaled to <body>; only render it on the client
-  // (SSR-safe mount check, no setState-in-effect). createPortal needs document.
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false,
-  );
+  const [exporting, setExporting] = useState(false);
 
   // Debounced autosave. Skip the first render (nothing changed yet).
   const first = useRef(true);
@@ -118,23 +110,44 @@ export function Editor({
     setPadBottom(DEFAULT_PAD);
   }
 
-  // CSS applied to the rendered resume (preview + print): zoom + page margins.
+  // CSS applied to the rendered resume preview: zoom + page margins.
   const resumeVars = {
     zoom: scaleZoom(scalePct),
     "--rpt": `${padTop}mm`,
     "--rpb": `${padBottom}mm`,
   } as React.CSSProperties;
 
-  // Print just the resume: a body class scopes the print stylesheet (globals.css)
-  // so only the hidden .resume-print container shows in the PDF.
-  function handleDownloadPdf() {
-    const cleanup = () => {
-      document.body.classList.remove("printing-resume");
-      window.removeEventListener("afterprint", cleanup);
-    };
-    window.addEventListener("afterprint", cleanup);
-    document.body.classList.add("printing-resume");
-    window.print();
+  // Export to PDF: flush any pending edits, then fetch the server-rendered PDF
+  // and download it directly (no browser print dialog).
+  async function handleExport() {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      await saveResume(id, {
+        title,
+        templateId,
+        pageSize,
+        scalePct,
+        padTop,
+        padBottom,
+        content,
+      });
+      const res = await fetch(`/api/resume/${id}/pdf`);
+      if (!res.ok) throw new Error(`Export failed (${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${title || "resume"}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setStatus("error");
+    } finally {
+      setExporting(false);
+    }
   }
 
   // --- content updaters -----------------------------------------------------
@@ -189,10 +202,11 @@ export function Editor({
             <SaveIndicator status={status} />
             <button
               type="button"
-              onClick={handleDownloadPdf}
-              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-1.5 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
+              onClick={handleExport}
+              disabled={exporting}
+              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-1.5 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Download PDF
+              {exporting ? "Exporting…" : "Export PDF"}
             </button>
           </div>
         </div>
@@ -568,24 +582,6 @@ export function Editor({
         </div>
       </div>
 
-      {/* Print target: portaled to <body> so it has no tall ancestors, hidden
-          on screen; the print stylesheet (globals.css, scoped to
-          body.printing-resume) reveals only this for the PDF. */}
-      {mounted
-        ? createPortal(
-            <div className="resume-print" aria-hidden>
-              <style
-                dangerouslySetInnerHTML={{
-                  __html: `@page { size: ${pageSizeCss(pageSize)}; margin: 0; }`,
-                }}
-              />
-              <div style={resumeVars}>
-                {renderTemplate(templateId, content)}
-              </div>
-            </div>,
-            document.body,
-          )
-        : null}
     </main>
   );
 }

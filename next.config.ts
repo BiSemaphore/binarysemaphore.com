@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Keep the headless-Chromium packages out of the bundle so their native
+  // binary/brotli payloads resolve at runtime (resume PDF export).
+  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
   // Instagram media is served from the Meta CDN. We render it `unoptimized`
   // (the signed URLs expire, so optimizing/caching them is pointless), but the
   // host still has to be allow-listed here.
