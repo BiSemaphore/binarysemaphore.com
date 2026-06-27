@@ -111,27 +111,51 @@ export function isTemplateId(value: string): value is TemplateId {
 }
 
 /**
- * Fit-to-page density. Applied as CSS `zoom` on the rendered resume so content
- * genuinely reflows (and paginates across pages) rather than just visually
- * scaling. "tight" fits more per page, "roomy" gives more breathing room.
+ * "Tune" settings — how the resume is fit onto the page. All applied as CSS so
+ * the resume genuinely reflows and paginates across pages.
+ *
+ * - scale: overall zoom, stored as a percent (CSS `zoom`).
+ * - padTop / padBottom: page margins in mm (override the template's vertical
+ *   padding via CSS variables).
+ */
+export const SCALE_MIN = 60;
+export const SCALE_MAX = 130;
+export const DEFAULT_SCALE = 100;
+
+export const PAD_MIN = 0;
+export const PAD_MAX = 40;
+export const DEFAULT_PAD = 12;
+
+export function clampScale(pct: number): number {
+  if (!Number.isFinite(pct)) return DEFAULT_SCALE;
+  return Math.min(SCALE_MAX, Math.max(SCALE_MIN, Math.round(pct)));
+}
+
+export function clampPad(mm: number): number {
+  if (!Number.isFinite(mm)) return DEFAULT_PAD;
+  return Math.min(PAD_MAX, Math.max(PAD_MIN, Math.round(mm)));
+}
+
+/** The CSS `zoom` value for a scale percent. */
+export function scaleZoom(scalePct: number): number {
+  return clampScale(scalePct) / 100;
+}
+
+/**
+ * Density presets: quick shortcuts that set the scale. "tight" fits more per
+ * page; "roomy" gives more room. The slider stays the source of truth.
  */
 export const DENSITIES = [
-  { id: "tight", label: "Tight", zoom: 0.9 },
-  { id: "regular", label: "Regular", zoom: 1 },
-  { id: "roomy", label: "Roomy", zoom: 1.08 },
+  { id: "tight", label: "Tight", scale: 90 },
+  { id: "regular", label: "Regular", scale: 100 },
+  { id: "roomy", label: "Roomy", scale: 108 },
 ] as const;
 
 export type Density = (typeof DENSITIES)[number]["id"];
 
-export const DEFAULT_DENSITY: Density = "regular";
-
-export function isDensity(value: string): value is Density {
-  return DENSITIES.some((d) => d.id === value);
-}
-
-/** The CSS `zoom` factor for a density (defaults to 1 for unknown values). */
-export function densityZoom(density: string): number {
-  return DENSITIES.find((d) => d.id === density)?.zoom ?? 1;
+/** The density preset matching a scale, if any (for highlighting). */
+export function densityForScale(scalePct: number): Density | null {
+  return DENSITIES.find((d) => d.scale === scalePct)?.id ?? null;
 }
 
 /**

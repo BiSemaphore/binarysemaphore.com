@@ -1,18 +1,20 @@
 import { describe, it, expect } from "vitest";
 import {
-  DEFAULT_DENSITY,
   DEFAULT_PAGE_SIZE,
+  DEFAULT_SCALE,
   DEFAULT_TEMPLATE,
   DENSITIES,
   PAGE_SIZES,
   TEMPLATES,
-  densityZoom,
+  clampPad,
+  clampScale,
+  densityForScale,
   emptyResume,
-  isDensity,
   isPageSize,
   isTemplateId,
   normalizeResume,
   pageSizeCss,
+  scaleZoom,
 } from "./schema";
 
 describe("emptyResume", () => {
@@ -60,22 +62,33 @@ describe("templates", () => {
   });
 });
 
-describe("density", () => {
-  it("has a valid default with three options", () => {
+describe("tune: scale + density", () => {
+  it("clamps scale to bounds and rounds", () => {
+    expect(clampScale(100)).toBe(100);
+    expect(clampScale(5)).toBe(60);
+    expect(clampScale(999)).toBe(130);
+    expect(clampScale(NaN)).toBe(DEFAULT_SCALE);
+  });
+
+  it("converts a scale percent to a zoom factor", () => {
+    expect(scaleZoom(100)).toBe(1);
+    expect(scaleZoom(90)).toBeCloseTo(0.9);
+  });
+
+  it("maps a scale back to its density preset (or null)", () => {
     expect(DENSITIES.length).toBe(3);
-    expect(isDensity(DEFAULT_DENSITY)).toBe(true);
+    expect(densityForScale(90)).toBe("tight");
+    expect(densityForScale(100)).toBe("regular");
+    expect(densityForScale(95)).toBeNull();
   });
+});
 
-  it("recognizes only known densities", () => {
-    expect(isDensity("tight")).toBe(true);
-    expect(isDensity("nope")).toBe(false);
-  });
-
-  it("maps density to a zoom factor (regular = 1, unknown = 1)", () => {
-    expect(densityZoom("regular")).toBe(1);
-    expect(densityZoom("tight")).toBeLessThan(1);
-    expect(densityZoom("roomy")).toBeGreaterThan(1);
-    expect(densityZoom("nonsense")).toBe(1);
+describe("tune: page margins", () => {
+  it("clamps pad to bounds and rounds", () => {
+    expect(clampPad(12)).toBe(12);
+    expect(clampPad(-5)).toBe(0);
+    expect(clampPad(999)).toBe(40);
+    expect(clampPad(8.6)).toBe(9);
   });
 });
 

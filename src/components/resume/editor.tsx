@@ -4,12 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { saveResume } from "@/app/resume/editor/[id]/actions";
 import {
+  DEFAULT_PAD,
+  DEFAULT_SCALE,
   DENSITIES,
+  PAD_MAX,
+  PAD_MIN,
   PAGE_SIZES,
+  SCALE_MAX,
+  SCALE_MIN,
   TEMPLATES,
-  densityZoom,
+  clampPad,
+  clampScale,
+  densityForScale,
   pageSizeCss,
-  type Density,
+  scaleZoom,
   type PageSize,
   type ResumeContent,
   type ResumeEducation,
@@ -48,21 +56,27 @@ export function Editor({
   id,
   initialTitle,
   initialTemplateId,
-  initialDensity,
   initialPageSize,
+  initialScalePct,
+  initialPadTop,
+  initialPadBottom,
   initialContent,
 }: {
   id: string;
   initialTitle: string;
   initialTemplateId: TemplateId;
-  initialDensity: Density;
   initialPageSize: PageSize;
+  initialScalePct: number;
+  initialPadTop: number;
+  initialPadBottom: number;
   initialContent: ResumeContent;
 }) {
   const [title, setTitle] = useState(initialTitle);
   const [templateId, setTemplateId] = useState<TemplateId>(initialTemplateId);
-  const [density, setDensity] = useState<Density>(initialDensity);
   const [pageSize, setPageSize] = useState<PageSize>(initialPageSize);
+  const [scalePct, setScalePct] = useState(initialScalePct);
+  const [padTop, setPadTop] = useState(initialPadTop);
+  const [padBottom, setPadBottom] = useState(initialPadBottom);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
 
@@ -78,14 +92,29 @@ export function Editor({
       const res = await saveResume(id, {
         title,
         templateId,
-        density,
         pageSize,
+        scalePct,
+        padTop,
+        padBottom,
         content,
       });
       setStatus(res.ok ? "saved" : "error");
     }, 800);
     return () => clearTimeout(t);
-  }, [id, title, templateId, density, pageSize, content]);
+  }, [id, title, templateId, pageSize, scalePct, padTop, padBottom, content]);
+
+  function resetTune() {
+    setScalePct(DEFAULT_SCALE);
+    setPadTop(DEFAULT_PAD);
+    setPadBottom(DEFAULT_PAD);
+  }
+
+  // CSS applied to the rendered resume (preview + print): zoom + page margins.
+  const resumeVars = {
+    zoom: scaleZoom(scalePct),
+    "--rpt": `${padTop}mm`,
+    "--rpb": `${padBottom}mm`,
+  } as React.CSSProperties;
 
   // Print just the resume: a body class scopes the print stylesheet (globals.css)
   // so only the hidden .resume-print container shows in the PDF.
@@ -412,33 +441,85 @@ export function Editor({
 
         {/* Live preview */}
         <div className="lg:sticky lg:top-20 lg:self-start">
-          {/* Controls: template, density, page size — side-by-side rows */}
-          <div className="mb-3 flex flex-wrap items-end gap-x-6 gap-y-3">
+          {/* Template: side-by-side row */}
+          <div className="mb-3">
             <Segmented
               label="Template"
               options={TEMPLATES}
               value={templateId}
               onChange={setTemplateId}
             />
-            <Segmented
-              label="Density"
-              options={DENSITIES}
-              value={density}
-              onChange={setDensity}
+          </div>
+
+          {/* Tune panel */}
+          <div className="mb-3 rounded-card border border-border bg-card p-4 shadow-soft">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="font-mono text-xs text-subtle">{"// tune"}</p>
+              <button
+                type="button"
+                onClick={resetTune}
+                className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
+              >
+                reset
+              </button>
+            </div>
+
+            <Slider
+              label="Scale"
+              value={scalePct}
+              min={SCALE_MIN}
+              max={SCALE_MAX}
+              step={1}
+              display={`${(scalePct / 100).toFixed(2)}x`}
+              onChange={(v) => setScalePct(clampScale(v))}
             />
-            <Segmented
-              label="Size"
-              options={PAGE_SIZES}
-              value={pageSize}
-              onChange={setPageSize}
-            />
+
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <span className="font-mono text-xs text-subtle">density</span>
+              <Segmented
+                options={DENSITIES}
+                value={densityForScale(scalePct)}
+                onChange={(d) => {
+                  const preset = DENSITIES.find((x) => x.id === d);
+                  if (preset) setScalePct(preset.scale);
+                }}
+              />
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-x-4">
+              <Slider
+                label="Pad top"
+                value={padTop}
+                min={PAD_MIN}
+                max={PAD_MAX}
+                step={1}
+                display={`${padTop}mm`}
+                onChange={(v) => setPadTop(clampPad(v))}
+              />
+              <Slider
+                label="Pad bottom"
+                value={padBottom}
+                min={PAD_MIN}
+                max={PAD_MAX}
+                step={1}
+                display={`${padBottom}mm`}
+                onChange={(v) => setPadBottom(clampPad(v))}
+              />
+            </div>
+
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <span className="font-mono text-xs text-subtle">page size</span>
+              <Segmented
+                options={PAGE_SIZES}
+                value={pageSize}
+                onChange={setPageSize}
+              />
+            </div>
           </div>
 
           <div className="overflow-hidden rounded-card border border-border shadow-soft">
             <div className="max-h-[calc(100vh-9rem)] overflow-auto bg-neutral-100 p-4">
-              <div style={{ zoom: densityZoom(density) } as React.CSSProperties}>
-                {renderTemplate(templateId, content)}
-              </div>
+              <div style={resumeVars}>{renderTemplate(templateId, content)}</div>
             </div>
           </div>
         </div>
@@ -452,11 +533,46 @@ export function Editor({
         }}
       />
       <div className="resume-print" aria-hidden>
-        <div style={{ zoom: densityZoom(density) } as React.CSSProperties}>
-          {renderTemplate(templateId, content)}
-        </div>
+        <div style={resumeVars}>{renderTemplate(templateId, content)}</div>
       </div>
     </main>
+  );
+}
+
+/** A labelled range slider with a value readout. */
+function Slider({
+  label,
+  value,
+  min,
+  max,
+  step,
+  display,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  display: string;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 flex items-center justify-between">
+        <span className="font-mono text-xs text-subtle">{label}</span>
+        <span className="font-mono text-xs text-foreground">{display}</span>
+      </span>
+      <input
+        type="range"
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full accent-[var(--accent)]"
+      />
+    </label>
   );
 }
 
@@ -467,19 +583,21 @@ function Segmented<T extends string>({
   value,
   onChange,
 }: {
-  label: string;
+  label?: string;
   options: readonly { id: T; label: string }[];
-  value: T;
+  value: T | null;
   onChange: (value: T) => void;
 }) {
   return (
     <div>
-      <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-subtle">
-        {label}
-      </p>
+      {label ? (
+        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-subtle">
+          {label}
+        </p>
+      ) : null}
       <div
         role="group"
-        aria-label={label}
+        aria-label={label ?? "options"}
         className="inline-flex flex-wrap overflow-hidden rounded-lg border border-border"
       >
         {options.map((o) => (

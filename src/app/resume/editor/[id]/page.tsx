@@ -25,8 +25,10 @@ export default async function EditorPage({
       id={resume.id}
       initialTitle={resume.title}
       initialTemplateId={resume.templateId}
-      initialDensity={resume.density}
       initialPageSize={resume.pageSize}
+      initialScalePct={resume.scalePct}
+      initialPadTop={resume.padTop}
+      initialPadBottom={resume.padBottom}
       initialContent={resume.content}
     />
   );

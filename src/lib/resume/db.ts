@@ -8,12 +8,14 @@
  */
 import { createClient } from "@/utils/supabase/server";
 import {
-  DEFAULT_DENSITY,
+  DEFAULT_PAD,
   DEFAULT_PAGE_SIZE,
+  DEFAULT_SCALE,
   DEFAULT_TEMPLATE,
+  clampPad,
+  clampScale,
   emptyResume,
   normalizeResume,
-  type Density,
   type PageSize,
   type ResumeContent,
   type TemplateId,
@@ -23,8 +25,11 @@ export type Resume = {
   id: string;
   title: string;
   templateId: TemplateId;
-  density: Density;
   pageSize: PageSize;
+  /** Tune: overall zoom percent, and page margins in mm. */
+  scalePct: number;
+  padTop: number;
+  padBottom: number;
   content: ResumeContent;
   createdAt: string;
   updatedAt: string;
@@ -40,8 +45,10 @@ type Row = {
   id: string;
   title: string;
   template_id: string;
-  density: string;
   page_size: string;
+  scale_pct: number | null;
+  pad_top: number | null;
+  pad_bottom: number | null;
   content: unknown;
   created_at: string;
   updated_at: string;
@@ -52,8 +59,10 @@ function toResume(row: Row): Resume {
     id: row.id,
     title: row.title,
     templateId: (row.template_id as TemplateId) || DEFAULT_TEMPLATE,
-    density: (row.density as Density) || DEFAULT_DENSITY,
     pageSize: (row.page_size as PageSize) || DEFAULT_PAGE_SIZE,
+    scalePct: clampScale(row.scale_pct ?? DEFAULT_SCALE),
+    padTop: clampPad(row.pad_top ?? DEFAULT_PAD),
+    padBottom: clampPad(row.pad_bottom ?? DEFAULT_PAD),
     content: normalizeResume(row.content),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -82,7 +91,7 @@ export async function getResume(id: string): Promise<Resume | null> {
   const { data, error } = await supabase
     .from("resumes")
     .select(
-      "id, title, template_id, density, page_size, content, created_at, updated_at",
+      "id, title, template_id, page_size, scale_pct, pad_top, pad_bottom, content, created_at, updated_at",
     )
     .eq("id", id)
     .maybeSingle();
@@ -115,8 +124,10 @@ export async function createResume(title = "Untitled"): Promise<string> {
 export type ResumePatch = {
   title?: string;
   templateId?: TemplateId;
-  density?: Density;
   pageSize?: PageSize;
+  scalePct?: number;
+  padTop?: number;
+  padBottom?: number;
   content?: ResumeContent;
 };
 
@@ -129,8 +140,10 @@ export async function updateResume(
   const row: Record<string, unknown> = {};
   if (patch.title !== undefined) row.title = patch.title;
   if (patch.templateId !== undefined) row.template_id = patch.templateId;
-  if (patch.density !== undefined) row.density = patch.density;
   if (patch.pageSize !== undefined) row.page_size = patch.pageSize;
+  if (patch.scalePct !== undefined) row.scale_pct = clampScale(patch.scalePct);
+  if (patch.padTop !== undefined) row.pad_top = clampPad(patch.padTop);
+  if (patch.padBottom !== undefined) row.pad_bottom = clampPad(patch.padBottom);
   if (patch.content !== undefined) row.content = patch.content;
   if (Object.keys(row).length === 0) return;
 
