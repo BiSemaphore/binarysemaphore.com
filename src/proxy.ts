@@ -1,7 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 import {
+  APP_SUBDOMAINS,
   ROOT_DOMAIN,
+  appBasePath,
   parseHost,
   slugToSub,
   subToSlug,
@@ -12,7 +14,24 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const { root, sub, isProd } = parseHost(request.headers.get("host") ?? "");
 
-  // (a) On a product subdomain (e.g. inode.binarysemaphore.com).
+  // (a) On an application subdomain (e.g. resume.binarysemaphore.com): serve a
+  // whole route subtree, with auth.
+  const appBase = appBasePath(sub);
+  if (appBase) {
+    // Shared auth + api routes pass through unchanged so the OAuth callback and
+    // sign-out set cookies on this host; still refresh the session.
+    if (pathname.startsWith("/auth/") || pathname.startsWith("/api/")) {
+      return await updateSession(request);
+    }
+    // Serve the app from its base path; the URL stays clean on the subdomain.
+    const url = request.nextUrl.clone();
+    url.pathname = `${appBase}${pathname === "/" ? "" : pathname}`;
+    return await updateSession(request, (req) =>
+      NextResponse.rewrite(url, { request: { headers: req.headers } }),
+    );
+  }
+
+  // (b) On a product subdomain (e.g. inode.binarysemaphore.com).
   if (sub && subToSlug.has(sub)) {
     const slug = subToSlug.get(sub)!;
 
@@ -34,15 +53,25 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(`${pathname}${search}`, origin));
   }
 
-  // (b) On the apex, production only: /projects/<slug> -> product subdomain, so
-  // the subdomain stays the single canonical URL.
+  // (c) On the apex, production only: redirect to the canonical subdomain.
   if (root && !sub && isProd) {
+    // Product showcase: /projects/<slug> -> product subdomain.
     const match = pathname.match(/^\/projects\/([^/]+)\/?$/);
     if (match && slugToSub.has(match[1])) {
       return NextResponse.redirect(
         `https://${slugToSub.get(match[1])}.${ROOT_DOMAIN}${search}`,
         301,
       );
+    }
+    // App subdomains: /resume and /resume/* -> resume.binarysemaphore.com/*.
+    for (const [appSub, base] of APP_SUBDOMAINS) {
+      if (pathname === base || pathname.startsWith(`${base}/`)) {
+        const rest = pathname.slice(base.length);
+        return NextResponse.redirect(
+          `https://${appSub}.${ROOT_DOMAIN}${rest}${search}`,
+          301,
+        );
+      }
     }
   }
 

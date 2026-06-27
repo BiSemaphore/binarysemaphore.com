@@ -31,6 +31,18 @@ export const slugToSub = new Map(
   productsWithSubdomain.map((p) => [p.slug, p.subdomain]),
 );
 
+/**
+ * Application subdomains: full apps (auth + routes) served from this same Next
+ * app, unlike showcase product subdomains which render a single project page.
+ * Maps subdomain -> the route-tree base path it is served from.
+ */
+export const APP_SUBDOMAINS = new Map<string, string>([["resume", "/resume"]]);
+
+/** The base path an app subdomain is served from, or null if not an app sub. */
+export function appBasePath(sub: string | null): string | null {
+  return sub ? (APP_SUBDOMAINS.get(sub) ?? null) : null;
+}
+
 export type ParsedHost = {
   /** The owned root the host belongs to, or null for unknown hosts (e.g.
    * Vercel preview URLs) which the proxy should leave untouched. */
