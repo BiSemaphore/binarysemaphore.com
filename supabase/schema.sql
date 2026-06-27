@@ -33,10 +33,25 @@ create table if not exists public.resumes (
   user_id uuid not null references auth.users (id) on delete cascade,
   title text not null default 'Untitled',
   template_id text not null default 'classic',
+  page_size text not null default 'a4',
+  -- "tune" controls: overall zoom (percent) and page margins (mm).
+  scale_pct integer not null default 100,
+  pad_top integer not null default 12,
+  pad_bottom integer not null default 12,
   content jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- For tables created before these presentation columns existed (idempotent).
+alter table public.resumes
+  add column if not exists page_size text not null default 'a4';
+alter table public.resumes
+  add column if not exists scale_pct integer not null default 100;
+alter table public.resumes
+  add column if not exists pad_top integer not null default 12;
+alter table public.resumes
+  add column if not exists pad_bottom integer not null default 12;
 
 create index if not exists resumes_user_id_idx on public.resumes (user_id);
 

@@ -1,10 +1,20 @@
 import { describe, it, expect } from "vitest";
 import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_SCALE,
   DEFAULT_TEMPLATE,
+  DENSITIES,
+  PAGE_SIZES,
   TEMPLATES,
+  clampPad,
+  clampScale,
+  densityForScale,
   emptyResume,
+  isPageSize,
   isTemplateId,
   normalizeResume,
+  pageSizeCss,
+  scaleZoom,
 } from "./schema";
 
 describe("emptyResume", () => {
@@ -49,5 +59,54 @@ describe("templates", () => {
   it("recognizes only known template ids", () => {
     expect(isTemplateId("classic")).toBe(true);
     expect(isTemplateId("nope")).toBe(false);
+  });
+});
+
+describe("tune: scale + density", () => {
+  it("clamps scale to bounds and rounds", () => {
+    expect(clampScale(100)).toBe(100);
+    expect(clampScale(5)).toBe(60);
+    expect(clampScale(999)).toBe(130);
+    expect(clampScale(NaN)).toBe(DEFAULT_SCALE);
+  });
+
+  it("converts a scale percent to a zoom factor", () => {
+    expect(scaleZoom(100)).toBe(1);
+    expect(scaleZoom(90)).toBeCloseTo(0.9);
+  });
+
+  it("maps a scale back to its density preset (or null)", () => {
+    expect(DENSITIES.length).toBe(3);
+    expect(densityForScale(90)).toBe("tight");
+    expect(densityForScale(100)).toBe("regular");
+    expect(densityForScale(95)).toBeNull();
+  });
+});
+
+describe("tune: page margins", () => {
+  it("clamps pad to bounds and rounds", () => {
+    expect(clampPad(12)).toBe(12);
+    expect(clampPad(-5)).toBe(0);
+    expect(clampPad(999)).toBe(40);
+    expect(clampPad(8.6)).toBe(9);
+  });
+});
+
+describe("page size", () => {
+  it("defaults to A4 and offers Letter", () => {
+    expect(DEFAULT_PAGE_SIZE).toBe("a4");
+    expect(PAGE_SIZES.map((p) => p.id)).toContain("letter");
+    expect(isPageSize(DEFAULT_PAGE_SIZE)).toBe(true);
+  });
+
+  it("recognizes only known page sizes", () => {
+    expect(isPageSize("a4")).toBe(true);
+    expect(isPageSize("nope")).toBe(false);
+  });
+
+  it("maps to a CSS @page size keyword (unknown -> A4)", () => {
+    expect(pageSizeCss("a4")).toBe("A4");
+    expect(pageSizeCss("letter")).toBe("letter");
+    expect(pageSizeCss("nonsense")).toBe("A4");
   });
 });

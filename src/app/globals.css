@@ -342,3 +342,60 @@ body {
 .dark .thread code[data-theme] span {
   color: var(--shiki-dark);
 }
+
+/* --- Resume tune sliders ------------------------------------------------- */
+/* Brand-styled range input: thin track, coral-accent fill, soft round thumb.
+   Native `accent-color` looks heavy and inconsistent across browsers. */
+.r-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--border);
+  cursor: pointer;
+}
+.r-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--accent);
+  border: 2px solid var(--background);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  transition: transform 0.1s ease;
+}
+.r-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+.r-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--accent);
+  border: 2px solid var(--background);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+}
+.r-slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- Resume PDF export --------------------------------------------------- */
+/* The PDF is rendered server-side by headless Chromium loading /print/[id]
+   (see src/app/api/resume/[id]/pdf/route.ts), so there is no client print
+   stylesheet. These rules only help Chromium's print engine paginate cleanly. */
+@media print {
+  .resume-paper {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .resume-paper h2,
+  .resume-paper h3 {
+    break-after: avoid;
+  }
+  .resume-paper li {
+    break-inside: avoid;
+  }
+}

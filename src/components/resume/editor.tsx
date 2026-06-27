@@ -2,8 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { saveResume } from "@/app/resume/editor/[id]/actions";
+import { saveResume } from "@/app/resume/(app)/editor/[id]/actions";
 import {
+  DEFAULT_PAD,
+  DEFAULT_SCALE,
+  DENSITIES,
+  PAD_MAX,
+  PAD_MIN,
+  PAGE_SIZES,
+  SCALE_MAX,
+  SCALE_MIN,
+  TEMPLATES,
+  clampPad,
+  clampScale,
+  densityForScale,
+  scaleZoom,
+  type PageSize,
   type ResumeContent,
   type ResumeEducation,
   type ResumeExperience,
@@ -41,17 +55,31 @@ export function Editor({
   id,
   initialTitle,
   initialTemplateId,
+  initialPageSize,
+  initialScalePct,
+  initialPadTop,
+  initialPadBottom,
   initialContent,
 }: {
   id: string;
   initialTitle: string;
   initialTemplateId: TemplateId;
+  initialPageSize: PageSize;
+  initialScalePct: number;
+  initialPadTop: number;
+  initialPadBottom: number;
   initialContent: ResumeContent;
 }) {
   const [title, setTitle] = useState(initialTitle);
-  const [templateId] = useState<TemplateId>(initialTemplateId);
+  const [templateId, setTemplateId] = useState<TemplateId>(initialTemplateId);
+  const [pageSize, setPageSize] = useState<PageSize>(initialPageSize);
+  const [scalePct, setScalePct] = useState(initialScalePct);
+  const [padTop, setPadTop] = useState(initialPadTop);
+  const [padBottom, setPadBottom] = useState(initialPadBottom);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
+  const [tuneOpen, setTuneOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   // Debounced autosave. Skip the first render (nothing changed yet).
   const first = useRef(true);
@@ -62,11 +90,65 @@ export function Editor({
     }
     setStatus("saving");
     const t = setTimeout(async () => {
-      const res = await saveResume(id, { title, templateId, content });
+      const res = await saveResume(id, {
+        title,
+        templateId,
+        pageSize,
+        scalePct,
+        padTop,
+        padBottom,
+        content,
+      });
       setStatus(res.ok ? "saved" : "error");
     }, 800);
     return () => clearTimeout(t);
-  }, [id, title, templateId, content]);
+  }, [id, title, templateId, pageSize, scalePct, padTop, padBottom, content]);
+
+  function resetTune() {
+    setScalePct(DEFAULT_SCALE);
+    setPadTop(DEFAULT_PAD);
+    setPadBottom(DEFAULT_PAD);
+  }
+
+  // CSS applied to the rendered resume preview: zoom + page margins.
+  const resumeVars = {
+    zoom: scaleZoom(scalePct),
+    "--rpt": `${padTop}mm`,
+    "--rpb": `${padBottom}mm`,
+  } as React.CSSProperties;
+
+  // Export to PDF: flush any pending edits, then fetch the server-rendered PDF
+  // and download it directly (no browser print dialog).
+  async function handleExport() {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      await saveResume(id, {
+        title,
+        templateId,
+        pageSize,
+        scalePct,
+        padTop,
+        padBottom,
+        content,
+      });
+      const res = await fetch(`/api/resume/${id}/pdf`);
+      if (!res.ok) throw new Error(`Export failed (${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${title || "resume"}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setStatus("error");
+    } finally {
+      setExporting(false);
+    }
+  }
 
   // --- content updaters -----------------------------------------------------
   const setBasics = (field: keyof ResumeContent["basics"], value: string) =>
@@ -116,7 +198,17 @@ export function Editor({
               className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-foreground hover:border-border focus:border-border focus:bg-card focus:outline-none"
             />
           </div>
-          <SaveIndicator status={status} />
+          <div className="flex items-center gap-3">
+            <SaveIndicator status={status} />
+            <button
+              type="button"
+              onClick={handleExport}
+              disabled={exporting}
+              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-1.5 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {exporting ? "Exporting…" : "Export PDF"}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -372,14 +464,206 @@ export function Editor({
 
         {/* Live preview */}
         <div className="lg:sticky lg:top-20 lg:self-start">
+          {/* Header: template row + a compact tune popover */}
+          <div className="mb-3 flex items-end justify-between gap-3">
+            <Segmented
+              label="Template"
+              options={TEMPLATES}
+              value={templateId}
+              onChange={setTemplateId}
+            />
+
+            <div className="relative shrink-0">
+              <button
+                type="button"
+                onClick={() => setTuneOpen((o) => !o)}
+                aria-expanded={tuneOpen}
+                aria-haspopup="dialog"
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-xs transition-colors ${
+                  tuneOpen
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-subtle hover:bg-card-hover hover:text-foreground"
+                }`}
+              >
+                {"// tune"}
+              </button>
+
+              {tuneOpen ? (
+                <>
+                  {/* click-outside backdrop */}
+                  <button
+                    type="button"
+                    aria-label="Close tune"
+                    onClick={() => setTuneOpen(false)}
+                    className="fixed inset-0 z-10 cursor-default"
+                  />
+                  <div
+                    role="dialog"
+                    aria-label="Tune"
+                    className="absolute right-0 z-20 mt-2 w-72 rounded-card border border-border bg-card p-4 shadow-soft"
+                  >
+                    <div className="mb-3 flex items-center justify-between">
+                      <p className="font-mono text-xs text-subtle">{"// tune"}</p>
+                      <button
+                        type="button"
+                        onClick={resetTune}
+                        className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
+                      >
+                        reset
+                      </button>
+                    </div>
+
+                    <Slider
+                      label="Scale"
+                      value={scalePct}
+                      min={SCALE_MIN}
+                      max={SCALE_MAX}
+                      step={1}
+                      display={`${(scalePct / 100).toFixed(2)}x`}
+                      onChange={(v) => setScalePct(clampScale(v))}
+                    />
+
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className="font-mono text-xs text-subtle">
+                        density
+                      </span>
+                      <Segmented
+                        options={DENSITIES}
+                        value={densityForScale(scalePct)}
+                        onChange={(d) => {
+                          const preset = DENSITIES.find((x) => x.id === d);
+                          if (preset) setScalePct(preset.scale);
+                        }}
+                      />
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-2 gap-x-4">
+                      <Slider
+                        label="Pad top"
+                        value={padTop}
+                        min={PAD_MIN}
+                        max={PAD_MAX}
+                        step={1}
+                        display={`${padTop}mm`}
+                        onChange={(v) => setPadTop(clampPad(v))}
+                      />
+                      <Slider
+                        label="Pad bottom"
+                        value={padBottom}
+                        min={PAD_MIN}
+                        max={PAD_MAX}
+                        step={1}
+                        display={`${padBottom}mm`}
+                        onChange={(v) => setPadBottom(clampPad(v))}
+                      />
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between gap-3">
+                      <span className="font-mono text-xs text-subtle">
+                        page size
+                      </span>
+                      <Segmented
+                        options={PAGE_SIZES}
+                        value={pageSize}
+                        onChange={setPageSize}
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+
           <div className="overflow-hidden rounded-card border border-border shadow-soft">
-            <div className="max-h-[calc(100vh-7rem)] overflow-auto bg-neutral-100 p-4">
-              {renderTemplate(templateId, content)}
+            <div className="max-h-[calc(100vh-9rem)] overflow-auto bg-neutral-100 p-4">
+              <div style={resumeVars}>{renderTemplate(templateId, content)}</div>
             </div>
           </div>
         </div>
       </div>
+
     </main>
+  );
+}
+
+/** A labelled range slider with a value readout. */
+function Slider({
+  label,
+  value,
+  min,
+  max,
+  step,
+  display,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  display: string;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 flex items-center justify-between">
+        <span className="font-mono text-xs text-subtle">{label}</span>
+        <span className="font-mono text-xs text-foreground">{display}</span>
+      </span>
+      <input
+        type="range"
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="r-slider"
+      />
+    </label>
+  );
+}
+
+/** A side-by-side row of options (segmented control). */
+function Segmented<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label?: string;
+  options: readonly { id: T; label: string }[];
+  value: T | null;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div>
+      {label ? (
+        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-subtle">
+          {label}
+        </p>
+      ) : null}
+      <div
+        role="group"
+        aria-label={label ?? "options"}
+        className="inline-flex flex-wrap overflow-hidden rounded-lg border border-border"
+      >
+        {options.map((o) => (
+          <button
+            key={o.id}
+            type="button"
+            onClick={() => onChange(o.id)}
+            aria-pressed={value === o.id}
+            className={`px-2.5 py-1 text-xs font-medium transition-colors ${
+              value === o.id
+                ? "bg-foreground text-background"
+                : "text-subtle hover:bg-card-hover"
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
