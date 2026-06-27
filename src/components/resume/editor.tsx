@@ -79,6 +79,7 @@ export function Editor({
   const [padBottom, setPadBottom] = useState(initialPadBottom);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
+  const [tuneOpen, setTuneOpen] = useState(false);
 
   // Debounced autosave. Skip the first render (nothing changed yet).
   const first = useRef(true);
@@ -441,79 +442,113 @@ export function Editor({
 
         {/* Live preview */}
         <div className="lg:sticky lg:top-20 lg:self-start">
-          {/* Template: side-by-side row */}
-          <div className="mb-3">
+          {/* Header: template row + a compact tune popover */}
+          <div className="mb-3 flex items-end justify-between gap-3">
             <Segmented
               label="Template"
               options={TEMPLATES}
               value={templateId}
               onChange={setTemplateId}
             />
-          </div>
 
-          {/* Tune panel */}
-          <div className="mb-3 rounded-card border border-border bg-card p-4 shadow-soft">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="font-mono text-xs text-subtle">{"// tune"}</p>
+            <div className="relative shrink-0">
               <button
                 type="button"
-                onClick={resetTune}
-                className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
+                onClick={() => setTuneOpen((o) => !o)}
+                aria-expanded={tuneOpen}
+                aria-haspopup="dialog"
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-xs transition-colors ${
+                  tuneOpen
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-subtle hover:bg-card-hover hover:text-foreground"
+                }`}
               >
-                reset
+                {"// tune"}
               </button>
-            </div>
 
-            <Slider
-              label="Scale"
-              value={scalePct}
-              min={SCALE_MIN}
-              max={SCALE_MAX}
-              step={1}
-              display={`${(scalePct / 100).toFixed(2)}x`}
-              onChange={(v) => setScalePct(clampScale(v))}
-            />
+              {tuneOpen ? (
+                <>
+                  {/* click-outside backdrop */}
+                  <button
+                    type="button"
+                    aria-label="Close tune"
+                    onClick={() => setTuneOpen(false)}
+                    className="fixed inset-0 z-10 cursor-default"
+                  />
+                  <div
+                    role="dialog"
+                    aria-label="Tune"
+                    className="absolute right-0 z-20 mt-2 w-72 rounded-card border border-border bg-card p-4 shadow-soft"
+                  >
+                    <div className="mb-3 flex items-center justify-between">
+                      <p className="font-mono text-xs text-subtle">{"// tune"}</p>
+                      <button
+                        type="button"
+                        onClick={resetTune}
+                        className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
+                      >
+                        reset
+                      </button>
+                    </div>
 
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <span className="font-mono text-xs text-subtle">density</span>
-              <Segmented
-                options={DENSITIES}
-                value={densityForScale(scalePct)}
-                onChange={(d) => {
-                  const preset = DENSITIES.find((x) => x.id === d);
-                  if (preset) setScalePct(preset.scale);
-                }}
-              />
-            </div>
+                    <Slider
+                      label="Scale"
+                      value={scalePct}
+                      min={SCALE_MIN}
+                      max={SCALE_MAX}
+                      step={1}
+                      display={`${(scalePct / 100).toFixed(2)}x`}
+                      onChange={(v) => setScalePct(clampScale(v))}
+                    />
 
-            <div className="mt-4 grid grid-cols-2 gap-x-4">
-              <Slider
-                label="Pad top"
-                value={padTop}
-                min={PAD_MIN}
-                max={PAD_MAX}
-                step={1}
-                display={`${padTop}mm`}
-                onChange={(v) => setPadTop(clampPad(v))}
-              />
-              <Slider
-                label="Pad bottom"
-                value={padBottom}
-                min={PAD_MIN}
-                max={PAD_MAX}
-                step={1}
-                display={`${padBottom}mm`}
-                onChange={(v) => setPadBottom(clampPad(v))}
-              />
-            </div>
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className="font-mono text-xs text-subtle">
+                        density
+                      </span>
+                      <Segmented
+                        options={DENSITIES}
+                        value={densityForScale(scalePct)}
+                        onChange={(d) => {
+                          const preset = DENSITIES.find((x) => x.id === d);
+                          if (preset) setScalePct(preset.scale);
+                        }}
+                      />
+                    </div>
 
-            <div className="mt-4 flex items-center justify-between gap-3">
-              <span className="font-mono text-xs text-subtle">page size</span>
-              <Segmented
-                options={PAGE_SIZES}
-                value={pageSize}
-                onChange={setPageSize}
-              />
+                    <div className="mt-4 grid grid-cols-2 gap-x-4">
+                      <Slider
+                        label="Pad top"
+                        value={padTop}
+                        min={PAD_MIN}
+                        max={PAD_MAX}
+                        step={1}
+                        display={`${padTop}mm`}
+                        onChange={(v) => setPadTop(clampPad(v))}
+                      />
+                      <Slider
+                        label="Pad bottom"
+                        value={padBottom}
+                        min={PAD_MIN}
+                        max={PAD_MAX}
+                        step={1}
+                        display={`${padBottom}mm`}
+                        onChange={(v) => setPadBottom(clampPad(v))}
+                      />
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between gap-3">
+                      <span className="font-mono text-xs text-subtle">
+                        page size
+                      </span>
+                      <Segmented
+                        options={PAGE_SIZES}
+                        value={pageSize}
+                        onChange={setPageSize}
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : null}
             </div>
           </div>
 
@@ -570,7 +605,7 @@ function Slider({
         max={max}
         step={step}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-[var(--accent)]"
+        className="r-slider"
       />
     </label>
   );
