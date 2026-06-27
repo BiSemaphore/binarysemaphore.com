@@ -23,7 +23,7 @@ function FooterLink({ href, label }: { href: string; label: string }) {
   );
 }
 
-export function Footer() {
+export function Footer({ linkBase = "" }: { linkBase?: string } = {}) {
   const year = new Date().getFullYear();
 
   return (
@@ -87,7 +87,14 @@ export function Footer() {
             <ul className="mt-4 space-y-3">
               {col.links.map((link) => (
                 <li key={link.href + link.label}>
-                  <FooterLink href={link.href} label={link.label} />
+                  <FooterLink
+                    href={
+                      /^https?:\/\//.test(link.href)
+                        ? link.href
+                        : `${linkBase}${link.href}`
+                    }
+                    label={link.label}
+                  />
                 </li>
               ))}
             </ul>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { MenuIcon, CloseIcon, ArrowUpRightIcon } from "@/components/icons";
+import { NavLink } from "@/components/nav-link";
 import type { NavItem } from "@/components/header";
 
 /**
@@ -13,9 +13,11 @@ import type { NavItem } from "@/components/header";
 export function MobileMenu({
   items,
   authed = false,
+  linkBase = "",
 }: {
   items: NavItem[];
   authed?: boolean;
+  linkBase?: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -63,47 +65,47 @@ export function MobileMenu({
                     <ul>
                       {item.items.map((sub) => (
                         <li key={sub.href}>
-                          <Link
-                            href={sub.href}
+                          <NavLink
+                            href={`${linkBase}${sub.href}`}
                             onClick={close}
                             className="block py-2.5 text-xl font-medium text-foreground"
                           >
                             {sub.label}
-                          </Link>
+                          </NavLink>
                         </li>
                       ))}
                     </ul>
                   </li>
                 ) : (
                   <li key={item.href}>
-                    <Link
-                      href={item.href}
+                    <NavLink
+                      href={`${linkBase}${item.href}`}
                       onClick={close}
                       className="block border-b border-border py-4 text-2xl font-medium tracking-[-0.02em] text-foreground"
                     >
                       {item.label}
-                    </Link>
+                    </NavLink>
                   </li>
                 ),
               )}
               <li>
-                <Link
-                  href={authed ? "/account" : "/login"}
+                <NavLink
+                  href={`${linkBase}${authed ? "/account" : "/login"}`}
                   onClick={close}
                   className="block border-b border-border py-4 text-2xl font-medium tracking-[-0.02em] text-foreground"
                 >
                   {authed ? "Account" : "Sign in"}
-                </Link>
+                </NavLink>
               </li>
             </ul>
-            <Link
-              href="/contact"
+            <NavLink
+              href={`${linkBase}/contact`}
               onClick={close}
               className="mt-4 inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-3 text-base font-semibold text-background"
             >
               Get in touch
               <ArrowUpRightIcon className="h-4 w-4" />
-            </Link>
+            </NavLink>
           </nav>
         </div>
       )}
