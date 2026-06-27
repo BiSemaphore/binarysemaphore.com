@@ -31,42 +31,34 @@ export default async function ResumeLandingPage() {
 
   return (
     <main className="flex-1">
-      <section className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-2/3"
-          style={{
-            background:
-              "radial-gradient(60% 60% at 50% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent)",
-          }}
-        />
-        <div className="mx-auto w-full max-w-3xl px-6 py-20 text-center sm:py-28">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
-            Resume, by Binary Semaphore
-          </p>
-          <h1 className="mt-4 text-balance font-display text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-            A resume you can build in one sitting
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-balance text-lg leading-7 text-muted">
-            Fill in a few fields, pick a template, and export to PDF. No
-            fiddling with margins, no watermarks. Your data stays in your
-            account.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href={primaryHref}
-              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background shadow-soft transition-transform hover:-translate-y-0.5"
-            >
-              {primaryLabel}
-            </Link>
-            {!user ? (
-              <span className="text-sm text-subtle">Free, sign in to start</span>
-            ) : null}
-          </div>
+      {/* Hero — same shape as the main site's page intros: mono label, big
+          display headline, muted lead. No decoration. */}
+      <section className="mx-auto w-full max-w-7xl px-6 pt-16 pb-2 lg:px-10 lg:pt-24">
+        <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+          Resume · by Binary Semaphore
+        </p>
+        <h1 className="max-w-3xl text-balance font-display text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          A resume you can build in one sitting
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
+          Fill in a few fields, pick a template, and export to PDF. No fiddling
+          with margins, no watermarks. Your data stays in your account.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          <Link
+            href={primaryHref}
+            className="inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
+          >
+            {primaryLabel}
+          </Link>
+          {!user ? (
+            <span className="text-sm text-subtle">Free, sign in to start.</span>
+          ) : null}
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-5xl px-6 pb-24">
+      {/* How it works */}
+      <section className="mx-auto w-full max-w-7xl px-6 pt-14 pb-24 lg:px-10">
         <div className="grid gap-5 sm:grid-cols-3">
           {STEPS.map((step, i) => (
             <div
