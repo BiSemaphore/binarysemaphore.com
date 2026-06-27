@@ -383,11 +383,12 @@ body {
 }
 
 /* --- Resume PDF export --------------------------------------------------- */
-/* The resume editor renders a hidden `.resume-print` container with just the
-   resume. "Download PDF" adds `printing-resume` to <body> and calls print();
-   this stylesheet (scoped to that class) shows only the resume in the PDF, so
-   printing any other page on the site is unaffected. Page size comes from an
-   injected `@page` rule in the editor. */
+/* The resume editor portals a hidden `.resume-print` container (just the
+   resume) directly under <body>. "Download PDF" adds `printing-resume` to
+   <body> and calls print(); this stylesheet hides every *other* body child with
+   `display: none` so the rest of the page produces no pages at all. (Using
+   `visibility: hidden` would keep the tall editor in flow and emit blank
+   trailing pages.) Page size comes from an injected `@page` rule in the editor. */
 .resume-print {
   display: none;
 }
@@ -396,18 +397,12 @@ body {
   body.printing-resume {
     background: #fff;
   }
-  body.printing-resume * {
-    visibility: hidden !important;
-  }
-  body.printing-resume .resume-print,
-  body.printing-resume .resume-print * {
-    visibility: visible !important;
+  /* Remove everything except the resume from layout flow (no blank pages). */
+  body.printing-resume > *:not(.resume-print) {
+    display: none !important;
   }
   body.printing-resume .resume-print {
     display: block !important;
-    position: absolute;
-    inset: 0 auto auto 0;
-    width: 100%;
     /* Print backgrounds/accents (Swiss block, Terminal colors, etc.). */
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

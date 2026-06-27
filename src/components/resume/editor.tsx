@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { saveResume } from "@/app/resume/editor/[id]/actions";
 import {
@@ -80,6 +81,13 @@ export function Editor({
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [tuneOpen, setTuneOpen] = useState(false);
+  // The print container is portaled to <body>; only render it on the client
+  // (SSR-safe mount check, no setState-in-effect). createPortal needs document.
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   // Debounced autosave. Skip the first render (nothing changed yet).
   const first = useRef(true);
@@ -560,16 +568,24 @@ export function Editor({
         </div>
       </div>
 
-      {/* Print target: hidden on screen; the print stylesheet (globals.css,
-          scoped to body.printing-resume) reveals only this for the PDF. */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `@page { size: ${pageSizeCss(pageSize)}; margin: 0; }`,
-        }}
-      />
-      <div className="resume-print" aria-hidden>
-        <div style={resumeVars}>{renderTemplate(templateId, content)}</div>
-      </div>
+      {/* Print target: portaled to <body> so it has no tall ancestors, hidden
+          on screen; the print stylesheet (globals.css, scoped to
+          body.printing-resume) reveals only this for the PDF. */}
+      {mounted
+        ? createPortal(
+            <div className="resume-print" aria-hidden>
+              <style
+                dangerouslySetInnerHTML={{
+                  __html: `@page { size: ${pageSizeCss(pageSize)}; margin: 0; }`,
+                }}
+              />
+              <div style={resumeVars}>
+                {renderTemplate(templateId, content)}
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </main>
   );
 }
