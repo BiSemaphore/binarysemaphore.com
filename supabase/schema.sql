@@ -34,14 +34,17 @@ create table if not exists public.resumes (
   title text not null default 'Untitled',
   template_id text not null default 'classic',
   density text not null default 'regular',
+  page_size text not null default 'a4',
   content jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
--- For tables created before `density` existed.
+-- For tables created before these presentation columns existed.
 alter table public.resumes
   add column if not exists density text not null default 'regular';
+alter table public.resumes
+  add column if not exists page_size text not null default 'a4';
 
 create index if not exists resumes_user_id_idx on public.resumes (user_id);
 

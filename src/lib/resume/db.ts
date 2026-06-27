@@ -9,10 +9,12 @@
 import { createClient } from "@/utils/supabase/server";
 import {
   DEFAULT_DENSITY,
+  DEFAULT_PAGE_SIZE,
   DEFAULT_TEMPLATE,
   emptyResume,
   normalizeResume,
   type Density,
+  type PageSize,
   type ResumeContent,
   type TemplateId,
 } from "@/lib/resume/schema";
@@ -22,6 +24,7 @@ export type Resume = {
   title: string;
   templateId: TemplateId;
   density: Density;
+  pageSize: PageSize;
   content: ResumeContent;
   createdAt: string;
   updatedAt: string;
@@ -38,6 +41,7 @@ type Row = {
   title: string;
   template_id: string;
   density: string;
+  page_size: string;
   content: unknown;
   created_at: string;
   updated_at: string;
@@ -49,6 +53,7 @@ function toResume(row: Row): Resume {
     title: row.title,
     templateId: (row.template_id as TemplateId) || DEFAULT_TEMPLATE,
     density: (row.density as Density) || DEFAULT_DENSITY,
+    pageSize: (row.page_size as PageSize) || DEFAULT_PAGE_SIZE,
     content: normalizeResume(row.content),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -76,7 +81,9 @@ export async function getResume(id: string): Promise<Resume | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("resumes")
-    .select("id, title, template_id, density, content, created_at, updated_at")
+    .select(
+      "id, title, template_id, density, page_size, content, created_at, updated_at",
+    )
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;
@@ -109,6 +116,7 @@ export type ResumePatch = {
   title?: string;
   templateId?: TemplateId;
   density?: Density;
+  pageSize?: PageSize;
   content?: ResumeContent;
 };
 
@@ -122,6 +130,7 @@ export async function updateResume(
   if (patch.title !== undefined) row.title = patch.title;
   if (patch.templateId !== undefined) row.template_id = patch.templateId;
   if (patch.density !== undefined) row.density = patch.density;
+  if (patch.pageSize !== undefined) row.page_size = patch.pageSize;
   if (patch.content !== undefined) row.content = patch.content;
   if (Object.keys(row).length === 0) return;
 

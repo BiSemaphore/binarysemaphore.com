@@ -1,14 +1,18 @@
 import { describe, it, expect } from "vitest";
 import {
   DEFAULT_DENSITY,
+  DEFAULT_PAGE_SIZE,
   DEFAULT_TEMPLATE,
   DENSITIES,
+  PAGE_SIZES,
   TEMPLATES,
   densityZoom,
   emptyResume,
   isDensity,
+  isPageSize,
   isTemplateId,
   normalizeResume,
+  pageSizeCss,
 } from "./schema";
 
 describe("emptyResume", () => {
@@ -72,5 +76,24 @@ describe("density", () => {
     expect(densityZoom("tight")).toBeLessThan(1);
     expect(densityZoom("roomy")).toBeGreaterThan(1);
     expect(densityZoom("nonsense")).toBe(1);
+  });
+});
+
+describe("page size", () => {
+  it("defaults to A4 and offers Letter", () => {
+    expect(DEFAULT_PAGE_SIZE).toBe("a4");
+    expect(PAGE_SIZES.map((p) => p.id)).toContain("letter");
+    expect(isPageSize(DEFAULT_PAGE_SIZE)).toBe(true);
+  });
+
+  it("recognizes only known page sizes", () => {
+    expect(isPageSize("a4")).toBe(true);
+    expect(isPageSize("nope")).toBe(false);
+  });
+
+  it("maps to a CSS @page size keyword (unknown -> A4)", () => {
+    expect(pageSizeCss("a4")).toBe("A4");
+    expect(pageSizeCss("letter")).toBe("letter");
+    expect(pageSizeCss("nonsense")).toBe("A4");
   });
 });

@@ -342,3 +342,43 @@ body {
 .dark .thread code[data-theme] span {
   color: var(--shiki-dark);
 }
+
+/* --- Resume PDF export --------------------------------------------------- */
+/* The resume editor renders a hidden `.resume-print` container with just the
+   resume. "Download PDF" adds `printing-resume` to <body> and calls print();
+   this stylesheet (scoped to that class) shows only the resume in the PDF, so
+   printing any other page on the site is unaffected. Page size comes from an
+   injected `@page` rule in the editor. */
+.resume-print {
+  display: none;
+}
+
+@media print {
+  body.printing-resume {
+    background: #fff;
+  }
+  body.printing-resume * {
+    visibility: hidden !important;
+  }
+  body.printing-resume .resume-print,
+  body.printing-resume .resume-print * {
+    visibility: visible !important;
+  }
+  body.printing-resume .resume-print {
+    display: block !important;
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    /* Print backgrounds/accents (Swiss block, Terminal colors, etc.). */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* Keep entries from splitting awkwardly across pages. */
+  body.printing-resume .resume-print h2,
+  body.printing-resume .resume-print h3 {
+    break-after: avoid;
+  }
+  body.printing-resume .resume-print li {
+    break-inside: avoid;
+  }
+}

@@ -133,3 +133,25 @@ export function isDensity(value: string): value is Density {
 export function densityZoom(density: string): number {
   return DENSITIES.find((d) => d.id === density)?.zoom ?? 1;
 }
+
+/**
+ * Page size for PDF export. A4 is the global default; Letter for US/Canada.
+ * `css` is the value used in the `@page { size }` rule.
+ */
+export const PAGE_SIZES = [
+  { id: "a4", label: "A4", css: "A4" },
+  { id: "letter", label: "Letter", css: "letter" },
+] as const;
+
+export type PageSize = (typeof PAGE_SIZES)[number]["id"];
+
+export const DEFAULT_PAGE_SIZE: PageSize = "a4";
+
+export function isPageSize(value: string): value is PageSize {
+  return PAGE_SIZES.some((p) => p.id === value);
+}
+
+/** The `@page { size }` keyword for a page size (defaults to A4). */
+export function pageSizeCss(pageSize: string): string {
+  return PAGE_SIZES.find((p) => p.id === pageSize)?.css ?? "A4";
+}

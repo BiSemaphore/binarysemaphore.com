@@ -26,6 +26,7 @@ export default async function EditorPage({
       initialTitle={resume.title}
       initialTemplateId={resume.templateId}
       initialDensity={resume.density}
+      initialPageSize={resume.pageSize}
       initialContent={resume.content}
     />
   );

@@ -5,9 +5,12 @@ import Link from "next/link";
 import { saveResume } from "@/app/resume/editor/[id]/actions";
 import {
   DENSITIES,
+  PAGE_SIZES,
   TEMPLATES,
   densityZoom,
+  pageSizeCss,
   type Density,
+  type PageSize,
   type ResumeContent,
   type ResumeEducation,
   type ResumeExperience,
@@ -46,17 +49,20 @@ export function Editor({
   initialTitle,
   initialTemplateId,
   initialDensity,
+  initialPageSize,
   initialContent,
 }: {
   id: string;
   initialTitle: string;
   initialTemplateId: TemplateId;
   initialDensity: Density;
+  initialPageSize: PageSize;
   initialContent: ResumeContent;
 }) {
   const [title, setTitle] = useState(initialTitle);
   const [templateId, setTemplateId] = useState<TemplateId>(initialTemplateId);
   const [density, setDensity] = useState<Density>(initialDensity);
+  const [pageSize, setPageSize] = useState<PageSize>(initialPageSize);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
 
@@ -69,11 +75,29 @@ export function Editor({
     }
     setStatus("saving");
     const t = setTimeout(async () => {
-      const res = await saveResume(id, { title, templateId, density, content });
+      const res = await saveResume(id, {
+        title,
+        templateId,
+        density,
+        pageSize,
+        content,
+      });
       setStatus(res.ok ? "saved" : "error");
     }, 800);
     return () => clearTimeout(t);
-  }, [id, title, templateId, density, content]);
+  }, [id, title, templateId, density, pageSize, content]);
+
+  // Print just the resume: a body class scopes the print stylesheet (globals.css)
+  // so only the hidden .resume-print container shows in the PDF.
+  function handleDownloadPdf() {
+    const cleanup = () => {
+      document.body.classList.remove("printing-resume");
+      window.removeEventListener("afterprint", cleanup);
+    };
+    window.addEventListener("afterprint", cleanup);
+    document.body.classList.add("printing-resume");
+    window.print();
+  }
 
   // --- content updaters -----------------------------------------------------
   const setBasics = (field: keyof ResumeContent["basics"], value: string) =>
@@ -124,49 +148,14 @@ export function Editor({
             />
           </div>
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2">
-              <span className="hidden font-mono text-xs text-subtle lg:inline">
-                Template
-              </span>
-              <select
-                value={templateId}
-                onChange={(e) => setTemplateId(e.target.value as TemplateId)}
-                aria-label="Template"
-                className="rounded-lg border border-border bg-background px-2 py-1 text-sm text-foreground focus:border-accent focus:outline-none"
-              >
-                {TEMPLATES.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            {/* Fit-to-page density */}
-            <div
-              role="group"
-              aria-label="Density"
-              className="hidden overflow-hidden rounded-lg border border-border sm:flex"
-            >
-              {DENSITIES.map((d) => (
-                <button
-                  key={d.id}
-                  type="button"
-                  onClick={() => setDensity(d.id)}
-                  aria-pressed={density === d.id}
-                  title={`${d.label} spacing`}
-                  className={`px-2.5 py-1 text-xs font-medium transition-colors ${
-                    density === d.id
-                      ? "bg-foreground text-background"
-                      : "text-subtle hover:bg-card-hover"
-                  }`}
-                >
-                  {d.label}
-                </button>
-              ))}
-            </div>
-
             <SaveIndicator status={status} />
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-1.5 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
+            >
+              Download PDF
+            </button>
           </div>
         </div>
       </div>
@@ -423,8 +412,30 @@ export function Editor({
 
         {/* Live preview */}
         <div className="lg:sticky lg:top-20 lg:self-start">
+          {/* Controls: template, density, page size — side-by-side rows */}
+          <div className="mb-3 flex flex-wrap items-end gap-x-6 gap-y-3">
+            <Segmented
+              label="Template"
+              options={TEMPLATES}
+              value={templateId}
+              onChange={setTemplateId}
+            />
+            <Segmented
+              label="Density"
+              options={DENSITIES}
+              value={density}
+              onChange={setDensity}
+            />
+            <Segmented
+              label="Size"
+              options={PAGE_SIZES}
+              value={pageSize}
+              onChange={setPageSize}
+            />
+          </div>
+
           <div className="overflow-hidden rounded-card border border-border shadow-soft">
-            <div className="max-h-[calc(100vh-7rem)] overflow-auto bg-neutral-100 p-4">
+            <div className="max-h-[calc(100vh-9rem)] overflow-auto bg-neutral-100 p-4">
               <div style={{ zoom: densityZoom(density) } as React.CSSProperties}>
                 {renderTemplate(templateId, content)}
               </div>
@@ -432,7 +443,62 @@ export function Editor({
           </div>
         </div>
       </div>
+
+      {/* Print target: hidden on screen; the print stylesheet (globals.css,
+          scoped to body.printing-resume) reveals only this for the PDF. */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `@page { size: ${pageSizeCss(pageSize)}; margin: 0; }`,
+        }}
+      />
+      <div className="resume-print" aria-hidden>
+        <div style={{ zoom: densityZoom(density) } as React.CSSProperties}>
+          {renderTemplate(templateId, content)}
+        </div>
+      </div>
     </main>
+  );
+}
+
+/** A side-by-side row of options (segmented control). */
+function Segmented<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly { id: T; label: string }[];
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div>
+      <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-subtle">
+        {label}
+      </p>
+      <div
+        role="group"
+        aria-label={label}
+        className="inline-flex flex-wrap overflow-hidden rounded-lg border border-border"
+      >
+        {options.map((o) => (
+          <button
+            key={o.id}
+            type="button"
+            onClick={() => onChange(o.id)}
+            aria-pressed={value === o.id}
+            className={`px-2.5 py-1 text-xs font-medium transition-colors ${
+              value === o.id
+                ? "bg-foreground text-background"
+                : "text-subtle hover:bg-card-hover"
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
