@@ -16,6 +16,9 @@ alter table public.contact_messages enable row level security;
 -- Anyone may submit a message (the API writes with the publishable/anon role),
 -- but there is no select/update/delete policy, so messages cannot be read back
 -- through the API. Read them in the Supabase dashboard or with a secret key.
+-- (Policies use drop-then-create because Postgres has no CREATE POLICY IF NOT
+-- EXISTS, so the whole file stays safe to re-run.)
+drop policy if exists "Anyone can submit a contact message" on public.contact_messages;
 create policy "Anyone can submit a contact message"
   on public.contact_messages
   for insert
@@ -41,19 +44,23 @@ alter table public.resumes enable row level security;
 
 -- Each user can only see and change their own resumes. RLS does the
 -- authorization; the app code just scopes its queries.
+drop policy if exists "Owners can read their resumes" on public.resumes;
 create policy "Owners can read their resumes"
   on public.resumes for select to authenticated
   using (auth.uid() = user_id);
 
+drop policy if exists "Owners can create their resumes" on public.resumes;
 create policy "Owners can create their resumes"
   on public.resumes for insert to authenticated
   with check (auth.uid() = user_id);
 
+drop policy if exists "Owners can update their resumes" on public.resumes;
 create policy "Owners can update their resumes"
   on public.resumes for update to authenticated
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists "Owners can delete their resumes" on public.resumes;
 create policy "Owners can delete their resumes"
   on public.resumes for delete to authenticated
   using (auth.uid() = user_id);
