@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { projects } from "@/lib/site";
+import { productSubdomainUrl } from "@/lib/subdomains";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
@@ -40,7 +42,10 @@ export async function generateMetadata({
       description: project.detail.lede,
       images: project.image ? [project.image] : undefined,
     },
-    alternates: { canonical: `/projects/${slug}` },
+    // Products with a subdomain are canonical there; otherwise the path is.
+    alternates: {
+      canonical: productSubdomainUrl(slug) ?? `/projects/${slug}`,
+    },
   };
 }
 
@@ -58,15 +63,20 @@ export default async function ProjectPage({
   // works for any GitHub owner (not just shahid-io).
   const repoLabel = project.href.replace(/^https?:\/\//, "");
 
+  // When served from a product subdomain (set by the proxy), point the shared
+  // chrome's internal links back at the apex.
+  const onSubdomain = Boolean((await headers()).get("x-product-subdomain"));
+  const linkBase = onSubdomain ? "https://binarysemaphore.com" : "";
+
   return (
     <>
-      <Header />
+      <Header linkBase={linkBase} />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-16">
         {/* Breadcrumb */}
         <nav className="pt-10 pb-8 text-sm" aria-label="Breadcrumb">
           <Link
-            href="/#projects"
+            href={`${linkBase}/#projects`}
             className="inline-flex items-center gap-1.5 font-mono text-subtle transition-colors hover:text-foreground"
           >
             <span aria-hidden="true">&larr;</span> Projects
@@ -320,7 +330,7 @@ export default async function ProjectPage({
         </section>
       </main>
 
-      <Footer />
+      <Footer linkBase={linkBase} />
     </>
   );
 }

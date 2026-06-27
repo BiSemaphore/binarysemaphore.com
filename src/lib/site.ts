@@ -38,6 +38,8 @@ export type Project = {
   featured?: boolean;
   /** When set, the card links to /projects/<slug> and a detail page is built. */
   slug?: string;
+  /** When set, the product is served at <subdomain>.binarysemaphore.com. */
+  subdomain?: string;
   /** Long-form content for the detail page. */
   detail?: ProjectDetail;
 };
@@ -739,6 +741,7 @@ export const projects: Project[] = [
     href: "https://github.com/shahid-io/inode",
     featured: true,
     slug: "inode",
+    subdomain: "inode",
     detail: {
       lede: "A privacy-focused CLI for storing and retrieving notes, secrets, and commands through natural-language semantic search.",
       statements: [

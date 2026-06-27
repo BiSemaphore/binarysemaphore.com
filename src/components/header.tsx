@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Wordmark } from "@/components/wordmark";
 import { ArrowUpRightIcon, ChevronDownIcon } from "@/components/icons";
 import { RollText } from "@/components/roll-text";
 import { MobileMenu } from "@/components/mobile-menu";
+import { NavLink } from "@/components/nav-link";
 import { getCurrentUser } from "@/utils/supabase/auth";
 
 export type NavItem =
@@ -29,14 +29,18 @@ export const navItems: NavItem[] = [
   { type: "link", href: "/threads", label: "Threads" },
 ];
 
-export async function Header() {
+export async function Header({ linkBase = "" }: { linkBase?: string } = {}) {
   const user = await getCurrentUser();
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
-        <Link href="/" className="rounded-full" aria-label="Binary Semaphore home">
+        <NavLink
+          href={`${linkBase}/`}
+          className="rounded-full"
+          aria-label="Binary Semaphore home"
+        >
           <Wordmark />
-        </Link>
+        </NavLink>
 
         {/* Centered nav, like the reference's centered menu. */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 md:block">
@@ -59,12 +63,12 @@ export async function Header() {
                     <ul className="min-w-44 rounded-card border border-border bg-card p-2 shadow-soft">
                       {item.items.map((sub) => (
                         <li key={sub.href}>
-                          <Link
-                            href={sub.href}
+                          <NavLink
+                            href={`${linkBase}${sub.href}`}
                             className="block rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-card-hover hover:text-accent-strong"
                           >
                             {sub.label}
-                          </Link>
+                          </NavLink>
                         </li>
                       ))}
                     </ul>
@@ -72,12 +76,12 @@ export async function Header() {
                 </li>
               ) : (
                 <li key={item.href}>
-                  <Link
-                    href={item.href}
+                  <NavLink
+                    href={`${linkBase}${item.href}`}
                     className="roll-link text-base font-medium text-foreground"
                   >
                     <RollText text={item.label} />
-                  </Link>
+                  </NavLink>
                 </li>
               ),
             )}
@@ -85,21 +89,21 @@ export async function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            href={user ? "/account" : "/login"}
+          <NavLink
+            href={`${linkBase}${user ? "/account" : "/login"}`}
             className="hidden text-sm font-medium text-foreground transition-colors hover:text-accent-strong md:inline-flex"
           >
             {user ? "Account" : "Sign in"}
-          </Link>
+          </NavLink>
           <ThemeToggle />
-          <Link
-            href="/contact"
+          <NavLink
+            href={`${linkBase}/contact`}
             className="group hidden items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5 md:inline-flex"
           >
             Get in touch
             <ArrowUpRightIcon className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-          <MobileMenu items={navItems} authed={Boolean(user)} />
+          </NavLink>
+          <MobileMenu items={navItems} authed={Boolean(user)} linkBase={linkBase} />
         </div>
       </div>
     </header>
