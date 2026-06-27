@@ -33,10 +33,15 @@ create table if not exists public.resumes (
   user_id uuid not null references auth.users (id) on delete cascade,
   title text not null default 'Untitled',
   template_id text not null default 'classic',
+  density text not null default 'regular',
   content jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- For tables created before `density` existed.
+alter table public.resumes
+  add column if not exists density text not null default 'regular';
 
 create index if not exists resumes_user_id_idx on public.resumes (user_id);
 

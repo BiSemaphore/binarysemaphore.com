@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { saveResume } from "@/app/resume/editor/[id]/actions";
 import {
+  DENSITIES,
   TEMPLATES,
+  densityZoom,
+  type Density,
   type ResumeContent,
   type ResumeEducation,
   type ResumeExperience,
@@ -42,15 +45,18 @@ export function Editor({
   id,
   initialTitle,
   initialTemplateId,
+  initialDensity,
   initialContent,
 }: {
   id: string;
   initialTitle: string;
   initialTemplateId: TemplateId;
+  initialDensity: Density;
   initialContent: ResumeContent;
 }) {
   const [title, setTitle] = useState(initialTitle);
   const [templateId, setTemplateId] = useState<TemplateId>(initialTemplateId);
+  const [density, setDensity] = useState<Density>(initialDensity);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
 
@@ -63,11 +69,11 @@ export function Editor({
     }
     setStatus("saving");
     const t = setTimeout(async () => {
-      const res = await saveResume(id, { title, templateId, content });
+      const res = await saveResume(id, { title, templateId, density, content });
       setStatus(res.ok ? "saved" : "error");
     }, 800);
     return () => clearTimeout(t);
-  }, [id, title, templateId, content]);
+  }, [id, title, templateId, density, content]);
 
   // --- content updaters -----------------------------------------------------
   const setBasics = (field: keyof ResumeContent["basics"], value: string) =>
@@ -119,7 +125,7 @@ export function Editor({
           </div>
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-2">
-              <span className="hidden font-mono text-xs text-subtle sm:inline">
+              <span className="hidden font-mono text-xs text-subtle lg:inline">
                 Template
               </span>
               <select
@@ -135,6 +141,31 @@ export function Editor({
                 ))}
               </select>
             </label>
+
+            {/* Fit-to-page density */}
+            <div
+              role="group"
+              aria-label="Density"
+              className="hidden overflow-hidden rounded-lg border border-border sm:flex"
+            >
+              {DENSITIES.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setDensity(d.id)}
+                  aria-pressed={density === d.id}
+                  title={`${d.label} spacing`}
+                  className={`px-2.5 py-1 text-xs font-medium transition-colors ${
+                    density === d.id
+                      ? "bg-foreground text-background"
+                      : "text-subtle hover:bg-card-hover"
+                  }`}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+
             <SaveIndicator status={status} />
           </div>
         </div>
@@ -394,7 +425,9 @@ export function Editor({
         <div className="lg:sticky lg:top-20 lg:self-start">
           <div className="overflow-hidden rounded-card border border-border shadow-soft">
             <div className="max-h-[calc(100vh-7rem)] overflow-auto bg-neutral-100 p-4">
-              {renderTemplate(templateId, content)}
+              <div style={{ zoom: densityZoom(density) } as React.CSSProperties}>
+                {renderTemplate(templateId, content)}
+              </div>
             </div>
           </div>
         </div>

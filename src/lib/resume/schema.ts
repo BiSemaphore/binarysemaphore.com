@@ -109,3 +109,27 @@ export const DEFAULT_TEMPLATE: TemplateId = "classic";
 export function isTemplateId(value: string): value is TemplateId {
   return TEMPLATES.some((t) => t.id === value);
 }
+
+/**
+ * Fit-to-page density. Applied as CSS `zoom` on the rendered resume so content
+ * genuinely reflows (and paginates across pages) rather than just visually
+ * scaling. "tight" fits more per page, "roomy" gives more breathing room.
+ */
+export const DENSITIES = [
+  { id: "tight", label: "Tight", zoom: 0.9 },
+  { id: "regular", label: "Regular", zoom: 1 },
+  { id: "roomy", label: "Roomy", zoom: 1.08 },
+] as const;
+
+export type Density = (typeof DENSITIES)[number]["id"];
+
+export const DEFAULT_DENSITY: Density = "regular";
+
+export function isDensity(value: string): value is Density {
+  return DENSITIES.some((d) => d.id === value);
+}
+
+/** The CSS `zoom` factor for a density (defaults to 1 for unknown values). */
+export function densityZoom(density: string): number {
+  return DENSITIES.find((d) => d.id === density)?.zoom ?? 1;
+}

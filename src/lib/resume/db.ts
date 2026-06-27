@@ -8,9 +8,11 @@
  */
 import { createClient } from "@/utils/supabase/server";
 import {
+  DEFAULT_DENSITY,
   DEFAULT_TEMPLATE,
   emptyResume,
   normalizeResume,
+  type Density,
   type ResumeContent,
   type TemplateId,
 } from "@/lib/resume/schema";
@@ -19,6 +21,7 @@ export type Resume = {
   id: string;
   title: string;
   templateId: TemplateId;
+  density: Density;
   content: ResumeContent;
   createdAt: string;
   updatedAt: string;
@@ -34,6 +37,7 @@ type Row = {
   id: string;
   title: string;
   template_id: string;
+  density: string;
   content: unknown;
   created_at: string;
   updated_at: string;
@@ -44,6 +48,7 @@ function toResume(row: Row): Resume {
     id: row.id,
     title: row.title,
     templateId: (row.template_id as TemplateId) || DEFAULT_TEMPLATE,
+    density: (row.density as Density) || DEFAULT_DENSITY,
     content: normalizeResume(row.content),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -71,7 +76,7 @@ export async function getResume(id: string): Promise<Resume | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("resumes")
-    .select("id, title, template_id, content, created_at, updated_at")
+    .select("id, title, template_id, density, content, created_at, updated_at")
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;
@@ -103,6 +108,7 @@ export async function createResume(title = "Untitled"): Promise<string> {
 export type ResumePatch = {
   title?: string;
   templateId?: TemplateId;
+  density?: Density;
   content?: ResumeContent;
 };
 
@@ -115,6 +121,7 @@ export async function updateResume(
   const row: Record<string, unknown> = {};
   if (patch.title !== undefined) row.title = patch.title;
   if (patch.templateId !== undefined) row.template_id = patch.templateId;
+  if (patch.density !== undefined) row.density = patch.density;
   if (patch.content !== undefined) row.content = patch.content;
   if (Object.keys(row).length === 0) return;
 
