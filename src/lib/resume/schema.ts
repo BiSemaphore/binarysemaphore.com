@@ -91,15 +91,15 @@ export function normalizeResume(value: unknown): ResumeContent {
 }
 
 /**
- * Available templates. Up to 5; the renderer components are wired in Phase 2/3.
- * `id` is what we store in `resumes.template_id`.
+ * Available templates (max 5). `id` is what we store in `resumes.template_id`;
+ * each maps to a renderer in src/components/resume/templates.
  */
 export const TEMPLATES = [
   { id: "classic", label: "Classic" },
-  { id: "modern", label: "Modern" },
-  { id: "minimal", label: "Minimal" },
-  { id: "compact", label: "Compact" },
-  { id: "elegant", label: "Elegant" },
+  { id: "swiss", label: "Swiss" },
+  { id: "twocol", label: "Two-Column" },
+  { id: "editorial", label: "Editorial" },
+  { id: "terminal", label: "Terminal" },
 ] as const;
 
 export type TemplateId = (typeof TEMPLATES)[number]["id"];

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { saveResume } from "@/app/resume/editor/[id]/actions";
 import {
+  TEMPLATES,
   type ResumeContent,
   type ResumeEducation,
   type ResumeExperience,
@@ -49,7 +50,7 @@ export function Editor({
   initialContent: ResumeContent;
 }) {
   const [title, setTitle] = useState(initialTitle);
-  const [templateId] = useState<TemplateId>(initialTemplateId);
+  const [templateId, setTemplateId] = useState<TemplateId>(initialTemplateId);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
 
@@ -116,7 +117,26 @@ export function Editor({
               className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-foreground hover:border-border focus:border-border focus:bg-card focus:outline-none"
             />
           </div>
-          <SaveIndicator status={status} />
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2">
+              <span className="hidden font-mono text-xs text-subtle sm:inline">
+                Template
+              </span>
+              <select
+                value={templateId}
+                onChange={(e) => setTemplateId(e.target.value as TemplateId)}
+                aria-label="Template"
+                className="rounded-lg border border-border bg-background px-2 py-1 text-sm text-foreground focus:border-accent focus:outline-none"
+              >
+                {TEMPLATES.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <SaveIndicator status={status} />
+          </div>
         </div>
       </div>
 

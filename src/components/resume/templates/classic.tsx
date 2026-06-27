@@ -1,6 +1,5 @@
-import type { ResumeContent } from "@/lib/resume/schema";
-
-export type TemplateProps = { content: ResumeContent };
+import type { TemplateProps } from "./types";
+import { cleanList, contactBits, formatRange, ph } from "./util";
 
 /**
  * Classic: a clean, single-column, recruiter-friendly resume. Rendered as
@@ -8,27 +7,14 @@ export type TemplateProps = { content: ResumeContent };
  * independent of the site theme. Empty fields show muted placeholders so the
  * preview is never blank.
  */
-
-function ph(value: string, placeholder: string) {
-  const text = value.trim();
-  return {
-    text: text || placeholder,
-    muted: text.length === 0,
-  };
-}
-
 export function ClassicTemplate({ content }: TemplateProps) {
   const { basics, experience, education, skills, projects, links } = content;
 
   const name = ph(basics.name, "Your Name");
   const title = ph(basics.title, "Your professional title");
 
-  const contactBits = [
-    basics.email,
-    basics.phone,
-    basics.location,
-    basics.website,
-  ].filter((s) => s.trim().length > 0);
+  const contacts = contactBits(basics);
+  const skillList = cleanList(skills);
 
   return (
     <article className="mx-auto w-full max-w-[210mm] bg-white px-10 py-10 font-sans text-[13px] leading-relaxed text-neutral-800">
@@ -49,9 +35,9 @@ export function ClassicTemplate({ content }: TemplateProps) {
           {title.text}
         </p>
 
-        {contactBits.length > 0 ? (
+        {contacts.length > 0 ? (
           <p className="mt-2 text-xs text-neutral-600">
-            {contactBits.join("  ·  ")}
+            {contacts.join("  ·  ")}
           </p>
         ) : null}
 
@@ -127,7 +113,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                   </p>
                 </div>
                 <span className="shrink-0 text-xs text-neutral-500">
-                  {formatRange(ed.start, ed.end, false)}
+                  {formatRange(ed.start, ed.end)}
                 </span>
               </div>
             ))}
@@ -136,14 +122,9 @@ export function ClassicTemplate({ content }: TemplateProps) {
       ) : null}
 
       {/* Skills */}
-      {skills.map((s) => s.trim()).filter(Boolean).length > 0 ? (
+      {skillList.length > 0 ? (
         <Section title="Skills">
-          <p className="text-neutral-700">
-            {skills
-              .map((s) => s.trim())
-              .filter(Boolean)
-              .join("  ·  ")}
-          </p>
+          <p className="text-neutral-700">{skillList.join("  ·  ")}</p>
         </Section>
       ) : null}
 
@@ -188,12 +169,4 @@ function Section({
       {children}
     </section>
   );
-}
-
-function formatRange(start: string, end: string, current: boolean): string {
-  const s = start.trim();
-  const e = current ? "Present" : end.trim();
-  if (!s && !e) return "";
-  if (s && e) return `${s} – ${e}`;
-  return s || e;
 }
