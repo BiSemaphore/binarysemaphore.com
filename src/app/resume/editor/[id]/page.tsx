@@ -29,6 +29,7 @@ export default async function EditorPage({
       initialScalePct={resume.scalePct}
       initialPadTop={resume.padTop}
       initialPadBottom={resume.padBottom}
+      initialTextAlign={resume.textAlign}
       initialContent={resume.content}
     />
   );

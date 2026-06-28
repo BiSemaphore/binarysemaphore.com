@@ -9,6 +9,7 @@ import {
   type PageSize,
   type ResumeContent,
   type TemplateId,
+  type TextAlign,
 } from "@/lib/resume/schema";
 import { renderTemplate } from "@/components/resume/templates";
 
@@ -29,6 +30,7 @@ export function ResumePaper({
   padBottom = 15,
   showPageBreaks = false,
   frame = true,
+  align = "left",
 }: {
   templateId: TemplateId;
   content: ResumeContent;
@@ -39,6 +41,8 @@ export function ResumePaper({
   showPageBreaks?: boolean;
   /** Paper chrome (border + shadow). Off for thumbnails where the card frames it. */
   frame?: boolean;
+  /** Body-text alignment; templates' explicit header alignment still wins. */
+  align?: TextAlign;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const paperRef = useRef<HTMLDivElement>(null);
@@ -64,7 +68,10 @@ export function ResumePaper({
   }, []);
 
   const dims = pageDims(pageSize);
-  const densityStyle = { zoom: scaleZoom(scalePct) } as React.CSSProperties;
+  const densityStyle = {
+    zoom: scaleZoom(scalePct),
+    textAlign: align,
+  } as React.CSSProperties;
 
   const padTopPx = padTop * PX_PER_MM;
   const padBottomPx = padBottom * PX_PER_MM;

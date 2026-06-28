@@ -13,10 +13,12 @@ import {
   SCALE_MAX,
   SCALE_MIN,
   TEMPLATES,
+  TEXT_ALIGNS,
   clampPad,
   clampScale,
   densityForScale,
   type PageSize,
+  type TextAlign,
   type ResumeContent,
   type ResumeEducation,
   type ResumeExperience,
@@ -59,6 +61,7 @@ export function Editor({
   initialScalePct,
   initialPadTop,
   initialPadBottom,
+  initialTextAlign,
   initialContent,
 }: {
   id: string;
@@ -68,6 +71,7 @@ export function Editor({
   initialScalePct: number;
   initialPadTop: number;
   initialPadBottom: number;
+  initialTextAlign: TextAlign;
   initialContent: ResumeContent;
 }) {
   const [title, setTitle] = useState(initialTitle);
@@ -76,6 +80,7 @@ export function Editor({
   const [scalePct, setScalePct] = useState(initialScalePct);
   const [padTop, setPadTop] = useState(initialPadTop);
   const [padBottom, setPadBottom] = useState(initialPadBottom);
+  const [textAlign, setTextAlign] = useState<TextAlign>(initialTextAlign);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [exporting, setExporting] = useState(false);
@@ -97,12 +102,23 @@ export function Editor({
         scalePct,
         padTop,
         padBottom,
+        textAlign,
         content,
       });
       setStatus(res.ok ? "saved" : "error");
     }, 800);
     return () => clearTimeout(t);
-  }, [id, title, templateId, pageSize, scalePct, padTop, padBottom, content]);
+  }, [
+    id,
+    title,
+    templateId,
+    pageSize,
+    scalePct,
+    padTop,
+    padBottom,
+    textAlign,
+    content,
+  ]);
 
   function resetTune() {
     setScalePct(DEFAULT_SCALE);
@@ -123,6 +139,7 @@ export function Editor({
         scalePct,
         padTop,
         padBottom,
+        textAlign,
         content,
       });
       const res = await fetch(`/api/resume/${id}/pdf`);
@@ -283,6 +300,17 @@ export function Editor({
                       options={PAGE_SIZES}
                       value={pageSize}
                       onChange={setPageSize}
+                    />
+                  </div>
+
+                  <div className="mt-3">
+                    <Segmented
+                      green
+                      block
+                      label="align"
+                      options={TEXT_ALIGNS}
+                      value={textAlign}
+                      onChange={setTextAlign}
                     />
                   </div>
                 </div>
@@ -567,6 +595,7 @@ export function Editor({
               scalePct={scalePct}
               padTop={padTop}
               padBottom={padBottom}
+              align={textAlign}
               showPageBreaks
             />
           </div>

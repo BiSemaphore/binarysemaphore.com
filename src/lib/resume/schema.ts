@@ -350,3 +350,21 @@ export function pageDims(pageSize: string): PageDims {
 
 /** Fixed horizontal page margin in mm (left/right). Vertical is tunable. */
 export const PAGE_MARGIN_X = 16;
+
+/**
+ * Body-text alignment. "left" is the default (most readable / ATS-safe);
+ * "justify" fills lines edge-to-edge. Applied to the resume content wrapper;
+ * a template's explicit header alignment (centred names, etc.) still wins.
+ */
+export const TEXT_ALIGNS = [
+  { id: "left", label: "Left" },
+  { id: "justify", label: "Justify" },
+] as const;
+
+export type TextAlign = (typeof TEXT_ALIGNS)[number]["id"];
+
+export const DEFAULT_ALIGN: TextAlign = "left";
+
+export function isTextAlign(value: string): value is TextAlign {
+  return TEXT_ALIGNS.some((a) => a.id === value);
+}
