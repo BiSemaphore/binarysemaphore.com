@@ -470,7 +470,10 @@ export function Editor({
                   label="Skills (comma separated)"
                   value={content.skills.join(", ")}
                   onChange={(v) =>
-                    setContent((c) => ({ ...c, skills: v.split(",") }))
+                    // Split on a comma plus any surrounding spaces. The value is
+                    // re-joined with ", ", so splitting on "," alone would keep
+                    // re-adding that space and make it accumulate as you type.
+                    setContent((c) => ({ ...c, skills: v.split(/\s*,\s*/) }))
                   }
                   placeholder="Go, TypeScript, PostgreSQL"
                 />

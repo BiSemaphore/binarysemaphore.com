@@ -193,6 +193,55 @@ export const TEMPLATES = [
       "Cover-style. A navy kicker, oversized serif name, tracked subtitle. Bold editorial.",
     tags: ["single-column", "serif", "magazine"],
   },
+  {
+    id: "display",
+    label: "Display",
+    description:
+      "Typography-forward. An enormous name set tight over a thin contact rule, quiet body.",
+    tags: ["single-column", "bold", "modern", "sans"],
+  },
+  {
+    id: "dossier",
+    label: "Dossier",
+    description:
+      "Case-file aesthetic. Bordered header, monospace meta strip, boxed section labels.",
+    tags: ["single-column", "mono", "technical"],
+  },
+  {
+    id: "indexcard",
+    label: "Index Card",
+    description:
+      "Ruled record-card look. A tabbed header, hairline row rules, compact spacing.",
+    tags: ["single-column", "compact", "sans"],
+  },
+  {
+    id: "letterpress",
+    label: "Letterpress",
+    description:
+      "Warm and literary. Serif type, italic accents, centred small-caps section heads.",
+    tags: ["single-column", "serif", "formal"],
+  },
+  {
+    id: "mirror",
+    label: "Mirror",
+    description:
+      "Fully centred and symmetric. Balanced headings and rules. Calm and formal.",
+    tags: ["single-column", "modern", "sans"],
+  },
+  {
+    id: "periodical",
+    label: "Periodical",
+    description:
+      "Academic-journal byline. Ruled running head with volume meta, serif body.",
+    tags: ["single-column", "serif", "cv"],
+  },
+  {
+    id: "specsheet",
+    label: "Spec Sheet",
+    description:
+      "Datasheet aesthetic. Monospace labels in a left rail, content right, hairline rows.",
+    tags: ["single-column", "mono", "technical", "developer"],
+  },
 ] as const;
 
 export type TemplateId = (typeof TEMPLATES)[number]["id"];

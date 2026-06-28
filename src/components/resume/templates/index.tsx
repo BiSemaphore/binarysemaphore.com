@@ -13,6 +13,13 @@ import { BankerTemplate } from "./banker";
 import { BrutalistTemplate } from "./brutalist";
 import { NewspaperTemplate } from "./newspaper";
 import { MagazineTemplate } from "./magazine";
+import { DisplayTemplate } from "./display";
+import { DossierTemplate } from "./dossier";
+import { IndexcardTemplate } from "./indexcard";
+import { LetterpressTemplate } from "./letterpress";
+import { MirrorTemplate } from "./mirror";
+import { PeriodicalTemplate } from "./periodical";
+import { SpecsheetTemplate } from "./specsheet";
 
 /**
  * Renders a resume with the chosen template. One source of truth so the editor
@@ -46,6 +53,20 @@ export function renderTemplate(id: TemplateId, content: ResumeContent) {
       return <NewspaperTemplate content={content} />;
     case "magazine":
       return <MagazineTemplate content={content} />;
+    case "display":
+      return <DisplayTemplate content={content} />;
+    case "dossier":
+      return <DossierTemplate content={content} />;
+    case "indexcard":
+      return <IndexcardTemplate content={content} />;
+    case "letterpress":
+      return <LetterpressTemplate content={content} />;
+    case "mirror":
+      return <MirrorTemplate content={content} />;
+    case "periodical":
+      return <PeriodicalTemplate content={content} />;
+    case "specsheet":
+      return <SpecsheetTemplate content={content} />;
     case "classic":
     default:
       return <ClassicTemplate content={content} />;
