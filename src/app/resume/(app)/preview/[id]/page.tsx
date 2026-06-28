@@ -5,6 +5,7 @@ import { TEMPLATES, isTemplateId } from "@/lib/resume/schema";
 import { SAMPLE_RESUME } from "@/lib/resume/sample";
 import { ResumePaper } from "@/components/resume/resume-paper";
 import { CopyPromptButton } from "@/components/resume/copy-prompt-button";
+import { SubmitButton } from "@/components/resume/submit-button";
 import { useTemplateAction } from "@/app/resume/(app)/actions";
 
 export async function generateMetadata({
@@ -56,9 +57,12 @@ export default async function TemplatePreviewPage({
           />
           <form action={useTemplateAction}>
             <input type="hidden" name="templateId" value={tpl.id} />
-            <button type="submit" className="rx-pill rx-accent font-mono text-xs">
+            <SubmitButton
+              className="rx-pill rx-accent font-mono text-xs"
+              pendingLabel="creating…"
+            >
               use this template
-            </button>
+            </SubmitButton>
           </form>
         </div>
       </div>

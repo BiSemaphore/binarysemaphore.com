@@ -6,6 +6,7 @@ import { SAMPLE_RESUME } from "@/lib/resume/sample";
 import type { Template } from "@/lib/resume/schema";
 import { ResumePaper } from "@/components/resume/resume-paper";
 import { CopyPromptButton } from "@/components/resume/copy-prompt-button";
+import { SubmitButton } from "@/components/resume/submit-button";
 
 /**
  * A template gallery card: a live mini-preview of the template, its name,
@@ -64,9 +65,7 @@ export function TemplateCard({ template }: { template: Template }) {
             <CopyPromptButton template={template} />
             <form action={useTemplateAction}>
               <input type="hidden" name="templateId" value={template.id} />
-              <button type="submit" className="rx-pill">
-                use
-              </button>
+              <SubmitButton className="rx-pill">use</SubmitButton>
             </form>
             <Link href={`/preview/${template.id}`} className="rx-pill">
               preview →

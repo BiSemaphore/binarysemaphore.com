@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/utils/supabase/auth";
 import { listResumes } from "@/lib/resume/db";
 import { TEMPLATES } from "@/lib/resume/schema";
 import { TemplateCard } from "@/components/resume/template-card";
+import { SubmitButton } from "@/components/resume/submit-button";
 import {
   createResumeAction,
   deleteResumeAction,
@@ -53,9 +54,12 @@ export default async function ResumeHome() {
           </h2>
           {user ? (
             <form action={createResumeAction}>
-              <button type="submit" className="rx-pill rx-accent font-mono text-xs">
+              <SubmitButton
+                className="rx-pill rx-accent font-mono text-xs"
+                pendingLabel="creating…"
+              >
                 + new resume
-              </button>
+              </SubmitButton>
             </form>
           ) : null}
         </div>
