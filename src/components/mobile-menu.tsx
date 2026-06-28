@@ -76,6 +76,18 @@ export function MobileMenu({
                       ))}
                     </ul>
                   </li>
+                ) : item.external ? (
+                  <li key={item.href}>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      onClick={close}
+                      className="block border-b border-border py-4 text-2xl font-medium tracking-[-0.02em] text-foreground"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
                 ) : (
                   <li key={item.href}>
                     <NavLink

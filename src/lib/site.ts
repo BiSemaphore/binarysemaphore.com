@@ -734,6 +734,16 @@ export function getService(slug: string) {
 
 export const projects: Project[] = [
   {
+    name: "Resume",
+    tagline: "Build a clean resume and export a pixel-perfect PDF.",
+    description:
+      "A resume builder with 21 templates, a live side-by-side editor, rich text, and one-click PDF export. Free, runs in your browser, and your data stays in your account.",
+    tags: ["Next.js", "Supabase", "PDF", "Templates"],
+    href: "https://resume.binarysemaphore.com",
+    status: "live",
+    featured: true,
+  },
+  {
     name: "inode",
     tagline: "A CLI knowledge base that retrieves by meaning, not keywords.",
     description:

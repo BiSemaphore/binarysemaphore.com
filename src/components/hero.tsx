@@ -17,6 +17,19 @@ export function Hero() {
         {/* Headline + circular CTA */}
         <div className="flex items-start justify-between gap-8">
           <div className="min-w-0">
+            <a
+              href="https://resume.binarysemaphore.com"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="group mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground shadow-soft transition-colors hover:bg-card-hover"
+            >
+              <span className="rounded-full bg-accent px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-white">
+                New
+              </span>
+              Resume builder
+              <ArrowUpRightIcon className="h-3.5 w-3.5 text-subtle transition-colors group-hover:text-accent" />
+            </a>
+
             <h1 className="flex flex-wrap items-center gap-x-5 gap-y-1 font-display font-normal leading-[1.1] tracking-[-0.0328em] text-foreground text-[clamp(2.75rem,9vw,7.25rem)]">
               <Image
                 src="/brand/mark.svg"

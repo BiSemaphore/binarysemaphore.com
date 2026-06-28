@@ -49,6 +49,7 @@ export function Editor({
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [exporting, setExporting] = useState(false);
   const [tuneOpen, setTuneOpen] = useState(false);
+  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
 
   const patch = {
     title,
@@ -93,6 +94,27 @@ export function Editor({
     setPadBottom(DEFAULT_PAD);
   }
 
+  // Trigger a client-side file download from a blob.
+  function download(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Export the resume (content + presentation) as a JSON file for portability.
+  function handleExportJson() {
+    const data = { version: 1, ...patch };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    download(blob, `${title || "resume"}.json`);
+  }
+
   // Export to PDF: flush any pending edits, then download the server-rendered
   // PDF directly (no browser print dialog).
   async function handleExport() {
@@ -102,15 +124,7 @@ export function Editor({
       await saveResume(id, patch);
       const res = await fetch(`/api/resume/${id}/pdf`);
       if (!res.ok) throw new Error(`Export failed (${res.status})`);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${title || "resume"}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      download(await res.blob(), `${title || "resume"}.pdf`);
     } catch {
       setStatus("error");
     } finally {
@@ -177,6 +191,14 @@ export function Editor({
 
           <button
             type="button"
+            onClick={handleExportJson}
+            className="rx-pill font-mono text-xs"
+          >
+            json
+          </button>
+
+          <button
+            type="button"
             onClick={handleExport}
             disabled={exporting}
             className="rx-pill rx-accent font-mono text-xs disabled:opacity-60"
@@ -186,14 +208,44 @@ export function Editor({
         </div>
       </header>
 
-      {/* Split: form (left) | live preview (right), like Overleaf. */}
+      {/* Mobile-only Edit / Preview toggle (desktop shows both side by side). */}
+      <div className="flex border-b border-border p-2 lg:hidden">
+        <div className="mx-auto inline-flex overflow-hidden rounded-lg border border-border font-mono text-xs">
+          {(["edit", "preview"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setMobileView(v)}
+              aria-pressed={mobileView === v}
+              className={`px-4 py-1.5 transition-colors ${
+                mobileView === v
+                  ? "bg-foreground text-background"
+                  : "text-subtle hover:bg-card-hover"
+              }`}
+            >
+              {v}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Split: form (left) | live preview (right), like Overleaf. On mobile,
+          only the toggled pane shows (each full-height); desktop shows both. */}
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <div className="rx-scroll w-full overflow-auto border-b border-border font-sans lg:w-1/2 lg:border-b-0 lg:border-r">
+        <div
+          className={`${
+            mobileView === "edit" ? "flex" : "hidden"
+          } rx-scroll min-h-0 flex-1 flex-col overflow-auto border-b border-border font-sans lg:flex lg:w-1/2 lg:flex-none lg:border-b-0 lg:border-r`}
+        >
           <ResumeForm content={content} setContent={setContent} />
         </div>
 
         {/* Right: live preview (faithful, scaled A4 — matches the PDF). */}
-        <div className="rx-scroll rx-canvas w-full overflow-auto lg:w-1/2">
+        <div
+          className={`${
+            mobileView === "preview" ? "block" : "hidden"
+          } rx-scroll rx-canvas min-h-0 flex-1 overflow-auto lg:block lg:w-1/2 lg:flex-none`}
+        >
           <div className="px-6 py-8">
             <ResumePaper
               templateId={templateId}
