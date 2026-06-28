@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { contactLine, projectLink } from "@/lib/resume/links";
+import { companyName, contactLine, projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -58,7 +58,7 @@ export function ExecutiveTemplate({ content }: TemplateProps) {
                   </span>
                 </div>
                 {exp.company ? (
-                  <p className="text-sm italic text-[#1e3a5f]">{exp.company}</p>
+                  <p className="text-sm italic text-[#1e3a5f]">{companyName(exp.company, exp.companyUrl)}</p>
                 ) : null}
                 {exp.bullets.filter((b) => b.trim()).length > 0 ? (
                   <ul className="mt-1 list-disc space-y-0.5 pl-5 text-neutral-700">

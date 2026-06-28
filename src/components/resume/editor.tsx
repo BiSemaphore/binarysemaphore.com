@@ -33,6 +33,7 @@ type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 const emptyExperience = (): ResumeExperience => ({
   company: "",
+  companyUrl: "",
   role: "",
   start: "",
   end: "",
@@ -187,6 +188,19 @@ export function Editor({
       ...c,
       links: c.links.map((l, j) => (j === i ? { ...l, ...patch } : l)),
     }));
+  }
+
+  // Reorder an item within one of the repeatable sections (by +1 / -1).
+  function moveItem(key: keyof ResumeContent, i: number, dir: -1 | 1) {
+    setContent((c) => {
+      const list = c[key];
+      if (!Array.isArray(list)) return c;
+      const j = i + dir;
+      if (j < 0 || j >= list.length) return c;
+      const next = [...list];
+      [next[i], next[j]] = [next[j], next[i]];
+      return { ...c, [key]: next };
+    });
   }
 
   return (
@@ -394,6 +408,14 @@ export function Editor({
                         experience: c.experience.filter((_, j) => j !== i),
                       }))
                     }
+                    onMoveUp={
+                      i > 0 ? () => moveItem("experience", i, -1) : undefined
+                    }
+                    onMoveDown={
+                      i < content.experience.length - 1
+                        ? () => moveItem("experience", i, 1)
+                        : undefined
+                    }
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
                       <Field
@@ -420,6 +442,12 @@ export function Editor({
                         disabled={exp.current}
                       />
                     </div>
+                    <Field
+                      label="Company website"
+                      value={exp.companyUrl}
+                      onChange={(v) => updateExperience(i, { companyUrl: v })}
+                      placeholder="acme.com"
+                    />
                     <label className="flex items-center gap-2 text-sm text-muted">
                       <input
                         type="checkbox"
@@ -460,6 +488,14 @@ export function Editor({
                         ...c,
                         education: c.education.filter((_, j) => j !== i),
                       }))
+                    }
+                    onMoveUp={
+                      i > 0 ? () => moveItem("education", i, -1) : undefined
+                    }
+                    onMoveDown={
+                      i < content.education.length - 1
+                        ? () => moveItem("education", i, 1)
+                        : undefined
                     }
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -527,6 +563,14 @@ export function Editor({
                         projects: c.projects.filter((_, j) => j !== i),
                       }))
                     }
+                    onMoveUp={
+                      i > 0 ? () => moveItem("projects", i, -1) : undefined
+                    }
+                    onMoveDown={
+                      i < content.projects.length - 1
+                        ? () => moveItem("projects", i, 1)
+                        : undefined
+                    }
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
                       <Field
@@ -564,6 +608,12 @@ export function Editor({
                         ...c,
                         links: c.links.filter((_, j) => j !== i),
                       }))
+                    }
+                    onMoveUp={i > 0 ? () => moveItem("links", i, -1) : undefined}
+                    onMoveDown={
+                      i < content.links.length - 1
+                        ? () => moveItem("links", i, 1)
+                        : undefined
                     }
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -755,21 +805,47 @@ function FormSection({
 
 function RepeatItem({
   onRemove,
+  onMoveUp,
+  onMoveDown,
   children,
 }: {
   onRemove: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
   children: React.ReactNode;
 }) {
   return (
     <div className="relative space-y-3 rounded-card border border-border bg-card p-4">
-      <button
-        type="button"
-        onClick={onRemove}
-        aria-label="Remove"
-        className="absolute right-3 top-3 rounded-md px-2 py-0.5 font-mono text-xs text-subtle transition-colors hover:text-red-500"
-      >
-        Remove
-      </button>
+      <div className="absolute right-3 top-3 flex items-center gap-1">
+        <button
+          type="button"
+          onClick={onMoveUp}
+          disabled={!onMoveUp}
+          aria-label="Move up"
+          title="Move up"
+          className="rounded-md px-1.5 py-0.5 font-mono text-xs text-subtle transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          ↑
+        </button>
+        <button
+          type="button"
+          onClick={onMoveDown}
+          disabled={!onMoveDown}
+          aria-label="Move down"
+          title="Move down"
+          className="rounded-md px-1.5 py-0.5 font-mono text-xs text-subtle transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          ↓
+        </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label="Remove"
+          className="rounded-md px-2 py-0.5 font-mono text-xs text-subtle transition-colors hover:text-red-500"
+        >
+          Remove
+        </button>
+      </div>
       {children}
     </div>
   );

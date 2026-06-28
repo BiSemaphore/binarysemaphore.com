@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
-import { projectLink } from "@/lib/resume/links";
+import { companyName, projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -84,7 +84,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                     {exp.company ? (
                       <span className="font-normal text-blue-600">
                         {" "}
-                        @ {exp.company}
+                        @ {companyName(exp.company, exp.companyUrl)}
                       </span>
                     ) : null}
                   </p>

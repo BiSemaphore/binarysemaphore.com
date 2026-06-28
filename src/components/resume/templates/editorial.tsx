@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
-import { linkAnchor } from "@/lib/resume/links";
+import { companyName, linkAnchor } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -98,7 +98,7 @@ export function EditorialTemplate({ content }: TemplateProps) {
                   </h3>
                   {exp.company.trim() ? (
                     <p className="text-sm">
-                      <span className="italic">{exp.company}</span>
+                      <span className="italic">{companyName(exp.company, exp.companyUrl)}</span>
                     </p>
                   ) : null}
                   {cleanList(exp.bullets).length > 0 ? (

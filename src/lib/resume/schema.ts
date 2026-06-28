@@ -16,6 +16,8 @@ export type ResumeBasics = {
 
 export type ResumeExperience = {
   company: string;
+  /** Optional company website; makes the company name a clickable link. */
+  companyUrl: string;
   role: string;
   /** Free-text month/year, e.g. "Jan 2024". */
   start: string;
@@ -82,7 +84,9 @@ export function normalizeResume(value: unknown): ResumeContent {
   const v = value as Partial<ResumeContent>;
   return {
     basics: { ...base.basics, ...(v.basics ?? {}) },
-    experience: Array.isArray(v.experience) ? v.experience : base.experience,
+    experience: Array.isArray(v.experience)
+      ? v.experience.map((e) => ({ ...e, companyUrl: e.companyUrl ?? "" }))
+      : base.experience,
     education: Array.isArray(v.education) ? v.education : base.education,
     skills: Array.isArray(v.skills) ? v.skills : base.skills,
     projects: Array.isArray(v.projects) ? v.projects : base.projects,

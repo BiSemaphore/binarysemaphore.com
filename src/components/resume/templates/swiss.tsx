@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { projectLink, linkAnchor } from "@/lib/resume/links";
+import { companyName, projectLink, linkAnchor } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -38,7 +38,7 @@ export function SwissTemplate({ content }: TemplateProps) {
                 </span>
               </div>
               {(exp.company || "").trim() ? (
-                <p className="text-sm text-neutral-600">{exp.company}</p>
+                <p className="text-sm text-neutral-600">{companyName(exp.company, exp.companyUrl)}</p>
               ) : null}
               {cleanList(exp.bullets).length > 0 ? (
                 <ul className="mt-1.5 space-y-1">

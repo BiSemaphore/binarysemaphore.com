@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { contactLine } from "@/lib/resume/links";
+import { companyName, contactLine } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -51,7 +51,7 @@ export function MinimalTemplate({ content }: TemplateProps) {
                   <h3 className="font-normal text-neutral-900">
                     {exp.role || "Role"}
                     {exp.company ? (
-                      <span className="text-neutral-400"> · {exp.company}</span>
+                      <span className="text-neutral-400"> · {companyName(exp.company, exp.companyUrl)}</span>
                     ) : null}
                   </h3>
                   <span className="shrink-0 text-xs text-neutral-400">

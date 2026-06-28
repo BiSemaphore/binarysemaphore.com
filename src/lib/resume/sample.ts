@@ -19,6 +19,7 @@ export const SAMPLE_RESUME: ResumeContent = normalizeResume({
     {
       role: "Senior Software Engineer",
       company: "Acme Corp",
+      companyUrl: "acme.example.com",
       start: "Mar 2024",
       end: "Present",
       current: true,
