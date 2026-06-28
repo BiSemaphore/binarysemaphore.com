@@ -1,11 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
-
-const figtree = Figtree({
-  subsets: ["latin"],
-  variable: "--font-figtree",
-  display: "swap",
-});
+import { figtree } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "Editor",

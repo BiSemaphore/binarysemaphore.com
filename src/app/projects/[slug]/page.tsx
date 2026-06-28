@@ -68,6 +68,9 @@ export default async function ProjectPage({
   const onSubdomain = Boolean((await headers()).get("x-product-subdomain"));
   const linkBase = onSubdomain ? "https://binarysemaphore.com" : "";
 
+  // From the apex, offer a "visit live" link to the product subdomain (new tab).
+  const liveUrl = onSubdomain ? null : productSubdomainUrl(slug);
+
   return (
     <>
       <Header linkBase={linkBase} />
@@ -101,11 +104,26 @@ export default async function ProjectPage({
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
+            {liveUrl ? (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-soft transition-transform hover:-translate-y-0.5"
+              >
+                Visit {project.name}
+                <ArrowUpRightIcon className="h-3.5 w-3.5 opacity-70" />
+              </a>
+            ) : null}
             <a
               href={project.href}
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-soft transition-transform hover:-translate-y-0.5"
+              className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold shadow-soft transition-transform hover:-translate-y-0.5 ${
+                liveUrl
+                  ? "border border-border bg-card text-foreground"
+                  : "bg-foreground text-background"
+              }`}
             >
               <GitHubIcon className="h-4 w-4" />
               View on GitHub

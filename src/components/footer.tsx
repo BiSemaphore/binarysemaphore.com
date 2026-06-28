@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { Wordmark } from "@/components/wordmark";
+import { productSubdomainUrl } from "@/lib/subdomains";
 import {
   GitHubIcon,
   InstagramIcon,
@@ -9,15 +10,27 @@ import {
 } from "@/components/icons";
 
 function FooterLink({ href, label }: { href: string; label: string }) {
-  const external = /^https?:\/\//.test(href);
+  // A footer entry pointing at a product (/projects/<slug>) that has its own
+  // subdomain links straight to the subdomain, opened in a new tab.
+  const projectMatch = href.match(/^\/projects\/([^/]+)\/?$/);
+  const subdomainUrl = projectMatch
+    ? productSubdomainUrl(projectMatch[1])
+    : null;
+  const resolved = subdomainUrl ?? href;
+  const external = /^https?:\/\//.test(resolved);
   const className =
     "text-sm text-white/60 transition-colors duration-300 hover:text-white";
   return external ? (
-    <a href={href} target="_blank" rel="noreferrer noopener" className={className}>
+    <a
+      href={resolved}
+      target="_blank"
+      rel="noreferrer noopener"
+      className={className}
+    >
       {label}
     </a>
   ) : (
-    <Link href={href} className={className}>
+    <Link href={resolved} className={className}>
       {label}
     </Link>
   );

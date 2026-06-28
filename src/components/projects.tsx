@@ -4,11 +4,19 @@ import { projects, site, type Project } from "@/lib/site";
 import { SectionHeading } from "@/components/section-heading";
 import { Reveal } from "@/components/reveal";
 import { ArrowUpRightIcon, GitHubIcon } from "@/components/icons";
+import { hasProductSubdomain, productSubdomainUrl } from "@/lib/subdomains";
 
 function ProjectCard({ project }: { project: Project }) {
-  // Projects with a slug get an internal detail page; others link to GitHub.
-  const internal = Boolean(project.slug);
-  const href = internal ? `/projects/${project.slug}` : project.href;
+  // Products with their own subdomain open there in a new tab; projects with a
+  // slug get an internal detail page; others link to GitHub.
+  const subdomainUrl = project.slug ? productSubdomainUrl(project.slug) : null;
+  const onSubdomain = hasProductSubdomain(project.slug) && subdomainUrl;
+  const internal = Boolean(project.slug) && !onSubdomain;
+  const href = onSubdomain
+    ? subdomainUrl
+    : internal
+      ? `/projects/${project.slug}`
+      : project.href;
   const cardClass =
     "group relative flex w-full flex-col overflow-hidden rounded-panel border border-border bg-card shadow-soft transition-transform duration-200 hover:-translate-y-1";
 

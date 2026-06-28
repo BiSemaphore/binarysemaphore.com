@@ -100,7 +100,10 @@ export async function getResume(id: string): Promise<Resume | null> {
 }
 
 /** Create a blank resume for the current user; returns its id. */
-export async function createResume(title = "Untitled"): Promise<string> {
+export async function createResume(
+  title = "Untitled",
+  templateId: TemplateId = DEFAULT_TEMPLATE,
+): Promise<string> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -112,7 +115,7 @@ export async function createResume(title = "Untitled"): Promise<string> {
     .insert({
       user_id: user.id,
       title,
-      template_id: DEFAULT_TEMPLATE,
+      template_id: templateId,
       content: emptyResume(),
     })
     .select("id")

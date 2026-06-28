@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { saveResume } from "@/app/resume/editor/[id]/actions";
 import {
@@ -9,17 +9,13 @@ import {
   DENSITIES,
   PAD_MAX,
   PAD_MIN,
-  PAGE_MARGIN_X,
   PAGE_SIZES,
-  PX_PER_MM,
   SCALE_MAX,
   SCALE_MIN,
   TEMPLATES,
   clampPad,
   clampScale,
   densityForScale,
-  pageDims,
-  scaleZoom,
   type PageSize,
   type ResumeContent,
   type ResumeEducation,
@@ -28,7 +24,7 @@ import {
   type ResumeProject,
   type TemplateId,
 } from "@/lib/resume/schema";
-import { renderTemplate } from "@/components/resume/templates";
+import { ResumePaper } from "@/components/resume/resume-paper";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -85,32 +81,6 @@ export function Editor({
   const [editOpen, setEditOpen] = useState(false);
   const [tplOpen, setTplOpen] = useState(false);
 
-  // WYSIWYG preview: render the paper at true page size, then scale it to fit
-  // the canvas so the preview is a faithful miniature of the exported PDF.
-  const stageRef = useRef<HTMLDivElement>(null);
-  const paperRef = useRef<HTMLDivElement>(null);
-  const [fit, setFit] = useState(1);
-  const [paperPx, setPaperPx] = useState({ w: 0, h: 0 });
-
-  useLayoutEffect(() => {
-    const stage = stageRef.current;
-    const paper = paperRef.current;
-    if (!stage || !paper) return;
-    const STAGE_PAD = 24;
-    const measure = () => {
-      const avail = stage.clientWidth - STAGE_PAD * 2;
-      const w = paper.offsetWidth;
-      const h = paper.offsetHeight;
-      setPaperPx({ w, h });
-      setFit(w > 0 ? Math.min(1, avail / w) : 1);
-    };
-    const ro = new ResizeObserver(measure);
-    ro.observe(stage);
-    ro.observe(paper);
-    measure();
-    return () => ro.disconnect();
-  }, []);
-
   // Debounced autosave. Skip the first render (nothing changed yet).
   const first = useRef(true);
   useEffect(() => {
@@ -140,18 +110,6 @@ export function Editor({
     setPadBottom(DEFAULT_PAD);
   }
 
-  // Content density only; page margins live on the paper / @page box.
-  const densityStyle = { zoom: scaleZoom(scalePct) } as React.CSSProperties;
-
-  const dims = pageDims(pageSize);
-  const padTopPx = padTop * PX_PER_MM;
-  const padBottomPx = padBottom * PX_PER_MM;
-  const contentAreaPx = Math.max(
-    1,
-    (dims.hMm - padTop - padBottom) * PX_PER_MM,
-  );
-  const contentOnlyPx = Math.max(0, paperPx.h - padTopPx - padBottomPx);
-  const pageCount = Math.max(1, Math.ceil(contentOnlyPx / contentAreaPx));
   const currentTpl = TEMPLATES.find((t) => t.id === templateId);
 
   // Export to PDF: flush any pending edits, then download the server-rendered
@@ -219,39 +177,16 @@ export function Editor({
   return (
     <div className="rx-canvas relative min-h-screen w-full">
       {/* Canvas: centred, scaled paper (a faithful miniature of the PDF). */}
-      <div ref={stageRef} className="h-screen overflow-auto px-6 pb-28 pt-8">
-        <div
-          className="relative mx-auto"
-          style={{ width: paperPx.w * fit, height: paperPx.h * fit }}
-        >
-          <div
-            ref={paperRef}
-            className="resume-frame absolute left-0 top-0 overflow-hidden"
-            style={{
-              width: `${dims.wMm}mm`,
-              paddingTop: `${padTop}mm`,
-              paddingBottom: `${padBottom}mm`,
-              paddingLeft: `${PAGE_MARGIN_X}mm`,
-              paddingRight: `${PAGE_MARGIN_X}mm`,
-              transform: `scale(${fit})`,
-              transformOrigin: "top left",
-            }}
-          >
-            <div style={densityStyle}>
-              {renderTemplate(templateId, content)}
-            </div>
-            {Array.from({ length: pageCount - 1 }).map((_, i) => (
-              <div
-                key={i}
-                className="resume-pagebreak"
-                style={{ top: padTopPx + (i + 1) * contentAreaPx }}
-                aria-hidden
-              >
-                <span>Page {i + 2}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="h-screen overflow-auto px-6 pb-28 pt-8">
+        <ResumePaper
+          templateId={templateId}
+          content={content}
+          pageSize={pageSize}
+          scalePct={scalePct}
+          padTop={padTop}
+          padBottom={padBottom}
+          showPageBreaks
+        />
       </div>
 
       {/* Save status, top-left. */}
@@ -331,8 +266,8 @@ export function Editor({
 
       {/* Controls, bottom-left (floats on the canvas). */}
       <div className="fixed bottom-6 left-6 z-30 flex items-center gap-2 font-mono text-xs">
-        <Link href="/dashboard" className="rx-pill">
-          ← dashboard
+        <Link href="/" className="rx-pill">
+          ← home
         </Link>
         <button
           type="button"

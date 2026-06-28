@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   APP_SUBDOMAINS,
   appBasePath,
+  hasProductSubdomain,
   parseHost,
   productSubdomainUrl,
   slugToSub,
@@ -77,5 +78,11 @@ describe("subdomain registries", () => {
     for (const appSub of APP_SUBDOMAINS.keys()) {
       expect(subToSlug.has(appSub)).toBe(false);
     }
+  });
+
+  it("detects whether a slug has a product subdomain", () => {
+    expect(hasProductSubdomain("inode")).toBe(true);
+    expect(hasProductSubdomain("notchify")).toBe(false);
+    expect(hasProductSubdomain(undefined)).toBe(false);
   });
 });

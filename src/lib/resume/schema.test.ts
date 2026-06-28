@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   DEFAULT_PAGE_SIZE,
   DEFAULT_SCALE,
+  ALL_TEMPLATE_TAGS,
   DEFAULT_TEMPLATE,
   DENSITIES,
   PAGE_MARGIN_X,
@@ -62,6 +63,19 @@ describe("templates", () => {
   it("recognizes only known template ids", () => {
     expect(isTemplateId("classic")).toBe(true);
     expect(isTemplateId("nope")).toBe(false);
+  });
+
+  it("gives every template a description and tags", () => {
+    for (const t of TEMPLATES) {
+      expect(t.description.length).toBeGreaterThan(0);
+      expect(t.tags.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("derives a sorted, unique tag set", () => {
+    expect(ALL_TEMPLATE_TAGS.length).toBeGreaterThan(0);
+    expect([...ALL_TEMPLATE_TAGS]).toEqual([...new Set(ALL_TEMPLATE_TAGS)]);
+    expect([...ALL_TEMPLATE_TAGS]).toEqual([...ALL_TEMPLATE_TAGS].sort());
   });
 });
 

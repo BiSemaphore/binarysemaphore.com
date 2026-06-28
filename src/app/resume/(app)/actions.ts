@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/utils/supabase/auth";
 import { createResume, deleteResume, updateResume } from "@/lib/resume/db";
+import { DEFAULT_TEMPLATE, isTemplateId } from "@/lib/resume/schema";
 
 async function requireUser() {
   const user = await getCurrentUser();
@@ -18,21 +19,30 @@ export async function createResumeAction() {
   redirect(`/editor/${id}`);
 }
 
-/** Rename a resume from the dashboard. */
+/** Create a resume from a chosen template and open it in the editor. */
+export async function useTemplateAction(formData: FormData) {
+  await requireUser();
+  const tpl = String(formData.get("templateId") ?? "");
+  const templateId = isTemplateId(tpl) ? tpl : DEFAULT_TEMPLATE;
+  const id = await createResume(undefined, templateId);
+  redirect(`/editor/${id}`);
+}
+
+/** Rename a resume from the home hub. */
 export async function renameResumeAction(formData: FormData) {
   await requireUser();
   const id = String(formData.get("id") ?? "");
   const title = String(formData.get("title") ?? "").trim();
   if (!id) return;
   await updateResume(id, { title: title || "Untitled" });
-  revalidatePath("/dashboard");
+  revalidatePath("/");
 }
 
-/** Delete a resume from the dashboard. */
+/** Delete a resume from the home hub. */
 export async function deleteResumeAction(formData: FormData) {
   await requireUser();
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   await deleteResume(id);
-  revalidatePath("/dashboard");
+  revalidatePath("/");
 }

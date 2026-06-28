@@ -95,20 +95,57 @@ export function normalizeResume(value: unknown): ResumeContent {
  * each maps to a renderer in src/components/resume/templates.
  */
 export const TEMPLATES = [
-  { id: "classic", label: "Classic" },
-  { id: "swiss", label: "Swiss" },
-  { id: "twocol", label: "Two-Column" },
-  { id: "editorial", label: "Editorial" },
-  { id: "terminal", label: "Terminal" },
+  {
+    id: "classic",
+    label: "Classic",
+    description:
+      "Clean single column, recruiter-friendly. Bold name, ruled section heads, generous spacing.",
+    tags: ["single-column", "minimal", "ats", "sans"],
+  },
+  {
+    id: "swiss",
+    label: "Swiss",
+    description:
+      "Swiss / International Style. Strict baseline grid, all-caps tracked labels, cobalt block accent.",
+    tags: ["single-column", "grid", "color-block", "sans"],
+  },
+  {
+    id: "twocol",
+    label: "Two-Column",
+    description:
+      "Two-column layout: a sidebar for skills and links, the main column for experience and projects.",
+    tags: ["two-column", "compact", "sans"],
+  },
+  {
+    id: "editorial",
+    label: "Editorial",
+    description:
+      "Magazine feel. Oversized serif name, all-caps tracked section heads, asymmetric rhythm.",
+    tags: ["single-column", "serif", "magazine"],
+  },
+  {
+    id: "terminal",
+    label: "Terminal",
+    description:
+      "CLI / shell aesthetic. Prompt-style sections, monospace throughout, syntax-accent labels.",
+    tags: ["single-column", "mono", "developer"],
+  },
 ] as const;
 
 export type TemplateId = (typeof TEMPLATES)[number]["id"];
+
+export type Template = (typeof TEMPLATES)[number];
 
 export const DEFAULT_TEMPLATE: TemplateId = "classic";
 
 export function isTemplateId(value: string): value is TemplateId {
   return TEMPLATES.some((t) => t.id === value);
 }
+
+/** Sorted unique set of all template tags (for the gallery filter chips). */
+export const ALL_TEMPLATE_TAGS: readonly string[] = [
+  ...new Set(TEMPLATES.flatMap((t) => t.tags)),
+].sort();
 
 /**
  * "Tune" settings — how the resume is fit onto the page. All applied as CSS so
