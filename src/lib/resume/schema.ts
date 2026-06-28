@@ -54,6 +54,14 @@ export type ResumeContent = {
   links: ResumeLink[];
 };
 
+/** Keys of the repeatable (array) sections — what the reorder helper accepts. */
+export type ResumeListKey =
+  | "experience"
+  | "education"
+  | "skills"
+  | "projects"
+  | "links";
+
 /** A blank document for a freshly created resume. */
 export function emptyResume(): ResumeContent {
   return {

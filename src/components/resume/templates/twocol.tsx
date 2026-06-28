@@ -1,6 +1,11 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
-import { companyName, projectLink, linkAnchor } from "@/lib/resume/links";
+import {
+  companyName,
+  contactNodes,
+  projectLink,
+  linkAnchor,
+} from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -108,6 +113,19 @@ export function TwoColTemplate({ content }: TemplateProps) {
                       {formatRange(ed.start, ed.end)}
                     </p>
                   </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {contactNodes(basics).length > 0 ? (
+            <div>
+              <Label>contact</Label>
+              <div className="mt-2 space-y-1">
+                {contactNodes(basics).map((c, i) => (
+                  <p key={i} className="text-xs text-neutral-700">
+                    {c}
+                  </p>
                 ))}
               </div>
             </div>

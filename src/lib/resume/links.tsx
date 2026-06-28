@@ -23,10 +23,8 @@ function A({ href, children }: { href: string; children: ReactNode }) {
  * followed by the user's links, each as a real clickable anchor where possible.
  * Returns nodes so templates can join them with their own separator.
  */
-export function contactItems(
-  basics: ResumeContent["basics"],
-  links: ResumeContent["links"],
-): ReactNode[] {
+/** The filled contact fields as nodes: email (mailto) and website are links. */
+export function contactNodes(basics: ResumeContent["basics"]): ReactNode[] {
   const items: ReactNode[] = [];
   const email = basics.email.trim();
   const phone = basics.phone.trim();
@@ -40,6 +38,14 @@ export function contactItems(
     const href = safeUrl(website);
     items.push(href ? <A href={href}>{website}</A> : website);
   }
+  return items;
+}
+
+export function contactItems(
+  basics: ResumeContent["basics"],
+  links: ResumeContent["links"],
+): ReactNode[] {
+  const items = contactNodes(basics);
   for (const l of links) {
     const label = (l.label || l.url).trim();
     if (!label && !l.url.trim()) continue;
@@ -47,6 +53,19 @@ export function contactItems(
     items.push(href ? <A href={href}>{label || l.url}</A> : label || l.url);
   }
   return items;
+}
+
+/** A contacts-only line (email/phone/location/website), items joined by `sep`. */
+export function contactsLine(
+  basics: ResumeContent["basics"],
+  sep = "  ·  ",
+): ReactNode {
+  return contactNodes(basics).map((item, i) => (
+    <span key={i}>
+      {i > 0 ? sep : ""}
+      {item}
+    </span>
+  ));
 }
 
 /** The contact + links line, items joined by `sep`, with clickable links. */

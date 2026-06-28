@@ -3,6 +3,7 @@ import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer-core";
 import { getCurrentUser } from "@/utils/supabase/auth";
 import { getResume } from "@/lib/resume/db";
+import { isTrustedHost } from "@/lib/subdomains";
 
 // Headless Chromium needs the full Node runtime, and the render can take a few
 // seconds on a cold start.
@@ -36,6 +37,10 @@ export async function GET(
     request.headers.get("x-forwarded-host") ??
     request.headers.get("host") ??
     "";
+  // Never point Chromium (carrying the user's cookies) at an untrusted host.
+  if (!isTrustedHost(host)) {
+    return NextResponse.json({ error: "Bad host" }, { status: 400 });
+  }
   const origin = `${proto}://${host}`;
   const printUrl = `${origin}/print/${id}`;
 

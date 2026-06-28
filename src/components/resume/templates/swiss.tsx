@@ -1,6 +1,11 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { companyName, projectLink, linkAnchor } from "@/lib/resume/links";
+import {
+  companyName,
+  contactNodes,
+  projectLink,
+  linkAnchor,
+} from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -135,8 +140,8 @@ export function SwissTemplate({ content }: TemplateProps) {
         </div>
         {contacts.length > 0 || links.length > 0 ? (
           <div className="shrink-0 space-y-0.5 text-right font-mono text-[11px] text-neutral-600">
-            {contacts.map((c) => (
-              <p key={c}>{c}</p>
+            {contactNodes(basics).map((c, i) => (
+              <p key={i}>{c}</p>
             ))}
             {links.map((l, i) => (
               <p key={i}>{linkAnchor(l)}</p>

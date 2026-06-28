@@ -18,6 +18,7 @@ import {
   clampScale,
   densityForScale,
   type PageSize,
+  type ResumeListKey,
   type TextAlign,
   type ResumeContent,
   type ResumeEducation,
@@ -190,11 +191,10 @@ export function Editor({
     }));
   }
 
-  // Reorder an item within one of the repeatable sections (by +1 / -1).
-  function moveItem(key: keyof ResumeContent, i: number, dir: -1 | 1) {
+  // Reorder an item within one of the repeatable (array) sections (+1 / -1).
+  function moveItem(key: ResumeListKey, i: number, dir: -1 | 1) {
     setContent((c) => {
       const list = c[key];
-      if (!Array.isArray(list)) return c;
       const j = i + dir;
       if (j < 0 || j >= list.length) return c;
       const next = [...list];

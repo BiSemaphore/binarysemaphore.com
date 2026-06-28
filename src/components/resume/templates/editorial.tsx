@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
-import { companyName, linkAnchor } from "@/lib/resume/links";
+import { companyName, contactNodes, linkAnchor } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -17,9 +17,7 @@ export function EditorialTemplate({ content }: TemplateProps) {
   const last = parts.length > 1 ? parts.pop() : "";
   const first = parts.join(" ");
 
-  const reach = [basics.email, basics.website, basics.location]
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const reach = contactNodes(basics);
 
   return (
     <article className="w-full bg-white font-serif text-[13px] leading-relaxed text-neutral-800">
@@ -50,8 +48,8 @@ export function EditorialTemplate({ content }: TemplateProps) {
           ) : null}
           {reach.length > 0 ? (
             <MetaRow label="Reach">
-              {reach.map((r) => (
-                <span key={r} className="block">
+              {reach.map((r, i) => (
+                <span key={i} className="block">
                   {r}
                 </span>
               ))}

@@ -1,6 +1,11 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { companyName, projectLink, linkAnchor } from "@/lib/resume/links";
+import {
+  companyName,
+  contactsLine,
+  projectLink,
+  linkAnchor,
+} from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -39,7 +44,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
 
         {contacts.length > 0 ? (
           <p className="mt-2 text-xs text-neutral-600">
-            {contacts.join("  ·  ")}
+            {contactsLine(basics)}
           </p>
         ) : null}
 

@@ -24,6 +24,9 @@ import {
   type TextAlign,
 } from "@/lib/resume/schema";
 
+/** Upper bound on a resume's serialized content (~256KB) to keep rows sane. */
+const MAX_CONTENT_BYTES = 256 * 1024;
+
 export type Resume = {
   id: string;
   title: string;
@@ -164,7 +167,15 @@ export async function updateResume(
   if (patch.padTop !== undefined) row.pad_top = clampPad(patch.padTop);
   if (patch.padBottom !== undefined) row.pad_bottom = clampPad(patch.padBottom);
   if (patch.textAlign !== undefined) row.text_align = patch.textAlign;
-  if (patch.content !== undefined) row.content = patch.content;
+  if (patch.content !== undefined) {
+    // Coerce to a known shape and cap the size so a malformed or oversized
+    // client payload can't bloat the row (RLS already scopes it to the owner).
+    const normalized = normalizeResume(patch.content);
+    if (JSON.stringify(normalized).length > MAX_CONTENT_BYTES) {
+      throw new Error("Resume content too large");
+    }
+    row.content = normalized;
+  }
   if (Object.keys(row).length === 0) return;
 
   const { error } = await supabase.from("resumes").update(row).eq("id", id);

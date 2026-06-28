@@ -19,8 +19,8 @@ export async function saveResume(
 
   try {
     await updateResume(id, patch);
-    // Keep the dashboard's title/updated time fresh for the next visit.
-    revalidatePath("/dashboard");
+    // Keep the home hub's title/updated time fresh for the next visit.
+    revalidatePath("/");
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Save failed" };
