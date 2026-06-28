@@ -387,7 +387,9 @@ body {
    palette (deep-red accent, near-black ink) and a notebook/graph-paper grid
    instead of a dot canvas. Scoped to .rx so the rest of the site is unaffected. */
 .rx {
-  --rx-accent: #a80000; /* BS brand accent */
+  /* Brand color = the navy logo (#003554), used for fills (buttons, active
+     states, slider). Red is reserved for text only, never a background. */
+  --rx-accent: #003554;
   --rx-accent-ink: #ffffff;
   --rx-muted: #6b6b6b;
   --rx-line: rgba(17, 17, 17, 0.06); /* notebook grid line */
@@ -401,6 +403,24 @@ body {
     linear-gradient(to bottom, var(--rx-line) 1px, transparent 1px);
   background-size: 26px 26px;
 }
+/* Dark mode: the chrome (canvas, panels, pills) goes dark; the resume "paper"
+   itself stays white (it is printed paper, set on the templates). */
+.dark .rx {
+  --rx-muted: #9a9a9a;
+  --rx-line: rgba(255, 255, 255, 0.05);
+}
+.dark .rx-canvas {
+  background-color: #161616;
+}
+.dark .rx-panel,
+.dark .rx-pill {
+  background: rgba(30, 30, 30, 0.85);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--rx-muted);
+}
+.dark .rx-pill:hover {
+  color: #f5f5f5;
+}
 /* Translucent floating surfaces (tune panel, control pills). */
 .rx-panel {
   background: rgba(255, 255, 255, 0.88);
@@ -408,6 +428,13 @@ body {
   backdrop-filter: blur(8px);
   border: 1px solid rgba(20, 20, 19, 0.12);
   border-radius: 8px;
+}
+/* Within the resume product, interactive controls get a pointer cursor
+   (the browser default for <button> is the arrow). */
+.rx button:not(:disabled),
+.rx [role="button"]:not([aria-disabled="true"]),
+.rx label:has(input[type="range"]) {
+  cursor: pointer;
 }
 .rx-pill {
   display: inline-flex;
@@ -464,7 +491,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  border-top: 1px dashed rgba(168, 0, 0, 0.45);
+  border-top: 1px dashed rgba(0, 53, 84, 0.4);
   pointer-events: none;
 }
 .resume-pagebreak span {
@@ -476,8 +503,8 @@ body {
   padding: 1px 6px;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;
-  color: var(--accent, #a80000);
-  border: 1px solid rgba(168, 0, 0, 0.2);
+  color: #003554;
+  border: 1px solid rgba(0, 53, 84, 0.2);
 }
 
 /* --- Resume PDF export --------------------------------------------------- */

@@ -8,6 +8,11 @@ import { ExecutiveTemplate } from "./executive";
 import { MinimalTemplate } from "./minimal";
 import { SaasTemplate } from "./saas";
 import { AcademicTemplate } from "./academic";
+import { ArchitectTemplate } from "./architect";
+import { BankerTemplate } from "./banker";
+import { BrutalistTemplate } from "./brutalist";
+import { NewspaperTemplate } from "./newspaper";
+import { MagazineTemplate } from "./magazine";
 
 /**
  * Renders a resume with the chosen template. One source of truth so the editor
@@ -31,6 +36,16 @@ export function renderTemplate(id: TemplateId, content: ResumeContent) {
       return <SaasTemplate content={content} />;
     case "academic":
       return <AcademicTemplate content={content} />;
+    case "architect":
+      return <ArchitectTemplate content={content} />;
+    case "banker":
+      return <BankerTemplate content={content} />;
+    case "brutalist":
+      return <BrutalistTemplate content={content} />;
+    case "newspaper":
+      return <NewspaperTemplate content={content} />;
+    case "magazine":
+      return <MagazineTemplate content={content} />;
     case "classic":
     default:
       return <ClassicTemplate content={content} />;
