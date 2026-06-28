@@ -21,17 +21,14 @@ export function Hero() {
               href="https://resume.binarysemaphore.com"
               target="_blank"
               rel="noreferrer noopener"
-              className="group mb-7 inline-flex items-center gap-4 rounded-full border border-foreground bg-background py-2.5 pl-5 pr-4 transition-colors duration-300 hover:bg-foreground"
+              className="group mb-7 inline-flex items-center gap-4 rounded-full border border-[#d1d1d1] bg-background py-2.5 pl-5 pr-4 transition-colors duration-300 hover:border-foreground hover:bg-foreground dark:border-white/20"
             >
               <span className="flex flex-col">
                 <span className="text-sm font-semibold text-foreground group-hover:text-background">
-                  Resume Builder{" "}
-                  <span className="font-normal text-muted group-hover:text-background/70">
-                    by Binary Semaphore
-                  </span>
+                  Resume Builder
                 </span>
-                <span className="text-xs text-muted group-hover:text-background/70">
-                  21 templates, a live editor, one-click PDF.
+                <span className="font-mono text-xs text-muted group-hover:text-background/70">
+                  resume.binarysemaphore.com
                 </span>
               </span>
               <ArrowUpRightIcon className="h-4 w-4 shrink-0 text-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-background" />
