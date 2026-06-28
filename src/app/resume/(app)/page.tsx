@@ -53,7 +53,7 @@ export default async function ResumeHome() {
           </h2>
           {user ? (
             <form action={createResumeAction}>
-              <button type="submit" className="rx-pill rx-green font-mono text-xs">
+              <button type="submit" className="rx-pill rx-accent font-mono text-xs">
                 + new resume
               </button>
             </form>
@@ -67,7 +67,7 @@ export default async function ResumeHome() {
             </p>
             <Link
               href="/login"
-              className="rx-pill rx-green mt-4 inline-flex font-mono text-xs"
+              className="rx-pill rx-accent mt-4 inline-flex font-mono text-xs"
             >
               sign in
             </Link>

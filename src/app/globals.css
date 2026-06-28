@@ -382,30 +382,28 @@ body {
   outline-offset: 3px;
 }
 
-/* --- Resume editor: resumex-style canvas (scoped to .rx) ---------------- */
-/* The resume product clones the resumex look: a full-page dotted canvas with a
-   centred paper and floating controls, green accent, monospace chrome. Scoped
-   to .rx so the rest of the site keeps the Binary Semaphore brand. */
+/* --- Resume product canvas (scoped to .rx) ------------------------------ */
+/* The resume product borrows the resumex layout, but with the Binary Semaphore
+   palette (deep-red accent, near-black ink) and a notebook/graph-paper grid
+   instead of a dot canvas. Scoped to .rx so the rest of the site is unaffected. */
 .rx {
-  --rx-green: oklch(0.696 0.17 162.48);
-  --rx-green-ink: oklch(0.979 0.021 166.113);
-  --rx-muted: oklch(0.552 0.016 285.938);
-  --rx-dot: oklch(0.552 0.016 285.938 / 0.35);
+  --rx-accent: #a80000; /* BS brand accent */
+  --rx-accent-ink: #ffffff;
+  --rx-muted: #6b6b6b;
+  --rx-line: rgba(17, 17, 17, 0.06); /* notebook grid line */
   /* Slider thumb (.r-slider) picks this up. */
-  --accent: var(--rx-green);
+  --accent: var(--rx-accent);
 }
 .rx-canvas {
-  background-color: #fff;
-  background-image: radial-gradient(
-    circle,
-    var(--rx-dot) 1.2px,
-    transparent 1.2px
-  );
-  background-size: 18px 18px;
+  background-color: #fbfaf8;
+  background-image:
+    linear-gradient(to right, var(--rx-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rx-line) 1px, transparent 1px);
+  background-size: 26px 26px;
 }
 /* Translucent floating surfaces (tune panel, control pills). */
 .rx-panel {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(20, 20, 19, 0.12);
@@ -415,9 +413,10 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
   border-radius: 8px;
   padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(20, 20, 19, 0.12);
@@ -427,14 +426,14 @@ body {
 .rx-pill:hover {
   color: #171717;
 }
-.rx-green {
-  background: var(--rx-green);
-  color: var(--rx-green-ink);
+.rx-accent {
+  background: var(--rx-accent);
+  color: var(--rx-accent-ink);
   border-color: transparent;
 }
-.rx-green:hover {
-  color: var(--rx-green-ink);
-  filter: brightness(0.97);
+.rx-accent:hover {
+  color: var(--rx-accent-ink);
+  filter: brightness(1.08);
 }
 
 /* --- Resume editor stage + paper ---------------------------------------- */
@@ -486,6 +485,13 @@ body {
    (see src/app/api/resume/[id]/pdf/route.ts), so there is no client print
    stylesheet. These rules only help Chromium's print engine paginate cleanly. */
 @media print {
+  /* Keep the page white. Without this, the cream site background (--background)
+     shows through any page area the resume doesn't fill (e.g. a half-empty
+     second page printed as a grey block). */
+  html,
+  body {
+    background: #fff !important;
+  }
   .resume-paper {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

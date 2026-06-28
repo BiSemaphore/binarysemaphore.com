@@ -48,7 +48,7 @@ export function TemplateCard({ template }: { template: Template }) {
           <div className="flex items-center gap-2">
             <form action={useTemplateAction}>
               <input type="hidden" name="templateId" value={template.id} />
-              <button type="submit" className="rx-pill rx-green">
+              <button type="submit" className="rx-pill rx-accent">
                 use
               </button>
             </form>

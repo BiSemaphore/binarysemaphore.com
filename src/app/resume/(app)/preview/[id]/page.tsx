@@ -50,7 +50,7 @@ export default async function TemplatePreviewPage({
         </div>
         <form action={useTemplateAction}>
           <input type="hidden" name="templateId" value={tpl.id} />
-          <button type="submit" className="rx-pill rx-green font-mono text-xs">
+          <button type="submit" className="rx-pill rx-accent font-mono text-xs">
             use this template
           </button>
         </form>

@@ -59,7 +59,7 @@ export default async function ResumeAppLayout({
               </button>
             </form>
           ) : (
-            <Link href="/login" className="rx-pill rx-green font-mono text-xs">
+            <Link href="/login" className="rx-pill rx-accent font-mono text-xs">
               sign in
             </Link>
           )}

@@ -304,7 +304,7 @@ export function Editor({
                     }}
                     className={`block w-full rounded px-2.5 py-1.5 text-left transition-colors ${
                       t.id === templateId
-                        ? "rx-green"
+                        ? "rx-accent"
                         : "text-[color:var(--rx-muted)] hover:bg-black/5"
                     }`}
                   >
@@ -319,7 +319,7 @@ export function Editor({
           type="button"
           onClick={handleExport}
           disabled={exporting}
-          className="rx-pill rx-green disabled:opacity-60"
+          className="rx-pill rx-accent disabled:opacity-60"
         >
           {exporting ? "…" : "print / pdf"}
         </button>
@@ -682,7 +682,7 @@ function Segmented<T extends string>({
               } ${
                 active
                   ? green
-                    ? "rx-green"
+                    ? "rx-accent"
                     : "bg-foreground text-background"
                   : "text-[color:var(--rx-muted)] hover:bg-black/5"
               }`}
