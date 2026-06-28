@@ -1,5 +1,7 @@
 "use client";
 
+import { Spinner } from "@/components/resume/spinner";
+
 /** Shared form/UI primitives for the resume editor. */
 
 export type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -98,23 +100,49 @@ export function Segmented<T extends string>({
 }
 
 export function SaveIndicator({ status }: { status: SaveStatus }) {
-  const label =
+  if (status === "idle") return null;
+  const { icon, label } =
     status === "saving"
-      ? "saving…"
+      ? { icon: <Spinner className="h-3 w-3" />, label: "saving" }
       : status === "saved"
-        ? "saved"
-        : status === "error"
-          ? "save failed"
-          : "";
-  if (!label) return null;
+        ? {
+            icon: (
+              <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden>
+                <path
+                  d="M3.5 8.5l3 3 6-7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            ),
+            label: "saved",
+          }
+        : {
+            icon: (
+              <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden>
+                <path
+                  d="M8 4v5M8 11.5v.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ),
+            label: "save failed",
+          };
   return (
     <span
-      className={`rx-pill font-mono text-xs ${
+      className={`rx-pill inline-flex items-center gap-1.5 font-mono text-xs ${
         status === "error" ? "text-red-600" : ""
       }`}
       role="status"
       aria-live="polite"
     >
+      {icon}
       {label}
     </span>
   );
