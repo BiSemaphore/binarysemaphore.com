@@ -12,23 +12,29 @@ import { ResumePaper } from "@/components/resume/resume-paper";
  */
 export function TemplateCard({ template }: { template: Template }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white">
-      {/* Live mini-preview, clipped to the card top. */}
+    <div className="group flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)]">
+      {/* Live mini-preview: a fixed-height window onto the top of the page,
+          with a soft fade so the crop reads as intentional. */}
       <Link
         href={`/preview/${template.id}`}
         aria-label={`Preview ${template.label}`}
-        className="block max-h-72 overflow-hidden border-b border-black/5 bg-white p-3"
+        className="relative block h-60 overflow-hidden border-b border-black/10 bg-neutral-50"
       >
-        <div className="pointer-events-none">
-          <ResumePaper templateId={template.id} content={SAMPLE_RESUME} />
+        <div className="pointer-events-none px-4 pt-4">
+          <ResumePaper
+            templateId={template.id}
+            content={SAMPLE_RESUME}
+            frame={false}
+          />
         </div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
       </Link>
 
       <div className="flex flex-1 flex-col p-4">
         <h3 className="font-display text-base font-semibold text-foreground">
           {template.label}
         </h3>
-        <p className="mt-1 text-sm leading-6 text-[color:var(--rx-muted)]">
+        <p className="mt-1 line-clamp-2 text-sm leading-6 text-[color:var(--rx-muted)]">
           {template.description}
         </p>
 
@@ -43,9 +49,11 @@ export function TemplateCard({ template }: { template: Template }) {
           ))}
         </div>
 
-        <div className="mt-4 flex items-center justify-between gap-2 border-t border-black/5 pt-3 font-mono text-xs">
-          <span className="text-[color:var(--rx-muted)]">{template.id}</span>
-          <div className="flex items-center gap-2">
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-black/5 pt-3 font-mono text-xs">
+          <span className="truncate text-[color:var(--rx-muted)]">
+            {template.id}
+          </span>
+          <div className="flex shrink-0 items-center gap-2">
             <form action={useTemplateAction}>
               <input type="hidden" name="templateId" value={template.id} />
               <button type="submit" className="rx-pill rx-accent">

@@ -28,6 +28,7 @@ export function ResumePaper({
   padTop = 15,
   padBottom = 15,
   showPageBreaks = false,
+  frame = true,
 }: {
   templateId: TemplateId;
   content: ResumeContent;
@@ -36,6 +37,8 @@ export function ResumePaper({
   padTop?: number;
   padBottom?: number;
   showPageBreaks?: boolean;
+  /** Paper chrome (border + shadow). Off for thumbnails where the card frames it. */
+  frame?: boolean;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const paperRef = useRef<HTMLDivElement>(null);
@@ -79,7 +82,9 @@ export function ResumePaper({
       >
         <div
           ref={paperRef}
-          className="resume-frame absolute left-0 top-0 overflow-hidden"
+          className={`absolute left-0 top-0 overflow-hidden bg-white ${
+            frame ? "resume-frame" : ""
+          }`}
           style={{
             width: `${dims.wMm}mm`,
             paddingTop: `${padTop}mm`,
