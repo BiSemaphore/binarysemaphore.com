@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Mirror: fully centred and symmetric. Every heading and rule is balanced on
@@ -39,7 +40,7 @@ export function MirrorTemplate({ content }: TemplateProps) {
       {basics.summary.trim() ? (
         <Section title="Profile">
           <p className="mx-auto max-w-[58ch] text-neutral-700">
-            {basics.summary}
+            {rich(basics.summary)}
           </p>
         </Section>
       ) : null}
@@ -66,7 +67,7 @@ export function MirrorTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -113,7 +114,7 @@ export function MirrorTemplate({ content }: TemplateProps) {
                 </h3>
                 {pr.description.trim() ? (
                   <p className="mx-auto max-w-[58ch] text-neutral-700">
-                    {pr.description}
+                    {rich(pr.description)}
                   </p>
                 ) : null}
               </div>

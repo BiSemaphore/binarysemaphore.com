@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Terminal: a CLI / shell aesthetic. Prompt-style header, `$ cat section.md`
@@ -65,7 +66,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
       {basics.summary.trim() ? (
         <Block>
           <Cmd cmd="cat" arg="summary.md" />
-          <p className="mt-2 text-neutral-700">{basics.summary}</p>
+          <p className="mt-2 text-neutral-700">{rich(basics.summary)}</p>
         </Block>
       ) : null}
 
@@ -93,7 +94,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                 {cleanList(exp.bullets).map((b, j) => (
                   <p key={j} className="text-neutral-700">
                     <span className="text-neutral-400"># </span>
-                    {b}
+                    {rich(b)}
                   </p>
                 ))}
               </div>
@@ -116,7 +117,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                   ) : null}
                 </p>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

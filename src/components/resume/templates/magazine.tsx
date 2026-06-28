@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Magazine: a cover-style layout. A navy kicker, an oversized serif name, and
@@ -42,7 +43,7 @@ export function MagazineTemplate({ content }: TemplateProps) {
       {basics.summary.trim() ? (
         <Section title="Feature">
           <p className="text-[15px] leading-7 text-neutral-700">
-            {basics.summary}
+            {rich(basics.summary)}
           </p>
         </Section>
       ) : null}
@@ -70,7 +71,7 @@ export function MagazineTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -117,7 +118,7 @@ export function MagazineTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

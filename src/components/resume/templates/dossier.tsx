@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Dossier: a case-file aesthetic. A bordered header block with field labels, a
@@ -41,7 +42,7 @@ export function DossierTemplate({ content }: TemplateProps) {
 
       {basics.summary.trim() ? (
         <Section title="Brief">
-          <p className="text-neutral-700">{basics.summary}</p>
+          <p className="text-neutral-700">{rich(basics.summary)}</p>
         </Section>
       ) : null}
 
@@ -71,7 +72,7 @@ export function DossierTemplate({ content }: TemplateProps) {
                       .map((b, j) => (
                         <li key={j} className="flex gap-2">
                           <span className="font-mono text-neutral-400">›</span>
-                          <span>{b}</span>
+                          <span>{rich(b)}</span>
                         </li>
                       ))}
                   </ul>
@@ -121,7 +122,7 @@ export function DossierTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

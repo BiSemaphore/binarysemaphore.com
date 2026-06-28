@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Editorial: a magazine-style serif resume with an oversized stacked name,
@@ -75,7 +76,7 @@ export function EditorialTemplate({ content }: TemplateProps) {
             <span className="float-left mr-2 font-serif text-5xl leading-[0.7] text-neutral-300">
               &ldquo;
             </span>
-            {basics.summary}
+            {rich(basics.summary)}
           </p>
         </section>
       ) : null}
@@ -104,7 +105,7 @@ export function EditorialTemplate({ content }: TemplateProps) {
                       {cleanList(exp.bullets).map((b, j) => (
                         <li key={j} className="flex gap-2 text-neutral-700">
                           <span>–</span>
-                          <span>{b}</span>
+                          <span>{rich(b)}</span>
                         </li>
                       ))}
                     </ul>
@@ -134,7 +135,7 @@ export function EditorialTemplate({ content }: TemplateProps) {
                           {pr.name || "Project"}
                         </p>
                         {pr.description.trim() ? (
-                          <p className="text-neutral-700">{pr.description}</p>
+                          <p className="text-neutral-700">{rich(pr.description)}</p>
                         ) : null}
                       </div>
                     ))}

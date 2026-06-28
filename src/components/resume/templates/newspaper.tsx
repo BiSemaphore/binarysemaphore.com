@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Newspaper: a broadsheet masthead with a black title bar, serif type, and a
@@ -35,7 +36,7 @@ export function NewspaperTemplate({ content }: TemplateProps) {
       {basics.summary.trim() ? (
         <Section title="Lead">
           <p className="first-letter:float-left first-letter:mr-1 first-letter:font-black first-letter:text-[34px] first-letter:leading-[0.8]">
-            {basics.summary}
+            {rich(basics.summary)}
           </p>
         </Section>
       ) : null}
@@ -61,7 +62,7 @@ export function NewspaperTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -108,7 +109,7 @@ export function NewspaperTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

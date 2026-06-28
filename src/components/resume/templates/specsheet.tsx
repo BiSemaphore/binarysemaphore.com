@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Spec Sheet: a datasheet aesthetic. Monospace labels in a left rail, content in
@@ -41,7 +42,7 @@ export function SpecsheetTemplate({ content }: TemplateProps) {
 
       {basics.summary.trim() ? (
         <Row label="overview">
-          <p className="text-neutral-700">{basics.summary}</p>
+          <p className="text-neutral-700">{rich(basics.summary)}</p>
         </Row>
       ) : null}
 
@@ -69,7 +70,7 @@ export function SpecsheetTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -123,7 +124,7 @@ export function SpecsheetTemplate({ content }: TemplateProps) {
                   ) : null}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

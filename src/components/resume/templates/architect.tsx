@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Architect: a drafting / blueprint feel. Thin rules, monospace labels with a
@@ -44,7 +45,7 @@ export function ArchitectTemplate({ content }: TemplateProps) {
 
       {basics.summary.trim() ? (
         <Section label={idx()} title="Profile">
-          <p className="text-neutral-700">{basics.summary}</p>
+          <p className="text-neutral-700">{rich(basics.summary)}</p>
         </Section>
       ) : null}
 
@@ -74,7 +75,7 @@ export function ArchitectTemplate({ content }: TemplateProps) {
                       .map((b, j) => (
                         <li key={j} className="flex gap-2">
                           <span className="text-neutral-400">—</span>
-                          <span>{b}</span>
+                          <span>{rich(b)}</span>
                         </li>
                       ))}
                   </ul>
@@ -129,7 +130,7 @@ export function ArchitectTemplate({ content }: TemplateProps) {
                   ) : null}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

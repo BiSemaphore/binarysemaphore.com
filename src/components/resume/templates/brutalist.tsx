@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Brutalist: bold and loud. Heavy black section bars with reversed labels,
@@ -40,7 +41,7 @@ export function BrutalistTemplate({ content }: TemplateProps) {
 
       {basics.summary.trim() ? (
         <Section title="Profile">
-          <p>{basics.summary}</p>
+          <p>{rich(basics.summary)}</p>
         </Section>
       ) : null}
 
@@ -70,7 +71,7 @@ export function BrutalistTemplate({ content }: TemplateProps) {
                       .map((b, j) => (
                         <li key={j} className="flex gap-2">
                           <span className="font-black">▪</span>
-                          <span className="text-neutral-700">{b}</span>
+                          <span className="text-neutral-700">{rich(b)}</span>
                         </li>
                       ))}
                   </ul>
@@ -130,7 +131,7 @@ export function BrutalistTemplate({ content }: TemplateProps) {
                   ) : null}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

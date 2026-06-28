@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Classic: a clean, single-column, recruiter-friendly resume. Rendered as
@@ -56,7 +57,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
       {/* Summary */}
       {basics.summary.trim() ? (
         <Section title="Summary">
-          <p className="text-neutral-700">{basics.summary}</p>
+          <p className="text-neutral-700">{rich(basics.summary)}</p>
         </Section>
       ) : null}
 
@@ -85,7 +86,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -143,7 +144,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                   ) : null}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

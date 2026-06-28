@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Display: typography-forward. An enormous name set tight, a thin contact rule,
@@ -40,7 +41,7 @@ export function DisplayTemplate({ content }: TemplateProps) {
 
       {basics.summary.trim() ? (
         <p className="mt-5 max-w-[58ch] text-[15px] leading-7 text-neutral-700">
-          {basics.summary}
+          {rich(basics.summary)}
         </p>
       ) : null}
 
@@ -68,7 +69,7 @@ export function DisplayTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -120,7 +121,7 @@ export function DisplayTemplate({ content }: TemplateProps) {
                   ) : null}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}

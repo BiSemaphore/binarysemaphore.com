@@ -25,6 +25,7 @@ import {
   type TemplateId,
 } from "@/lib/resume/schema";
 import { ResumePaper } from "@/components/resume/resume-paper";
+import { RichTextarea } from "@/components/resume/rich-textarea";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -339,7 +340,7 @@ export function Editor({
                     onChange={(v) => setBasics("website", v)}
                   />
                 </div>
-                <TextArea
+                <RichTextarea
                   label="Summary"
                   value={content.basics.summary}
                   onChange={(v) => setBasics("summary", v)}
@@ -401,13 +402,14 @@ export function Editor({
                       />
                       I currently work here
                     </label>
-                    <TextArea
+                    <RichTextarea
                       label="Highlights (one per line)"
                       value={exp.bullets.join("\n")}
                       onChange={(v) =>
                         updateExperience(i, { bullets: v.split("\n") })
                       }
                       rows={3}
+                      lists={false}
                     />
                   </RepeatItem>
                 ))}
@@ -510,7 +512,7 @@ export function Editor({
                         onChange={(v) => updateProject(i, { link: v })}
                       />
                     </div>
-                    <TextArea
+                    <RichTextarea
                       label="Description"
                       value={pr.description}
                       onChange={(v) => updateProject(i, { description: v })}
@@ -766,30 +768,6 @@ function Field({
         placeholder={placeholder}
         disabled={disabled}
         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-subtle focus:border-accent focus:outline-none disabled:opacity-50"
-      />
-    </label>
-  );
-}
-
-function TextArea({
-  label,
-  value,
-  onChange,
-  rows = 3,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  rows?: number;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs font-medium text-subtle">{label}</span>
-      <textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        rows={rows}
-        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-subtle focus:border-accent focus:outline-none"
       />
     </label>
   );

@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Academic: a LaTeX-CV aesthetic. Serif type, centred name, small-caps section
@@ -38,7 +39,7 @@ export function AcademicTemplate({ content }: TemplateProps) {
 
       {basics.summary.trim() ? (
         <Section title="Statement">
-          <p className="text-neutral-700">{basics.summary}</p>
+          <p className="text-neutral-700">{rich(basics.summary)}</p>
         </Section>
       ) : null}
 
@@ -66,7 +67,7 @@ export function AcademicTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -107,7 +108,7 @@ export function AcademicTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                 </span>
                 {pr.description.trim() ? (
-                  <span className="text-neutral-700">. {pr.description}</span>
+                  <span className="text-neutral-700">. {rich(pr.description)}</span>
                 ) : null}
                 {pr.link ? (
                   <span className="text-xs italic text-neutral-500">

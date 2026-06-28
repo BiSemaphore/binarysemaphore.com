@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Minimal: ultra-spare. No rules, light weights, lots of whitespace. Section
@@ -37,7 +38,7 @@ export function MinimalTemplate({ content }: TemplateProps) {
       </header>
 
       {basics.summary.trim() ? (
-        <p className="mt-6 max-w-[52ch] text-neutral-600">{basics.summary}</p>
+        <p className="mt-6 max-w-[52ch] text-neutral-600">{rich(basics.summary)}</p>
       ) : null}
 
       {experience.length > 0 ? (
@@ -61,7 +62,7 @@ export function MinimalTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -107,7 +108,7 @@ export function MinimalTemplate({ content }: TemplateProps) {
               <div key={i}>
                 <span className="text-neutral-900">{pr.name || "Project"}</span>
                 {pr.description.trim() ? (
-                  <span className="text-neutral-500"> — {pr.description}</span>
+                  <span className="text-neutral-500"> — {rich(pr.description)}</span>
                 ) : null}
               </div>
             ))}
