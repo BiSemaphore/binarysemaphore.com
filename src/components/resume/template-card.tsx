@@ -15,12 +15,10 @@ export function TemplateCard({ template }: { template: Template }) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)]">
       {/* Live mini-preview: a fixed-height window onto the top of the page,
-          with a soft fade so the crop reads as intentional. */}
-      <Link
-        href={`/preview/${template.id}`}
-        aria-label={`Preview ${template.label}`}
-        className="relative block h-60 overflow-hidden border-b border-black/10 bg-neutral-50"
-      >
+          with a soft fade so the crop reads as intentional. The clickable
+          layer is an overlay link (sibling, not ancestor) so the resume's own
+          links inside the preview don't create invalid nested <a> tags. */}
+      <div className="relative h-60 overflow-hidden border-b border-black/10 bg-neutral-50">
         <div className="pointer-events-none px-4 pt-4">
           <ResumePaper
             templateId={template.id}
@@ -29,7 +27,12 @@ export function TemplateCard({ template }: { template: Template }) {
           />
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
-      </Link>
+        <Link
+          href={`/preview/${template.id}`}
+          aria-label={`Preview ${template.label}`}
+          className="absolute inset-0 z-10"
+        />
+      </div>
 
       {/* The card is an always-white "sheet" (it frames a white resume), so its
           text is fixed-dark and stays readable in dark mode. */}
