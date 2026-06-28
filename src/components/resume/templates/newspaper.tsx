@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { contactLine } from "@/lib/resume/links";
+import { companyName, contactLine } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -51,7 +51,7 @@ export function NewspaperTemplate({ content }: TemplateProps) {
                   <h3 className="font-bold text-neutral-900">
                     {exp.role || "Role"}
                     {exp.company ? (
-                      <span className="font-normal italic"> — {exp.company}</span>
+                      <span className="font-normal italic"> — {companyName(exp.company, exp.companyUrl)}</span>
                     ) : null}
                   </h3>
                   <span className="shrink-0 font-sans text-[10px] uppercase tracking-wide text-neutral-500">

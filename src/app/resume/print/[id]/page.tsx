@@ -35,7 +35,10 @@ export default async function ResumePrintPage({
   const dims = pageDims(resume.pageSize);
   // Content density (zoom) lives on the content; the page margins live on the
   // @page box so EVERY page (not just the first) gets the top/bottom margin.
-  const style = { zoom: scaleZoom(resume.scalePct) } as React.CSSProperties;
+  const style = {
+    zoom: scaleZoom(resume.scalePct),
+    textAlign: resume.textAlign,
+  } as React.CSSProperties;
   const pageCss = `@page { size: ${pageSizeCss(resume.pageSize)}; margin: ${resume.padTop}mm ${PAGE_MARGIN_X}mm ${resume.padBottom}mm; }`;
 
   return (

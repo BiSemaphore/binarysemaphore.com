@@ -9,12 +9,15 @@ import {
   PAGE_SIZES,
   PX_PER_MM,
   TEMPLATES,
+  TEXT_ALIGNS,
+  DEFAULT_ALIGN,
   clampPad,
   clampScale,
   densityForScale,
   emptyResume,
   isPageSize,
   isTemplateId,
+  isTextAlign,
   normalizeResume,
   pageDims,
   pageSizeCss,
@@ -129,6 +132,15 @@ describe("page size", () => {
     expect(pageSizeCss("a4")).toBe("A4");
     expect(pageSizeCss("letter")).toBe("letter");
     expect(pageSizeCss("nonsense")).toBe("A4");
+  });
+});
+
+describe("text align", () => {
+  it("defaults to left and recognizes known values", () => {
+    expect(DEFAULT_ALIGN).toBe("left");
+    expect(TEXT_ALIGNS.map((a) => a.id)).toEqual(["left", "justify"]);
+    expect(isTextAlign("justify")).toBe(true);
+    expect(isTextAlign("center")).toBe(false);
   });
 });
 

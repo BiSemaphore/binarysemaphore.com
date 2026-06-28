@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { contactLine } from "@/lib/resume/links";
+import { companyName, contactLine } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -52,7 +52,7 @@ export function BankerTemplate({ content }: TemplateProps) {
               <div key={i}>
                 <div className="flex items-baseline justify-between gap-4">
                   <h3 className="font-bold text-neutral-900">
-                    {exp.company || exp.role || "Company"}
+                    {companyName(exp.company, exp.companyUrl, exp.role || "Company")}
                   </h3>
                   <span className="shrink-0 text-xs text-neutral-500">
                     {formatRange(exp.start, exp.end, exp.current)}

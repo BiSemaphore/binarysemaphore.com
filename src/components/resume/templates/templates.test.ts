@@ -20,6 +20,7 @@ const sample: ResumeContent = {
   experience: [
     {
       company: "Coral Labs",
+      companyUrl: "",
       role: "Senior Software Engineer",
       start: "2022",
       end: "2024",

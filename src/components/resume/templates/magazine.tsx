@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { contactLine } from "@/lib/resume/links";
+import { companyName, contactLine } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -64,7 +64,7 @@ export function MagazineTemplate({ content }: TemplateProps) {
                 </div>
                 {exp.company ? (
                   <p className="text-xs uppercase tracking-[0.18em] text-[#003554]">
-                    {exp.company}
+                    {companyName(exp.company, exp.companyUrl)}
                   </p>
                 ) : null}
                 {exp.bullets.filter((b) => b.trim()).length > 0 ? (

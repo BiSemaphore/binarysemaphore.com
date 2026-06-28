@@ -13,10 +13,12 @@ import {
   SCALE_MAX,
   SCALE_MIN,
   TEMPLATES,
+  TEXT_ALIGNS,
   clampPad,
   clampScale,
   densityForScale,
   type PageSize,
+  type TextAlign,
   type ResumeContent,
   type ResumeEducation,
   type ResumeExperience,
@@ -31,6 +33,7 @@ type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 const emptyExperience = (): ResumeExperience => ({
   company: "",
+  companyUrl: "",
   role: "",
   start: "",
   end: "",
@@ -59,6 +62,7 @@ export function Editor({
   initialScalePct,
   initialPadTop,
   initialPadBottom,
+  initialTextAlign,
   initialContent,
 }: {
   id: string;
@@ -68,6 +72,7 @@ export function Editor({
   initialScalePct: number;
   initialPadTop: number;
   initialPadBottom: number;
+  initialTextAlign: TextAlign;
   initialContent: ResumeContent;
 }) {
   const [title, setTitle] = useState(initialTitle);
@@ -76,6 +81,7 @@ export function Editor({
   const [scalePct, setScalePct] = useState(initialScalePct);
   const [padTop, setPadTop] = useState(initialPadTop);
   const [padBottom, setPadBottom] = useState(initialPadBottom);
+  const [textAlign, setTextAlign] = useState<TextAlign>(initialTextAlign);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [exporting, setExporting] = useState(false);
@@ -97,12 +103,23 @@ export function Editor({
         scalePct,
         padTop,
         padBottom,
+        textAlign,
         content,
       });
       setStatus(res.ok ? "saved" : "error");
     }, 800);
     return () => clearTimeout(t);
-  }, [id, title, templateId, pageSize, scalePct, padTop, padBottom, content]);
+  }, [
+    id,
+    title,
+    templateId,
+    pageSize,
+    scalePct,
+    padTop,
+    padBottom,
+    textAlign,
+    content,
+  ]);
 
   function resetTune() {
     setScalePct(DEFAULT_SCALE);
@@ -123,6 +140,7 @@ export function Editor({
         scalePct,
         padTop,
         padBottom,
+        textAlign,
         content,
       });
       const res = await fetch(`/api/resume/${id}/pdf`);
@@ -170,6 +188,19 @@ export function Editor({
       ...c,
       links: c.links.map((l, j) => (j === i ? { ...l, ...patch } : l)),
     }));
+  }
+
+  // Reorder an item within one of the repeatable sections (by +1 / -1).
+  function moveItem(key: keyof ResumeContent, i: number, dir: -1 | 1) {
+    setContent((c) => {
+      const list = c[key];
+      if (!Array.isArray(list)) return c;
+      const j = i + dir;
+      if (j < 0 || j >= list.length) return c;
+      const next = [...list];
+      [next[i], next[j]] = [next[j], next[i]];
+      return { ...c, [key]: next };
+    });
   }
 
   return (
@@ -285,6 +316,17 @@ export function Editor({
                       onChange={setPageSize}
                     />
                   </div>
+
+                  <div className="mt-3">
+                    <Segmented
+                      green
+                      block
+                      label="align"
+                      options={TEXT_ALIGNS}
+                      value={textAlign}
+                      onChange={setTextAlign}
+                    />
+                  </div>
                 </div>
               </>
             ) : null}
@@ -366,6 +408,14 @@ export function Editor({
                         experience: c.experience.filter((_, j) => j !== i),
                       }))
                     }
+                    onMoveUp={
+                      i > 0 ? () => moveItem("experience", i, -1) : undefined
+                    }
+                    onMoveDown={
+                      i < content.experience.length - 1
+                        ? () => moveItem("experience", i, 1)
+                        : undefined
+                    }
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
                       <Field
@@ -392,6 +442,12 @@ export function Editor({
                         disabled={exp.current}
                       />
                     </div>
+                    <Field
+                      label="Company website"
+                      value={exp.companyUrl}
+                      onChange={(v) => updateExperience(i, { companyUrl: v })}
+                      placeholder="acme.com"
+                    />
                     <label className="flex items-center gap-2 text-sm text-muted">
                       <input
                         type="checkbox"
@@ -432,6 +488,14 @@ export function Editor({
                         ...c,
                         education: c.education.filter((_, j) => j !== i),
                       }))
+                    }
+                    onMoveUp={
+                      i > 0 ? () => moveItem("education", i, -1) : undefined
+                    }
+                    onMoveDown={
+                      i < content.education.length - 1
+                        ? () => moveItem("education", i, 1)
+                        : undefined
                     }
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -499,6 +563,14 @@ export function Editor({
                         projects: c.projects.filter((_, j) => j !== i),
                       }))
                     }
+                    onMoveUp={
+                      i > 0 ? () => moveItem("projects", i, -1) : undefined
+                    }
+                    onMoveDown={
+                      i < content.projects.length - 1
+                        ? () => moveItem("projects", i, 1)
+                        : undefined
+                    }
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
                       <Field
@@ -537,6 +609,12 @@ export function Editor({
                         links: c.links.filter((_, j) => j !== i),
                       }))
                     }
+                    onMoveUp={i > 0 ? () => moveItem("links", i, -1) : undefined}
+                    onMoveDown={
+                      i < content.links.length - 1
+                        ? () => moveItem("links", i, 1)
+                        : undefined
+                    }
                   >
                     <div className="grid gap-3 sm:grid-cols-2">
                       <Field
@@ -567,6 +645,7 @@ export function Editor({
               scalePct={scalePct}
               padTop={padTop}
               padBottom={padBottom}
+              align={textAlign}
               showPageBreaks
             />
           </div>
@@ -726,21 +805,47 @@ function FormSection({
 
 function RepeatItem({
   onRemove,
+  onMoveUp,
+  onMoveDown,
   children,
 }: {
   onRemove: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
   children: React.ReactNode;
 }) {
   return (
     <div className="relative space-y-3 rounded-card border border-border bg-card p-4">
-      <button
-        type="button"
-        onClick={onRemove}
-        aria-label="Remove"
-        className="absolute right-3 top-3 rounded-md px-2 py-0.5 font-mono text-xs text-subtle transition-colors hover:text-red-500"
-      >
-        Remove
-      </button>
+      <div className="absolute right-3 top-3 flex items-center gap-1">
+        <button
+          type="button"
+          onClick={onMoveUp}
+          disabled={!onMoveUp}
+          aria-label="Move up"
+          title="Move up"
+          className="rounded-md px-1.5 py-0.5 font-mono text-xs text-subtle transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          ↑
+        </button>
+        <button
+          type="button"
+          onClick={onMoveDown}
+          disabled={!onMoveDown}
+          aria-label="Move down"
+          title="Move down"
+          className="rounded-md px-1.5 py-0.5 font-mono text-xs text-subtle transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          ↓
+        </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label="Remove"
+          className="rounded-md px-2 py-0.5 font-mono text-xs text-subtle transition-colors hover:text-red-500"
+        >
+          Remove
+        </button>
+      </div>
       {children}
     </div>
   );

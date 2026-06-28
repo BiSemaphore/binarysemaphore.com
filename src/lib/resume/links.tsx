@@ -78,3 +78,18 @@ export function linkAnchor(link: ResumeContent["links"][number]): ReactNode {
   const href = safeUrl(link.url);
   return href ? <A href={href}>{label}</A> : label;
 }
+
+/**
+ * Render a company name, linked to its website when present. `fallback` is shown
+ * when the name is empty (templates that lead with the company).
+ */
+export function companyName(
+  company: string,
+  companyUrl: string,
+  fallback = "",
+): ReactNode {
+  const name = company.trim() || fallback;
+  if (!name) return name;
+  const href = safeUrl(companyUrl);
+  return href ? <A href={href}>{name}</A> : name;
+}

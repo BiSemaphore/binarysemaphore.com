@@ -8,6 +8,7 @@
  */
 import { createClient } from "@/utils/supabase/server";
 import {
+  DEFAULT_ALIGN,
   DEFAULT_PAD,
   DEFAULT_PAGE_SIZE,
   DEFAULT_SCALE,
@@ -15,10 +16,12 @@ import {
   clampPad,
   clampScale,
   emptyResume,
+  isTextAlign,
   normalizeResume,
   type PageSize,
   type ResumeContent,
   type TemplateId,
+  type TextAlign,
 } from "@/lib/resume/schema";
 
 export type Resume = {
@@ -30,6 +33,7 @@ export type Resume = {
   scalePct: number;
   padTop: number;
   padBottom: number;
+  textAlign: TextAlign;
   content: ResumeContent;
   createdAt: string;
   updatedAt: string;
@@ -49,6 +53,7 @@ type Row = {
   scale_pct: number | null;
   pad_top: number | null;
   pad_bottom: number | null;
+  text_align: string | null;
   content: unknown;
   created_at: string;
   updated_at: string;
@@ -63,6 +68,7 @@ function toResume(row: Row): Resume {
     scalePct: clampScale(row.scale_pct ?? DEFAULT_SCALE),
     padTop: clampPad(row.pad_top ?? DEFAULT_PAD),
     padBottom: clampPad(row.pad_bottom ?? DEFAULT_PAD),
+    textAlign: isTextAlign(row.text_align ?? "") ? (row.text_align as TextAlign) : DEFAULT_ALIGN,
     content: normalizeResume(row.content),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -88,13 +94,22 @@ export async function listResumes(): Promise<ResumeSummary[]> {
 /** A single resume by id, or null if it doesn't exist / isn't the user's. */
 export async function getResume(id: string): Promise<Resume | null> {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const base =
+    "id, title, template_id, page_size, scale_pct, pad_top, pad_bottom, content, created_at, updated_at";
+  let { data, error } = await supabase
     .from("resumes")
-    .select(
-      "id, title, template_id, page_size, scale_pct, pad_top, pad_bottom, content, created_at, updated_at",
-    )
+    .select(`${base}, text_align`)
     .eq("id", id)
     .maybeSingle();
+  // Resilient to a DB that hasn't run the text_align migration yet: retry
+  // without the column (alignment defaults until the migration is applied).
+  if (error && /text_align/.test(error.message)) {
+    ({ data, error } = await supabase
+      .from("resumes")
+      .select(base)
+      .eq("id", id)
+      .maybeSingle());
+  }
   if (error) throw error;
   return data ? toResume(data as Row) : null;
 }
@@ -131,6 +146,7 @@ export type ResumePatch = {
   scalePct?: number;
   padTop?: number;
   padBottom?: number;
+  textAlign?: TextAlign;
   content?: ResumeContent;
 };
 
@@ -147,10 +163,20 @@ export async function updateResume(
   if (patch.scalePct !== undefined) row.scale_pct = clampScale(patch.scalePct);
   if (patch.padTop !== undefined) row.pad_top = clampPad(patch.padTop);
   if (patch.padBottom !== undefined) row.pad_bottom = clampPad(patch.padBottom);
+  if (patch.textAlign !== undefined) row.text_align = patch.textAlign;
   if (patch.content !== undefined) row.content = patch.content;
   if (Object.keys(row).length === 0) return;
 
   const { error } = await supabase.from("resumes").update(row).eq("id", id);
+  // Resilient to a DB without the text_align column yet: drop it and retry so
+  // saving still works before the migration is applied.
+  if (error && /text_align/.test(error.message) && "text_align" in row) {
+    delete row.text_align;
+    if (Object.keys(row).length === 0) return;
+    const retry = await supabase.from("resumes").update(row).eq("id", id);
+    if (retry.error) throw retry.error;
+    return;
+  }
   if (error) throw error;
 }
 

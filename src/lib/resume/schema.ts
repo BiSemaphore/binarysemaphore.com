@@ -16,6 +16,8 @@ export type ResumeBasics = {
 
 export type ResumeExperience = {
   company: string;
+  /** Optional company website; makes the company name a clickable link. */
+  companyUrl: string;
   role: string;
   /** Free-text month/year, e.g. "Jan 2024". */
   start: string;
@@ -82,7 +84,9 @@ export function normalizeResume(value: unknown): ResumeContent {
   const v = value as Partial<ResumeContent>;
   return {
     basics: { ...base.basics, ...(v.basics ?? {}) },
-    experience: Array.isArray(v.experience) ? v.experience : base.experience,
+    experience: Array.isArray(v.experience)
+      ? v.experience.map((e) => ({ ...e, companyUrl: e.companyUrl ?? "" }))
+      : base.experience,
     education: Array.isArray(v.education) ? v.education : base.education,
     skills: Array.isArray(v.skills) ? v.skills : base.skills,
     projects: Array.isArray(v.projects) ? v.projects : base.projects,
@@ -350,3 +354,21 @@ export function pageDims(pageSize: string): PageDims {
 
 /** Fixed horizontal page margin in mm (left/right). Vertical is tunable. */
 export const PAGE_MARGIN_X = 16;
+
+/**
+ * Body-text alignment. "left" is the default (most readable / ATS-safe);
+ * "justify" fills lines edge-to-edge. Applied to the resume content wrapper;
+ * a template's explicit header alignment (centred names, etc.) still wins.
+ */
+export const TEXT_ALIGNS = [
+  { id: "left", label: "Left" },
+  { id: "justify", label: "Justify" },
+] as const;
+
+export type TextAlign = (typeof TEXT_ALIGNS)[number]["id"];
+
+export const DEFAULT_ALIGN: TextAlign = "left";
+
+export function isTextAlign(value: string): value is TextAlign {
+  return TEXT_ALIGNS.some((a) => a.id === value);
+}

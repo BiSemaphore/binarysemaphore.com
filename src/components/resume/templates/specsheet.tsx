@@ -1,6 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { contactLine, projectLink } from "@/lib/resume/links";
+import { companyName, contactLine, projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -58,7 +58,7 @@ export function SpecsheetTemplate({ content }: TemplateProps) {
                     {exp.company ? (
                       <span className="font-normal text-neutral-500">
                         {" "}
-                        — {exp.company}
+                        — {companyName(exp.company, exp.companyUrl)}
                       </span>
                     ) : null}
                   </h3>
