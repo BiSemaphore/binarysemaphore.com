@@ -1,5 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
+import { projectLink } from "@/lib/resume/links";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Terminal: a CLI / shell aesthetic. Prompt-style header, `$ cat section.md`
@@ -65,7 +67,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
       {basics.summary.trim() ? (
         <Block>
           <Cmd cmd="cat" arg="summary.md" />
-          <p className="mt-2 text-neutral-700">{basics.summary}</p>
+          <p className="mt-2 text-neutral-700">{rich(basics.summary)}</p>
         </Block>
       ) : null}
 
@@ -93,7 +95,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                 {cleanList(exp.bullets).map((b, j) => (
                   <p key={j} className="text-neutral-700">
                     <span className="text-neutral-400"># </span>
-                    {b}
+                    {rich(b)}
                   </p>
                 ))}
               </div>
@@ -112,11 +114,11 @@ export function TerminalTemplate({ content }: TemplateProps) {
                 <p className="font-bold text-neutral-900">
                   {pr.name || "project"}
                   {pr.link ? (
-                    <span className="font-normal text-blue-600"> · {pr.link}</span>
+                    <span className="font-normal text-blue-600"> · {projectLink(pr.link)}</span>
                   ) : null}
                 </p>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  <p className="text-neutral-700">{rich(pr.description)}</p>
                 ) : null}
               </div>
             ))}
@@ -169,9 +171,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
         </Block>
       ) : null}
 
-      <p className="mt-8 text-[11px] text-neutral-400">
-        {"// resume.tsx · binarysemaphore.com"}
-      </p>
+      <p className="mt-8 text-[11px] text-neutral-400">{"// resume.tsx"}</p>
     </article>
   );
 }

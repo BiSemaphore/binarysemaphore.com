@@ -31,11 +31,13 @@ export function TemplateCard({ template }: { template: Template }) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
       </Link>
 
+      {/* The card is an always-white "sheet" (it frames a white resume), so its
+          text is fixed-dark and stays readable in dark mode. */}
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-display text-base font-semibold text-foreground">
+        <h3 className="font-display text-base font-semibold text-neutral-900">
           {template.label}
         </h3>
-        <p className="mt-1 line-clamp-2 text-sm leading-6 text-[color:var(--rx-muted)]">
+        <p className="mt-1 line-clamp-2 text-sm leading-6 text-neutral-600">
           {template.description}
         </p>
 
@@ -43,22 +45,23 @@ export function TemplateCard({ template }: { template: Template }) {
           {template.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-black/10 px-2 py-0.5 font-mono text-[11px] text-[color:var(--rx-muted)]"
+              className="rounded-full border border-black/10 px-2 py-0.5 font-mono text-[11px] text-neutral-500"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-black/5 pt-3 font-mono text-xs">
-          <span className="truncate text-[color:var(--rx-muted)]">
-            {template.id}
-          </span>
-          <div className="flex shrink-0 items-center gap-2">
+        {/* Width-independent footer: id on its own line, actions on a fixed row
+            below, so the card renders identically in any grid (home, gallery).
+            Fixed-dark text since the card is an always-white sheet. */}
+        <div className="mt-auto border-t border-black/5 pt-3 font-mono text-xs">
+          <p className="mb-2 truncate text-neutral-500">{template.id}</p>
+          <div className="flex items-center gap-2">
             <CopyPromptButton template={template} />
             <form action={useTemplateAction}>
               <input type="hidden" name="templateId" value={template.id} />
-              <button type="submit" className="rx-pill rx-accent">
+              <button type="submit" className="rx-pill">
                 use
               </button>
             </form>

@@ -59,6 +59,6 @@ export const SAMPLE_RESUME: ResumeContent = normalizeResume({
   ],
   links: [
     { label: "github", url: "github.com/johndoe" },
-    { label: "linkedin", url: "in/johndoe" },
+    { label: "linkedin", url: "linkedin.com/in/johndoe" },
   ],
 });

@@ -1,78 +1,64 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { projectLink, linkAnchor } from "@/lib/resume/links";
+import { contactLine } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
- * Classic: a clean, single-column, recruiter-friendly resume. Rendered as
- * "paper" (always light) so it looks the same in the preview and when printed,
- * independent of the site theme. Empty fields show muted placeholders so the
- * preview is never blank.
+ * Index Card: a ruled record-card look. A tabbed header, hairline rules under
+ * each line, and compact spacing. Tidy and filing-cabinet neat.
  */
-export function ClassicTemplate({ content }: TemplateProps) {
+export function IndexcardTemplate({ content }: TemplateProps) {
   const { basics, experience, education, skills, projects, links } = content;
-
   const name = ph(basics.name, "Your Name");
   const title = ph(basics.title, "Your professional title");
-
   const contacts = contactBits(basics);
   const skillList = cleanList(skills);
 
   return (
     <article className="w-full bg-white font-sans text-[13px] leading-relaxed text-neutral-800">
-      {/* Header */}
-      <header className="border-b border-neutral-200 pb-4">
-        <h1
-          className={`text-3xl font-bold tracking-tight ${
-            name.muted ? "text-neutral-300" : "text-neutral-900"
-          }`}
-        >
-          {name.text}
-        </h1>
-        <p
-          className={`mt-0.5 text-base ${
-            title.muted ? "text-neutral-300" : "text-neutral-600"
-          }`}
-        >
-          {title.text}
-        </p>
-
-        {contacts.length > 0 ? (
-          <p className="mt-2 text-xs text-neutral-600">
-            {contacts.join("  ·  ")}
+      <header>
+        <span className="inline-block bg-neutral-900 px-3 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-white">
+          Résumé / Card
+        </span>
+        <div className="mt-2 border-b-2 border-neutral-900 pb-1">
+          <h1
+            className={`text-2xl font-bold ${
+              name.muted ? "text-neutral-300" : "text-neutral-900"
+            }`}
+          >
+            {name.text}
+          </h1>
+          <p
+            className={`text-sm ${
+              title.muted ? "text-neutral-300" : "text-neutral-600"
+            }`}
+          >
+            {title.text}
           </p>
-        ) : null}
-
-        {links.length > 0 ? (
-          <p className="mt-1 text-xs text-neutral-600">
-            {links.map((l, i) => (
-              <span key={`${l.url}-${i}`}>
-                {i > 0 ? "  ·  " : ""}
-                <span className="font-medium">{linkAnchor(l)}</span>
-              </span>
-            ))}
+        </div>
+        {contacts.length > 0 || links.length > 0 ? (
+          <p className="mt-1.5 text-xs text-neutral-600">
+            {contactLine(basics, links, "  ·  ")}
           </p>
         ) : null}
       </header>
 
-      {/* Summary */}
       {basics.summary.trim() ? (
         <Section title="Summary">
           <p className="text-neutral-700">{rich(basics.summary)}</p>
         </Section>
       ) : null}
 
-      {/* Experience */}
       {experience.length > 0 ? (
         <Section title="Experience">
-          <div className="space-y-4">
+          <div className="divide-y divide-neutral-200">
             {experience.map((exp, i) => (
-              <div key={i}>
+              <div key={i} className="py-2 first:pt-0">
                 <div className="flex items-baseline justify-between gap-4">
                   <h3 className="font-semibold text-neutral-900">
                     {exp.role || "Role"}
                     {exp.company ? (
-                      <span className="font-normal text-neutral-600">
+                      <span className="font-normal text-neutral-500">
                         {" "}
                         — {exp.company}
                       </span>
@@ -83,7 +69,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                   </span>
                 </div>
                 {exp.bullets.filter((b) => b.trim()).length > 0 ? (
-                  <ul className="mt-1 list-disc space-y-0.5 pl-5 text-neutral-700">
+                  <ul className="mt-0.5 list-disc space-y-0.5 pl-5 text-neutral-700">
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
@@ -97,14 +83,13 @@ export function ClassicTemplate({ content }: TemplateProps) {
         </Section>
       ) : null}
 
-      {/* Education */}
       {education.length > 0 ? (
         <Section title="Education">
-          <div className="space-y-3">
+          <div className="divide-y divide-neutral-200">
             {education.map((ed, i) => (
               <div
                 key={i}
-                className="flex items-baseline justify-between gap-4"
+                className="flex items-baseline justify-between gap-4 py-2 first:pt-0"
               >
                 <div>
                   <h3 className="font-semibold text-neutral-900">
@@ -123,26 +108,19 @@ export function ClassicTemplate({ content }: TemplateProps) {
         </Section>
       ) : null}
 
-      {/* Skills */}
       {skillList.length > 0 ? (
         <Section title="Skills">
           <p className="text-neutral-700">{skillList.join("  ·  ")}</p>
         </Section>
       ) : null}
 
-      {/* Projects */}
       {projects.length > 0 ? (
         <Section title="Projects">
-          <div className="space-y-3">
+          <div className="divide-y divide-neutral-200">
             {projects.map((pr, i) => (
-              <div key={i}>
+              <div key={i} className="py-2 first:pt-0">
                 <h3 className="font-semibold text-neutral-900">
                   {pr.name || "Project"}
-                  {pr.link ? (
-                    <span className="ml-2 text-xs font-normal text-neutral-500">
-                      {projectLink(pr.link)}
-                    </span>
-                  ) : null}
                 </h3>
                 {pr.description.trim() ? (
                   <p className="text-neutral-700">{rich(pr.description)}</p>
@@ -164,8 +142,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mt-5">
-      <h2 className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-neutral-500">
+    <section className="mt-4">
+      <h2 className="mb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-500">
         {title}
       </h2>
       {children}

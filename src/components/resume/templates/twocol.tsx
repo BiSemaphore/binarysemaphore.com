@@ -1,5 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
+import { projectLink, linkAnchor } from "@/lib/resume/links";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Two-column: an emerald-accented layout with a left sidebar (skills, projects,
@@ -41,7 +43,7 @@ export function TwoColTemplate({ content }: TemplateProps) {
       {basics.summary.trim() ? (
         <div className="mt-6 grid grid-cols-[140px_1fr] gap-x-6 border-b border-neutral-200 pb-6">
           <Label>about</Label>
-          <p className="text-neutral-700">{basics.summary}</p>
+          <p className="text-neutral-700">{rich(basics.summary)}</p>
         </div>
       ) : null}
 
@@ -76,12 +78,12 @@ export function TwoColTemplate({ content }: TemplateProps) {
                     </p>
                     {pr.link ? (
                       <p className="font-mono text-[10px] uppercase tracking-wide text-neutral-500">
-                        {pr.link}
+                        {projectLink(pr.link)}
                       </p>
                     ) : null}
                     {pr.description.trim() ? (
                       <p className="mt-0.5 text-xs text-neutral-600">
-                        {pr.description}
+                        {rich(pr.description)}
                       </p>
                     ) : null}
                   </div>
@@ -117,7 +119,7 @@ export function TwoColTemplate({ content }: TemplateProps) {
               <div className="mt-2 space-y-1">
                 {links.map((l, i) => (
                   <p key={i} className="text-xs text-neutral-700">
-                    <span className="font-medium">{l.label || "Link"}</span>
+                    <span className="font-medium">{linkAnchor(l)}</span>
                     {l.url ? (
                       <span className="text-neutral-500"> · {l.url}</span>
                     ) : null}
@@ -158,7 +160,7 @@ export function TwoColTemplate({ content }: TemplateProps) {
                       {cleanList(exp.bullets).map((b, j) => (
                         <li key={j} className="flex gap-2 text-neutral-700">
                           <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-500" />
-                          <span>{b}</span>
+                          <span>{rich(b)}</span>
                         </li>
                       ))}
                     </ul>

@@ -25,6 +25,7 @@ import {
   type TemplateId,
 } from "@/lib/resume/schema";
 import { ResumePaper } from "@/components/resume/resume-paper";
+import { RichTextarea } from "@/components/resume/rich-textarea";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -78,8 +79,7 @@ export function Editor({
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [exporting, setExporting] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-  const [tplOpen, setTplOpen] = useState(false);
+  const [tuneOpen, setTuneOpen] = useState(false);
 
   // Debounced autosave. Skip the first render (nothing changed yet).
   const first = useRef(true);
@@ -109,8 +109,6 @@ export function Editor({
     setPadTop(DEFAULT_PAD);
     setPadBottom(DEFAULT_PAD);
   }
-
-  const currentTpl = TEMPLATES.find((t) => t.id === templateId);
 
   // Export to PDF: flush any pending edits, then download the server-rendered
   // PDF directly (no browser print dialog).
@@ -175,182 +173,139 @@ export function Editor({
   }
 
   return (
-    <div className="rx-canvas relative min-h-screen w-full">
-      {/* Canvas: centred, scaled paper (a faithful miniature of the PDF). */}
-      <div className="h-screen overflow-auto px-6 pb-28 pt-8">
-        <ResumePaper
-          templateId={templateId}
-          content={content}
-          pageSize={pageSize}
-          scalePct={scalePct}
-          padTop={padTop}
-          padBottom={padBottom}
-          showPageBreaks
-        />
-      </div>
+    <div className="flex h-screen flex-col">
+      {/* Toolbar */}
+      <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
+        <div className="flex min-w-0 items-center gap-3">
+          <Link href="/" className="rx-pill font-mono text-xs">
+            ← home
+          </Link>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            aria-label="Resume title"
+            className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-foreground hover:border-border focus:border-border focus:bg-card focus:outline-none"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <SaveIndicator status={status} />
+          <select
+            value={templateId}
+            onChange={(e) => setTemplateId(e.target.value as TemplateId)}
+            aria-label="Template"
+            className="rounded-lg border border-border bg-background px-2 py-1.5 font-mono text-xs text-foreground focus:border-accent focus:outline-none"
+          >
+            {TEMPLATES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.label}
+              </option>
+            ))}
+          </select>
 
-      {/* Save status, top-left. */}
-      <div className="fixed left-6 top-6 z-30">
-        <SaveIndicator status={status} />
-      </div>
+          {/* Tune popover */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setTuneOpen((o) => !o)}
+              aria-expanded={tuneOpen}
+              className="rx-pill font-mono text-xs"
+            >
+              tune
+            </button>
+            {tuneOpen ? (
+              <>
+                <button
+                  type="button"
+                  aria-label="Close tune"
+                  onClick={() => setTuneOpen(false)}
+                  className="fixed inset-0 z-30 cursor-default"
+                />
+                <div className="rx-panel absolute right-0 top-full z-40 mt-2 w-[248px] p-3.5 font-mono text-xs">
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-[color:var(--rx-muted)]">
+                      {"// tune"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={resetTune}
+                      className="text-[color:var(--rx-muted)] transition-colors hover:text-foreground"
+                    >
+                      reset
+                    </button>
+                  </div>
+                  <Slider
+                    label="scale"
+                    value={scalePct}
+                    min={SCALE_MIN}
+                    max={SCALE_MAX}
+                    step={1}
+                    display={`${(scalePct / 100).toFixed(2)}x`}
+                    onChange={(v) => setScalePct(clampScale(v))}
+                  />
+                  <div className="mt-3">
+                    <Segmented
+                      green
+                      block
+                      label="density"
+                      options={DENSITIES}
+                      value={densityForScale(scalePct)}
+                      onChange={(d) => {
+                        const preset = DENSITIES.find((x) => x.id === d);
+                        if (preset) setScalePct(preset.scale);
+                      }}
+                    />
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-x-3">
+                    <Slider
+                      label="pad top"
+                      value={padTop}
+                      min={PAD_MIN}
+                      max={PAD_MAX}
+                      step={1}
+                      display={`${padTop}mm`}
+                      onChange={(v) => setPadTop(clampPad(v))}
+                    />
+                    <Slider
+                      label="pad bottom"
+                      value={padBottom}
+                      min={PAD_MIN}
+                      max={PAD_MAX}
+                      step={1}
+                      display={`${padBottom}mm`}
+                      onChange={(v) => setPadBottom(clampPad(v))}
+                    />
+                  </div>
+                  <div className="mt-3">
+                    <Segmented
+                      green
+                      block
+                      label="page"
+                      options={PAGE_SIZES}
+                      value={pageSize}
+                      onChange={setPageSize}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : null}
+          </div>
 
-      {/* Tune panel, top-right (floats on the canvas). */}
-      <div className="rx-panel fixed right-6 top-6 z-30 w-[248px] p-3.5 font-mono text-xs">
-        <div className="mb-3 flex items-center justify-between">
-          <span className="text-[color:var(--rx-muted)]">{"// tune"}</span>
           <button
             type="button"
-            onClick={resetTune}
-            className="text-[color:var(--rx-muted)] transition-colors hover:text-foreground"
+            onClick={handleExport}
+            disabled={exporting}
+            className="rx-pill rx-accent font-mono text-xs disabled:opacity-60"
           >
-            reset
+            {exporting ? "exporting…" : "export pdf"}
           </button>
         </div>
+      </header>
 
-        <Slider
-          label="scale"
-          value={scalePct}
-          min={SCALE_MIN}
-          max={SCALE_MAX}
-          step={1}
-          display={`${(scalePct / 100).toFixed(2)}x`}
-          onChange={(v) => setScalePct(clampScale(v))}
-        />
-
-        <div className="mt-3">
-          <Segmented
-            green
-            block
-            label="density"
-            options={DENSITIES}
-            value={densityForScale(scalePct)}
-            onChange={(d) => {
-              const preset = DENSITIES.find((x) => x.id === d);
-              if (preset) setScalePct(preset.scale);
-            }}
-          />
-        </div>
-
-        <div className="mt-3 grid grid-cols-2 gap-x-3">
-          <Slider
-            label="pad top"
-            value={padTop}
-            min={PAD_MIN}
-            max={PAD_MAX}
-            step={1}
-            display={`${padTop}mm`}
-            onChange={(v) => setPadTop(clampPad(v))}
-          />
-          <Slider
-            label="pad bottom"
-            value={padBottom}
-            min={PAD_MIN}
-            max={PAD_MAX}
-            step={1}
-            display={`${padBottom}mm`}
-            onChange={(v) => setPadBottom(clampPad(v))}
-          />
-        </div>
-
-        <div className="mt-3">
-          <Segmented
-            green
-            block
-            label="page"
-            options={PAGE_SIZES}
-            value={pageSize}
-            onChange={setPageSize}
-          />
-        </div>
-      </div>
-
-      {/* Controls, bottom-left (floats on the canvas). */}
-      <div className="fixed bottom-6 left-6 z-30 flex items-center gap-2 font-mono text-xs">
-        <Link href="/" className="rx-pill">
-          ← home
-        </Link>
-        <button
-          type="button"
-          onClick={() => setEditOpen(true)}
-          className="rx-pill"
-        >
-          ✎ edit
-        </button>
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setTplOpen((o) => !o)}
-            aria-expanded={tplOpen}
-            className="rx-pill"
-          >
-            ▦ {currentTpl?.label.toLowerCase()}
-          </button>
-          {tplOpen ? (
-            <>
-              <button
-                type="button"
-                aria-label="Close templates"
-                onClick={() => setTplOpen(false)}
-                className="fixed inset-0 z-30 cursor-default"
-              />
-              <div className="rx-panel absolute bottom-full left-0 z-40 mb-2 w-44 p-1">
-                {TEMPLATES.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => {
-                      setTemplateId(t.id);
-                      setTplOpen(false);
-                    }}
-                    className={`block w-full rounded px-2.5 py-1.5 text-left transition-colors ${
-                      t.id === templateId
-                        ? "rx-accent"
-                        : "text-[color:var(--rx-muted)] hover:bg-black/5"
-                    }`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-            </>
-          ) : null}
-        </div>
-        <button
-          type="button"
-          onClick={handleExport}
-          disabled={exporting}
-          className="rx-pill rx-accent disabled:opacity-60"
-        >
-          {exporting ? "…" : "print / pdf"}
-        </button>
-      </div>
-
-      {/* Edit drawer: the form slides in from the left. */}
-      {editOpen ? (
-        <>
-          <button
-            type="button"
-            aria-label="Close editor"
-            onClick={() => setEditOpen(false)}
-            className="fixed inset-0 z-40 bg-black/25"
-          />
-          <aside className="fixed left-0 top-0 z-50 flex h-full w-full max-w-[440px] flex-col bg-background font-sans shadow-2xl">
-            <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-3">
-              <input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                aria-label="Resume title"
-                className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-foreground hover:border-border focus:border-border focus:bg-card focus:outline-none"
-              />
-              <button
-                type="button"
-                onClick={() => setEditOpen(false)}
-                className="shrink-0 font-mono text-xs text-subtle transition-colors hover:text-foreground"
-              >
-                done
-              </button>
-            </div>
-            <div className="flex-1 space-y-8 overflow-auto px-5 py-6">
+      {/* Split: form (left) | live preview (right), like Overleaf. */}
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        {/* Left: form */}
+        <div className="w-full overflow-auto border-b border-border font-sans lg:w-1/2 lg:border-b-0 lg:border-r">
+          <div className="mx-auto max-w-2xl space-y-8 px-5 py-6">
               <FormSection title="Basics">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field
@@ -385,7 +340,7 @@ export function Editor({
                     onChange={(v) => setBasics("website", v)}
                   />
                 </div>
-                <TextArea
+                <RichTextarea
                   label="Summary"
                   value={content.basics.summary}
                   onChange={(v) => setBasics("summary", v)}
@@ -447,13 +402,14 @@ export function Editor({
                       />
                       I currently work here
                     </label>
-                    <TextArea
+                    <RichTextarea
                       label="Highlights (one per line)"
                       value={exp.bullets.join("\n")}
                       onChange={(v) =>
                         updateExperience(i, { bullets: v.split("\n") })
                       }
                       rows={3}
+                      lists={false}
                     />
                   </RepeatItem>
                 ))}
@@ -516,7 +472,10 @@ export function Editor({
                   label="Skills (comma separated)"
                   value={content.skills.join(", ")}
                   onChange={(v) =>
-                    setContent((c) => ({ ...c, skills: v.split(",") }))
+                    // Split on a comma plus any surrounding spaces. The value is
+                    // re-joined with ", ", so splitting on "," alone would keep
+                    // re-adding that space and make it accumulate as you type.
+                    setContent((c) => ({ ...c, skills: v.split(/\s*,\s*/) }))
                   }
                   placeholder="Go, TypeScript, PostgreSQL"
                 />
@@ -553,7 +512,7 @@ export function Editor({
                         onChange={(v) => updateProject(i, { link: v })}
                       />
                     </div>
-                    <TextArea
+                    <RichTextarea
                       label="Description"
                       value={pr.description}
                       onChange={(v) => updateProject(i, { description: v })}
@@ -595,10 +554,24 @@ export function Editor({
                   </RepeatItem>
                 ))}
               </FormSection>
-            </div>
-          </aside>
-        </>
-      ) : null}
+          </div>
+        </div>
+
+        {/* Right: live preview (faithful, scaled A4 — matches the PDF). */}
+        <div className="rx-canvas w-full overflow-auto lg:w-1/2">
+          <div className="px-6 py-8">
+            <ResumePaper
+              templateId={templateId}
+              content={content}
+              pageSize={pageSize}
+              scalePct={scalePct}
+              padTop={padTop}
+              padBottom={padBottom}
+              showPageBreaks
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -795,30 +768,6 @@ function Field({
         placeholder={placeholder}
         disabled={disabled}
         className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-subtle focus:border-accent focus:outline-none disabled:opacity-50"
-      />
-    </label>
-  );
-}
-
-function TextArea({
-  label,
-  value,
-  onChange,
-  rows = 3,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  rows?: number;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs font-medium text-subtle">{label}</span>
-      <textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        rows={rows}
-        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-subtle focus:border-accent focus:outline-none"
       />
     </label>
   );

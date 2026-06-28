@@ -1,5 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { projectLink, linkAnchor } from "@/lib/resume/links";
+import { rich } from "@/lib/resume/richtext";
 
 /**
  * Swiss / International style: strict baseline grid, numbered sections with
@@ -18,7 +20,7 @@ export function SwissTemplate({ content }: TemplateProps) {
   if (basics.summary.trim())
     sections.push({
       label: "Profile",
-      node: <p className="text-neutral-700">{basics.summary}</p>,
+      node: <p className="text-neutral-700">{rich(basics.summary)}</p>,
     });
   if (experience.length)
     sections.push({
@@ -43,7 +45,7 @@ export function SwissTemplate({ content }: TemplateProps) {
                   {cleanList(exp.bullets).map((b, j) => (
                     <li key={j} className="flex gap-2 text-neutral-700">
                       <span className="text-blue-700">–</span>
-                      <span>{b}</span>
+                      <span>{rich(b)}</span>
                     </li>
                   ))}
                 </ul>
@@ -64,12 +66,12 @@ export function SwissTemplate({ content }: TemplateProps) {
                 {pr.name || "Project"}
                 {pr.link ? (
                   <span className="ml-2 text-xs font-normal text-neutral-500">
-                    {pr.link}
+                    {projectLink(pr.link)}
                   </span>
                 ) : null}
               </h3>
               {pr.description.trim() ? (
-                <p className="text-neutral-700">{pr.description}</p>
+                <p className="text-neutral-700">{rich(pr.description)}</p>
               ) : null}
             </div>
           ))}
@@ -137,7 +139,7 @@ export function SwissTemplate({ content }: TemplateProps) {
               <p key={c}>{c}</p>
             ))}
             {links.map((l, i) => (
-              <p key={i}>{l.label || l.url}</p>
+              <p key={i}>{linkAnchor(l)}</p>
             ))}
           </div>
         ) : null}

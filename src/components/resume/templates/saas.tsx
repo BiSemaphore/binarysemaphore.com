@@ -1,68 +1,49 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
-import { projectLink, linkAnchor } from "@/lib/resume/links";
+import { contactLine, projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
- * Classic: a clean, single-column, recruiter-friendly resume. Rendered as
- * "paper" (always light) so it looks the same in the preview and when printed,
- * independent of the site theme. Empty fields show muted placeholders so the
- * preview is never blank.
+ * SaaS: a modern product look. A teal accent band header with the name in
+ * white, pill skills, and clean section labels. Friendly and contemporary.
  */
-export function ClassicTemplate({ content }: TemplateProps) {
+export function SaasTemplate({ content }: TemplateProps) {
   const { basics, experience, education, skills, projects, links } = content;
-
   const name = ph(basics.name, "Your Name");
   const title = ph(basics.title, "Your professional title");
-
   const contacts = contactBits(basics);
   const skillList = cleanList(skills);
 
   return (
     <article className="w-full bg-white font-sans text-[13px] leading-relaxed text-neutral-800">
-      {/* Header */}
-      <header className="border-b border-neutral-200 pb-4">
+      <header className="-mx-[16mm] mb-5 bg-[#0f766e] px-[16mm] py-5 text-white">
         <h1
           className={`text-3xl font-bold tracking-tight ${
-            name.muted ? "text-neutral-300" : "text-neutral-900"
+            name.muted ? "text-white/40" : "text-white"
           }`}
         >
           {name.text}
         </h1>
         <p
           className={`mt-0.5 text-base ${
-            title.muted ? "text-neutral-300" : "text-neutral-600"
+            title.muted ? "text-white/40" : "text-teal-50"
           }`}
         >
           {title.text}
         </p>
-
-        {contacts.length > 0 ? (
-          <p className="mt-2 text-xs text-neutral-600">
-            {contacts.join("  ·  ")}
-          </p>
-        ) : null}
-
-        {links.length > 0 ? (
-          <p className="mt-1 text-xs text-neutral-600">
-            {links.map((l, i) => (
-              <span key={`${l.url}-${i}`}>
-                {i > 0 ? "  ·  " : ""}
-                <span className="font-medium">{linkAnchor(l)}</span>
-              </span>
-            ))}
+        {contacts.length > 0 || links.length > 0 ? (
+          <p className="mt-2 text-xs text-teal-100">
+            {contactLine(basics, links, "  ·  ")}
           </p>
         ) : null}
       </header>
 
-      {/* Summary */}
       {basics.summary.trim() ? (
-        <Section title="Summary">
+        <Section title="About">
           <p className="text-neutral-700">{rich(basics.summary)}</p>
         </Section>
       ) : null}
 
-      {/* Experience */}
       {experience.length > 0 ? (
         <Section title="Experience">
           <div className="space-y-4">
@@ -72,9 +53,9 @@ export function ClassicTemplate({ content }: TemplateProps) {
                   <h3 className="font-semibold text-neutral-900">
                     {exp.role || "Role"}
                     {exp.company ? (
-                      <span className="font-normal text-neutral-600">
+                      <span className="font-normal text-[#0f766e]">
                         {" "}
-                        — {exp.company}
+                        @ {exp.company}
                       </span>
                     ) : null}
                   </h3>
@@ -83,7 +64,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                   </span>
                 </div>
                 {exp.bullets.filter((b) => b.trim()).length > 0 ? (
-                  <ul className="mt-1 list-disc space-y-0.5 pl-5 text-neutral-700">
+                  <ul className="mt-1 list-disc space-y-0.5 pl-5 text-neutral-700 marker:text-[#0f766e]">
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
@@ -97,15 +78,26 @@ export function ClassicTemplate({ content }: TemplateProps) {
         </Section>
       ) : null}
 
-      {/* Education */}
+      {skillList.length > 0 ? (
+        <Section title="Skills">
+          <div className="flex flex-wrap gap-1.5">
+            {skillList.map((s) => (
+              <span
+                key={s}
+                className="rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-[#0f766e]"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </Section>
+      ) : null}
+
       {education.length > 0 ? (
         <Section title="Education">
           <div className="space-y-3">
             {education.map((ed, i) => (
-              <div
-                key={i}
-                className="flex items-baseline justify-between gap-4"
-              >
+              <div key={i} className="flex items-baseline justify-between gap-4">
                 <div>
                   <h3 className="font-semibold text-neutral-900">
                     {ed.school || "School"}
@@ -123,14 +115,6 @@ export function ClassicTemplate({ content }: TemplateProps) {
         </Section>
       ) : null}
 
-      {/* Skills */}
-      {skillList.length > 0 ? (
-        <Section title="Skills">
-          <p className="text-neutral-700">{skillList.join("  ·  ")}</p>
-        </Section>
-      ) : null}
-
-      {/* Projects */}
       {projects.length > 0 ? (
         <Section title="Projects">
           <div className="space-y-3">
@@ -139,7 +123,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                 <h3 className="font-semibold text-neutral-900">
                   {pr.name || "Project"}
                   {pr.link ? (
-                    <span className="ml-2 text-xs font-normal text-neutral-500">
+                    <span className="ml-2 text-xs font-normal text-[#0f766e]">
                       {projectLink(pr.link)}
                     </span>
                   ) : null}
@@ -165,7 +149,7 @@ function Section({
 }) {
   return (
     <section className="mt-5">
-      <h2 className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-neutral-500">
+      <h2 className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#0f766e]">
         {title}
       </h2>
       {children}

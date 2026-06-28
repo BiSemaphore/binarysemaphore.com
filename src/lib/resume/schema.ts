@@ -130,6 +130,118 @@ export const TEMPLATES = [
       "CLI / shell aesthetic. Prompt-style sections, monospace throughout, syntax-accent labels.",
     tags: ["single-column", "mono", "developer"],
   },
+  {
+    id: "executive",
+    label: "Executive",
+    description:
+      "Conservative and corporate. Centred name, double-ruled header, deep-navy section labels.",
+    tags: ["single-column", "corporate", "formal", "sans"],
+  },
+  {
+    id: "minimal",
+    label: "Minimal",
+    description:
+      "Ultra-spare. No rules, light weights, lots of whitespace. The content does the talking.",
+    tags: ["single-column", "minimal", "modern", "sans"],
+  },
+  {
+    id: "saas",
+    label: "SaaS",
+    description:
+      "Modern product look. A teal accent band header, pill skills, clean labels.",
+    tags: ["single-column", "color-block", "modern", "sans"],
+  },
+  {
+    id: "academic",
+    label: "Academic",
+    description:
+      "LaTeX-CV aesthetic. Serif type, centred name, small-caps ruled section heads, dense.",
+    tags: ["single-column", "serif", "cv", "dense"],
+  },
+  {
+    id: "architect",
+    label: "Architect",
+    description:
+      "Drafting / blueprint feel. Thin rules, monospace labels with a numeric index, precise.",
+    tags: ["single-column", "mono", "technical", "grid"],
+  },
+  {
+    id: "banker",
+    label: "Banker",
+    description:
+      "Formal letterhead. Centred serif name over a burgundy rule, conservative spacing.",
+    tags: ["single-column", "serif", "formal", "letterhead"],
+  },
+  {
+    id: "brutalist",
+    label: "Brutalist",
+    description:
+      "Bold and loud. Heavy black section bars with reversed labels, oversized name.",
+    tags: ["single-column", "bold", "statement", "sans"],
+  },
+  {
+    id: "newspaper",
+    label: "Newspaper",
+    description:
+      "Broadsheet masthead with a double rule, serif type, and a dropped-cap lead.",
+    tags: ["single-column", "serif", "editorial"],
+  },
+  {
+    id: "magazine",
+    label: "Magazine",
+    description:
+      "Cover-style. A navy kicker, oversized serif name, tracked subtitle. Bold editorial.",
+    tags: ["single-column", "serif", "magazine"],
+  },
+  {
+    id: "display",
+    label: "Display",
+    description:
+      "Typography-forward. An enormous name set tight over a thin contact rule, quiet body.",
+    tags: ["single-column", "bold", "modern", "sans"],
+  },
+  {
+    id: "dossier",
+    label: "Dossier",
+    description:
+      "Case-file aesthetic. Bordered header, monospace meta strip, boxed section labels.",
+    tags: ["single-column", "mono", "technical"],
+  },
+  {
+    id: "indexcard",
+    label: "Index Card",
+    description:
+      "Ruled record-card look. A tabbed header, hairline row rules, compact spacing.",
+    tags: ["single-column", "compact", "sans"],
+  },
+  {
+    id: "letterpress",
+    label: "Letterpress",
+    description:
+      "Warm and literary. Serif type, italic accents, centred small-caps section heads.",
+    tags: ["single-column", "serif", "formal"],
+  },
+  {
+    id: "mirror",
+    label: "Mirror",
+    description:
+      "Fully centred and symmetric. Balanced headings and rules. Calm and formal.",
+    tags: ["single-column", "modern", "sans"],
+  },
+  {
+    id: "periodical",
+    label: "Periodical",
+    description:
+      "Academic-journal byline. Ruled running head with volume meta, serif body.",
+    tags: ["single-column", "serif", "cv"],
+  },
+  {
+    id: "specsheet",
+    label: "Spec Sheet",
+    description:
+      "Datasheet aesthetic. Monospace labels in a left rail, content right, hairline rows.",
+    tags: ["single-column", "mono", "technical", "developer"],
+  },
 ] as const;
 
 export type TemplateId = (typeof TEMPLATES)[number]["id"];
