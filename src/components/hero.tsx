@@ -25,10 +25,13 @@ export function Hero() {
             >
               <span className="flex flex-col">
                 <span className="text-sm font-semibold text-foreground group-hover:text-background">
-                  Resume Builder by Binary Semaphore
+                  Resume Builder{" "}
+                  <span className="font-normal text-muted group-hover:text-background/70">
+                    by Binary Semaphore
+                  </span>
                 </span>
                 <span className="text-xs text-muted group-hover:text-background/70">
-                  Pick a template, fill it in, export a clean PDF. Free.
+                  21 templates, a live editor, one-click PDF.
                 </span>
               </span>
               <ArrowUpRightIcon className="h-4 w-4 shrink-0 text-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-background" />
