@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { TEMPLATES, isTemplateId } from "@/lib/resume/schema";
 import { SAMPLE_RESUME } from "@/lib/resume/sample";
 import { ResumePaper } from "@/components/resume/resume-paper";
+import { CopyPromptButton } from "@/components/resume/copy-prompt-button";
 import { useTemplateAction } from "@/app/resume/(app)/actions";
 
 export async function generateMetadata({
@@ -48,12 +49,18 @@ export default async function TemplatePreviewPage({
             </p>
           </div>
         </div>
-        <form action={useTemplateAction}>
-          <input type="hidden" name="templateId" value={tpl.id} />
-          <button type="submit" className="rx-pill rx-accent font-mono text-xs">
-            use this template
-          </button>
-        </form>
+        <div className="flex items-center gap-2">
+          <CopyPromptButton
+            template={tpl}
+            className="rx-pill font-mono text-xs"
+          />
+          <form action={useTemplateAction}>
+            <input type="hidden" name="templateId" value={tpl.id} />
+            <button type="submit" className="rx-pill rx-accent font-mono text-xs">
+              use this template
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="mx-auto max-w-[820px]">

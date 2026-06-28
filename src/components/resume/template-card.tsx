@@ -5,6 +5,7 @@ import { useTemplateAction } from "@/app/resume/(app)/actions";
 import { SAMPLE_RESUME } from "@/lib/resume/sample";
 import type { Template } from "@/lib/resume/schema";
 import { ResumePaper } from "@/components/resume/resume-paper";
+import { CopyPromptButton } from "@/components/resume/copy-prompt-button";
 
 /**
  * A template gallery card: a live mini-preview of the template, its name,
@@ -49,11 +50,12 @@ export function TemplateCard({ template }: { template: Template }) {
           ))}
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-2 border-t border-black/5 pt-3 font-mono text-xs">
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-black/5 pt-3 font-mono text-xs">
           <span className="truncate text-[color:var(--rx-muted)]">
             {template.id}
           </span>
           <div className="flex shrink-0 items-center gap-2">
+            <CopyPromptButton template={template} />
             <form action={useTemplateAction}>
               <input type="hidden" name="templateId" value={template.id} />
               <button type="submit" className="rx-pill rx-accent">
