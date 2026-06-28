@@ -130,6 +130,34 @@ export const TEMPLATES = [
       "CLI / shell aesthetic. Prompt-style sections, monospace throughout, syntax-accent labels.",
     tags: ["single-column", "mono", "developer"],
   },
+  {
+    id: "executive",
+    label: "Executive",
+    description:
+      "Conservative and corporate. Centred name, double-ruled header, deep-navy section labels.",
+    tags: ["single-column", "corporate", "formal", "sans"],
+  },
+  {
+    id: "minimal",
+    label: "Minimal",
+    description:
+      "Ultra-spare. No rules, light weights, lots of whitespace. The content does the talking.",
+    tags: ["single-column", "minimal", "modern", "sans"],
+  },
+  {
+    id: "saas",
+    label: "SaaS",
+    description:
+      "Modern product look. A teal accent band header, pill skills, clean labels.",
+    tags: ["single-column", "color-block", "modern", "sans"],
+  },
+  {
+    id: "academic",
+    label: "Academic",
+    description:
+      "LaTeX-CV aesthetic. Serif type, centred name, small-caps ruled section heads, dense.",
+    tags: ["single-column", "serif", "cv", "dense"],
+  },
 ] as const;
 
 export type TemplateId = (typeof TEMPLATES)[number]["id"];

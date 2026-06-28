@@ -54,10 +54,14 @@ describe("normalizeResume", () => {
 });
 
 describe("templates", () => {
-  it("offers at most 5 templates with a valid default", () => {
+  it("offers templates with a valid default", () => {
     expect(TEMPLATES.length).toBeGreaterThan(0);
-    expect(TEMPLATES.length).toBeLessThanOrEqual(5);
     expect(isTemplateId(DEFAULT_TEMPLATE)).toBe(true);
+  });
+
+  it("has unique template ids", () => {
+    const ids = TEMPLATES.map((t) => t.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("recognizes only known template ids", () => {

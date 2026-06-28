@@ -4,10 +4,14 @@ import { SwissTemplate } from "./swiss";
 import { TwoColTemplate } from "./twocol";
 import { EditorialTemplate } from "./editorial";
 import { TerminalTemplate } from "./terminal";
+import { ExecutiveTemplate } from "./executive";
+import { MinimalTemplate } from "./minimal";
+import { SaasTemplate } from "./saas";
+import { AcademicTemplate } from "./academic";
 
 /**
  * Renders a resume with the chosen template. One source of truth so the editor
- * preview and the (future) PDF export stay in sync.
+ * preview and the PDF export stay in sync.
  */
 export function renderTemplate(id: TemplateId, content: ResumeContent) {
   switch (id) {
@@ -19,6 +23,14 @@ export function renderTemplate(id: TemplateId, content: ResumeContent) {
       return <EditorialTemplate content={content} />;
     case "terminal":
       return <TerminalTemplate content={content} />;
+    case "executive":
+      return <ExecutiveTemplate content={content} />;
+    case "minimal":
+      return <MinimalTemplate content={content} />;
+    case "saas":
+      return <SaasTemplate content={content} />;
+    case "academic":
+      return <AcademicTemplate content={content} />;
     case "classic":
     default:
       return <ClassicTemplate content={content} />;
