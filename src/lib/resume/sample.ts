@@ -6,19 +6,19 @@ import { normalizeResume, type ResumeContent } from "@/lib/resume/schema";
  */
 export const SAMPLE_RESUME: ResumeContent = normalizeResume({
   basics: {
-    name: "Avery Park",
-    title: "Senior Software Engineer · Platform",
-    email: "avery@example.com",
+    name: "John Doe",
+    title: "Senior Software Engineer",
+    email: "john.doe@example.com",
     phone: "+1 555 0100",
-    location: "New York, NY",
-    website: "averypark.dev",
+    location: "San Francisco, CA",
+    website: "johndoe.dev",
     summary:
-      "I build resilient backend systems and the platforms that run them. I prefer small, reversible changes and clear interfaces.",
+      "Full-stack engineer who builds reliable products and the services behind them. I favour small, reversible changes and clear interfaces.",
   },
   experience: [
     {
       role: "Senior Software Engineer",
-      company: "Coral Labs",
+      company: "Acme Corp",
       start: "Mar 2024",
       end: "Present",
       current: true,
@@ -30,7 +30,7 @@ export const SAMPLE_RESUME: ResumeContent = normalizeResume({
     },
     {
       role: "Software Engineer",
-      company: "Acme Inc",
+      company: "Globex",
       start: "Jan 2020",
       end: "Jul 2022",
       current: false,
@@ -42,7 +42,7 @@ export const SAMPLE_RESUME: ResumeContent = normalizeResume({
   ],
   education: [
     {
-      school: "Northern State University",
+      school: "State University",
       degree: "BSc",
       field: "Computer Science",
       start: "2014",
@@ -54,11 +54,11 @@ export const SAMPLE_RESUME: ResumeContent = normalizeResume({
     {
       name: "loomroute",
       description: "URL routing library used by ~200 small SaaS apps.",
-      link: "github.com/avery/loomroute",
+      link: "github.com/johndoe/loomroute",
     },
   ],
   links: [
-    { label: "github", url: "github.com/averypark" },
-    { label: "linkedin", url: "in/averypark" },
+    { label: "github", url: "github.com/johndoe" },
+    { label: "linkedin", url: "in/johndoe" },
   ],
 });
