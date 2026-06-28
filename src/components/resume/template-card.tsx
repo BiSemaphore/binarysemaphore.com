@@ -52,9 +52,12 @@ export function TemplateCard({ template }: { template: Template }) {
           ))}
         </div>
 
-        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-black/5 pt-3 font-mono text-xs">
-          <span className="truncate text-neutral-500">{template.id}</span>
-          <div className="flex shrink-0 items-center gap-2">
+        {/* Width-independent footer: id on its own line, actions on a fixed row
+            below, so the card renders identically in any grid (home, gallery).
+            Fixed-dark text since the card is an always-white sheet. */}
+        <div className="mt-auto border-t border-black/5 pt-3 font-mono text-xs">
+          <p className="mb-2 truncate text-neutral-500">{template.id}</p>
+          <div className="flex items-center gap-2">
             <CopyPromptButton template={template} />
             <form action={useTemplateAction}>
               <input type="hidden" name="templateId" value={template.id} />
