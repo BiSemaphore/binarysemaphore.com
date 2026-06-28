@@ -382,6 +382,61 @@ body {
   outline-offset: 3px;
 }
 
+/* --- Resume editor: resumex-style canvas (scoped to .rx) ---------------- */
+/* The resume product clones the resumex look: a full-page dotted canvas with a
+   centred paper and floating controls, green accent, monospace chrome. Scoped
+   to .rx so the rest of the site keeps the Binary Semaphore brand. */
+.rx {
+  --rx-green: oklch(0.696 0.17 162.48);
+  --rx-green-ink: oklch(0.979 0.021 166.113);
+  --rx-muted: oklch(0.552 0.016 285.938);
+  --rx-dot: oklch(0.552 0.016 285.938 / 0.35);
+  /* Slider thumb (.r-slider) picks this up. */
+  --accent: var(--rx-green);
+}
+.rx-canvas {
+  background-color: #fff;
+  background-image: radial-gradient(
+    circle,
+    var(--rx-dot) 1.2px,
+    transparent 1.2px
+  );
+  background-size: 18px 18px;
+}
+/* Translucent floating surfaces (tune panel, control pills). */
+.rx-panel {
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(20, 20, 19, 0.12);
+  border-radius: 8px;
+}
+.rx-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(20, 20, 19, 0.12);
+  color: var(--rx-muted);
+  transition: color 0.12s ease;
+}
+.rx-pill:hover {
+  color: #171717;
+}
+.rx-green {
+  background: var(--rx-green);
+  color: var(--rx-green-ink);
+  border-color: transparent;
+}
+.rx-green:hover {
+  color: var(--rx-green-ink);
+  filter: brightness(0.97);
+}
+
 /* --- Resume editor stage + paper ---------------------------------------- */
 /* The editor preview sits the resume "paper" on a patterned stage, like the
    reference (resumex). Same idea, our own pattern: a faint engineering grid in
