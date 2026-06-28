@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./types";
+import { BaseSection } from "./parts";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import {
   companyName,
@@ -169,11 +170,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mt-5">
-      <h2 className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-neutral-500">
-        {title}
-      </h2>
+    <BaseSection className="mt-5" headingClassName="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-neutral-500" title={title}>
       {children}
-    </section>
+    </BaseSection>
   );
 }

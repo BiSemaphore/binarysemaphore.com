@@ -1,4 +1,5 @@
 import type { TemplateProps } from "./types";
+import { BaseSection } from "./parts";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import { companyName, contactLine, projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
@@ -148,11 +149,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mt-5">
-      <h2 className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#0f766e]">
-        {title}
-      </h2>
+    <BaseSection className="mt-5" headingClassName="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-[#0f766e]" title={title}>
       {children}
-    </section>
+    </BaseSection>
   );
 }
