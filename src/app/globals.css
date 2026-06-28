@@ -192,6 +192,76 @@ html {
   }
 }
 
+/* "See our work" CTA: same water-fill on hover, but top to bottom (a
+   horizontal sine wave as the leading edge). */
+.cta-wave {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.cta-wave > * {
+  position: relative;
+  z-index: 1;
+}
+.cta-wave::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(100% + 11px);
+  background: var(--foreground);
+  transform: translateY(-100%);
+  transition: transform 1.1s cubic-bezier(0.45, 0, 0.2, 1);
+  --rx-wave-x: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='12'%20viewBox='0%200%2040%2012'%3E%3Cpath%20d='M0%200%20L0%206%20C6.7%2012%2013.3%2012%2020%206%20C26.7%200%2033.3%200%2040%206%20L40%200%20Z'%20fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: linear-gradient(#000 0 0), var(--rx-wave-x);
+  mask-image: linear-gradient(#000 0 0), var(--rx-wave-x);
+  -webkit-mask-size:
+    100% calc(100% - 11px),
+    40px 12px;
+  mask-size:
+    100% calc(100% - 11px),
+    40px 12px;
+  -webkit-mask-repeat: no-repeat, repeat-x;
+  mask-repeat: no-repeat, repeat-x;
+  -webkit-mask-position:
+    center top,
+    0 bottom;
+  mask-position:
+    center top,
+    0 bottom;
+}
+.cta-wave:hover::before,
+.cta-wave:focus-visible::before {
+  transform: translateY(0);
+  animation: rx-ripple-x 1.8s linear infinite;
+}
+@keyframes rx-ripple-x {
+  from {
+    -webkit-mask-position:
+      center top,
+      0 bottom;
+    mask-position:
+      center top,
+      0 bottom;
+  }
+  to {
+    -webkit-mask-position:
+      center top,
+      40px bottom;
+    mask-position:
+      center top,
+      40px bottom;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-wave::before {
+    transition: none;
+  }
+  .cta-wave:hover::before,
+  .cta-wave:focus-visible::before {
+    animation: none;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

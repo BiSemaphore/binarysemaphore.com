@@ -56,7 +56,7 @@ export function Hero() {
           {/* Circular outlined CTA, matching the reference's "Start Work" mark. */}
           <Link
             href={site.hero.primary.href}
-            className="group hidden shrink-0 flex-col items-center justify-center gap-2 rounded-full border border-[#d1d1d1] text-foreground transition-colors duration-300 hover:border-foreground hover:bg-foreground hover:text-background lg:flex dark:border-white/20"
+            className="cta-wave group hidden shrink-0 flex-col items-center justify-center gap-2 rounded-full border border-[#d1d1d1] text-foreground transition-colors duration-300 hover:border-foreground hover:text-background lg:flex dark:border-white/20"
             style={{ width: 140, height: 140 }}
           >
             <ArrowUpRightIcon className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
