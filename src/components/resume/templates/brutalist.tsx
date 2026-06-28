@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { contactLine, projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -33,7 +34,7 @@ export function BrutalistTemplate({ content }: TemplateProps) {
           </p>
           {contacts.length > 0 || links.length > 0 ? (
             <p className="font-mono text-[11px] text-neutral-600">
-              {[...contacts, ...links.map((l) => l.label || l.url)].join(" / ")}
+              {contactLine(basics, links, " / ")}
             </p>
           ) : null}
         </div>
@@ -126,7 +127,7 @@ export function BrutalistTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                   {pr.link ? (
                     <span className="ml-2 font-mono text-[11px] font-normal normal-case text-neutral-600">
-                      {pr.link}
+                      {projectLink(pr.link)}
                     </span>
                   ) : null}
                 </h3>

@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
+import { linkAnchor } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -60,7 +61,7 @@ export function EditorialTemplate({ content }: TemplateProps) {
             <MetaRow label="Online">
               {links.map((l, i) => (
                 <span key={i} className="block">
-                  {l.label || l.url}
+                  {linkAnchor(l)}
                 </span>
               ))}
             </MetaRow>

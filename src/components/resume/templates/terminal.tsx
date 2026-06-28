@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
+import { projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -113,7 +114,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                 <p className="font-bold text-neutral-900">
                   {pr.name || "project"}
                   {pr.link ? (
-                    <span className="font-normal text-blue-600"> · {pr.link}</span>
+                    <span className="font-normal text-blue-600"> · {projectLink(pr.link)}</span>
                   ) : null}
                 </p>
                 {pr.description.trim() ? (
@@ -170,9 +171,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
         </Block>
       ) : null}
 
-      <p className="mt-8 text-[11px] text-neutral-400">
-        {"// resume.tsx · binarysemaphore.com"}
-      </p>
+      <p className="mt-8 text-[11px] text-neutral-400">{"// resume.tsx"}</p>
     </article>
   );
 }

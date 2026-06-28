@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
+import { projectLink, linkAnchor } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -77,7 +78,7 @@ export function TwoColTemplate({ content }: TemplateProps) {
                     </p>
                     {pr.link ? (
                       <p className="font-mono text-[10px] uppercase tracking-wide text-neutral-500">
-                        {pr.link}
+                        {projectLink(pr.link)}
                       </p>
                     ) : null}
                     {pr.description.trim() ? (
@@ -118,7 +119,7 @@ export function TwoColTemplate({ content }: TemplateProps) {
               <div className="mt-2 space-y-1">
                 {links.map((l, i) => (
                   <p key={i} className="text-xs text-neutral-700">
-                    <span className="font-medium">{l.label || "Link"}</span>
+                    <span className="font-medium">{linkAnchor(l)}</span>
                     {l.url ? (
                       <span className="text-neutral-500"> · {l.url}</span>
                     ) : null}

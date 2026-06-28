@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { contactLine } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -33,7 +34,7 @@ export function BankerTemplate({ content }: TemplateProps) {
         </p>
         {contacts.length > 0 || links.length > 0 ? (
           <p className="mt-2 text-xs text-neutral-600">
-            {[...contacts, ...links.map((l) => l.label || l.url)].join("  ·  ")}
+            {contactLine(basics, links, "  ·  ")}
           </p>
         ) : null}
       </header>

@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { projectLink, linkAnchor } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -65,7 +66,7 @@ export function SwissTemplate({ content }: TemplateProps) {
                 {pr.name || "Project"}
                 {pr.link ? (
                   <span className="ml-2 text-xs font-normal text-neutral-500">
-                    {pr.link}
+                    {projectLink(pr.link)}
                   </span>
                 ) : null}
               </h3>
@@ -138,7 +139,7 @@ export function SwissTemplate({ content }: TemplateProps) {
               <p key={c}>{c}</p>
             ))}
             {links.map((l, i) => (
-              <p key={i}>{l.label || l.url}</p>
+              <p key={i}>{linkAnchor(l)}</p>
             ))}
           </div>
         ) : null}

@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
  */
 
 /** Allow only safe link targets; bare domains get https://. Else returns null. */
-function safeUrl(raw: string): string | null {
+export function safeUrl(raw: string): string | null {
   const url = raw.trim();
   if (/^(https?:\/\/|mailto:)/i.test(url)) return url;
   if (/^[\w-]+(\.[\w-]+)+(\/.*)?$/.test(url)) return `https://${url}`;

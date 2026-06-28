@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { contactItems, projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -36,7 +37,7 @@ export function ArchitectTemplate({ content }: TemplateProps) {
         </div>
         {contacts.length > 0 || links.length > 0 ? (
           <div className="shrink-0 text-right font-mono text-[11px] text-neutral-600">
-            {[...contacts, ...links.map((l) => l.label || l.url)].map((c, i) => (
+            {contactItems(basics, links).map((c, i) => (
               <p key={i}>{c}</p>
             ))}
           </div>
@@ -125,7 +126,7 @@ export function ArchitectTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                   {pr.link ? (
                     <span className="ml-2 font-mono text-[11px] font-normal text-neutral-500">
-                      {pr.link}
+                      {projectLink(pr.link)}
                     </span>
                   ) : null}
                 </h3>

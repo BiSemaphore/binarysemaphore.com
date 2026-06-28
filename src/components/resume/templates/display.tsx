@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { contactLine, projectLink } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -33,7 +34,7 @@ export function DisplayTemplate({ content }: TemplateProps) {
           </p>
           {contacts.length > 0 || links.length > 0 ? (
             <p className="text-xs text-neutral-500">
-              {[...contacts, ...links.map((l) => l.label || l.url)].join("  ·  ")}
+              {contactLine(basics, links, "  ·  ")}
             </p>
           ) : null}
         </div>
@@ -116,7 +117,7 @@ export function DisplayTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                   {pr.link ? (
                     <span className="ml-2 text-xs font-normal text-neutral-500">
-                      {pr.link}
+                      {projectLink(pr.link)}
                     </span>
                   ) : null}
                 </h3>

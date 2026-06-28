@@ -10,7 +10,7 @@ const APEX = "https://binarysemaphore.com";
 export const metadata: Metadata = {
   title: {
     default: "Resume builder",
-    template: "%s · Resume, by Binary Semaphore",
+    template: "%s · Resume",
   },
   description:
     "Build a clean, professional resume from a few fields, pick a template, and export to PDF. By Binary Semaphore.",

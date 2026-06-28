@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { contactLine } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -37,7 +38,7 @@ export function IndexcardTemplate({ content }: TemplateProps) {
         </div>
         {contacts.length > 0 || links.length > 0 ? (
           <p className="mt-1.5 text-xs text-neutral-600">
-            {[...contacts, ...links.map((l) => l.label || l.url)].join("  ·  ")}
+            {contactLine(basics, links, "  ·  ")}
           </p>
         ) : null}
       </header>

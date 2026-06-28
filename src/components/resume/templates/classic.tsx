@@ -1,5 +1,6 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import { projectLink, linkAnchor } from "@/lib/resume/links";
 import { rich } from "@/lib/resume/richtext";
 
 /**
@@ -47,7 +48,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
             {links.map((l, i) => (
               <span key={`${l.url}-${i}`}>
                 {i > 0 ? "  ·  " : ""}
-                <span className="font-medium">{l.label || l.url}</span>
+                <span className="font-medium">{linkAnchor(l)}</span>
               </span>
             ))}
           </p>
@@ -139,7 +140,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                   {pr.link ? (
                     <span className="ml-2 text-xs font-normal text-neutral-500">
-                      {pr.link}
+                      {projectLink(pr.link)}
                     </span>
                   ) : null}
                 </h3>
