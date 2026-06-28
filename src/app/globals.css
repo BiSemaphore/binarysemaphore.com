@@ -382,11 +382,116 @@ body {
   outline-offset: 3px;
 }
 
+/* --- Resume product canvas (scoped to .rx) ------------------------------ */
+/* The resume product borrows the resumex layout, but with the Binary Semaphore
+   palette (deep-red accent, near-black ink) and a notebook/graph-paper grid
+   instead of a dot canvas. Scoped to .rx so the rest of the site is unaffected. */
+.rx {
+  --rx-accent: #a80000; /* BS brand accent */
+  --rx-accent-ink: #ffffff;
+  --rx-muted: #6b6b6b;
+  --rx-line: rgba(17, 17, 17, 0.06); /* notebook grid line */
+  /* Slider thumb (.r-slider) picks this up. */
+  --accent: var(--rx-accent);
+}
+.rx-canvas {
+  background-color: #fbfaf8;
+  background-image:
+    linear-gradient(to right, var(--rx-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rx-line) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+/* Translucent floating surfaces (tune panel, control pills). */
+.rx-panel {
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(20, 20, 19, 0.12);
+  border-radius: 8px;
+}
+.rx-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  border-radius: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(20, 20, 19, 0.12);
+  color: var(--rx-muted);
+  transition: color 0.12s ease;
+}
+.rx-pill:hover {
+  color: #171717;
+}
+.rx-accent {
+  background: var(--rx-accent);
+  color: var(--rx-accent-ink);
+  border-color: transparent;
+}
+.rx-accent:hover {
+  color: var(--rx-accent-ink);
+  filter: brightness(1.08);
+}
+
+/* --- Resume editor stage + paper ---------------------------------------- */
+/* The editor preview sits the resume "paper" on a patterned stage, like the
+   reference (resumex). Same idea, our own pattern: a faint engineering grid in
+   brand ink on a warm gray, instead of their dot grid. */
+.resume-stage {
+  background-color: #ecebe5;
+  background-image:
+    linear-gradient(to right, rgba(20, 20, 19, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(20, 20, 19, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+/* The paper: white sheet, hairline border, layered soft shadow, rounded. */
+.resume-frame {
+  background: #fff;
+  border: 1px solid rgba(20, 20, 19, 0.1);
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 1px 1px -0.5px rgba(0, 0, 0, 0.06),
+    0 3px 3px -1.5px rgba(0, 0, 0, 0.06),
+    0 6px 6px -3px rgba(0, 0, 0, 0.06),
+    0 12px 12px -6px rgba(0, 0, 0, 0.06);
+}
+/* Page-break marker on the preview paper: a faint line where the PDF splits. */
+.resume-pagebreak {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed rgba(168, 0, 0, 0.45);
+  pointer-events: none;
+}
+.resume-pagebreak span {
+  position: absolute;
+  right: 8px;
+  top: 5px;
+  border-radius: 4px;
+  background: #fff;
+  padding: 1px 6px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--accent, #a80000);
+  border: 1px solid rgba(168, 0, 0, 0.2);
+}
+
 /* --- Resume PDF export --------------------------------------------------- */
 /* The PDF is rendered server-side by headless Chromium loading /print/[id]
    (see src/app/api/resume/[id]/pdf/route.ts), so there is no client print
    stylesheet. These rules only help Chromium's print engine paginate cleanly. */
 @media print {
+  /* Keep the page white. Without this, the cream site background (--background)
+     shows through any page area the resume doesn't fill (e.g. a half-empty
+     second page printed as a grey block). */
+  html,
+  body {
+    background: #fff !important;
+  }
   .resume-paper {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

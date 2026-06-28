@@ -542,6 +542,7 @@ export const site: SiteConfig = {
         { label: "Products", href: "/projects" },
         { label: "inode", href: "/projects/inode" },
         { label: "notchify", href: "/projects/notchify" },
+        { label: "Resume", href: "https://resume.binarysemaphore.com" },
         { label: "Threads", href: "/threads" },
       ],
     },

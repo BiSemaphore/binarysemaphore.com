@@ -76,3 +76,8 @@ export function productSubdomainUrl(slug: string): string | null {
   const sub = slugToSub.get(slug);
   return sub ? `https://${sub}.${ROOT_DOMAIN}` : null;
 }
+
+/** True when a project slug is showcased on its own product subdomain. */
+export function hasProductSubdomain(slug: string | undefined): boolean {
+  return Boolean(slug && slugToSub.has(slug));
+}

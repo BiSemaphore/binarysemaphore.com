@@ -2,9 +2,12 @@ import { describe, it, expect } from "vitest";
 import {
   DEFAULT_PAGE_SIZE,
   DEFAULT_SCALE,
+  ALL_TEMPLATE_TAGS,
   DEFAULT_TEMPLATE,
   DENSITIES,
+  PAGE_MARGIN_X,
   PAGE_SIZES,
+  PX_PER_MM,
   TEMPLATES,
   clampPad,
   clampScale,
@@ -13,6 +16,7 @@ import {
   isPageSize,
   isTemplateId,
   normalizeResume,
+  pageDims,
   pageSizeCss,
   scaleZoom,
 } from "./schema";
@@ -59,6 +63,19 @@ describe("templates", () => {
   it("recognizes only known template ids", () => {
     expect(isTemplateId("classic")).toBe(true);
     expect(isTemplateId("nope")).toBe(false);
+  });
+
+  it("gives every template a description and tags", () => {
+    for (const t of TEMPLATES) {
+      expect(t.description.length).toBeGreaterThan(0);
+      expect(t.tags.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("derives a sorted, unique tag set", () => {
+    expect(ALL_TEMPLATE_TAGS.length).toBeGreaterThan(0);
+    expect([...ALL_TEMPLATE_TAGS]).toEqual([...new Set(ALL_TEMPLATE_TAGS)]);
+    expect([...ALL_TEMPLATE_TAGS]).toEqual([...ALL_TEMPLATE_TAGS].sort());
   });
 });
 
@@ -108,5 +125,18 @@ describe("page size", () => {
     expect(pageSizeCss("a4")).toBe("A4");
     expect(pageSizeCss("letter")).toBe("letter");
     expect(pageSizeCss("nonsense")).toBe("A4");
+  });
+});
+
+describe("page geometry", () => {
+  it("gives mm dimensions per page size (unknown -> A4)", () => {
+    expect(pageDims("a4")).toEqual({ wMm: 210, hMm: 297 });
+    expect(pageDims("letter")).toEqual({ wMm: 215.9, hMm: 279.4 });
+    expect(pageDims("nonsense")).toEqual({ wMm: 210, hMm: 297 });
+  });
+
+  it("exposes the px-per-mm constant and a fixed horizontal margin", () => {
+    expect(PX_PER_MM).toBeCloseTo(3.7795, 3);
+    expect(PAGE_MARGIN_X).toBe(16);
   });
 });

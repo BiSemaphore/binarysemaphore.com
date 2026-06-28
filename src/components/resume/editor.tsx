@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { saveResume } from "@/app/resume/(app)/editor/[id]/actions";
+import { saveResume } from "@/app/resume/editor/[id]/actions";
 import {
   DEFAULT_PAD,
   DEFAULT_SCALE,
@@ -16,7 +16,6 @@ import {
   clampPad,
   clampScale,
   densityForScale,
-  scaleZoom,
   type PageSize,
   type ResumeContent,
   type ResumeEducation,
@@ -25,7 +24,7 @@ import {
   type ResumeProject,
   type TemplateId,
 } from "@/lib/resume/schema";
-import { renderTemplate } from "@/components/resume/templates";
+import { ResumePaper } from "@/components/resume/resume-paper";
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
@@ -78,8 +77,9 @@ export function Editor({
   const [padBottom, setPadBottom] = useState(initialPadBottom);
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
-  const [tuneOpen, setTuneOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [tplOpen, setTplOpen] = useState(false);
 
   // Debounced autosave. Skip the first render (nothing changed yet).
   const first = useRef(true);
@@ -110,15 +110,10 @@ export function Editor({
     setPadBottom(DEFAULT_PAD);
   }
 
-  // CSS applied to the rendered resume preview: zoom + page margins.
-  const resumeVars = {
-    zoom: scaleZoom(scalePct),
-    "--rpt": `${padTop}mm`,
-    "--rpb": `${padBottom}mm`,
-  } as React.CSSProperties;
+  const currentTpl = TEMPLATES.find((t) => t.id === templateId);
 
-  // Export to PDF: flush any pending edits, then fetch the server-rendered PDF
-  // and download it directly (no browser print dialog).
+  // Export to PDF: flush any pending edits, then download the server-rendered
+  // PDF directly (no browser print dialog).
   async function handleExport() {
     if (exporting) return;
     setExporting(true);
@@ -180,409 +175,431 @@ export function Editor({
   }
 
   return (
-    <main className="flex-1">
-      {/* Toolbar */}
-      <div className="border-b border-border bg-background">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-5 py-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="shrink-0 font-mono text-xs text-subtle transition-colors hover:text-foreground"
-            >
-              ← Dashboard
-            </Link>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              aria-label="Resume title"
-              className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-foreground hover:border-border focus:border-border focus:bg-card focus:outline-none"
-            />
-          </div>
-          <div className="flex items-center gap-3">
-            <SaveIndicator status={status} />
-            <button
-              type="button"
-              onClick={handleExport}
-              disabled={exporting}
-              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-1.5 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {exporting ? "Exporting…" : "Export PDF"}
-            </button>
-          </div>
+    <div className="rx-canvas relative min-h-screen w-full">
+      {/* Canvas: centred, scaled paper (a faithful miniature of the PDF). */}
+      <div className="h-screen overflow-auto px-6 pb-28 pt-8">
+        <ResumePaper
+          templateId={templateId}
+          content={content}
+          pageSize={pageSize}
+          scalePct={scalePct}
+          padTop={padTop}
+          padBottom={padBottom}
+          showPageBreaks
+        />
+      </div>
+
+      {/* Save status, top-left. */}
+      <div className="fixed left-6 top-6 z-30">
+        <SaveIndicator status={status} />
+      </div>
+
+      {/* Tune panel, top-right (floats on the canvas). */}
+      <div className="rx-panel fixed right-6 top-6 z-30 w-[248px] p-3.5 font-mono text-xs">
+        <div className="mb-3 flex items-center justify-between">
+          <span className="text-[color:var(--rx-muted)]">{"// tune"}</span>
+          <button
+            type="button"
+            onClick={resetTune}
+            className="text-[color:var(--rx-muted)] transition-colors hover:text-foreground"
+          >
+            reset
+          </button>
+        </div>
+
+        <Slider
+          label="scale"
+          value={scalePct}
+          min={SCALE_MIN}
+          max={SCALE_MAX}
+          step={1}
+          display={`${(scalePct / 100).toFixed(2)}x`}
+          onChange={(v) => setScalePct(clampScale(v))}
+        />
+
+        <div className="mt-3">
+          <Segmented
+            green
+            block
+            label="density"
+            options={DENSITIES}
+            value={densityForScale(scalePct)}
+            onChange={(d) => {
+              const preset = DENSITIES.find((x) => x.id === d);
+              if (preset) setScalePct(preset.scale);
+            }}
+          />
+        </div>
+
+        <div className="mt-3 grid grid-cols-2 gap-x-3">
+          <Slider
+            label="pad top"
+            value={padTop}
+            min={PAD_MIN}
+            max={PAD_MAX}
+            step={1}
+            display={`${padTop}mm`}
+            onChange={(v) => setPadTop(clampPad(v))}
+          />
+          <Slider
+            label="pad bottom"
+            value={padBottom}
+            min={PAD_MIN}
+            max={PAD_MAX}
+            step={1}
+            display={`${padBottom}mm`}
+            onChange={(v) => setPadBottom(clampPad(v))}
+          />
+        </div>
+
+        <div className="mt-3">
+          <Segmented
+            green
+            block
+            label="page"
+            options={PAGE_SIZES}
+            value={pageSize}
+            onChange={setPageSize}
+          />
         </div>
       </div>
 
-      {/* Split: form | preview */}
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-8 lg:grid-cols-2">
-        {/* Form */}
-        <div className="space-y-8">
-          <FormSection title="Basics">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field
-                label="Full name"
-                value={content.basics.name}
-                onChange={(v) => setBasics("name", v)}
-              />
-              <Field
-                label="Title"
-                value={content.basics.title}
-                onChange={(v) => setBasics("title", v)}
-                placeholder="Software Engineer"
-              />
-              <Field
-                label="Email"
-                value={content.basics.email}
-                onChange={(v) => setBasics("email", v)}
-              />
-              <Field
-                label="Phone"
-                value={content.basics.phone}
-                onChange={(v) => setBasics("phone", v)}
-              />
-              <Field
-                label="Location"
-                value={content.basics.location}
-                onChange={(v) => setBasics("location", v)}
-              />
-              <Field
-                label="Website"
-                value={content.basics.website}
-                onChange={(v) => setBasics("website", v)}
-              />
-            </div>
-            <TextArea
-              label="Summary"
-              value={content.basics.summary}
-              onChange={(v) => setBasics("summary", v)}
-              rows={3}
-            />
-          </FormSection>
-
-          <FormSection
-            title="Experience"
-            onAdd={() =>
-              setContent((c) => ({
-                ...c,
-                experience: [...c.experience, emptyExperience()],
-              }))
-            }
+      {/* Controls, bottom-left (floats on the canvas). */}
+      <div className="fixed bottom-6 left-6 z-30 flex items-center gap-2 font-mono text-xs">
+        <Link href="/" className="rx-pill">
+          ← home
+        </Link>
+        <button
+          type="button"
+          onClick={() => setEditOpen(true)}
+          className="rx-pill"
+        >
+          ✎ edit
+        </button>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setTplOpen((o) => !o)}
+            aria-expanded={tplOpen}
+            className="rx-pill"
           >
-            {content.experience.map((exp, i) => (
-              <RepeatItem
-                key={i}
-                onRemove={() =>
-                  setContent((c) => ({
-                    ...c,
-                    experience: c.experience.filter((_, j) => j !== i),
-                  }))
-                }
-              >
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field
-                    label="Role"
-                    value={exp.role}
-                    onChange={(v) => updateExperience(i, { role: v })}
-                  />
-                  <Field
-                    label="Company"
-                    value={exp.company}
-                    onChange={(v) => updateExperience(i, { company: v })}
-                  />
-                  <Field
-                    label="Start"
-                    value={exp.start}
-                    onChange={(v) => updateExperience(i, { start: v })}
-                    placeholder="Jan 2023"
-                  />
-                  <Field
-                    label="End"
-                    value={exp.end}
-                    onChange={(v) => updateExperience(i, { end: v })}
-                    placeholder="Present"
-                    disabled={exp.current}
-                  />
-                </div>
-                <label className="flex items-center gap-2 text-sm text-muted">
-                  <input
-                    type="checkbox"
-                    checked={exp.current}
-                    onChange={(e) =>
-                      updateExperience(i, { current: e.target.checked })
-                    }
-                  />
-                  I currently work here
-                </label>
-                <TextArea
-                  label="Highlights (one per line)"
-                  value={exp.bullets.join("\n")}
-                  onChange={(v) =>
-                    updateExperience(i, { bullets: v.split("\n") })
-                  }
-                  rows={3}
-                />
-              </RepeatItem>
-            ))}
-          </FormSection>
-
-          <FormSection
-            title="Education"
-            onAdd={() =>
-              setContent((c) => ({
-                ...c,
-                education: [...c.education, emptyEducation()],
-              }))
-            }
-          >
-            {content.education.map((ed, i) => (
-              <RepeatItem
-                key={i}
-                onRemove={() =>
-                  setContent((c) => ({
-                    ...c,
-                    education: c.education.filter((_, j) => j !== i),
-                  }))
-                }
-              >
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field
-                    label="School"
-                    value={ed.school}
-                    onChange={(v) => updateEducation(i, { school: v })}
-                  />
-                  <Field
-                    label="Degree"
-                    value={ed.degree}
-                    onChange={(v) => updateEducation(i, { degree: v })}
-                  />
-                  <Field
-                    label="Field"
-                    value={ed.field}
-                    onChange={(v) => updateEducation(i, { field: v })}
-                  />
-                  <div className="grid grid-cols-2 gap-3">
-                    <Field
-                      label="Start"
-                      value={ed.start}
-                      onChange={(v) => updateEducation(i, { start: v })}
-                    />
-                    <Field
-                      label="End"
-                      value={ed.end}
-                      onChange={(v) => updateEducation(i, { end: v })}
-                    />
-                  </div>
-                </div>
-              </RepeatItem>
-            ))}
-          </FormSection>
-
-          <FormSection title="Skills">
-            <Field
-              label="Skills (comma separated)"
-              value={content.skills.join(", ")}
-              onChange={(v) =>
-                setContent((c) => ({ ...c, skills: v.split(",") }))
-              }
-              placeholder="Go, TypeScript, PostgreSQL"
-            />
-          </FormSection>
-
-          <FormSection
-            title="Projects"
-            onAdd={() =>
-              setContent((c) => ({
-                ...c,
-                projects: [...c.projects, emptyProject()],
-              }))
-            }
-          >
-            {content.projects.map((pr, i) => (
-              <RepeatItem
-                key={i}
-                onRemove={() =>
-                  setContent((c) => ({
-                    ...c,
-                    projects: c.projects.filter((_, j) => j !== i),
-                  }))
-                }
-              >
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field
-                    label="Name"
-                    value={pr.name}
-                    onChange={(v) => updateProject(i, { name: v })}
-                  />
-                  <Field
-                    label="Link"
-                    value={pr.link}
-                    onChange={(v) => updateProject(i, { link: v })}
-                  />
-                </div>
-                <TextArea
-                  label="Description"
-                  value={pr.description}
-                  onChange={(v) => updateProject(i, { description: v })}
-                  rows={2}
-                />
-              </RepeatItem>
-            ))}
-          </FormSection>
-
-          <FormSection
-            title="Links"
-            onAdd={() =>
-              setContent((c) => ({ ...c, links: [...c.links, emptyLink()] }))
-            }
-          >
-            {content.links.map((l, i) => (
-              <RepeatItem
-                key={i}
-                onRemove={() =>
-                  setContent((c) => ({
-                    ...c,
-                    links: c.links.filter((_, j) => j !== i),
-                  }))
-                }
-              >
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field
-                    label="Label"
-                    value={l.label}
-                    onChange={(v) => updateLink(i, { label: v })}
-                    placeholder="GitHub"
-                  />
-                  <Field
-                    label="URL"
-                    value={l.url}
-                    onChange={(v) => updateLink(i, { url: v })}
-                  />
-                </div>
-              </RepeatItem>
-            ))}
-          </FormSection>
-        </div>
-
-        {/* Live preview */}
-        <div className="lg:sticky lg:top-20 lg:self-start">
-          {/* Header: template row + a compact tune popover */}
-          <div className="mb-3 flex items-end justify-between gap-3">
-            <Segmented
-              label="Template"
-              options={TEMPLATES}
-              value={templateId}
-              onChange={setTemplateId}
-            />
-
-            <div className="relative shrink-0">
+            ▦ {currentTpl?.label.toLowerCase()}
+          </button>
+          {tplOpen ? (
+            <>
               <button
                 type="button"
-                onClick={() => setTuneOpen((o) => !o)}
-                aria-expanded={tuneOpen}
-                aria-haspopup="dialog"
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-xs transition-colors ${
-                  tuneOpen
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border text-subtle hover:bg-card-hover hover:text-foreground"
-                }`}
-              >
-                {"// tune"}
-              </button>
-
-              {tuneOpen ? (
-                <>
-                  {/* click-outside backdrop */}
+                aria-label="Close templates"
+                onClick={() => setTplOpen(false)}
+                className="fixed inset-0 z-30 cursor-default"
+              />
+              <div className="rx-panel absolute bottom-full left-0 z-40 mb-2 w-44 p-1">
+                {TEMPLATES.map((t) => (
                   <button
+                    key={t.id}
                     type="button"
-                    aria-label="Close tune"
-                    onClick={() => setTuneOpen(false)}
-                    className="fixed inset-0 z-10 cursor-default"
-                  />
-                  <div
-                    role="dialog"
-                    aria-label="Tune"
-                    className="absolute right-0 z-20 mt-2 w-72 rounded-card border border-border bg-card p-4 shadow-soft"
+                    onClick={() => {
+                      setTemplateId(t.id);
+                      setTplOpen(false);
+                    }}
+                    className={`block w-full rounded px-2.5 py-1.5 text-left transition-colors ${
+                      t.id === templateId
+                        ? "rx-accent"
+                        : "text-[color:var(--rx-muted)] hover:bg-black/5"
+                    }`}
                   >
-                    <div className="mb-3 flex items-center justify-between">
-                      <p className="font-mono text-xs text-subtle">{"// tune"}</p>
-                      <button
-                        type="button"
-                        onClick={resetTune}
-                        className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
-                      >
-                        reset
-                      </button>
-                    </div>
-
-                    <Slider
-                      label="Scale"
-                      value={scalePct}
-                      min={SCALE_MIN}
-                      max={SCALE_MAX}
-                      step={1}
-                      display={`${(scalePct / 100).toFixed(2)}x`}
-                      onChange={(v) => setScalePct(clampScale(v))}
-                    />
-
-                    <div className="mt-3 flex items-center justify-between gap-3">
-                      <span className="font-mono text-xs text-subtle">
-                        density
-                      </span>
-                      <Segmented
-                        options={DENSITIES}
-                        value={densityForScale(scalePct)}
-                        onChange={(d) => {
-                          const preset = DENSITIES.find((x) => x.id === d);
-                          if (preset) setScalePct(preset.scale);
-                        }}
-                      />
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-2 gap-x-4">
-                      <Slider
-                        label="Pad top"
-                        value={padTop}
-                        min={PAD_MIN}
-                        max={PAD_MAX}
-                        step={1}
-                        display={`${padTop}mm`}
-                        onChange={(v) => setPadTop(clampPad(v))}
-                      />
-                      <Slider
-                        label="Pad bottom"
-                        value={padBottom}
-                        min={PAD_MIN}
-                        max={PAD_MAX}
-                        step={1}
-                        display={`${padBottom}mm`}
-                        onChange={(v) => setPadBottom(clampPad(v))}
-                      />
-                    </div>
-
-                    <div className="mt-4 flex items-center justify-between gap-3">
-                      <span className="font-mono text-xs text-subtle">
-                        page size
-                      </span>
-                      <Segmented
-                        options={PAGE_SIZES}
-                        value={pageSize}
-                        onChange={setPageSize}
-                      />
-                    </div>
-                  </div>
-                </>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-card border border-border shadow-soft">
-            <div className="max-h-[calc(100vh-9rem)] overflow-auto bg-neutral-100 p-4">
-              <div style={resumeVars}>{renderTemplate(templateId, content)}</div>
-            </div>
-          </div>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : null}
         </div>
+        <button
+          type="button"
+          onClick={handleExport}
+          disabled={exporting}
+          className="rx-pill rx-accent disabled:opacity-60"
+        >
+          {exporting ? "…" : "print / pdf"}
+        </button>
       </div>
 
-    </main>
+      {/* Edit drawer: the form slides in from the left. */}
+      {editOpen ? (
+        <>
+          <button
+            type="button"
+            aria-label="Close editor"
+            onClick={() => setEditOpen(false)}
+            className="fixed inset-0 z-40 bg-black/25"
+          />
+          <aside className="fixed left-0 top-0 z-50 flex h-full w-full max-w-[440px] flex-col bg-background font-sans shadow-2xl">
+            <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-3">
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                aria-label="Resume title"
+                className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-foreground hover:border-border focus:border-border focus:bg-card focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setEditOpen(false)}
+                className="shrink-0 font-mono text-xs text-subtle transition-colors hover:text-foreground"
+              >
+                done
+              </button>
+            </div>
+            <div className="flex-1 space-y-8 overflow-auto px-5 py-6">
+              <FormSection title="Basics">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field
+                    label="Full name"
+                    value={content.basics.name}
+                    onChange={(v) => setBasics("name", v)}
+                  />
+                  <Field
+                    label="Title"
+                    value={content.basics.title}
+                    onChange={(v) => setBasics("title", v)}
+                    placeholder="Software Engineer"
+                  />
+                  <Field
+                    label="Email"
+                    value={content.basics.email}
+                    onChange={(v) => setBasics("email", v)}
+                  />
+                  <Field
+                    label="Phone"
+                    value={content.basics.phone}
+                    onChange={(v) => setBasics("phone", v)}
+                  />
+                  <Field
+                    label="Location"
+                    value={content.basics.location}
+                    onChange={(v) => setBasics("location", v)}
+                  />
+                  <Field
+                    label="Website"
+                    value={content.basics.website}
+                    onChange={(v) => setBasics("website", v)}
+                  />
+                </div>
+                <TextArea
+                  label="Summary"
+                  value={content.basics.summary}
+                  onChange={(v) => setBasics("summary", v)}
+                  rows={3}
+                />
+              </FormSection>
+
+              <FormSection
+                title="Experience"
+                onAdd={() =>
+                  setContent((c) => ({
+                    ...c,
+                    experience: [...c.experience, emptyExperience()],
+                  }))
+                }
+              >
+                {content.experience.map((exp, i) => (
+                  <RepeatItem
+                    key={i}
+                    onRemove={() =>
+                      setContent((c) => ({
+                        ...c,
+                        experience: c.experience.filter((_, j) => j !== i),
+                      }))
+                    }
+                  >
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <Field
+                        label="Role"
+                        value={exp.role}
+                        onChange={(v) => updateExperience(i, { role: v })}
+                      />
+                      <Field
+                        label="Company"
+                        value={exp.company}
+                        onChange={(v) => updateExperience(i, { company: v })}
+                      />
+                      <Field
+                        label="Start"
+                        value={exp.start}
+                        onChange={(v) => updateExperience(i, { start: v })}
+                        placeholder="Jan 2023"
+                      />
+                      <Field
+                        label="End"
+                        value={exp.end}
+                        onChange={(v) => updateExperience(i, { end: v })}
+                        placeholder="Present"
+                        disabled={exp.current}
+                      />
+                    </div>
+                    <label className="flex items-center gap-2 text-sm text-muted">
+                      <input
+                        type="checkbox"
+                        checked={exp.current}
+                        onChange={(e) =>
+                          updateExperience(i, { current: e.target.checked })
+                        }
+                      />
+                      I currently work here
+                    </label>
+                    <TextArea
+                      label="Highlights (one per line)"
+                      value={exp.bullets.join("\n")}
+                      onChange={(v) =>
+                        updateExperience(i, { bullets: v.split("\n") })
+                      }
+                      rows={3}
+                    />
+                  </RepeatItem>
+                ))}
+              </FormSection>
+
+              <FormSection
+                title="Education"
+                onAdd={() =>
+                  setContent((c) => ({
+                    ...c,
+                    education: [...c.education, emptyEducation()],
+                  }))
+                }
+              >
+                {content.education.map((ed, i) => (
+                  <RepeatItem
+                    key={i}
+                    onRemove={() =>
+                      setContent((c) => ({
+                        ...c,
+                        education: c.education.filter((_, j) => j !== i),
+                      }))
+                    }
+                  >
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <Field
+                        label="School"
+                        value={ed.school}
+                        onChange={(v) => updateEducation(i, { school: v })}
+                      />
+                      <Field
+                        label="Degree"
+                        value={ed.degree}
+                        onChange={(v) => updateEducation(i, { degree: v })}
+                      />
+                      <Field
+                        label="Field"
+                        value={ed.field}
+                        onChange={(v) => updateEducation(i, { field: v })}
+                      />
+                      <div className="grid grid-cols-2 gap-3">
+                        <Field
+                          label="Start"
+                          value={ed.start}
+                          onChange={(v) => updateEducation(i, { start: v })}
+                        />
+                        <Field
+                          label="End"
+                          value={ed.end}
+                          onChange={(v) => updateEducation(i, { end: v })}
+                        />
+                      </div>
+                    </div>
+                  </RepeatItem>
+                ))}
+              </FormSection>
+
+              <FormSection title="Skills">
+                <Field
+                  label="Skills (comma separated)"
+                  value={content.skills.join(", ")}
+                  onChange={(v) =>
+                    setContent((c) => ({ ...c, skills: v.split(",") }))
+                  }
+                  placeholder="Go, TypeScript, PostgreSQL"
+                />
+              </FormSection>
+
+              <FormSection
+                title="Projects"
+                onAdd={() =>
+                  setContent((c) => ({
+                    ...c,
+                    projects: [...c.projects, emptyProject()],
+                  }))
+                }
+              >
+                {content.projects.map((pr, i) => (
+                  <RepeatItem
+                    key={i}
+                    onRemove={() =>
+                      setContent((c) => ({
+                        ...c,
+                        projects: c.projects.filter((_, j) => j !== i),
+                      }))
+                    }
+                  >
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <Field
+                        label="Name"
+                        value={pr.name}
+                        onChange={(v) => updateProject(i, { name: v })}
+                      />
+                      <Field
+                        label="Link"
+                        value={pr.link}
+                        onChange={(v) => updateProject(i, { link: v })}
+                      />
+                    </div>
+                    <TextArea
+                      label="Description"
+                      value={pr.description}
+                      onChange={(v) => updateProject(i, { description: v })}
+                      rows={2}
+                    />
+                  </RepeatItem>
+                ))}
+              </FormSection>
+
+              <FormSection
+                title="Links"
+                onAdd={() =>
+                  setContent((c) => ({ ...c, links: [...c.links, emptyLink()] }))
+                }
+              >
+                {content.links.map((l, i) => (
+                  <RepeatItem
+                    key={i}
+                    onRemove={() =>
+                      setContent((c) => ({
+                        ...c,
+                        links: c.links.filter((_, j) => j !== i),
+                      }))
+                    }
+                  >
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <Field
+                        label="Label"
+                        value={l.label}
+                        onChange={(v) => updateLink(i, { label: v })}
+                        placeholder="GitHub"
+                      />
+                      <Field
+                        label="URL"
+                        value={l.url}
+                        onChange={(v) => updateLink(i, { url: v })}
+                      />
+                    </div>
+                  </RepeatItem>
+                ))}
+              </FormSection>
+            </div>
+          </aside>
+        </>
+      ) : null}
+    </div>
   );
 }
 
@@ -607,8 +624,8 @@ function Slider({
   return (
     <label className="block">
       <span className="mb-1 flex items-center justify-between">
-        <span className="font-mono text-xs text-subtle">{label}</span>
-        <span className="font-mono text-xs text-foreground">{display}</span>
+        <span className="text-[color:var(--rx-muted)]">{label}</span>
+        <span className="text-foreground">{display}</span>
       </span>
       <input
         type="range"
@@ -629,39 +646,51 @@ function Segmented<T extends string>({
   options,
   value,
   onChange,
+  green,
+  block,
 }: {
   label?: string;
   options: readonly { id: T; label: string }[];
   value: T | null;
   onChange: (value: T) => void;
+  green?: boolean;
+  /** Full-width row with equal-width buttons (avoids wrapping in tight panels). */
+  block?: boolean;
 }) {
   return (
     <div>
       {label ? (
-        <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.18em] text-subtle">
-          {label}
-        </p>
+        <p className="mb-1 text-[color:var(--rx-muted)]">{label}</p>
       ) : null}
       <div
         role="group"
         aria-label={label ?? "options"}
-        className="inline-flex flex-wrap overflow-hidden rounded-lg border border-border"
+        className={`${
+          block ? "flex w-full" : "inline-flex flex-wrap"
+        } overflow-hidden rounded-md border border-border`}
       >
-        {options.map((o) => (
-          <button
-            key={o.id}
-            type="button"
-            onClick={() => onChange(o.id)}
-            aria-pressed={value === o.id}
-            className={`px-2.5 py-1 text-xs font-medium transition-colors ${
-              value === o.id
-                ? "bg-foreground text-background"
-                : "text-subtle hover:bg-card-hover"
-            }`}
-          >
-            {o.label}
-          </button>
-        ))}
+        {options.map((o) => {
+          const active = value === o.id;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              onClick={() => onChange(o.id)}
+              aria-pressed={active}
+              className={`px-2.5 py-1 text-xs font-medium transition-colors ${
+                block ? "flex-1 text-center" : ""
+              } ${
+                active
+                  ? green
+                    ? "rx-accent"
+                    : "bg-foreground text-background"
+                  : "text-[color:var(--rx-muted)] hover:bg-black/5"
+              }`}
+            >
+              {o.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -672,16 +701,17 @@ function Segmented<T extends string>({
 function SaveIndicator({ status }: { status: SaveStatus }) {
   const label =
     status === "saving"
-      ? "Saving…"
+      ? "saving…"
       : status === "saved"
-        ? "Saved"
+        ? "saved"
         : status === "error"
-          ? "Save failed"
+          ? "save failed"
           : "";
+  if (!label) return null;
   return (
     <span
-      className={`font-mono text-xs ${
-        status === "error" ? "text-red-500" : "text-subtle"
+      className={`rx-pill font-mono text-xs ${
+        status === "error" ? "text-red-600" : ""
       }`}
       role="status"
       aria-live="polite"
