@@ -396,6 +396,17 @@ body {
   /* Slider thumb (.r-slider) picks this up. */
   --accent: var(--rx-accent);
 }
+/* Smooth scrolling for the resume app's inner scroll panes (editor columns,
+   etc.). scroll-behavior isn't inherited from <html>, so set it here. Only
+   affects anchor/programmatic scrolls; wheel/trackpad stays native. */
+.rx-scroll {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rx-scroll {
+    scroll-behavior: auto;
+  }
+}
 .rx-canvas {
   background-color: #fbfaf8;
   background-image:

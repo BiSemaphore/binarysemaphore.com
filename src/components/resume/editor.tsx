@@ -346,7 +346,7 @@ export function Editor({
       {/* Split: form (left) | live preview (right), like Overleaf. */}
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         {/* Left: form */}
-        <div className="w-full overflow-auto border-b border-border font-sans lg:w-1/2 lg:border-b-0 lg:border-r">
+        <div className="rx-scroll w-full overflow-auto border-b border-border font-sans lg:w-1/2 lg:border-b-0 lg:border-r">
           <div className="mx-auto max-w-2xl space-y-8 px-5 py-6">
               <FormSection title="Basics">
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -636,7 +636,7 @@ export function Editor({
         </div>
 
         {/* Right: live preview (faithful, scaled A4 — matches the PDF). */}
-        <div className="rx-canvas w-full overflow-auto lg:w-1/2">
+        <div className="rx-scroll rx-canvas w-full overflow-auto lg:w-1/2">
           <div className="px-6 py-8">
             <ResumePaper
               templateId={templateId}
