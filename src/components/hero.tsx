@@ -21,7 +21,7 @@ export function Hero() {
               href="https://resume.binarysemaphore.com"
               target="_blank"
               rel="noreferrer noopener"
-              className="group mb-7 inline-flex items-center gap-4 rounded-full border border-[#d1d1d1] bg-background py-2.5 pl-5 pr-4 transition-colors duration-300 hover:border-foreground hover:bg-foreground dark:border-white/20"
+              className="resume-pill group mb-7 inline-flex items-center gap-4 rounded-full border border-[#d1d1d1] bg-background py-2.5 pl-5 pr-4 transition-colors duration-300 hover:border-foreground dark:border-white/20"
             >
               <span className="flex flex-col">
                 <span className="text-sm font-semibold text-foreground group-hover:text-background">

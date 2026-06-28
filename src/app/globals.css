@@ -118,6 +118,80 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Hero "Resume Builder" pill: on hover, a black fill sweeps in left to right
+   with a wavy (scalloped) leading edge, like water filling. Pure CSS; the fill
+   is a masked ::before, the label/arrow sit above it. */
+.resume-pill {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.resume-pill > * {
+  position: relative;
+  z-index: 1;
+}
+.resume-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(100% + 11px);
+  background: var(--foreground);
+  transform: translateX(-100%);
+  transition: transform 1.1s cubic-bezier(0.45, 0, 0.2, 1);
+  /* Solid block on the left + a smooth vertical sine wave on the leading edge
+     (a tiling SVG used as an alpha mask) = a real wavy water front. */
+  --rx-wave: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='40'%20viewBox='0%200%2012%2040'%3E%3Cpath%20d='M0%200%20L6%200%20C12%206.7%2012%2013.3%206%2020%20C0%2026.7%200%2033.3%206%2040%20L0%2040%20Z'%20fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: linear-gradient(#000 0 0), var(--rx-wave);
+  mask-image: linear-gradient(#000 0 0), var(--rx-wave);
+  -webkit-mask-size:
+    calc(100% - 11px) 100%,
+    12px 40px;
+  mask-size:
+    calc(100% - 11px) 100%,
+    12px 40px;
+  -webkit-mask-repeat: no-repeat, repeat-y;
+  mask-repeat: no-repeat, repeat-y;
+  -webkit-mask-position:
+    left center,
+    right 0;
+  mask-position:
+    left center,
+    right 0;
+}
+.resume-pill:hover::before,
+.resume-pill:focus-visible::before {
+  transform: translateX(0);
+  animation: rx-ripple 1.8s linear infinite;
+}
+/* Scroll the wave vertically (one tile = 40px) so the edge ripples like water. */
+@keyframes rx-ripple {
+  from {
+    -webkit-mask-position:
+      left center,
+      right 0;
+    mask-position:
+      left center,
+      right 0;
+  }
+  to {
+    -webkit-mask-position:
+      left center,
+      right -40px;
+    mask-position:
+      left center,
+      right -40px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .resume-pill::before {
+    transition: none;
+  }
+  .resume-pill:hover::before,
+  .resume-pill:focus-visible::before {
+    animation: none;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
