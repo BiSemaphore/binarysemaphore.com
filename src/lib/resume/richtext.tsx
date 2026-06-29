@@ -60,7 +60,7 @@ function parseInline(text: string, keyBase = "i"): ReactNode[] {
             href={href}
             target="_blank"
             rel="noreferrer noopener"
-            className="underline underline-offset-2"
+            className="hover:underline underline-offset-2"
           >
             {parseInline(label, key)}
           </a>,

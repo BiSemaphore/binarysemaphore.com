@@ -2,7 +2,9 @@ import type { ReactNode } from "react";
 import { safeUrl } from "./richtext";
 import type { ResumeContent } from "./schema";
 
-const anchorClass = "underline underline-offset-2";
+// Links read clean on the resume (no permanent underline, none in the PDF);
+// a hover underline keeps the on-screen affordance.
+const anchorClass = "hover:underline underline-offset-2";
 
 /** A safe external anchor that inherits the surrounding text color. */
 function A({ href, children }: { href: string; children: ReactNode }) {

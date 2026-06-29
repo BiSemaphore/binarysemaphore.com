@@ -78,7 +78,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                     href={f.href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="underline underline-offset-2"
+                    className="hover:underline underline-offset-2"
                   >
                     {f.value}
                   </a>

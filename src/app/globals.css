@@ -641,48 +641,21 @@ body {
     0 6px 6px -3px rgba(0, 0, 0, 0.06),
     0 12px 12px -6px rgba(0, 0, 0, 0.06);
 }
-/* Page-break marker on the preview paper: a faint line where the PDF splits. */
-/* The page-break sits on a continuous preview sheet, so it would otherwise draw
-   a line straight through whatever text is at the boundary. We fade the resume
-   paper (white) to transparent on both sides of the line, creating a faux page
-   gap so the divider reads as a page edge instead of slashing through text. */
-.resume-pagebreak {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 0;
-  border-top: 1px dashed rgba(0, 53, 84, 0.35);
-  pointer-events: none;
-}
-.resume-pagebreak::before,
-.resume-pagebreak::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 16px;
-}
-.resume-pagebreak::before {
-  bottom: 0;
-  background: linear-gradient(to top, #fff, rgba(255, 255, 255, 0));
-}
-.resume-pagebreak::after {
-  top: 0;
-  background: linear-gradient(to bottom, #fff, rgba(255, 255, 255, 0));
-}
-.resume-pagebreak span {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
+/* Page label sitting in the gutter between stacked preview sheets. The pages
+   are real, separate page boxes with a gap between them, so this label lives in
+   the empty gutter and never overlaps content (unlike the old overlay line). */
+.resume-page-label {
+  display: block;
+  width: max-content;
+  margin: 0 auto 8px;
+  padding: 1px 10px;
   border-radius: 9999px;
   background: #fff;
-  padding: 1px 10px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  color: #003554;
   border: 1px solid rgba(0, 53, 84, 0.2);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: #003554;
+  pointer-events: none;
 }
 
 /* --- Resume PDF export --------------------------------------------------- */
