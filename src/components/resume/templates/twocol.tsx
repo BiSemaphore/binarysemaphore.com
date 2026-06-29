@@ -97,31 +97,6 @@ export function twoColParts(content: TemplateProps["content"]): ColumnParts {
         </div>
       ) : null}
 
-      {projects.length > 0 ? (
-        <div>
-          <Label>projects</Label>
-          <div className="mt-2 space-y-3">
-            {projects.map((pr, i) => (
-              <div key={i}>
-                <p className="font-semibold text-neutral-900">
-                  {pr.name || "Project"}
-                </p>
-                {pr.link ? (
-                  <p className="font-mono text-[10px] uppercase tracking-wide text-neutral-500">
-                    {projectLink(pr.link)}
-                  </p>
-                ) : null}
-                {pr.description.trim() ? (
-                  <p className="mt-0.5 text-xs text-neutral-600">
-                    {rich(pr.description)}
-                  </p>
-                ) : null}
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
-
       {education.length > 0 ? (
         <div>
           <Label>education</Label>
@@ -213,6 +188,31 @@ export function twoColParts(content: TemplateProps["content"]): ColumnParts {
           ))
         )}
       </div>
+
+      {projects.length > 0 ? (
+        <div className="mt-6">
+          <Label>projects</Label>
+          <div className="mt-3 space-y-4">
+            {projects.map((pr, i) => (
+              <div key={i}>
+                <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-semibold text-neutral-900">
+                    {pr.name || "Project"}
+                  </h3>
+                  {pr.link ? (
+                    <span className="shrink-0 font-mono text-[11px] text-neutral-500">
+                      {projectLink(pr.link)}
+                    </span>
+                  ) : null}
+                </div>
+                {pr.description.trim() ? (
+                  <p className="mt-1 text-neutral-700">{rich(pr.description)}</p>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </>
   );
 
