@@ -334,10 +334,6 @@ function ColumnSheets({
 
   const pageCount = Math.max(m.leftStarts.length, m.rightStarts.length);
   const stackHpx = pageCount * paperHpx + (pageCount - 1) * PAGE_GAP_PX;
-  // Printable height available to the columns on a page (mirrors the effect's
-  // areaFn): the page area minus the footer reserve and page 1's header.
-  const areaFor = (page: number) =>
-    Math.max(50, contentAreaPx - m.footerH - (page === 0 ? m.topH : 0));
 
   const colsStyle: React.CSSProperties = {
     display: "grid",
@@ -404,9 +400,10 @@ function ColumnSheets({
                     }}
                   >
                     {page === 0 ? <div style={densityStyle}>{parts.top}</div> : null}
-                    {/* The columns area fills the page; the sidebar rail spans its
-                        full height so it reads as a column even where empty. */}
-                    <div style={{ ...colsStyle, height: areaFor(page) }}>
+                    {/* The columns area fills the page (flex-1) so the divider
+                        runs the full height down to the footer, not a floating
+                        box. Each column shows only its own slice. */}
+                    <div style={{ ...colsStyle, flex: "1 1 auto", minHeight: 0 }}>
                       <div className={parts.railClassName}>
                         <div style={{ overflow: "hidden", height: lSlice }}>
                           <aside

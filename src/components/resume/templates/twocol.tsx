@@ -239,7 +239,7 @@ export function twoColParts(content: TemplateProps["content"]): ColumnParts {
     articleClassName:
       "w-full bg-white font-sans text-[13px] leading-relaxed text-neutral-800",
     asideClassName: "space-y-5 pr-6",
-    railClassName: "border-r border-neutral-200 bg-neutral-50",
+    railClassName: "border-r border-neutral-200",
   };
 }
 
