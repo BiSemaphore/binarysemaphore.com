@@ -36,8 +36,10 @@ export type ColumnParts = {
   gap: string;
   /** Classes for the article wrapper (font, colour, base size). */
   articleClassName: string;
-  /** Classes for the sidebar column wrapper (border/rail, padding). */
+  /** Classes for the sidebar content (spacing + inner padding). */
   asideClassName: string;
+  /** Classes for the full-height sidebar rail (tint + divider). */
+  railClassName: string;
 };
 
 export function twoColParts(content: TemplateProps["content"]): ColumnParts {
@@ -92,27 +94,6 @@ export function twoColParts(content: TemplateProps["content"]): ColumnParts {
               >
                 {s}
               </span>
-            ))}
-          </div>
-        </div>
-      ) : null}
-
-      {education.length > 0 ? (
-        <div>
-          <Label>education</Label>
-          <div className="mt-2 space-y-2">
-            {education.map((ed, i) => (
-              <div key={i}>
-                <p className="font-semibold text-neutral-900">
-                  {ed.school || "School"}
-                </p>
-                <p className="text-xs text-neutral-600">
-                  {[ed.degree, ed.field].filter(Boolean).join(", ")}
-                </p>
-                <p className="font-mono text-[10px] text-neutral-500">
-                  {formatRange(ed.start, ed.end)}
-                </p>
-              </div>
             ))}
           </div>
         </div>
@@ -213,6 +194,31 @@ export function twoColParts(content: TemplateProps["content"]): ColumnParts {
           </div>
         </div>
       ) : null}
+
+      {education.length > 0 ? (
+        <div className="mt-6">
+          <Label>education</Label>
+          <div className="mt-3 space-y-3">
+            {education.map((ed, i) => (
+              <div key={i}>
+                <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-semibold text-neutral-900">
+                    {ed.school || "School"}
+                  </h3>
+                  <span className="shrink-0 font-mono text-[11px] text-neutral-500">
+                    {formatRange(ed.start, ed.end)}
+                  </span>
+                </div>
+                {[ed.degree, ed.field].filter(Boolean).length > 0 ? (
+                  <p className="mt-0.5 text-neutral-600">
+                    {[ed.degree, ed.field].filter(Boolean).join(", ")}
+                  </p>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </>
   );
 
@@ -232,7 +238,8 @@ export function twoColParts(content: TemplateProps["content"]): ColumnParts {
     gap: TWOCOL_GAP,
     articleClassName:
       "w-full bg-white font-sans text-[13px] leading-relaxed text-neutral-800",
-    asideClassName: "space-y-5 border-r border-neutral-200 pr-6",
+    asideClassName: "space-y-5 pr-6",
+    railClassName: "border-r border-neutral-200 bg-neutral-50",
   };
 }
 
@@ -245,7 +252,9 @@ export function TwoColTemplate({ content }: TemplateProps) {
         className="mt-6 grid"
         style={{ gridTemplateColumns: `${p.leftWidth} 1fr`, columnGap: p.gap }}
       >
-        <aside className={p.asideClassName}>{p.left}</aside>
+        <aside className={`${p.railClassName} ${p.asideClassName}`}>
+          {p.left}
+        </aside>
         <div>{p.right}</div>
       </div>
       {p.footer}

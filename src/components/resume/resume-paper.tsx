@@ -334,6 +334,10 @@ function ColumnSheets({
 
   const pageCount = Math.max(m.leftStarts.length, m.rightStarts.length);
   const stackHpx = pageCount * paperHpx + (pageCount - 1) * PAGE_GAP_PX;
+  // Printable height available to the columns on a page (mirrors the effect's
+  // areaFn): the page area minus the footer reserve and page 1's header.
+  const areaFor = (page: number) =>
+    Math.max(50, contentAreaPx - m.footerH - (page === 0 ? m.topH : 0));
 
   const colsStyle: React.CSSProperties = {
     display: "grid",
@@ -400,14 +404,18 @@ function ColumnSheets({
                     }}
                   >
                     {page === 0 ? <div style={densityStyle}>{parts.top}</div> : null}
-                    <div style={colsStyle}>
-                      <div style={{ overflow: "hidden", height: lSlice }}>
-                        <aside
-                          className={parts.asideClassName}
-                          style={{ ...densityStyle, transform: `translateY(${-lStart}px)` }}
-                        >
-                          {parts.left}
-                        </aside>
+                    {/* The columns area fills the page; the sidebar rail spans its
+                        full height so it reads as a column even where empty. */}
+                    <div style={{ ...colsStyle, height: areaFor(page) }}>
+                      <div className={parts.railClassName}>
+                        <div style={{ overflow: "hidden", height: lSlice }}>
+                          <aside
+                            className={parts.asideClassName}
+                            style={{ ...densityStyle, transform: `translateY(${-lStart}px)` }}
+                          >
+                            {parts.left}
+                          </aside>
+                        </div>
                       </div>
                       <div style={{ overflow: "hidden", height: rSlice }}>
                         <div
@@ -417,11 +425,7 @@ function ColumnSheets({
                         </div>
                       </div>
                     </div>
-                    {last ? (
-                      <div style={{ ...densityStyle, marginTop: "auto" }}>
-                        {parts.footer}
-                      </div>
-                    ) : null}
+                    {last ? <div style={densityStyle}>{parts.footer}</div> : null}
                   </div>
                 </PageSheet>
               </div>
