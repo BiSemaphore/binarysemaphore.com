@@ -1,7 +1,7 @@
 import type { ResumeContent, TemplateId } from "@/lib/resume/schema";
 import { ClassicTemplate } from "./classic";
 import { SwissTemplate } from "./swiss";
-import { TwoColTemplate } from "./twocol";
+import { TwoColTemplate, twoColParts, type ColumnParts } from "./twocol";
 import { EditorialTemplate } from "./editorial";
 import { TerminalTemplate } from "./terminal";
 import { ExecutiveTemplate } from "./executive";
@@ -70,5 +70,24 @@ export function renderTemplate(id: TemplateId, content: ResumeContent) {
     case "classic":
     default:
       return <ClassicTemplate content={content} />;
+  }
+}
+
+export type { ColumnParts } from "./twocol";
+
+/**
+ * For templates whose layout is two independent column flows, return the parts
+ * so the paginator can break each column separately across pages. Returns null
+ * for single-flow templates (which paginate as one column).
+ */
+export function getColumnLayout(
+  id: TemplateId,
+  content: ResumeContent,
+): ColumnParts | null {
+  switch (id) {
+    case "twocol":
+      return twoColParts(content);
+    default:
+      return null;
   }
 }
