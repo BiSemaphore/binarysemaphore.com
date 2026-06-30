@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { site, projects, team, getTeamMember, getService } from "./site";
+import { site, projects, team, getTeamMember, getService } from "@/lib/site";
 
 describe("site config", () => {
   it("has the core identity fields", () => {

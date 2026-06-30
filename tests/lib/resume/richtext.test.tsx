@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { rich } from "./richtext";
+import { rich } from "@/lib/resume/richtext";
 
 // Normalize non-breaking spaces (used in list prefixes) to plain spaces.
 const html = (s: string) =>

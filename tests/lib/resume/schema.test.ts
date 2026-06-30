@@ -22,7 +22,7 @@ import {
   pageDims,
   pageSizeCss,
   scaleZoom,
-} from "./schema";
+} from "@/lib/resume/schema";
 
 describe("emptyResume", () => {
   it("returns a complete, blank document", () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { renderTemplate } from "./index";
+import { renderTemplate } from "@/components/resume/templates/index";
 import {
   TEMPLATES,
   emptyResume,

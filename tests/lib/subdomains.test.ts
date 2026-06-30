@@ -8,7 +8,7 @@ import {
   productSubdomainUrl,
   slugToSub,
   subToSlug,
-} from "./subdomains";
+} from "@/lib/subdomains";
 
 describe("parseHost", () => {
   it("treats the apex and www as no subdomain (production)", () => {
