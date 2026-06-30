@@ -6,11 +6,8 @@ import { TEMPLATES } from "@/lib/resume/schema";
 import { TemplateCard } from "@/components/resume/template-card";
 import { SubmitButton } from "@/components/resume/submit-button";
 import { PencilIcon, TrashIcon } from "@/components/icons";
-import {
-  createResumeAction,
-  deleteResumeAction,
-  renameResumeAction,
-} from "./actions";
+import { createResumeAction, deleteResumeAction } from "./actions";
+import { RenameTitle } from "@/components/resume/rename-title";
 
 export const metadata: Metadata = {
   title: "Resume builder",
@@ -93,24 +90,7 @@ export default async function ResumeHome() {
                 className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04] sm:flex sm:items-center sm:justify-between sm:gap-4"
               >
                 <div className="min-w-0 flex-1">
-                  <form
-                    action={renameResumeAction}
-                    className="flex items-center gap-2"
-                  >
-                    <input type="hidden" name="id" value={resume.id} />
-                    <input
-                      name="title"
-                      defaultValue={resume.title}
-                      aria-label="Resume title"
-                      className="w-full max-w-xs rounded-lg border border-transparent bg-transparent px-2 py-1 text-base font-medium text-foreground hover:border-black/15 focus:border-black/20 focus:outline-none dark:hover:border-white/20 dark:focus:border-white/25"
-                    />
-                    <button
-                      type="submit"
-                      className="shrink-0 rounded-lg px-2 py-1 font-mono text-xs text-[color:var(--rx-muted)] transition-colors hover:text-foreground"
-                    >
-                      save
-                    </button>
-                  </form>
+                  <RenameTitle id={resume.id} title={resume.title} />
                   <p className="mt-1 px-2 font-mono text-xs text-[color:var(--rx-muted)]">
                     {resume.templateId} · updated {formatDate(resume.updatedAt)}
                   </p>
