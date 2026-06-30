@@ -69,7 +69,16 @@ export async function GET(
     await page.goto(printUrl, { waitUntil: "networkidle0", timeout: 30000 });
     await page.emulateMediaType("print");
 
-    // Page size and margins come from the print page's @page rule.
+    // The print page paginates client-side after fonts load, then flags
+    // <html data-print-ready="1">. Wait for that (with a short settle) so we
+    // capture the final, stable layout rather than a half-measured one.
+    await page
+      .waitForSelector("html[data-print-ready='1']", { timeout: 15000 })
+      .catch(() => {});
+    await new Promise((r) => setTimeout(r, 300));
+
+    // Page size comes from the print page's @page rule; each sheet is already a
+    // full page with its margins baked in, so @page margin is 0.
     const pdf = await page.pdf({
       format: resume.pageSize === "letter" ? "letter" : "a4",
       printBackground: true,

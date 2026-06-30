@@ -2,13 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/utils/supabase/auth";
 import { getResume } from "@/lib/resume/db";
-import { renderTemplate } from "@/components/resume/templates";
-import {
-  PAGE_MARGIN_X,
-  pageDims,
-  pageSizeCss,
-  scaleZoom,
-} from "@/lib/resume/schema";
+import { PrintDocument } from "@/components/resume/print-document";
 
 export const metadata: Metadata = {
   title: "Print",
@@ -20,6 +14,9 @@ export const metadata: Metadata = {
  * group, so it gets only the root layout (html/body + globals.css), no header or
  * footer. Headless Chromium (see /api/resume/[id]/pdf) loads this page and turns
  * it into the downloaded PDF. Auth-gated, RLS-scoped like every other view.
+ *
+ * PrintDocument paginates client-side with the same logic as the editor preview,
+ * so the PDF matches what you see, then sets `data-print-ready` once laid out.
  */
 export default async function ResumePrintPage({
   params,
@@ -32,22 +29,15 @@ export default async function ResumePrintPage({
   const resume = await getResume(id);
   if (!resume) notFound();
 
-  const dims = pageDims(resume.pageSize);
-  // Content density (zoom) lives on the content; the page margins live on the
-  // @page box so EVERY page (not just the first) gets the top/bottom margin.
-  const style = {
-    zoom: scaleZoom(resume.scalePct),
-    textAlign: resume.textAlign,
-  } as React.CSSProperties;
-  const pageCss = `@page { size: ${pageSizeCss(resume.pageSize)}; margin: ${resume.padTop}mm ${PAGE_MARGIN_X}mm ${resume.padBottom}mm; }`;
-
   return (
-    <div
-      className="resume-paper"
-      style={{ background: "#fff", width: `${dims.wMm - PAGE_MARGIN_X * 2}mm` }}
-    >
-      <style>{pageCss}</style>
-      <div style={style}>{renderTemplate(resume.templateId, resume.content)}</div>
-    </div>
+    <PrintDocument
+      templateId={resume.templateId}
+      content={resume.content}
+      pageSize={resume.pageSize}
+      scalePct={resume.scalePct}
+      padTop={resume.padTop}
+      padBottom={resume.padBottom}
+      align={resume.textAlign}
+    />
   );
 }
