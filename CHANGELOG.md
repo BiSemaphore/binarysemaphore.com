@@ -7,6 +7,28 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.1.3] - 2026-06-30
+
+### Fixed
+
+- Dark mode: the resume nav bar, the home "your resumes" / empty-state boxes, and
+  the template gallery's search box and filter chips now use dark surfaces
+  instead of staying light (which read as muddy grey over the dark canvas).
+  Template cards stay light "sheets", but their pills keep light styling so they
+  are not dark-grey on white.
+- Template card actions are an even three-column row (copy / use / preview) that
+  fills the footer. The home featured templates use the same 3-column grid as the
+  gallery (two rows of three), so the cards match the gallery width and the
+  "preview" button no longer overflows on the narrower cards.
+
+### Changed
+
+- Home resume row: edit and delete are now icon buttons (pencil / trash) with
+  accessible labels, instead of text.
+- Renaming a resume on the home hub now saves on Enter or blur (and reverts on
+  Escape), replacing the standalone "save" button that looked like it saved the
+  whole résumé.
+
 ## [0.1.2] - 2026-06-30
 
 ### Fixed
@@ -75,6 +97,7 @@ marketing site rebrand.
 - Invalid nested `<a>` in template cards (hydration error).
 - Tolerate a missing `text_align` column before the migration runs.
 
+[0.1.3]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.3
 [0.1.2]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.2
 [0.1.1]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.1
 [0.1.0]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.0
