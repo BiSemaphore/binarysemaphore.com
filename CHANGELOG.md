@@ -7,6 +7,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.1.2] - 2026-06-30
+
+### Fixed
+
+- New resumes started at the legacy 12mm page padding instead of the editor's
+  15mm default (where "reset" lands); `createResume` now sets the padding
+  explicitly so the app stays the source of truth.
+- PDF export could return the login page as a "resume" PDF: when a forwarded
+  session failed to authenticate, the print page redirected to `/login` and that
+  screen was captured with HTTP 200. The route now returns 502 if the print page
+  redirected away.
+- A failed PDF export reused the save indicator and read "save failed" even
+  though the resume was saved; the editor now shows a distinct, dismissible
+  export error explaining the resume is saved and the export can be retried.
+
 ## [0.1.1] - 2026-06-30
 
 ### Fixed
@@ -60,5 +75,6 @@ marketing site rebrand.
 - Invalid nested `<a>` in template cards (hydration error).
 - Tolerate a missing `text_align` column before the migration runs.
 
+[0.1.2]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.2
 [0.1.1]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.1
 [0.1.0]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.0

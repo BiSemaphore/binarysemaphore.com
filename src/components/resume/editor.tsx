@@ -48,6 +48,7 @@ export function Editor({
   const [content, setContent] = useState<ResumeContent>(initialContent);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState(false);
   const [tuneOpen, setTuneOpen] = useState(false);
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
 
@@ -120,13 +121,15 @@ export function Editor({
   async function handleExport() {
     if (exporting) return;
     setExporting(true);
+    setExportError(false);
     try {
       await saveResume(id, patch);
       const res = await fetch(`/api/resume/${id}/pdf`);
       if (!res.ok) throw new Error(`Export failed (${res.status})`);
       download(await res.blob(), `${title || "resume"}.pdf`);
     } catch {
-      setStatus("error");
+      // Distinct from a save error: the resume is saved, the PDF render failed.
+      setExportError(true);
     } finally {
       setExporting(false);
     }
@@ -207,6 +210,23 @@ export function Editor({
           </button>
         </div>
       </header>
+
+      {exportError ? (
+        <div
+          role="alert"
+          className="flex items-center justify-between gap-3 border-b border-red-200 bg-red-50 px-4 py-2 font-mono text-xs text-red-700"
+        >
+          <span>PDF export failed. Your changes are saved — try again.</span>
+          <button
+            type="button"
+            onClick={() => setExportError(false)}
+            aria-label="Dismiss"
+            className="shrink-0 px-1 text-red-700/70 transition-colors hover:text-red-700"
+          >
+            ✕
+          </button>
+        </div>
+      ) : null}
 
       {/* Mobile-only Edit / Preview toggle (desktop shows both side by side). */}
       <div className="flex border-b border-border p-2 lg:hidden">

@@ -67,6 +67,17 @@ export async function GET(
     if (cookies.length) await page.setCookie(...cookies);
 
     await page.goto(printUrl, { waitUntil: "networkidle0", timeout: 30000 });
+
+    // If the forwarded session didn't authenticate, the print page redirects to
+    // the login screen. Never turn that into a "resume" PDF — fail clearly so
+    // the client surfaces an export error instead of downloading the login page.
+    if (!page.url().includes(`/print/${id}`)) {
+      return NextResponse.json(
+        { error: "Could not render resume" },
+        { status: 502 },
+      );
+    }
+
     await page.emulateMediaType("print");
 
     // The print page paginates client-side after fonts load, then flags

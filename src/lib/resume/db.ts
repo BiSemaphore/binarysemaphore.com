@@ -134,6 +134,11 @@ export async function createResume(
       user_id: user.id,
       title,
       template_id: templateId,
+      // Set the tune defaults explicitly so a new resume starts where the
+      // editor's "reset" lands, regardless of the DB column defaults (which
+      // predate DEFAULT_PAD). Keeps the app the single source of truth.
+      pad_top: DEFAULT_PAD,
+      pad_bottom: DEFAULT_PAD,
       content: emptyResume(),
     })
     .select("id")
