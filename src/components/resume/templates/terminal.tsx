@@ -1,7 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
 import { companyName, projectLink } from "@/lib/resume/links";
-import { rich, safeUrl } from "@/lib/resume/richtext";
+import { rich, richBlock, safeUrl } from "@/lib/resume/richtext";
 
 /**
  * Terminal: a CLI / shell aesthetic. Prompt-style header, `$ cat section.md`
@@ -147,7 +147,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                   ) : null}
                 </p>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{rich(pr.description)}</p>
+                  richBlock(pr.description, "text-neutral-700")
                 ) : null}
               </div>
             ))}

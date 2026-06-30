@@ -7,7 +7,7 @@ import {
   projectLink,
   linkAnchor,
 } from "@/lib/resume/links";
-import { rich } from "@/lib/resume/richtext";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Two-column: an emerald-accented layout with a left sidebar (skills, projects,
@@ -187,7 +187,7 @@ export function twoColParts(content: TemplateProps["content"]): ColumnParts {
                   ) : null}
                 </div>
                 {pr.description.trim() ? (
-                  <p className="mt-1 text-neutral-700">{rich(pr.description)}</p>
+                  richBlock(pr.description, "mt-1 text-neutral-700")
                 ) : null}
               </div>
             ))}

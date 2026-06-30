@@ -1,7 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
 import { companyName, contactNodes, linkAnchor } from "@/lib/resume/links";
-import { rich } from "@/lib/resume/richtext";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Editorial: a magazine-style serif resume with an oversized stacked name,
@@ -134,7 +134,7 @@ export function EditorialTemplate({ content }: TemplateProps) {
                           {pr.name || "Project"}
                         </p>
                         {pr.description.trim() ? (
-                          <p className="text-neutral-700">{rich(pr.description)}</p>
+                          richBlock(pr.description, "text-neutral-700")
                         ) : null}
                       </div>
                     ))}

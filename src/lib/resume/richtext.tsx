@@ -114,3 +114,95 @@ export function rich(text: string | undefined): ReactNode {
     );
   });
 }
+
+type Block =
+  | { kind: "p"; lines: string[] }
+  | { kind: "ul" | "ol"; items: string[] };
+
+/**
+ * Block-level renderer for multi-line fields (project descriptions, summary).
+ * Unlike `rich()` (inline + <br>), this emits real paragraphs and lists with
+ * hanging indents, so wrapped bullet text tucks under the bullet instead of the
+ * margin. Recognizes "•", "-", "*" bullets and "1." / "1)" numbered lists; a
+ * blank line starts a new paragraph. Wrap it in a styled container, not a <p>.
+ */
+export function richBlock(
+  text: string | undefined,
+  className?: string,
+): ReactNode {
+  const value = (text ?? "").replace(/\r\n?/g, "\n");
+  if (!value.trim()) return null;
+
+  const blocks: Block[] = [];
+  let para: string[] = [];
+  let list: { kind: "ul" | "ol"; items: string[] } | null = null;
+  const flushPara = () => {
+    if (para.length) blocks.push({ kind: "p", lines: para });
+    para = [];
+  };
+  const flushList = () => {
+    if (list) blocks.push(list);
+    list = null;
+  };
+
+  for (const line of value.split("\n")) {
+    const bullet = line.match(/^\s*[-*•]\s+(.*)$/);
+    const ordered = line.match(/^\s*\d+[.)]\s+(.*)$/);
+    if (bullet) {
+      flushPara();
+      if (!list || list.kind !== "ul") {
+        flushList();
+        list = { kind: "ul", items: [] };
+      }
+      list.items.push(bullet[1]);
+    } else if (ordered) {
+      flushPara();
+      if (!list || list.kind !== "ol") {
+        flushList();
+        list = { kind: "ol", items: [] };
+      }
+      list.items.push(ordered[1]);
+    } else if (!line.trim()) {
+      flushPara();
+      flushList();
+    } else {
+      flushList();
+      para.push(line);
+    }
+  }
+  flushPara();
+  flushList();
+
+  const nodes = blocks.map((b, i) => {
+    const spacing = i > 0 ? "mt-2" : undefined;
+    if (b.kind === "p") {
+      return (
+        <p key={i} className={spacing}>
+          {b.lines.map((ln, j) => (
+            <span key={j}>
+              {j > 0 ? <br /> : null}
+              {parseInline(ln, `p${i}-${j}`)}
+            </span>
+          ))}
+        </p>
+      );
+    }
+    const listClass = `space-y-0.5 pl-5 ${
+      b.kind === "ul" ? "list-disc" : "list-decimal"
+    } ${spacing ?? ""}`.trim();
+    const items = b.items.map((it, j) => (
+      <li key={j}>{parseInline(it, `li${i}-${j}`)}</li>
+    ));
+    return b.kind === "ul" ? (
+      <ul key={i} className={listClass}>
+        {items}
+      </ul>
+    ) : (
+      <ol key={i} className={listClass}>
+        {items}
+      </ol>
+    );
+  });
+
+  return <div className={className}>{nodes}</div>;
+}

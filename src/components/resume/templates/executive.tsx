@@ -2,7 +2,7 @@ import type { TemplateProps } from "./types";
 import { BaseSection } from "./parts";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import { companyName, contactLine, projectLink } from "@/lib/resume/links";
-import { rich } from "@/lib/resume/richtext";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Executive: a conservative, corporate resume. Centred name, double-ruled
@@ -118,7 +118,7 @@ export function ExecutiveTemplate({ content }: TemplateProps) {
                   ) : null}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{rich(pr.description)}</p>
+                  richBlock(pr.description, "text-neutral-700")
                 ) : null}
               </div>
             ))}

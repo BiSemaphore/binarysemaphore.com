@@ -1,7 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import { companyName, contactLine, projectLink } from "@/lib/resume/links";
-import { rich } from "@/lib/resume/richtext";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Brutalist: bold and loud. Heavy black section bars with reversed labels,
@@ -132,7 +132,7 @@ export function BrutalistTemplate({ content }: TemplateProps) {
                   ) : null}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{rich(pr.description)}</p>
+                  richBlock(pr.description, "text-neutral-700")
                 ) : null}
               </div>
             ))}

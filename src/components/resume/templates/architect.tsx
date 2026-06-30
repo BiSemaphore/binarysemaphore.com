@@ -1,7 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import { companyName, contactItems, projectLink } from "@/lib/resume/links";
-import { rich } from "@/lib/resume/richtext";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Architect: a drafting / blueprint feel. Thin rules, monospace labels with a
@@ -131,7 +131,7 @@ export function ArchitectTemplate({ content }: TemplateProps) {
                   ) : null}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{rich(pr.description)}</p>
+                  richBlock(pr.description, "text-neutral-700")
                 ) : null}
               </div>
             ))}

@@ -2,7 +2,7 @@ import type { TemplateProps } from "./types";
 import { BaseSection } from "./parts";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import { companyName, contactLine } from "@/lib/resume/links";
-import { rich } from "@/lib/resume/richtext";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Periodical: an academic-journal byline. A ruled running head with volume/issue
@@ -118,7 +118,7 @@ export function PeriodicalTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{rich(pr.description)}</p>
+                  richBlock(pr.description, "text-neutral-700")
                 ) : null}
               </div>
             ))}

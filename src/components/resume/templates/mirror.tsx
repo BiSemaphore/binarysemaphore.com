@@ -2,7 +2,7 @@ import type { TemplateProps } from "./types";
 import { BaseSection } from "./parts";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import { companyName, contactLine } from "@/lib/resume/links";
-import { rich } from "@/lib/resume/richtext";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Mirror: fully centred and symmetric. Every heading and rule is balanced on
@@ -115,9 +115,7 @@ export function MirrorTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="mx-auto max-w-[58ch] text-neutral-700">
-                    {rich(pr.description)}
-                  </p>
+                  richBlock(pr.description, "mx-auto max-w-[58ch] text-neutral-700")
                 ) : null}
               </div>
             ))}

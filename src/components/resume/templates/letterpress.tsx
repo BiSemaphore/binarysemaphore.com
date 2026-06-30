@@ -1,7 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import { companyName, contactLine } from "@/lib/resume/links";
-import { rich } from "@/lib/resume/richtext";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Letterpress: warm and literary. A cream sheet, serif type, italic accents,
@@ -115,7 +115,7 @@ export function LetterpressTemplate({ content }: TemplateProps) {
                   {pr.name || "Project"}
                 </h3>
                 {pr.description.trim() ? (
-                  <p className="text-[#534b3e]">{rich(pr.description)}</p>
+                  richBlock(pr.description, "text-[#534b3e]")
                 ) : null}
               </div>
             ))}
