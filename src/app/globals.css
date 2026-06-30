@@ -118,6 +118,150 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Hero "Resume Builder" pill: on hover, a black fill sweeps in left to right
+   with a wavy (scalloped) leading edge, like water filling. Pure CSS; the fill
+   is a masked ::before, the label/arrow sit above it. */
+.resume-pill {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.resume-pill > * {
+  position: relative;
+  z-index: 1;
+}
+.resume-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(100% + 11px);
+  background: var(--foreground);
+  transform: translateX(-100%);
+  transition: transform 1.1s cubic-bezier(0.45, 0, 0.2, 1);
+  /* Solid block on the left + a smooth vertical sine wave on the leading edge
+     (a tiling SVG used as an alpha mask) = a real wavy water front. */
+  --rx-wave: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='40'%20viewBox='0%200%2012%2040'%3E%3Cpath%20d='M0%200%20L6%200%20C12%206.7%2012%2013.3%206%2020%20C0%2026.7%200%2033.3%206%2040%20L0%2040%20Z'%20fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: linear-gradient(#000 0 0), var(--rx-wave);
+  mask-image: linear-gradient(#000 0 0), var(--rx-wave);
+  -webkit-mask-size:
+    calc(100% - 11px) 100%,
+    12px 40px;
+  mask-size:
+    calc(100% - 11px) 100%,
+    12px 40px;
+  -webkit-mask-repeat: no-repeat, repeat-y;
+  mask-repeat: no-repeat, repeat-y;
+  -webkit-mask-position:
+    left center,
+    right 0;
+  mask-position:
+    left center,
+    right 0;
+}
+.resume-pill:hover::before,
+.resume-pill:focus-visible::before {
+  transform: translateX(0);
+  animation: rx-ripple 1.8s linear infinite;
+}
+/* Scroll the wave vertically (one tile = 40px) so the edge ripples like water. */
+@keyframes rx-ripple {
+  from {
+    -webkit-mask-position:
+      left center,
+      right 0;
+    mask-position:
+      left center,
+      right 0;
+  }
+  to {
+    -webkit-mask-position:
+      left center,
+      right -40px;
+    mask-position:
+      left center,
+      right -40px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .resume-pill::before {
+    transition: none;
+  }
+  .resume-pill:hover::before,
+  .resume-pill:focus-visible::before {
+    animation: none;
+  }
+}
+
+/* "See our work" CTA: same water-fill on hover, but top to bottom (a
+   horizontal sine wave as the leading edge). */
+.cta-wave {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.cta-wave > * {
+  position: relative;
+  z-index: 1;
+}
+.cta-wave::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(100% + 11px);
+  background: var(--foreground);
+  transform: translateY(-100%);
+  transition: transform 1.1s cubic-bezier(0.45, 0, 0.2, 1);
+  --rx-wave-x: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='12'%20viewBox='0%200%2040%2012'%3E%3Cpath%20d='M0%200%20L0%206%20C6.7%2012%2013.3%2012%2020%206%20C26.7%200%2033.3%200%2040%206%20L40%200%20Z'%20fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-image: linear-gradient(#000 0 0), var(--rx-wave-x);
+  mask-image: linear-gradient(#000 0 0), var(--rx-wave-x);
+  -webkit-mask-size:
+    100% calc(100% - 11px),
+    40px 12px;
+  mask-size:
+    100% calc(100% - 11px),
+    40px 12px;
+  -webkit-mask-repeat: no-repeat, repeat-x;
+  mask-repeat: no-repeat, repeat-x;
+  -webkit-mask-position:
+    center top,
+    0 bottom;
+  mask-position:
+    center top,
+    0 bottom;
+}
+.cta-wave:hover::before,
+.cta-wave:focus-visible::before {
+  transform: translateY(0);
+  animation: rx-ripple-x 1.8s linear infinite;
+}
+@keyframes rx-ripple-x {
+  from {
+    -webkit-mask-position:
+      center top,
+      0 bottom;
+    mask-position:
+      center top,
+      0 bottom;
+  }
+  to {
+    -webkit-mask-position:
+      center top,
+      40px bottom;
+    mask-position:
+      center top,
+      40px bottom;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-wave::before {
+    transition: none;
+  }
+  .cta-wave:hover::before,
+  .cta-wave:focus-visible::before {
+    animation: none;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -387,12 +531,25 @@ body {
    palette (deep-red accent, near-black ink) and a notebook/graph-paper grid
    instead of a dot canvas. Scoped to .rx so the rest of the site is unaffected. */
 .rx {
-  --rx-accent: #a80000; /* BS brand accent */
+  /* Brand color = the navy logo (#003554), used for fills (buttons, active
+     states, slider). Red is reserved for text only, never a background. */
+  --rx-accent: #003554;
   --rx-accent-ink: #ffffff;
   --rx-muted: #6b6b6b;
   --rx-line: rgba(17, 17, 17, 0.06); /* notebook grid line */
   /* Slider thumb (.r-slider) picks this up. */
   --accent: var(--rx-accent);
+}
+/* Smooth scrolling for the resume app's inner scroll panes (editor columns,
+   etc.). scroll-behavior isn't inherited from <html>, so set it here. Only
+   affects anchor/programmatic scrolls; wheel/trackpad stays native. */
+.rx-scroll {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rx-scroll {
+    scroll-behavior: auto;
+  }
 }
 .rx-canvas {
   background-color: #fbfaf8;
@@ -401,6 +558,24 @@ body {
     linear-gradient(to bottom, var(--rx-line) 1px, transparent 1px);
   background-size: 26px 26px;
 }
+/* Dark mode: the chrome (canvas, panels, pills) goes dark; the resume "paper"
+   itself stays white (it is printed paper, set on the templates). */
+.dark .rx {
+  --rx-muted: #9a9a9a;
+  --rx-line: rgba(255, 255, 255, 0.05);
+}
+.dark .rx-canvas {
+  background-color: #161616;
+}
+.dark .rx-panel,
+.dark .rx-pill {
+  background: rgba(30, 30, 30, 0.85);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--rx-muted);
+}
+.dark .rx-pill:hover {
+  color: #f5f5f5;
+}
 /* Translucent floating surfaces (tune panel, control pills). */
 .rx-panel {
   background: rgba(255, 255, 255, 0.88);
@@ -408,6 +583,13 @@ body {
   backdrop-filter: blur(8px);
   border: 1px solid rgba(20, 20, 19, 0.12);
   border-radius: 8px;
+}
+/* Within the resume product, interactive controls get a pointer cursor
+   (the browser default for <button> is the arrow). */
+.rx button:not(:disabled),
+.rx [role="button"]:not([aria-disabled="true"]),
+.rx label:has(input[type="range"]) {
+  cursor: pointer;
 }
 .rx-pill {
   display: inline-flex;
@@ -459,25 +641,21 @@ body {
     0 6px 6px -3px rgba(0, 0, 0, 0.06),
     0 12px 12px -6px rgba(0, 0, 0, 0.06);
 }
-/* Page-break marker on the preview paper: a faint line where the PDF splits. */
-.resume-pagebreak {
-  position: absolute;
-  left: 0;
-  right: 0;
-  border-top: 1px dashed rgba(168, 0, 0, 0.45);
-  pointer-events: none;
-}
-.resume-pagebreak span {
-  position: absolute;
-  right: 8px;
-  top: 5px;
-  border-radius: 4px;
+/* Page label sitting in the gutter between stacked preview sheets. The pages
+   are real, separate page boxes with a gap between them, so this label lives in
+   the empty gutter and never overlaps content (unlike the old overlay line). */
+.resume-page-label {
+  display: block;
+  width: max-content;
+  margin: 0 auto 8px;
+  padding: 1px 10px;
+  border-radius: 9999px;
   background: #fff;
-  padding: 1px 6px;
+  border: 1px solid rgba(0, 53, 84, 0.2);
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  color: var(--accent, #a80000);
-  border: 1px solid rgba(168, 0, 0, 0.2);
+  font-size: 11px;
+  color: #003554;
+  pointer-events: none;
 }
 
 /* --- Resume PDF export --------------------------------------------------- */

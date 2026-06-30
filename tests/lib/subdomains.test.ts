@@ -3,11 +3,12 @@ import {
   APP_SUBDOMAINS,
   appBasePath,
   hasProductSubdomain,
+  isTrustedHost,
   parseHost,
   productSubdomainUrl,
   slugToSub,
   subToSlug,
-} from "./subdomains";
+} from "@/lib/subdomains";
 
 describe("parseHost", () => {
   it("treats the apex and www as no subdomain (production)", () => {
@@ -84,5 +85,14 @@ describe("subdomain registries", () => {
     expect(hasProductSubdomain("inode")).toBe(true);
     expect(hasProductSubdomain("notchify")).toBe(false);
     expect(hasProductSubdomain(undefined)).toBe(false);
+  });
+
+  it("trusts only our own hosts (for the PDF route)", () => {
+    expect(isTrustedHost("binarysemaphore.com")).toBe(true);
+    expect(isTrustedHost("resume.binarysemaphore.com")).toBe(true);
+    expect(isTrustedHost("resume.localhost:3000")).toBe(true);
+    expect(isTrustedHost("evil.com")).toBe(false);
+    expect(isTrustedHost("binarysemaphore.com.evil.com")).toBe(false);
+    expect(isTrustedHost(null)).toBe(false);
   });
 });

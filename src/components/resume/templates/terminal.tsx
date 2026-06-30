@@ -1,5 +1,7 @@
 import type { TemplateProps } from "./types";
 import { cleanList, formatRange, ph } from "./util";
+import { companyName, projectLink } from "@/lib/resume/links";
+import { rich, richBlock, safeUrl } from "@/lib/resume/richtext";
 
 /**
  * Terminal: a CLI / shell aesthetic. Prompt-style header, `$ cat section.md`
@@ -12,14 +14,28 @@ export function TerminalTemplate({ content }: TemplateProps) {
   const skillList = cleanList(skills);
   const user = (basics.name.trim().split(" ")[0] || "you").toLowerCase();
 
-  const fields: { key: string; value: string }[] = [];
-  if (basics.email.trim()) fields.push({ key: "email", value: basics.email });
-  if (basics.website.trim()) fields.push({ key: "site", value: basics.website });
+  const fields: { key: string; value: string; href?: string }[] = [];
+  if (basics.email.trim())
+    fields.push({
+      key: "email",
+      value: basics.email,
+      href: `mailto:${basics.email.trim()}`,
+    });
+  if (basics.website.trim())
+    fields.push({
+      key: "site",
+      value: basics.website,
+      href: safeUrl(basics.website) ?? undefined,
+    });
   if (basics.phone.trim()) fields.push({ key: "phone", value: basics.phone });
   if (basics.location.trim()) fields.push({ key: "loc", value: basics.location });
   for (const l of links) {
     if (l.url.trim())
-      fields.push({ key: (l.label || "link").toLowerCase(), value: l.url });
+      fields.push({
+        key: (l.label || "link").toLowerCase(),
+        value: l.url,
+        href: safeUrl(l.url) ?? undefined,
+      });
   }
 
   return (
@@ -55,7 +71,22 @@ export function TerminalTemplate({ content }: TemplateProps) {
             <p key={f.key + f.value}>
               <span className="text-blue-600">{f.key}</span>
               <span className="text-neutral-400"> = </span>
-              <span className="text-emerald-600">&quot;{f.value}&quot;</span>
+              <span className="text-emerald-600">
+                &quot;
+                {f.href ? (
+                  <a
+                    href={f.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="hover:underline underline-offset-2"
+                  >
+                    {f.value}
+                  </a>
+                ) : (
+                  f.value
+                )}
+                &quot;
+              </span>
             </p>
           ))}
         </div>
@@ -65,7 +96,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
       {basics.summary.trim() ? (
         <Block>
           <Cmd cmd="cat" arg="summary.md" />
-          <p className="mt-2 text-neutral-700">{basics.summary}</p>
+          <p className="mt-2 text-neutral-700">{rich(basics.summary)}</p>
         </Block>
       ) : null}
 
@@ -82,7 +113,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                     {exp.company ? (
                       <span className="font-normal text-blue-600">
                         {" "}
-                        @ {exp.company}
+                        @ {companyName(exp.company, exp.companyUrl)}
                       </span>
                     ) : null}
                   </p>
@@ -93,7 +124,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
                 {cleanList(exp.bullets).map((b, j) => (
                   <p key={j} className="text-neutral-700">
                     <span className="text-neutral-400"># </span>
-                    {b}
+                    {rich(b)}
                   </p>
                 ))}
               </div>
@@ -112,11 +143,11 @@ export function TerminalTemplate({ content }: TemplateProps) {
                 <p className="font-bold text-neutral-900">
                   {pr.name || "project"}
                   {pr.link ? (
-                    <span className="font-normal text-blue-600"> · {pr.link}</span>
+                    <span className="font-normal text-blue-600"> · {projectLink(pr.link)}</span>
                   ) : null}
                 </p>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  richBlock(pr.description, "text-neutral-700")
                 ) : null}
               </div>
             ))}
@@ -169,9 +200,7 @@ export function TerminalTemplate({ content }: TemplateProps) {
         </Block>
       ) : null}
 
-      <p className="mt-8 text-[11px] text-neutral-400">
-        {"// resume.tsx · binarysemaphore.com"}
-      </p>
+      <p className="mt-8 text-[11px] text-neutral-400">{"// resume.tsx"}</p>
     </article>
   );
 }

@@ -1,5 +1,13 @@
 import type { TemplateProps } from "./types";
+import { BaseSection } from "./parts";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import {
+  companyName,
+  contactIconItems,
+  linkIconItems,
+  projectLink,
+} from "@/lib/resume/links";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Classic: a clean, single-column, recruiter-friendly resume. Rendered as
@@ -36,27 +44,32 @@ export function ClassicTemplate({ content }: TemplateProps) {
         </p>
 
         {contacts.length > 0 ? (
-          <p className="mt-2 text-xs text-neutral-600">
-            {contacts.join("  ·  ")}
-          </p>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-600">
+            {contactIconItems(basics).map((it) => (
+              <span key={it.key} className="inline-flex items-center gap-1.5">
+                <span className="text-neutral-400">{it.icon}</span>
+                {it.node}
+              </span>
+            ))}
+          </div>
         ) : null}
 
         {links.length > 0 ? (
-          <p className="mt-1 text-xs text-neutral-600">
-            {links.map((l, i) => (
-              <span key={`${l.url}-${i}`}>
-                {i > 0 ? "  ·  " : ""}
-                <span className="font-medium">{l.label || l.url}</span>
+          <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-600">
+            {linkIconItems(links).map((it) => (
+              <span key={it.key} className="inline-flex items-center gap-1.5">
+                <span className="text-neutral-400">{it.icon}</span>
+                <span className="font-medium">{it.node}</span>
               </span>
             ))}
-          </p>
+          </div>
         ) : null}
       </header>
 
       {/* Summary */}
       {basics.summary.trim() ? (
         <Section title="Summary">
-          <p className="text-neutral-700">{basics.summary}</p>
+          <p className="text-neutral-700">{rich(basics.summary)}</p>
         </Section>
       ) : null}
 
@@ -72,7 +85,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                     {exp.company ? (
                       <span className="font-normal text-neutral-600">
                         {" "}
-                        — {exp.company}
+                        — {companyName(exp.company, exp.companyUrl)}
                       </span>
                     ) : null}
                   </h3>
@@ -85,7 +98,7 @@ export function ClassicTemplate({ content }: TemplateProps) {
                     {exp.bullets
                       .filter((b) => b.trim())
                       .map((b, j) => (
-                        <li key={j}>{b}</li>
+                        <li key={j}>{rich(b)}</li>
                       ))}
                   </ul>
                 ) : null}
@@ -134,16 +147,18 @@ export function ClassicTemplate({ content }: TemplateProps) {
           <div className="space-y-3">
             {projects.map((pr, i) => (
               <div key={i}>
-                <h3 className="font-semibold text-neutral-900">
-                  {pr.name || "Project"}
+                <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-semibold text-neutral-900">
+                    {pr.name || "Project"}
+                  </h3>
                   {pr.link ? (
-                    <span className="ml-2 text-xs font-normal text-neutral-500">
-                      {pr.link}
+                    <span className="shrink-0 text-xs font-normal text-neutral-500">
+                      {projectLink(pr.link)}
                     </span>
                   ) : null}
-                </h3>
+                </div>
                 {pr.description.trim() ? (
-                  <p className="text-neutral-700">{pr.description}</p>
+                  richBlock(pr.description, "text-neutral-700")
                 ) : null}
               </div>
             ))}
@@ -162,11 +177,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mt-5">
-      <h2 className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-neutral-500">
-        {title}
-      </h2>
+    <BaseSection className="mt-5" headingClassName="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-neutral-500" title={title}>
       {children}
-    </section>
+    </BaseSection>
   );
 }

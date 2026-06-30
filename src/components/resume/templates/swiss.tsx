@@ -1,5 +1,12 @@
 import type { TemplateProps } from "./types";
 import { cleanList, contactBits, formatRange, ph } from "./util";
+import {
+  companyName,
+  contactNodes,
+  projectLink,
+  linkAnchor,
+} from "@/lib/resume/links";
+import { rich, richBlock } from "@/lib/resume/richtext";
 
 /**
  * Swiss / International style: strict baseline grid, numbered sections with
@@ -18,7 +25,7 @@ export function SwissTemplate({ content }: TemplateProps) {
   if (basics.summary.trim())
     sections.push({
       label: "Profile",
-      node: <p className="text-neutral-700">{basics.summary}</p>,
+      node: <p className="text-neutral-700">{rich(basics.summary)}</p>,
     });
   if (experience.length)
     sections.push({
@@ -36,14 +43,14 @@ export function SwissTemplate({ content }: TemplateProps) {
                 </span>
               </div>
               {(exp.company || "").trim() ? (
-                <p className="text-sm text-neutral-600">{exp.company}</p>
+                <p className="text-sm text-neutral-600">{companyName(exp.company, exp.companyUrl)}</p>
               ) : null}
               {cleanList(exp.bullets).length > 0 ? (
                 <ul className="mt-1.5 space-y-1">
                   {cleanList(exp.bullets).map((b, j) => (
                     <li key={j} className="flex gap-2 text-neutral-700">
                       <span className="text-blue-700">–</span>
-                      <span>{b}</span>
+                      <span>{rich(b)}</span>
                     </li>
                   ))}
                 </ul>
@@ -60,16 +67,16 @@ export function SwissTemplate({ content }: TemplateProps) {
         <div className="space-y-3">
           {projects.map((pr, i) => (
             <div key={i}>
-              <h3 className="font-semibold text-neutral-900">
-                {pr.name || "Project"}
-                {pr.link ? (
-                  <span className="ml-2 text-xs font-normal text-neutral-500">
-                    {pr.link}
-                  </span>
-                ) : null}
-              </h3>
+              <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-semibold text-neutral-900">{pr.name || "Project"}</h3>
+                  {pr.link ? (
+                    <span className="shrink-0 text-xs font-normal text-neutral-500">
+                      {projectLink(pr.link)}
+                    </span>
+                  ) : null}
+                </div>
               {pr.description.trim() ? (
-                <p className="text-neutral-700">{pr.description}</p>
+                richBlock(pr.description, "text-neutral-700")
               ) : null}
             </div>
           ))}
@@ -133,11 +140,11 @@ export function SwissTemplate({ content }: TemplateProps) {
         </div>
         {contacts.length > 0 || links.length > 0 ? (
           <div className="shrink-0 space-y-0.5 text-right font-mono text-[11px] text-neutral-600">
-            {contacts.map((c) => (
-              <p key={c}>{c}</p>
+            {contactNodes(basics).map((c, i) => (
+              <p key={i}>{c}</p>
             ))}
             {links.map((l, i) => (
-              <p key={i}>{l.label || l.url}</p>
+              <p key={i}>{linkAnchor(l)}</p>
             ))}
           </div>
         ) : null}

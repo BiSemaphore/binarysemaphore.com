@@ -9,17 +9,20 @@ import {
   PAGE_SIZES,
   PX_PER_MM,
   TEMPLATES,
+  TEXT_ALIGNS,
+  DEFAULT_ALIGN,
   clampPad,
   clampScale,
   densityForScale,
   emptyResume,
   isPageSize,
   isTemplateId,
+  isTextAlign,
   normalizeResume,
   pageDims,
   pageSizeCss,
   scaleZoom,
-} from "./schema";
+} from "@/lib/resume/schema";
 
 describe("emptyResume", () => {
   it("returns a complete, blank document", () => {
@@ -54,10 +57,14 @@ describe("normalizeResume", () => {
 });
 
 describe("templates", () => {
-  it("offers at most 5 templates with a valid default", () => {
+  it("offers templates with a valid default", () => {
     expect(TEMPLATES.length).toBeGreaterThan(0);
-    expect(TEMPLATES.length).toBeLessThanOrEqual(5);
     expect(isTemplateId(DEFAULT_TEMPLATE)).toBe(true);
+  });
+
+  it("has unique template ids", () => {
+    const ids = TEMPLATES.map((t) => t.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("recognizes only known template ids", () => {
@@ -125,6 +132,15 @@ describe("page size", () => {
     expect(pageSizeCss("a4")).toBe("A4");
     expect(pageSizeCss("letter")).toBe("letter");
     expect(pageSizeCss("nonsense")).toBe("A4");
+  });
+});
+
+describe("text align", () => {
+  it("defaults to left and recognizes known values", () => {
+    expect(DEFAULT_ALIGN).toBe("left");
+    expect(TEXT_ALIGNS.map((a) => a.id)).toEqual(["left", "justify"]);
+    expect(isTextAlign("justify")).toBe(true);
+    expect(isTextAlign("center")).toBe(false);
   });
 });
 

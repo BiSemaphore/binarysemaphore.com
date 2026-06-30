@@ -5,7 +5,7 @@ import {
   getAllTags,
   getRelatedThreads,
   formatDate,
-} from "./threads";
+} from "@/lib/threads";
 
 describe("formatDate", () => {
   it("formats an ISO date as day month year (UTC)", () => {

@@ -38,6 +38,7 @@ create table if not exists public.resumes (
   scale_pct integer not null default 100,
   pad_top integer not null default 12,
   pad_bottom integer not null default 12,
+  text_align text not null default 'left',
   content jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -52,6 +53,8 @@ alter table public.resumes
   add column if not exists pad_top integer not null default 12;
 alter table public.resumes
   add column if not exists pad_bottom integer not null default 12;
+alter table public.resumes
+  add column if not exists text_align text not null default 'left';
 
 create index if not exists resumes_user_id_idx on public.resumes (user_id);
 

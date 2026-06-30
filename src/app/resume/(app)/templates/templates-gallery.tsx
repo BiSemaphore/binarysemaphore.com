@@ -27,6 +27,12 @@ export function TemplatesGallery() {
       cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag],
     );
 
+  const hasFilters = q.trim() !== "" || tags.length > 0;
+  const clearFilters = () => {
+    setQ("");
+    setTags([]);
+  };
+
   return (
     <>
       <div className="flex flex-wrap items-center gap-3">
@@ -48,9 +54,30 @@ export function TemplatesGallery() {
         <span className="font-mono text-xs text-[color:var(--rx-muted)]">
           {filtered.length} of {TEMPLATES.length}
         </span>
+        {hasFilters ? (
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="rx-pill font-mono text-[11px]"
+          >
+            clear ✕
+          </button>
+        ) : null}
       </div>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
+        <button
+          type="button"
+          onClick={clearFilters}
+          aria-pressed={tags.length === 0}
+          className={`rounded-full border px-2.5 py-0.5 font-mono text-[11px] transition-colors ${
+            tags.length === 0
+              ? "rx-accent border-transparent"
+              : "border-black/10 text-[color:var(--rx-muted)] hover:bg-black/5"
+          }`}
+        >
+          all
+        </button>
         {ALL_TEMPLATE_TAGS.map((tag) => {
           const active = tags.includes(tag);
           return (

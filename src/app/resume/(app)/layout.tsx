@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { figtree } from "@/lib/fonts";
 import { Wordmark } from "@/components/wordmark";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { getCurrentUser } from "@/utils/supabase/auth";
 
 const APEX = "https://binarysemaphore.com";
@@ -9,7 +10,7 @@ const APEX = "https://binarysemaphore.com";
 export const metadata: Metadata = {
   title: {
     default: "Resume builder",
-    template: "%s · Resume, by Binary Semaphore",
+    template: "%s · Resume",
   },
   description:
     "Build a clean, professional resume from a few fields, pick a template, and export to PDF. By Binary Semaphore.",
@@ -52,17 +53,30 @@ export default async function ResumeAppLayout({
               resume
             </Link>
           </div>
-          {user ? (
-            <form action="/auth/signout" method="post">
-              <button type="submit" className="rx-pill font-mono text-xs">
-                sign out
-              </button>
-            </form>
-          ) : (
-            <Link href="/login" className="rx-pill rx-accent font-mono text-xs">
-              sign in
-            </Link>
-          )}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            {user ? (
+              <>
+                {user.email ? (
+                  <span
+                    className="hidden max-w-[180px] truncate font-mono text-xs text-[color:var(--rx-muted)] sm:inline"
+                    title={user.email}
+                  >
+                    {user.email}
+                  </span>
+                ) : null}
+                <form action="/auth/signout" method="post">
+                  <button type="submit" className="rx-pill font-mono text-xs">
+                    sign out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <Link href="/login" className="rx-pill rx-accent font-mono text-xs">
+                sign in
+              </Link>
+            )}
+          </div>
         </div>
       </header>
 

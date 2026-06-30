@@ -7,7 +7,7 @@ import { NavLink } from "@/components/nav-link";
 import { getCurrentUser } from "@/utils/supabase/auth";
 
 export type NavItem =
-  | { type: "link"; href: string; label: string }
+  | { type: "link"; href: string; label: string; external?: boolean }
   | { type: "dropdown"; label: string; items: { href: string; label: string }[] };
 
 // Company-style structure: a couple of flat links plus a grouped "Company"
@@ -26,6 +26,12 @@ export const navItems: NavItem[] = [
   },
   { type: "link", href: "/services", label: "Services" },
   { type: "link", href: "/projects", label: "Products" },
+  {
+    type: "link",
+    href: "https://resume.binarysemaphore.com",
+    label: "Resume",
+    external: true,
+  },
   { type: "link", href: "/threads", label: "Threads" },
 ];
 
@@ -73,6 +79,17 @@ export async function Header({ linkBase = "" }: { linkBase?: string } = {}) {
                       ))}
                     </ul>
                   </div>
+                </li>
+              ) : item.external ? (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="roll-link text-base font-medium text-foreground"
+                  >
+                    <RollText text={item.label} />
+                  </a>
                 </li>
               ) : (
                 <li key={item.href}>

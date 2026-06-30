@@ -16,6 +16,8 @@ export type ResumeBasics = {
 
 export type ResumeExperience = {
   company: string;
+  /** Optional company website; makes the company name a clickable link. */
+  companyUrl: string;
   role: string;
   /** Free-text month/year, e.g. "Jan 2024". */
   start: string;
@@ -52,6 +54,14 @@ export type ResumeContent = {
   links: ResumeLink[];
 };
 
+/** Keys of the repeatable (array) sections — what the reorder helper accepts. */
+export type ResumeListKey =
+  | "experience"
+  | "education"
+  | "skills"
+  | "projects"
+  | "links";
+
 /** A blank document for a freshly created resume. */
 export function emptyResume(): ResumeContent {
   return {
@@ -82,7 +92,9 @@ export function normalizeResume(value: unknown): ResumeContent {
   const v = value as Partial<ResumeContent>;
   return {
     basics: { ...base.basics, ...(v.basics ?? {}) },
-    experience: Array.isArray(v.experience) ? v.experience : base.experience,
+    experience: Array.isArray(v.experience)
+      ? v.experience.map((e) => ({ ...e, companyUrl: e.companyUrl ?? "" }))
+      : base.experience,
     education: Array.isArray(v.education) ? v.education : base.education,
     skills: Array.isArray(v.skills) ? v.skills : base.skills,
     projects: Array.isArray(v.projects) ? v.projects : base.projects,
@@ -129,6 +141,118 @@ export const TEMPLATES = [
     description:
       "CLI / shell aesthetic. Prompt-style sections, monospace throughout, syntax-accent labels.",
     tags: ["single-column", "mono", "developer"],
+  },
+  {
+    id: "executive",
+    label: "Executive",
+    description:
+      "Conservative and corporate. Centred name, double-ruled header, deep-navy section labels.",
+    tags: ["single-column", "corporate", "formal", "sans"],
+  },
+  {
+    id: "minimal",
+    label: "Minimal",
+    description:
+      "Ultra-spare. No rules, light weights, lots of whitespace. The content does the talking.",
+    tags: ["single-column", "minimal", "modern", "sans"],
+  },
+  {
+    id: "saas",
+    label: "SaaS",
+    description:
+      "Modern product look. A teal accent band header, pill skills, clean labels.",
+    tags: ["single-column", "color-block", "modern", "sans"],
+  },
+  {
+    id: "academic",
+    label: "Academic",
+    description:
+      "LaTeX-CV aesthetic. Serif type, centred name, small-caps ruled section heads, dense.",
+    tags: ["single-column", "serif", "cv", "dense"],
+  },
+  {
+    id: "architect",
+    label: "Architect",
+    description:
+      "Drafting / blueprint feel. Thin rules, monospace labels with a numeric index, precise.",
+    tags: ["single-column", "mono", "technical", "grid"],
+  },
+  {
+    id: "banker",
+    label: "Banker",
+    description:
+      "Formal letterhead. Centred serif name over a burgundy rule, conservative spacing.",
+    tags: ["single-column", "serif", "formal", "letterhead"],
+  },
+  {
+    id: "brutalist",
+    label: "Brutalist",
+    description:
+      "Bold and loud. Heavy black section bars with reversed labels, oversized name.",
+    tags: ["single-column", "bold", "statement", "sans"],
+  },
+  {
+    id: "newspaper",
+    label: "Newspaper",
+    description:
+      "Broadsheet masthead with a double rule, serif type, and a dropped-cap lead.",
+    tags: ["single-column", "serif", "editorial"],
+  },
+  {
+    id: "magazine",
+    label: "Magazine",
+    description:
+      "Cover-style. A navy kicker, oversized serif name, tracked subtitle. Bold editorial.",
+    tags: ["single-column", "serif", "magazine"],
+  },
+  {
+    id: "display",
+    label: "Display",
+    description:
+      "Typography-forward. An enormous name set tight over a thin contact rule, quiet body.",
+    tags: ["single-column", "bold", "modern", "sans"],
+  },
+  {
+    id: "dossier",
+    label: "Dossier",
+    description:
+      "Case-file aesthetic. Bordered header, monospace meta strip, boxed section labels.",
+    tags: ["single-column", "mono", "technical"],
+  },
+  {
+    id: "indexcard",
+    label: "Index Card",
+    description:
+      "Ruled record-card look. A tabbed header, hairline row rules, compact spacing.",
+    tags: ["single-column", "compact", "sans"],
+  },
+  {
+    id: "letterpress",
+    label: "Letterpress",
+    description:
+      "Warm and literary. Serif type, italic accents, centred small-caps section heads.",
+    tags: ["single-column", "serif", "formal"],
+  },
+  {
+    id: "mirror",
+    label: "Mirror",
+    description:
+      "Fully centred and symmetric. Balanced headings and rules. Calm and formal.",
+    tags: ["single-column", "modern", "sans"],
+  },
+  {
+    id: "periodical",
+    label: "Periodical",
+    description:
+      "Academic-journal byline. Ruled running head with volume meta, serif body.",
+    tags: ["single-column", "serif", "cv"],
+  },
+  {
+    id: "specsheet",
+    label: "Spec Sheet",
+    description:
+      "Datasheet aesthetic. Monospace labels in a left rail, content right, hairline rows.",
+    tags: ["single-column", "mono", "technical", "developer"],
   },
 ] as const;
 
@@ -238,3 +362,21 @@ export function pageDims(pageSize: string): PageDims {
 
 /** Fixed horizontal page margin in mm (left/right). Vertical is tunable. */
 export const PAGE_MARGIN_X = 16;
+
+/**
+ * Body-text alignment. "left" is the default (most readable / ATS-safe);
+ * "justify" fills lines edge-to-edge. Applied to the resume content wrapper;
+ * a template's explicit header alignment (centred names, etc.) still wins.
+ */
+export const TEXT_ALIGNS = [
+  { id: "left", label: "Left" },
+  { id: "justify", label: "Justify" },
+] as const;
+
+export type TextAlign = (typeof TEXT_ALIGNS)[number]["id"];
+
+export const DEFAULT_ALIGN: TextAlign = "left";
+
+export function isTextAlign(value: string): value is TextAlign {
+  return TEXT_ALIGNS.some((a) => a.id === value);
+}

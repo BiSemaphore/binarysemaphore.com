@@ -81,3 +81,20 @@ export function productSubdomainUrl(slug: string): string | null {
 export function hasProductSubdomain(slug: string | undefined): boolean {
   return Boolean(slug && slugToSub.has(slug));
 }
+
+/**
+ * Whether a host is one we own (apex, www, or any subdomain of it, plus
+ * localhost for dev). Used to validate the Host header before the PDF route
+ * forwards the user's cookies into headless Chromium — defense against a
+ * spoofed Host pointing Chromium (with auth cookies) at a foreign origin.
+ */
+export function isTrustedHost(host: string | null | undefined): boolean {
+  if (!host) return false;
+  const name = host.split(":")[0].toLowerCase();
+  return (
+    name === ROOT_DOMAIN ||
+    name.endsWith(`.${ROOT_DOMAIN}`) ||
+    name === "localhost" ||
+    name.endsWith(".localhost")
+  );
+}

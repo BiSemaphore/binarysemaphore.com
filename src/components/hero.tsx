@@ -17,6 +17,23 @@ export function Hero() {
         {/* Headline + circular CTA */}
         <div className="flex items-start justify-between gap-8">
           <div className="min-w-0">
+            <a
+              href="https://resume.binarysemaphore.com"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="resume-pill group mb-7 inline-flex items-center gap-4 rounded-full border border-[#d1d1d1] bg-background py-2.5 pl-5 pr-4 transition-colors duration-300 hover:border-foreground dark:border-white/20"
+            >
+              <span className="flex flex-col">
+                <span className="text-sm font-semibold text-foreground group-hover:text-background">
+                  Resume Builder
+                </span>
+                <span className="font-mono text-xs text-muted group-hover:text-background/70">
+                  resume.binarysemaphore.com
+                </span>
+              </span>
+              <ArrowUpRightIcon className="h-4 w-4 shrink-0 text-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-background" />
+            </a>
+
             <h1 className="flex flex-wrap items-center gap-x-5 gap-y-1 font-display font-normal leading-[1.1] tracking-[-0.0328em] text-foreground text-[clamp(2.75rem,9vw,7.25rem)]">
               <Image
                 src="/brand/mark.svg"
@@ -39,7 +56,7 @@ export function Hero() {
           {/* Circular outlined CTA, matching the reference's "Start Work" mark. */}
           <Link
             href={site.hero.primary.href}
-            className="group hidden shrink-0 flex-col items-center justify-center gap-2 rounded-full border border-[#d1d1d1] text-foreground transition-colors duration-300 hover:border-foreground hover:bg-foreground hover:text-background lg:flex dark:border-white/20"
+            className="cta-wave group hidden shrink-0 flex-col items-center justify-center gap-2 rounded-full border border-[#d1d1d1] text-foreground transition-colors duration-300 hover:border-foreground hover:text-background lg:flex dark:border-white/20"
             style={{ width: 140, height: 140 }}
           >
             <ArrowUpRightIcon className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

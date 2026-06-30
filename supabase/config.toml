@@ -1,0 +1,86 @@
+# Supabase local config for Binary Semaphore.
+#
+# If `supabase start` ever rejects this file because your CLI expects a newer
+# schema, run `supabase init` to regenerate a fresh config.toml, then re-apply
+# the three customizations we care about (marked "BS:" below):
+#   1. auth.site_url + additional_redirect_urls (apex AND resume subdomain)
+#   2. inbucket enabled (catches magic-link / confirmation emails locally)
+#   3. external providers gated behind env() so the file carries no secrets
+#
+# Local credentials are printed by `supabase start`. Put the API URL + anon key
+# into .env.local as NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.
+
+project_id = "binarysemaphore"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+# Match your hosted project's Postgres major version. Bump if `supabase start`
+# complains about the image (recent CLIs default to 15/17).
+major_version = 15
+
+[db.pooler]
+enabled = false
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+
+# BS: Inbucket catches every local email (magic links, confirmations) so we can
+# develop auth without sending real mail. View it at http://localhost:54324.
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+# BS: the app authenticates across the apex AND the resume subdomain in dev
+# (redirectTo uses window.location.origin), so both must be allowlisted or the
+# OAuth / magic-link callback fails.
+site_url = "http://localhost:3000"
+additional_redirect_urls = [
+  "http://localhost:3000/**",
+  "http://resume.localhost:3000/**",
+]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_signup = true
+enable_anonymous_sign_ins = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+# Confirmations off locally so email signups log in instantly (Inbucket still
+# receives the mail if you want to inspect it).
+enable_confirmations = false
+secure_password_change = false
+
+# BS: External OAuth providers are off by default and read secrets from the
+# environment, so this file never holds credentials. To use GitHub/Google
+# locally, set enabled = true and export the matching env vars, then register a
+# dev OAuth app with callback http://127.0.0.1:54321/auth/v1/callback.
+[auth.external.github]
+enabled = false
+client_id = "env(SUPABASE_AUTH_GITHUB_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GITHUB_SECRET)"
+
+[auth.external.google]
+enabled = false
+client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"

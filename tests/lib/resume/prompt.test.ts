@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { templatePrompt } from "./prompt";
-import { TEMPLATES } from "./schema";
+import { templatePrompt } from "@/lib/resume/prompt";
+import { TEMPLATES } from "@/lib/resume/schema";
 
 describe("templatePrompt", () => {
   it("names the template and asks for the resume sections", () => {
