@@ -67,14 +67,14 @@ export function SwissTemplate({ content }: TemplateProps) {
         <div className="space-y-3">
           {projects.map((pr, i) => (
             <div key={i}>
-              <h3 className="font-semibold text-neutral-900">
-                {pr.name || "Project"}
-                {pr.link ? (
-                  <span className="ml-2 text-xs font-normal text-neutral-500">
-                    {projectLink(pr.link)}
-                  </span>
-                ) : null}
-              </h3>
+              <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-semibold text-neutral-900">{pr.name || "Project"}</h3>
+                  {pr.link ? (
+                    <span className="shrink-0 text-xs font-normal text-neutral-500">
+                      {projectLink(pr.link)}
+                    </span>
+                  ) : null}
+                </div>
               {pr.description.trim() ? (
                 richBlock(pr.description, "text-neutral-700")
               ) : null}
