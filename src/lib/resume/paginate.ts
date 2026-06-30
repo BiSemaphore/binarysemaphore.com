@@ -23,8 +23,44 @@ function isHeadingLike(el: HTMLElement): boolean {
   return /^H[1-6]$/.test(el.tagName) || el.hasAttribute("data-kwn");
 }
 
-/** Collect "leaf" blocks (block-level elements with no block-level child); their
- * bottom edges are the lines we may cut along. */
+/** Push one block per visual text line of `el`, so a multi-line paragraph or
+ * bullet can be cut *between* its lines (matching how the PDF flows) instead of
+ * only at the block's outer edges. Falls back to the bounding box when the
+ * element has no laid-out text (e.g. an empty spacer). */
+function pushLineBlocks(
+  el: HTMLElement,
+  heading: boolean,
+  rootTop: number,
+  out: Block[],
+) {
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const rects = Array.from(range.getClientRects());
+  if (rects.length === 0) {
+    const r = el.getBoundingClientRect();
+    out.push({ top: r.top - rootTop, bottom: r.bottom - rootTop, heading });
+    return;
+  }
+  // Merge fragment rects (a styled link/bold splits a line into several rects)
+  // into one block per line by vertical overlap.
+  const lines: { top: number; bottom: number }[] = [];
+  for (const rect of rects) {
+    const top = rect.top - rootTop;
+    const bottom = rect.bottom - rootTop;
+    const last = lines[lines.length - 1];
+    if (last && top < last.bottom - 2) {
+      last.top = Math.min(last.top, top);
+      last.bottom = Math.max(last.bottom, bottom);
+    } else {
+      lines.push({ top, bottom });
+    }
+  }
+  for (const ln of lines) out.push({ top: ln.top, bottom: ln.bottom, heading });
+}
+
+/** Collect the cut candidates: one block per text line for body content (so we
+ * can break between lines like the PDF), and the whole box for headings (kept
+ * intact so a section/entry label is never split). */
 export function collectBlocks(root: HTMLElement): Block[] {
   const rootTop = root.getBoundingClientRect().top;
   const blocks: Block[] = [];
@@ -42,12 +78,13 @@ export function collectBlocks(root: HTMLElement): Block[] {
       if (isHeadingLike(child as HTMLElement)) childHeading = true;
     }
     if (hasBlockChild) continue;
-    const r = el.getBoundingClientRect();
-    blocks.push({
-      top: r.top - rootTop,
-      bottom: r.bottom - rootTop,
-      heading: isHeadingLike(el) || childHeading,
-    });
+    const heading = isHeadingLike(el) || childHeading;
+    if (heading) {
+      const r = el.getBoundingClientRect();
+      blocks.push({ top: r.top - rootTop, bottom: r.bottom - rootTop, heading: true });
+    } else {
+      pushLineBlocks(el, false, rootTop, blocks);
+    }
   }
   return blocks;
 }

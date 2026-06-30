@@ -92,6 +92,7 @@ function FlowPaper({
     padTop,
     padBottom,
   );
+  const contentWmm = dims.wMm - PAGE_MARGIN_X * 2;
   const zoom = scaleZoom(scalePct);
   const densityStyle = {
     zoom,
@@ -105,9 +106,12 @@ function FlowPaper({
       setFit(paperWpx > 0 ? Math.min(1, stage.clientWidth / paperWpx) : 1);
       const measure = measureRef.current;
       if (measure && showPageBreaks) {
-        // Use getBoundingClientRect (rendered px, after `zoom`) consistently
-        // with collectBlocks, so the total height and the block offsets are in
-        // the same coordinate space.
+        // Measure the hidden, true-size measurer (NOT scaled by `fit`), so block
+        // heights are in real CSS px — the same space as contentAreaPx. The
+        // visible sheets sit inside `transform: scale(fit)`, whose scaling
+        // getBoundingClientRect would otherwise fold into every measurement and
+        // throw the page breaks off (clipping lines in the half-width editor
+        // pane). The PDF has no such transform; this keeps both identical.
         const h = measure.getBoundingClientRect().height;
         setContentPx(h);
         const next = computeStarts(measure, h, () => contentAreaPx);
@@ -154,6 +158,19 @@ function FlowPaper({
 
   return (
     <div ref={stageRef} className="w-full">
+      {/* Hidden true-size measurer (not inside `scale(fit)`): the single source
+          of truth for page-break math, at the real content width so wrapping
+          matches the sheets below. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute"
+        style={{ width: 0, height: 0, overflow: "hidden" }}
+      >
+        <div ref={measureRef} style={{ ...densityStyle, width: `${contentWmm}mm` }}>
+          {renderTemplate(templateId, content)}
+        </div>
+      </div>
+
       <div
         className="relative mx-auto"
         style={{ width: paperWpx * fit, height: stackHpx * fit }}
@@ -175,7 +192,6 @@ function FlowPaper({
                 <PageSheet dims={dims} padTop={padTop} padBottom={padBottom} frame={frame}>
                   <div className="overflow-hidden" style={{ height: sliceH }}>
                     <div
-                      ref={page === 0 ? measureRef : undefined}
                       style={{
                         ...densityStyle,
                         // translate is inside the zoomed box, so divide by zoom
