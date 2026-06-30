@@ -141,20 +141,19 @@ export function twoColParts(content: TemplateProps["content"]): ColumnParts {
         ) : (
           experience.map((exp, i) => (
             <div key={i}>
-              <div className="flex items-baseline justify-between gap-4">
+              <div className="flex items-baseline justify-between gap-3">
                 <h3 className="font-semibold text-neutral-900">
                   {exp.role || "Role"}
-                  {exp.company ? (
-                    <span className="font-normal text-neutral-500">
-                      {" "}
-                      @ {companyName(exp.company, exp.companyUrl)}
-                    </span>
-                  ) : null}
                 </h3>
                 <span className="shrink-0 font-mono text-[11px] text-neutral-500">
                   {formatRange(exp.start, exp.end, exp.current)}
                 </span>
               </div>
+              {exp.company ? (
+                <p className="text-neutral-500">
+                  @ {companyName(exp.company, exp.companyUrl)}
+                </p>
+              ) : null}
               {cleanList(exp.bullets).length > 0 ? (
                 <ul className="mt-1.5 space-y-1">
                   {cleanList(exp.bullets).map((b, j) => (
