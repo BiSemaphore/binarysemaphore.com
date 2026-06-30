@@ -11,10 +11,17 @@ export const PAGE_SLOP_PX = 8;
 /** Vertical gap drawn between stacked preview sheets (CSS px, before scaling). */
 export const PAGE_GAP_PX = 28;
 
-/** A block's vertical extent within the measured content, in px. */
-type Block = { top: number; bottom: number };
+/** A block's vertical extent within the measured content, in px. `heading` marks
+ * a section label or entry title that should not be left alone at a page bottom. */
+type Block = { top: number; bottom: number; heading: boolean };
 
 const BLOCK_DISPLAY = /(block|flex|grid|table|list-item|flow-root)/;
+
+/** True for blocks we should keep with the content that follows them: heading
+ * tags (h1-h6) and any element explicitly marked data-kwn ("keep with next"). */
+function isHeadingLike(el: HTMLElement): boolean {
+  return /^H[1-6]$/.test(el.tagName) || el.hasAttribute("data-kwn");
+}
 
 /** Collect "leaf" blocks (block-level elements with no block-level child); their
  * bottom edges are the lines we may cut along. */
@@ -24,15 +31,23 @@ export function collectBlocks(root: HTMLElement): Block[] {
   for (const el of Array.from(root.querySelectorAll<HTMLElement>("*"))) {
     if (!BLOCK_DISPLAY.test(getComputedStyle(el).display)) continue;
     let hasBlockChild = false;
+    let childHeading = false;
     for (const child of Array.from(el.children)) {
-      if (BLOCK_DISPLAY.test(getComputedStyle(child).display)) {
+      if (BLOCK_DISPLAY.test(getComputedStyle(child as HTMLElement).display)) {
         hasBlockChild = true;
         break;
       }
+      // A heading often wraps the title plus an inline date/link; treat the row
+      // as a heading if it or an inline child is heading-like.
+      if (isHeadingLike(child as HTMLElement)) childHeading = true;
     }
     if (hasBlockChild) continue;
     const r = el.getBoundingClientRect();
-    blocks.push({ top: r.top - rootTop, bottom: r.bottom - rootTop });
+    blocks.push({
+      top: r.top - rootTop,
+      bottom: r.bottom - rootTop,
+      heading: isHeadingLike(el) || childHeading,
+    });
   }
   return blocks;
 }
@@ -52,6 +67,20 @@ export function computeStarts(
   const EPS = 1;
   const straddles = (y: number) =>
     blocks.some((b) => b.top < y - EPS && b.bottom > y + EPS);
+  // True when cutting at y would leave a heading as the last thing on the page
+  // (an orphaned section label / entry title). We avoid those cuts so a heading
+  // travels to the next page with the content it introduces.
+  const endsOnHeading = (y: number) => {
+    let lastBottom = -Infinity;
+    let lastIsHeading = false;
+    for (const b of blocks) {
+      if (b.bottom <= y + EPS && b.bottom > lastBottom) {
+        lastBottom = b.bottom;
+        lastIsHeading = b.heading;
+      }
+    }
+    return lastIsHeading;
+  };
   const candidates = Array.from(
     new Set(blocks.map((b) => Math.round(b.bottom))),
   ).sort((a, b) => a - b);
@@ -64,13 +93,21 @@ export function computeStarts(
     const limit = start + Math.max(50, areaFn(page));
     if (limit >= totalPx - PAGE_SLOP_PX) break;
     let chosen = -1;
+    let headingFallback = -1;
     for (const y of candidates) {
       if (y > limit) break;
-      if (y > start + 4 && !straddles(y)) chosen = y;
+      if (y <= start + 4 || straddles(y)) continue;
+      if (endsOnHeading(y)) {
+        headingFallback = y; // usable, but only if nothing better fits.
+        continue;
+      }
+      chosen = y;
     }
-    if (chosen < 0) chosen = limit; // a block taller than a page: hard-cut.
-    starts.push(chosen);
-    start = chosen;
+    // Prefer a cut that doesn't orphan a heading; else the best heading cut;
+    // else a hard cut at the limit (a single block taller than a page).
+    const pick = chosen >= 0 ? chosen : headingFallback >= 0 ? headingFallback : limit;
+    starts.push(pick);
+    start = pick;
     page += 1;
   }
   return starts;
