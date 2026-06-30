@@ -7,6 +7,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.1.1] - 2026-06-30
+
+### Fixed
+
+- Resume PDF export 500ed in production: `@sparticuz/chromium` ships Chromium as
+  brotli files under `bin/*.br` that nothing imports statically, so Next's file
+  tracer left them out of the serverless function and `chromium.executablePath()`
+  failed with "The input directory .../bin does not exist". Force-include those
+  files for the PDF route via `outputFileTracingIncludes`.
+
 ## [0.1.0] - 2026-06-30
 
 First tagged release. Adds the resume builder product and rounds out the
@@ -50,4 +60,5 @@ marketing site rebrand.
 - Invalid nested `<a>` in template cards (hydration error).
 - Tolerate a missing `text_align` column before the migration runs.
 
+[0.1.1]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.1
 [0.1.0]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.0
