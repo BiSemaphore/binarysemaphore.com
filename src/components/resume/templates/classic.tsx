@@ -3,9 +3,9 @@ import { BaseSection } from "./parts";
 import { cleanList, contactBits, formatRange, ph } from "./util";
 import {
   companyName,
-  contactsLine,
+  contactIconItems,
+  linkIconItems,
   projectLink,
-  linkAnchor,
 } from "@/lib/resume/links";
 import { rich, richBlock } from "@/lib/resume/richtext";
 
@@ -44,20 +44,25 @@ export function ClassicTemplate({ content }: TemplateProps) {
         </p>
 
         {contacts.length > 0 ? (
-          <p className="mt-2 text-xs text-neutral-600">
-            {contactsLine(basics)}
-          </p>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-600">
+            {contactIconItems(basics).map((it) => (
+              <span key={it.key} className="inline-flex items-center gap-1.5">
+                <span className="text-neutral-400">{it.icon}</span>
+                {it.node}
+              </span>
+            ))}
+          </div>
         ) : null}
 
         {links.length > 0 ? (
-          <p className="mt-1 text-xs text-neutral-600">
-            {links.map((l, i) => (
-              <span key={`${l.url}-${i}`}>
-                {i > 0 ? "  ·  " : ""}
-                <span className="font-medium">{linkAnchor(l)}</span>
+          <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-600">
+            {linkIconItems(links).map((it) => (
+              <span key={it.key} className="inline-flex items-center gap-1.5">
+                <span className="text-neutral-400">{it.icon}</span>
+                <span className="font-medium">{it.node}</span>
               </span>
             ))}
-          </p>
+          </div>
         ) : null}
       </header>
 
