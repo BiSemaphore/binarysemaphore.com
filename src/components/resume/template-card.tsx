@@ -14,7 +14,7 @@ import { SubmitButton } from "@/components/resume/submit-button";
  */
 export function TemplateCard({ template }: { template: Template }) {
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)]">
+    <div className="rx-card group flex h-full flex-col overflow-hidden rounded-xl border border-black/10 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow hover:shadow-[0_6px_20px_rgba(0,0,0,0.08)]">
       {/* Live mini-preview: a fixed-height window onto the top of the page,
           with a soft fade so the crop reads as intentional. The clickable
           layer is an overlay link (sibling, not ancestor) so the resume's own
@@ -61,13 +61,23 @@ export function TemplateCard({ template }: { template: Template }) {
             Fixed-dark text since the card is an always-white sheet. */}
         <div className="mt-auto border-t border-black/5 pt-3 font-mono text-xs">
           <p className="mb-2 truncate text-neutral-500">{template.id}</p>
-          <div className="flex items-center gap-2">
-            <CopyPromptButton template={template} />
-            <form action={useTemplateAction}>
+          {/* Three equal-width buttons that fill the footer, so the row reads as
+              a deliberate, balanced control bar in every card width. */}
+          <div className="grid grid-cols-3 gap-2">
+            <CopyPromptButton
+              template={template}
+              className="rx-pill w-full justify-center"
+            />
+            <form action={useTemplateAction} className="contents">
               <input type="hidden" name="templateId" value={template.id} />
-              <SubmitButton className="rx-pill">use</SubmitButton>
+              <SubmitButton className="rx-pill w-full justify-center">
+                use
+              </SubmitButton>
             </form>
-            <Link href={`/preview/${template.id}`} className="rx-pill">
+            <Link
+              href={`/preview/${template.id}`}
+              className="rx-pill w-full justify-center"
+            >
               preview →
             </Link>
           </div>

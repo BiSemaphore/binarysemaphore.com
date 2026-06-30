@@ -5,11 +5,9 @@ import { listResumes } from "@/lib/resume/db";
 import { TEMPLATES } from "@/lib/resume/schema";
 import { TemplateCard } from "@/components/resume/template-card";
 import { SubmitButton } from "@/components/resume/submit-button";
-import {
-  createResumeAction,
-  deleteResumeAction,
-  renameResumeAction,
-} from "./actions";
+import { PencilIcon, TrashIcon } from "@/components/icons";
+import { createResumeAction, deleteResumeAction } from "./actions";
+import { RenameTitle } from "@/components/resume/rename-title";
 
 export const metadata: Metadata = {
   title: "Resume builder",
@@ -29,7 +27,7 @@ function formatDate(iso: string): string {
 export default async function ResumeHome() {
   const user = await getCurrentUser();
   const resumes = user ? await listResumes() : [];
-  const featured = TEMPLATES.slice(0, 4);
+  const featured = TEMPLATES.slice(0, 6);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-5 py-12">
@@ -65,7 +63,7 @@ export default async function ResumeHome() {
         </div>
 
         {!user ? (
-          <div className="rounded-xl border border-black/10 bg-white/70 p-10 text-center">
+          <div className="rounded-xl border border-black/10 bg-white/70 p-10 text-center dark:border-white/10 dark:bg-white/[0.04]">
             <p className="text-sm text-[color:var(--rx-muted)]">
               Sign in to create and manage your resumes.
             </p>
@@ -77,7 +75,7 @@ export default async function ResumeHome() {
             </Link>
           </div>
         ) : resumes.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-black/15 bg-white/60 p-10 text-center">
+          <div className="rounded-xl border border-dashed border-black/15 bg-white/60 p-10 text-center dark:border-white/15 dark:bg-white/[0.03]">
             <p className="text-sm text-[color:var(--rx-muted)]">
               No resumes yet. Click{" "}
               <span className="font-medium text-foreground">+ new resume</span>,
@@ -89,42 +87,32 @@ export default async function ResumeHome() {
             {resumes.map((resume) => (
               <li
                 key={resume.id}
-                className="rounded-xl border border-black/10 bg-white p-4 sm:flex sm:items-center sm:justify-between sm:gap-4"
+                className="rounded-xl border border-black/10 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04] sm:flex sm:items-center sm:justify-between sm:gap-4"
               >
                 <div className="min-w-0 flex-1">
-                  <form
-                    action={renameResumeAction}
-                    className="flex items-center gap-2"
-                  >
-                    <input type="hidden" name="id" value={resume.id} />
-                    <input
-                      name="title"
-                      defaultValue={resume.title}
-                      aria-label="Resume title"
-                      className="w-full max-w-xs rounded-lg border border-transparent bg-transparent px-2 py-1 text-base font-medium text-foreground hover:border-black/15 focus:border-black/20 focus:outline-none"
-                    />
-                    <button
-                      type="submit"
-                      className="shrink-0 rounded-lg px-2 py-1 font-mono text-xs text-[color:var(--rx-muted)] transition-colors hover:text-foreground"
-                    >
-                      save
-                    </button>
-                  </form>
+                  <RenameTitle id={resume.id} title={resume.title} />
                   <p className="mt-1 px-2 font-mono text-xs text-[color:var(--rx-muted)]">
                     {resume.templateId} · updated {formatDate(resume.updatedAt)}
                   </p>
                 </div>
                 <div className="mt-3 flex items-center gap-2 sm:mt-0">
-                  <Link href={`/editor/${resume.id}`} className="rx-pill">
-                    edit
+                  <Link
+                    href={`/editor/${resume.id}`}
+                    aria-label={`Edit ${resume.title}`}
+                    title="Edit"
+                    className="rx-pill"
+                  >
+                    <PencilIcon className="h-4 w-4" />
                   </Link>
                   <form action={deleteResumeAction}>
                     <input type="hidden" name="id" value={resume.id} />
                     <button
                       type="submit"
-                      className="rounded-lg px-3 py-2 font-mono text-xs text-[color:var(--rx-muted)] transition-colors hover:text-red-500"
+                      aria-label={`Delete ${resume.title}`}
+                      title="Delete"
+                      className="inline-flex items-center rounded-lg p-2 text-[color:var(--rx-muted)] transition-colors hover:text-red-500"
                     >
-                      delete
+                      <TrashIcon className="h-4 w-4" />
                     </button>
                   </form>
                 </div>
@@ -147,7 +135,7 @@ export default async function ResumeHome() {
             browse all ({TEMPLATES.length}) →
           </Link>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((t) => (
             <TemplateCard key={t.id} template={t} />
           ))}

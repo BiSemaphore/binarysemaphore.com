@@ -576,6 +576,18 @@ body {
 .dark .rx-pill:hover {
   color: #f5f5f5;
 }
+/* The template card is an always-light "sheet" (it frames a white resume), so
+   its pills keep the light styling even in dark mode, like the card's
+   fixed-dark text. Same specificity as `.dark .rx-pill`, declared after it so it
+   wins inside a card. */
+.rx-card .rx-pill {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(20, 20, 19, 0.12);
+  color: #6b6b6b;
+}
+.rx-card .rx-pill:hover {
+  color: #171717;
+}
 /* Translucent floating surfaces (tune panel, control pills). */
 .rx-panel {
   background: rgba(255, 255, 255, 0.88);

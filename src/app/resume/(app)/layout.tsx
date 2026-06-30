@@ -33,7 +33,7 @@ export default async function ResumeAppLayout({
     <div
       className={`${figtree.variable} rx rx-canvas flex min-h-screen flex-col font-[family-name:var(--font-figtree)]`}
     >
-      <header className="sticky top-0 z-30 border-b border-black/5 bg-white/70 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-black/5 bg-white/70 backdrop-blur dark:border-white/10 dark:bg-[#161616]/75">
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center justify-between px-5">
           <div className="flex items-center gap-2">
             <a
