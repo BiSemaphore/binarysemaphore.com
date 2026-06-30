@@ -118,6 +118,10 @@ function FlowPaper({
     ro.observe(stage);
     if (measureRef.current) ro.observe(measureRef.current);
     run();
+    // Re-measure once web fonts load: page breaks computed against the fallback
+    // font wrap differently, so without this the preview can clip a line the
+    // real font pushes onto the next page. The PDF route waits the same way.
+    document.fonts?.ready.then(run);
     return () => ro.disconnect();
   }, [paperWpx, contentAreaPx, scalePct, padTop, padBottom, showPageBreaks]);
 
@@ -267,6 +271,9 @@ function ColumnSheets({
       if (r.current) ro.observe(r.current);
     }
     run();
+    // Re-measure once web fonts load (see FlowPaper) so column breaks match the
+    // real font's wrap, not the fallback's.
+    document.fonts?.ready.then(run);
     return () => ro.disconnect();
   }, [paperWpx, contentAreaPx, scalePct, padTop, padBottom]);
 
