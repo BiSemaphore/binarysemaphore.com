@@ -120,16 +120,25 @@ export function computeStarts(
     // to the entry boundary, a heading cut, or a hard cut at the limit.
     const area = Math.max(50, areaFn(page));
     const keepGap = entryBoundary >= 0 ? limit - entryBoundary : Infinity;
-    const pick =
-      entryBoundary >= 0 && keepGap <= area * 0.18
-        ? entryBoundary
-        : safe >= 0
-          ? safe
-          : entryBoundary >= 0
-            ? entryBoundary
-            : headingEnd >= 0
-              ? headingEnd
-              : limit;
+    let pick: number;
+    let clean = true;
+    if (entryBoundary >= 0 && keepGap <= area * 0.18) pick = entryBoundary;
+    else if (safe >= 0) pick = safe;
+    else if (entryBoundary >= 0) pick = entryBoundary;
+    else if (headingEnd >= 0) pick = headingEnd;
+    else {
+      pick = limit; // a block taller than a page: hard-cut (clips mid-block).
+      clean = false;
+    }
+    // A clean cut sits exactly at a block's bottom edge, where the clip window
+    // would shave the line's descenders. Snap it down to the next block's top so
+    // the break falls in the whitespace gap, matching how the PDF breaks between
+    // lines. (Never for a hard cut, which would skip the rest of a tall block.)
+    if (clean) {
+      let nextTop = Infinity;
+      for (const b of blocks) if (b.top > pick + EPS && b.top < nextTop) nextTop = b.top;
+      if (Number.isFinite(nextTop)) pick = nextTop;
+    }
     starts.push(pick);
     start = pick;
     page += 1;
