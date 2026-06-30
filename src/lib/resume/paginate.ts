@@ -131,14 +131,18 @@ export function computeStarts(
       clean = false;
     }
     // A clean cut sits exactly at a block's bottom edge, where the clip window
-    // would shave the line's descenders. Snap it down to the next block's top so
-    // the break falls in the whitespace gap, matching how the PDF breaks between
-    // lines. (Never for a hard cut, which would skip the rest of a tall block.)
+    // could shave the line's descenders. Snap it down into the whitespace gap
+    // before the next block, matching how the PDF breaks between lines. Critical:
+    // only snap to a gap that still fits within the page (<= limit); snapping
+    // past the page area would let the slice clip the straddling block.
     if (clean) {
       let nextTop = Infinity;
       for (const b of blocks) if (b.top > pick + EPS && b.top < nextTop) nextTop = b.top;
-      if (Number.isFinite(nextTop)) pick = nextTop;
+      if (Number.isFinite(nextTop) && nextTop <= limit) pick = nextTop;
     }
+    // Never let a page slice exceed the printable area; a cut beyond `limit`
+    // would be clipped by the fixed-height page window.
+    if (pick > limit) pick = limit;
     starts.push(pick);
     start = pick;
     page += 1;
