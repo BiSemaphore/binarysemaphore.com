@@ -48,7 +48,7 @@ export function TemplatesGallery() {
             onChange={(e) => setQ(e.target.value)}
             placeholder="search by name, tag, or description"
             aria-label="search templates"
-            className="w-full rounded-lg border border-black/15 bg-white/80 py-2 pl-8 pr-3 font-mono text-sm text-foreground placeholder:text-[color:var(--rx-muted)] focus:border-[color:var(--rx-accent)] focus:outline-none"
+            className="w-full rounded-lg border border-black/15 bg-white/80 py-2 pl-8 pr-3 font-mono text-sm text-foreground placeholder:text-[color:var(--rx-muted)] focus:border-[color:var(--rx-accent)] focus:outline-none dark:border-white/15 dark:bg-white/[0.04]"
           />
         </label>
         <span className="font-mono text-xs text-[color:var(--rx-muted)]">
@@ -73,7 +73,7 @@ export function TemplatesGallery() {
           className={`rounded-full border px-2.5 py-0.5 font-mono text-[11px] transition-colors ${
             tags.length === 0
               ? "rx-accent border-transparent"
-              : "border-black/10 text-[color:var(--rx-muted)] hover:bg-black/5"
+              : "border-black/10 text-[color:var(--rx-muted)] hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
           }`}
         >
           all
@@ -89,7 +89,7 @@ export function TemplatesGallery() {
               className={`rounded-full border px-2.5 py-0.5 font-mono text-[11px] transition-colors ${
                 active
                   ? "rx-accent border-transparent"
-                  : "border-black/10 text-[color:var(--rx-muted)] hover:bg-black/5"
+                  : "border-black/10 text-[color:var(--rx-muted)] hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
               }`}
             >
               {tag}
