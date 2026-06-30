@@ -115,8 +115,9 @@ function PrintFlow({
   const [contentPx, setContentPx] = useState(0);
   const [pageStarts, setPageStarts] = useState<number[]>([0]);
   const { dims, contentAreaPx } = geometry(pageSize, padTop, padBottom);
+  const zoom = scaleZoom(scalePct);
   const density = {
-    zoom: scaleZoom(scalePct),
+    zoom,
     textAlign: align,
   } as React.CSSProperties;
 
@@ -124,7 +125,7 @@ function PrintFlow({
     const run = () => {
       const el = measureRef.current;
       if (!el) return;
-      const h = el.offsetHeight;
+      const h = el.getBoundingClientRect().height;
       setContentPx(h);
       const next = computeStarts(el, h, () => contentAreaPx);
       setPageStarts((prev) => (sameNumbers(prev, next) ? prev : next));
@@ -153,7 +154,7 @@ function PrintFlow({
             <div style={{ overflow: "hidden", height: sliceH }}>
               <div
                 ref={page === 0 ? measureRef : undefined}
-                style={{ ...density, transform: `translateY(${-startY}px)` }}
+                style={{ ...density, transform: `translateY(${-startY / zoom}px)` }}
               >
                 {renderTemplate(templateId, content)}
               </div>
@@ -187,8 +188,9 @@ function PrintColumns({
   });
 
   const { dims, contentWmm, contentAreaPx } = geometry(pageSize, padTop, padBottom);
+  const zoom = scaleZoom(scalePct);
   const density = {
-    zoom: scaleZoom(scalePct),
+    zoom,
     textAlign: align,
   } as React.CSSProperties;
   const colsStyle: React.CSSProperties = {
@@ -202,10 +204,10 @@ function PrintColumns({
       const left = leftRef.current;
       const right = rightRef.current;
       if (!left || !right) return;
-      const topH = topRef.current?.offsetHeight ?? 0;
-      const footerH = footerRef.current?.offsetHeight ?? 0;
-      const leftH = left.offsetHeight;
-      const rightH = right.offsetHeight;
+      const topH = topRef.current?.getBoundingClientRect().height ?? 0;
+      const footerH = footerRef.current?.getBoundingClientRect().height ?? 0;
+      const leftH = left.getBoundingClientRect().height;
+      const rightH = right.getBoundingClientRect().height;
       const areaFn = (page: number) =>
         contentAreaPx - footerH - (page === 0 ? topH : 0);
       const leftStarts = computeStarts(left, leftH, areaFn);
@@ -288,7 +290,7 @@ function PrintColumns({
                   <div style={{ overflow: "hidden", height: lSlice }}>
                     <aside
                       className={parts.asideClassName}
-                      style={{ ...density, transform: `translateY(${-lStart}px)` }}
+                      style={{ ...density, transform: `translateY(${-lStart / zoom}px)` }}
                     >
                       {parts.left}
                     </aside>
@@ -296,7 +298,7 @@ function PrintColumns({
                 </div>
                 <div style={{ overflow: "hidden", height: rSlice }}>
                   <div
-                    style={{ ...density, transform: `translateY(${-rStart}px)` }}
+                    style={{ ...density, transform: `translateY(${-rStart / zoom}px)` }}
                   >
                     {parts.right}
                   </div>

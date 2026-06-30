@@ -92,8 +92,9 @@ function FlowPaper({
     padTop,
     padBottom,
   );
+  const zoom = scaleZoom(scalePct);
   const densityStyle = {
-    zoom: scaleZoom(scalePct),
+    zoom,
     textAlign: align,
   } as React.CSSProperties;
 
@@ -104,7 +105,10 @@ function FlowPaper({
       setFit(paperWpx > 0 ? Math.min(1, stage.clientWidth / paperWpx) : 1);
       const measure = measureRef.current;
       if (measure && showPageBreaks) {
-        const h = measure.offsetHeight;
+        // Use getBoundingClientRect (rendered px, after `zoom`) consistently
+        // with collectBlocks, so the total height and the block offsets are in
+        // the same coordinate space.
+        const h = measure.getBoundingClientRect().height;
         setContentPx(h);
         const next = computeStarts(measure, h, () => contentAreaPx);
         setPageStarts((prev) => (sameNumbers(prev, next) ? prev : next));
@@ -168,7 +172,12 @@ function FlowPaper({
                   <div className="overflow-hidden" style={{ height: sliceH }}>
                     <div
                       ref={page === 0 ? measureRef : undefined}
-                      style={{ ...densityStyle, transform: `translateY(${-startY}px)` }}
+                      style={{
+                        ...densityStyle,
+                        // translate is inside the zoomed box, so divide by zoom
+                        // to move by startY rendered px.
+                        transform: `translateY(${-startY / zoom}px)`,
+                      }}
                     >
                       {renderTemplate(templateId, content)}
                     </div>
@@ -216,8 +225,9 @@ function ColumnSheets({
     padBottom,
   );
   const contentWmm = dims.wMm - PAGE_MARGIN_X * 2;
+  const zoom = scaleZoom(scalePct);
   const densityStyle = {
-    zoom: scaleZoom(scalePct),
+    zoom,
     textAlign: align,
   } as React.CSSProperties;
 
@@ -231,10 +241,11 @@ function ColumnSheets({
       const left = leftRef.current;
       const right = rightRef.current;
       if (!left || !right) return;
-      const topH = top?.offsetHeight ?? 0;
-      const footerH = footer?.offsetHeight ?? 0;
-      const leftH = left.offsetHeight;
-      const rightH = right.offsetHeight;
+      // getBoundingClientRect (rendered px, after `zoom`) to match collectBlocks.
+      const topH = top?.getBoundingClientRect().height ?? 0;
+      const footerH = footer?.getBoundingClientRect().height ?? 0;
+      const leftH = left.getBoundingClientRect().height;
+      const rightH = right.getBoundingClientRect().height;
       const areaFn = (page: number) =>
         contentAreaPx - footerH - (page === 0 ? topH : 0);
       const leftStarts = computeStarts(left, leftH, areaFn);
@@ -335,7 +346,7 @@ function ColumnSheets({
                         <div style={{ overflow: "hidden", height: lSlice }}>
                           <aside
                             className={parts.asideClassName}
-                            style={{ ...densityStyle, transform: `translateY(${-lStart}px)` }}
+                            style={{ ...densityStyle, transform: `translateY(${-lStart / zoom}px)` }}
                           >
                             {parts.left}
                           </aside>
@@ -343,7 +354,7 @@ function ColumnSheets({
                       </div>
                       <div style={{ overflow: "hidden", height: rSlice }}>
                         <div
-                          style={{ ...densityStyle, transform: `translateY(${-rStart}px)` }}
+                          style={{ ...densityStyle, transform: `translateY(${-rStart / zoom}px)` }}
                         >
                           {parts.right}
                         </div>
