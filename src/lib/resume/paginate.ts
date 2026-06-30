@@ -113,16 +113,23 @@ export function computeStarts(
       safe = y;
       if (nextIsHeading(y)) entryBoundary = y;
     }
-    // Prefer an entry boundary; else a clean cut (an entry taller than a page
-    // must split somewhere); else avoid; else a hard cut at the limit.
+    // Keep an entry whole only when that wastes little space. If keeping it
+    // whole would leave a large gap (the next entry is too big for the
+    // remainder), fill the page instead by cutting at the deepest safe item
+    // boundary (still never mid-line, never orphaning a heading). Else fall back
+    // to the entry boundary, a heading cut, or a hard cut at the limit.
+    const area = Math.max(50, areaFn(page));
+    const keepGap = entryBoundary >= 0 ? limit - entryBoundary : Infinity;
     const pick =
-      entryBoundary >= 0
+      entryBoundary >= 0 && keepGap <= area * 0.18
         ? entryBoundary
         : safe >= 0
           ? safe
-          : headingEnd >= 0
-            ? headingEnd
-            : limit;
+          : entryBoundary >= 0
+            ? entryBoundary
+            : headingEnd >= 0
+              ? headingEnd
+              : limit;
     starts.push(pick);
     start = pick;
     page += 1;
