@@ -81,6 +81,14 @@ export function computeStarts(
     }
     return lastIsHeading;
   };
+  // True when the next content after y is a heading, i.e. the next page would
+  // start at a section/entry boundary. Preferring these keeps a whole entry
+  // (its title + body) on one page rather than splitting it.
+  const byTop = [...blocks].sort((a, b) => a.top - b.top);
+  const nextIsHeading = (y: number) => {
+    for (const b of byTop) if (b.top >= y - EPS) return b.heading;
+    return true; // nothing follows: a clean end.
+  };
   const candidates = Array.from(
     new Set(blocks.map((b) => Math.round(b.bottom))),
   ).sort((a, b) => a - b);
@@ -92,20 +100,29 @@ export function computeStarts(
   while (start < totalPx - PAGE_SLOP_PX && guard++ < 64) {
     const limit = start + Math.max(50, areaFn(page));
     if (limit >= totalPx - PAGE_SLOP_PX) break;
-    let chosen = -1;
-    let headingFallback = -1;
+    let entryBoundary = -1; // next page starts at a heading (entry kept whole)
+    let safe = -1; // a clean cut that may fall inside an entry
+    let headingEnd = -1; // cut that orphans a heading (last resort)
     for (const y of candidates) {
       if (y > limit) break;
       if (y <= start + 4 || straddles(y)) continue;
       if (endsOnHeading(y)) {
-        headingFallback = y; // usable, but only if nothing better fits.
+        headingEnd = y;
         continue;
       }
-      chosen = y;
+      safe = y;
+      if (nextIsHeading(y)) entryBoundary = y;
     }
-    // Prefer a cut that doesn't orphan a heading; else the best heading cut;
-    // else a hard cut at the limit (a single block taller than a page).
-    const pick = chosen >= 0 ? chosen : headingFallback >= 0 ? headingFallback : limit;
+    // Prefer an entry boundary; else a clean cut (an entry taller than a page
+    // must split somewhere); else avoid; else a hard cut at the limit.
+    const pick =
+      entryBoundary >= 0
+        ? entryBoundary
+        : safe >= 0
+          ? safe
+          : headingEnd >= 0
+            ? headingEnd
+            : limit;
     starts.push(pick);
     start = pick;
     page += 1;
