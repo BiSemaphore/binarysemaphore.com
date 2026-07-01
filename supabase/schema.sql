@@ -23,7 +23,14 @@ create policy "Anyone can submit a contact message"
   on public.contact_messages
   for insert
   to anon, authenticated
-  with check (true);
+  -- Bounded instead of `true`: still an open, insert-only public form, but the
+  -- payload must be non-empty and within sane sizes (blocks empty/huge spam and
+  -- satisfies the "RLS policy always true" advisor).
+  with check (
+    char_length(name) between 1 and 200
+    and char_length(email) between 3 and 320
+    and char_length(message) between 1 and 5000
+  );
 
 -- Resume builder (resume.binarysemaphore.com). One row per saved resume; the
 -- editable document lives in `content` (jsonb, shape = ResumeContent in
@@ -83,10 +90,15 @@ create policy "Owners can delete their resumes"
   on public.resumes for delete to authenticated
   using (auth.uid() = user_id);
 
--- Keep updated_at current on every write.
+-- Keep updated_at current on every write. `security invoker` + an empty
+-- search_path pin the function so it can't be hijacked via a mutable search
+-- path (resolves the "function search path mutable" advisor). now() lives in
+-- pg_catalog, which is always resolved, so no qualification is needed.
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
+security invoker
+set search_path = ''
 as $$
 begin
   new.updated_at = now();
