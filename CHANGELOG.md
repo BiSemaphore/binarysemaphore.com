@@ -7,6 +7,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.1.4] - 2026-07-01
+
+### Fixed
+
+- Mobile: the resume header's "binary.semaphore / resume" lockup overlapped the
+  theme toggle and sign-in on phones. Phones now show just the "b." mark (keeping
+  the "/ resume" links), with layout guards so the header groups can't overlap;
+  the full lockup returns at the `sm` breakpoint.
+- Mobile: the editor toolbar packed home / title / template / tune / json /
+  export into one non-wrapping row, which overflowed and squeezed the title field
+  to nothing. It now wraps (title row full-width, actions flowing below) on small
+  screens and stays a single row on wider ones.
+- The "tune" popover is capped to the viewport width so it can't hang off-screen
+  on narrow devices.
+
 ## [0.1.3] - 2026-06-30
 
 ### Fixed
@@ -97,6 +112,7 @@ marketing site rebrand.
 - Invalid nested `<a>` in template cards (hydration error).
 - Tolerate a missing `text_align` column before the migration runs.
 
+[0.1.4]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.4
 [0.1.3]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.3
 [0.1.2]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.2
 [0.1.1]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.1
