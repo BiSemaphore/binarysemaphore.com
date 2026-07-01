@@ -52,7 +52,7 @@ export function TunePanel({
         onClick={onClose}
         className="fixed inset-0 z-30 cursor-default"
       />
-      <div className="rx-panel absolute right-0 top-full z-40 mt-2 w-[248px] p-3.5 font-mono text-xs">
+      <div className="rx-panel absolute right-0 top-full z-40 mt-2 w-[248px] max-w-[calc(100vw-1.5rem)] p-3.5 font-mono text-xs">
         <div className="mb-3 flex items-center justify-between">
           <span className="text-[color:var(--rx-muted)]">{"// tune"}</span>
           <button

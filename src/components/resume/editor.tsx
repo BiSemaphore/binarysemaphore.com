@@ -137,10 +137,11 @@ export function Editor({
 
   return (
     <div className="flex h-screen flex-col">
-      {/* Toolbar */}
-      <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5">
-        <div className="flex min-w-0 items-center gap-3">
-          <Link href="/" className="rx-pill font-mono text-xs">
+      {/* Toolbar. Wraps on small screens (title row full-width, actions flow to
+          a second row) so nothing overflows or overlaps; single row on ≥sm. */}
+      <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-border px-4 py-2.5">
+        <div className="flex min-w-0 basis-full items-center gap-3 sm:basis-auto">
+          <Link href="/" className="rx-pill shrink-0 font-mono text-xs">
             ← home
           </Link>
           <input
@@ -150,7 +151,7 @@ export function Editor({
             className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-foreground hover:border-border focus:border-border focus:bg-card focus:outline-none"
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <SaveIndicator status={status} />
           <select
             value={templateId}
