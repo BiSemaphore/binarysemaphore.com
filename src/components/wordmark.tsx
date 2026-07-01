@@ -10,10 +10,14 @@ import { site } from "@/lib/site";
 export function Wordmark({
   className = "",
   forceDark = false,
+  textClassName = "",
 }: {
   className?: string;
   /** Always use the light-colored logo (for placing on a dark surface). */
   forceDark?: boolean;
+  /** Extra classes on the wordmark-text wrapper (e.g. `max-sm:hidden` to show
+   * only the "b." mark on small screens). Doesn't affect the mark tile. */
+  textClassName?: string;
 }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
@@ -27,27 +31,8 @@ export function Wordmark({
         unoptimized
         className="h-7 w-7 rounded-[0.45rem] ring-1 ring-black/5 dark:ring-white/10"
       />
-      {forceDark ? (
-        <Image
-          src="/brand/logo-dark.svg"
-          alt={site.wordmark}
-          width={138}
-          height={20}
-          priority
-          unoptimized
-          className="h-[18px] w-auto"
-        />
-      ) : (
-        <>
-          <Image
-            src="/brand/logo.svg"
-            alt={site.wordmark}
-            width={138}
-            height={20}
-            priority
-            unoptimized
-            className="h-[18px] w-auto dark:hidden"
-          />
+      <span className={`inline-flex items-center ${textClassName}`}>
+        {forceDark ? (
           <Image
             src="/brand/logo-dark.svg"
             alt={site.wordmark}
@@ -55,10 +40,31 @@ export function Wordmark({
             height={20}
             priority
             unoptimized
-            className="hidden h-[18px] w-auto dark:block"
+            className="h-[18px] w-auto"
           />
-        </>
-      )}
+        ) : (
+          <>
+            <Image
+              src="/brand/logo.svg"
+              alt={site.wordmark}
+              width={138}
+              height={20}
+              priority
+              unoptimized
+              className="h-[18px] w-auto dark:hidden"
+            />
+            <Image
+              src="/brand/logo-dark.svg"
+              alt={site.wordmark}
+              width={138}
+              height={20}
+              priority
+              unoptimized
+              className="hidden h-[18px] w-auto dark:block"
+            />
+          </>
+        )}
+      </span>
     </span>
   );
 }

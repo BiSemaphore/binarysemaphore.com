@@ -34,14 +34,16 @@ export default async function ResumeAppLayout({
       className={`${figtree.variable} rx rx-canvas flex min-h-screen flex-col font-[family-name:var(--font-figtree)]`}
     >
       <header className="sticky top-0 z-30 border-b border-black/5 bg-white/70 backdrop-blur dark:border-white/10 dark:bg-[#161616]/75">
-        <div className="mx-auto flex h-12 w-full max-w-5xl items-center justify-between px-5">
-          <div className="flex items-center gap-2">
+        <div className="mx-auto flex h-12 w-full max-w-5xl items-center justify-between gap-3 px-5">
+          <div className="flex min-w-0 items-center gap-2">
             <a
               href={APEX}
               aria-label="Binary Semaphore home"
               className="shrink-0"
             >
-              <Wordmark />
+              {/* Full lockup on ≥sm; just the "b." mark on phones so the header
+                  never collides with the theme toggle / sign-in. */}
+              <Wordmark textClassName="max-sm:hidden" />
             </a>
             <span aria-hidden className="text-[color:var(--rx-muted)]">
               /
@@ -53,7 +55,7 @@ export default async function ResumeAppLayout({
               resume
             </Link>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
             {user ? (
               <>
