@@ -3,7 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/utils/supabase/auth";
-import { createResume, deleteResume, updateResume } from "@/lib/resume/db";
+import {
+  MAX_RESUMES,
+  countResumes,
+  createResume,
+  deleteResume,
+  updateResume,
+} from "@/lib/resume/db";
 import { DEFAULT_TEMPLATE, isTemplateId } from "@/lib/resume/schema";
 
 async function requireUser() {
@@ -15,6 +21,9 @@ async function requireUser() {
 /** Create a blank resume and open it in the editor. */
 export async function createResumeAction() {
   await requireUser();
+  // Send the user back to the hub with a banner instead of an error page when
+  // they're already at the cap. createResume also enforces this server-side.
+  if ((await countResumes()) >= MAX_RESUMES) redirect("/?limit=1");
   const id = await createResume();
   redirect(`/editor/${id}`);
 }
@@ -22,6 +31,7 @@ export async function createResumeAction() {
 /** Create a resume from a chosen template and open it in the editor. */
 export async function useTemplateAction(formData: FormData) {
   await requireUser();
+  if ((await countResumes()) >= MAX_RESUMES) redirect("/?limit=1");
   const tpl = String(formData.get("templateId") ?? "");
   const templateId = isTemplateId(tpl) ? tpl : DEFAULT_TEMPLATE;
   const id = await createResume(undefined, templateId);

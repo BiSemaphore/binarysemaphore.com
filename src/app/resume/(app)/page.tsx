@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getCurrentUser } from "@/utils/supabase/auth";
-import { listResumes } from "@/lib/resume/db";
+import { MAX_RESUMES, RESUME_LIMIT_MESSAGE, listResumes } from "@/lib/resume/db";
 import { TEMPLATES } from "@/lib/resume/schema";
 import { TemplateCard } from "@/components/resume/template-card";
 import { SubmitButton } from "@/components/resume/submit-button";
@@ -24,10 +24,17 @@ function formatDate(iso: string): string {
   });
 }
 
-export default async function ResumeHome() {
+export default async function ResumeHome({
+  searchParams,
+}: {
+  searchParams: Promise<{ limit?: string }>;
+}) {
   const user = await getCurrentUser();
   const resumes = user ? await listResumes() : [];
   const featured = TEMPLATES.slice(0, 6);
+  const atLimit = resumes.length >= MAX_RESUMES;
+  // Set when a create attempt was blocked by the cap (e.g. from a template).
+  const limitHit = (await searchParams).limit === "1";
 
   return (
     <div className="mx-auto w-full max-w-5xl px-5 py-12">
@@ -47,20 +54,43 @@ export default async function ResumeHome() {
       {/* Your resumes */}
       <section className="mt-12">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-[color:var(--rx-muted)]">
+          <h2 className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-[color:var(--rx-muted)]">
             Your resumes
+            {user ? (
+              <span className="normal-case tracking-normal text-subtle">
+                ({resumes.length}/{MAX_RESUMES})
+              </span>
+            ) : null}
           </h2>
           {user ? (
-            <form action={createResumeAction}>
-              <SubmitButton
-                className="rx-pill rx-accent font-mono text-xs"
-                pendingLabel="creating…"
+            atLimit ? (
+              <span
+                className="rx-pill cursor-not-allowed font-mono text-xs opacity-60"
+                title={RESUME_LIMIT_MESSAGE}
               >
-                + new resume
-              </SubmitButton>
-            </form>
+                limit reached
+              </span>
+            ) : (
+              <form action={createResumeAction}>
+                <SubmitButton
+                  className="rx-pill rx-accent font-mono text-xs"
+                  pendingLabel="creating…"
+                >
+                  + new resume
+                </SubmitButton>
+              </form>
+            )
           ) : null}
         </div>
+
+        {user && (limitHit || atLimit) ? (
+          <div
+            role={limitHit ? "alert" : undefined}
+            className="mb-3 rounded-xl border border-amber-300/60 bg-amber-50 px-4 py-2.5 font-mono text-xs text-amber-800 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200"
+          >
+            {RESUME_LIMIT_MESSAGE}
+          </div>
+        ) : null}
 
         {!user ? (
           <div className="rounded-xl border border-black/10 bg-white/70 p-10 text-center dark:border-white/10 dark:bg-white/[0.04]">

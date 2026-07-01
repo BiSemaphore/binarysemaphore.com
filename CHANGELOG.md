@@ -7,6 +7,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.2.0] - 2026-07-01
+
+### Added
+
+- Per-user resume limit: each account can create at most 3 resumes. Enforced
+  server-side in `createResume` (RLS-scoped count) and surfaced in the hub, which
+  shows the count (n/3), disables "+ new resume" at the cap, and explains the
+  limit with a banner (including when a template "use" was blocked).
+- `docs/auth.md` documenting the authentication and authorization architecture
+  (Supabase Auth + `@supabase/ssr` cookies + `getUser()` validation + Postgres
+  Row-Level Security).
+
 ## [0.1.4] - 2026-07-01
 
 ### Fixed
@@ -112,6 +124,7 @@ marketing site rebrand.
 - Invalid nested `<a>` in template cards (hydration error).
 - Tolerate a missing `text_align` column before the migration runs.
 
+[0.2.0]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.2.0
 [0.1.4]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.4
 [0.1.3]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.3
 [0.1.2]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.2
