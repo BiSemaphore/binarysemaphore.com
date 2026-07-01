@@ -27,6 +27,22 @@ import {
 /** Upper bound on a resume's serialized content (~256KB) to keep rows sane. */
 const MAX_CONTENT_BYTES = 256 * 1024;
 
+/** Max resumes a single user may own. Enforced in createResume (authoritative)
+ * and surfaced in the UI so the create button disables at the cap. */
+export const MAX_RESUMES = 3;
+
+/** Human-readable message shown when the per-user resume cap is hit. */
+export const RESUME_LIMIT_MESSAGE = `You've reached the limit of ${MAX_RESUMES} resumes. Delete one to create another.`;
+
+/** Thrown by createResume when the user is already at MAX_RESUMES, so callers
+ * can distinguish the cap from other failures and show a friendly message. */
+export class ResumeLimitError extends Error {
+  constructor() {
+    super(RESUME_LIMIT_MESSAGE);
+    this.name = "ResumeLimitError";
+  }
+}
+
 export type Resume = {
   id: string;
   title: string;
@@ -78,6 +94,16 @@ function toResume(row: Row): Resume {
   };
 }
 
+/** How many resumes the current user owns (RLS scopes the count to them). */
+export async function countResumes(): Promise<number> {
+  const supabase = await createClient();
+  const { count, error } = await supabase
+    .from("resumes")
+    .select("id", { count: "exact", head: true });
+  if (error) throw error;
+  return count ?? 0;
+}
+
 /** The current user's resumes, newest first. */
 export async function listResumes(): Promise<ResumeSummary[]> {
   const supabase = await createClient();
@@ -127,6 +153,15 @@ export async function createResume(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
+
+  // Authoritative per-user cap. RLS scopes this count to the current user, so it
+  // holds even if a caller skips the UI guard. (A concurrent double-create could
+  // still slip one over the cap; acceptable for a soft limit.)
+  const { count, error: countError } = await supabase
+    .from("resumes")
+    .select("id", { count: "exact", head: true });
+  if (countError) throw countError;
+  if ((count ?? 0) >= MAX_RESUMES) throw new ResumeLimitError();
 
   const { data, error } = await supabase
     .from("resumes")
