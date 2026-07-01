@@ -7,6 +7,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.2.1] - 2026-07-01
+
+### Security
+
+- Resolved Supabase Security Advisor warnings originating from our schema:
+  `set_updated_at` is now `security invoker` with an empty `search_path` (fixes
+  "function search path mutable"), and the public contact-form insert policy is
+  bounded (non-empty, sane lengths) instead of `with check (true)` (fixes "RLS
+  policy always true"). Added as `supabase/migrations/0002_security_advisor.sql`.
+
 ## [0.2.0] - 2026-07-01
 
 ### Added
@@ -124,6 +134,7 @@ marketing site rebrand.
 - Invalid nested `<a>` in template cards (hydration error).
 - Tolerate a missing `text_align` column before the migration runs.
 
+[0.2.1]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.2.1
 [0.2.0]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.2.0
 [0.1.4]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.4
 [0.1.3]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.3
