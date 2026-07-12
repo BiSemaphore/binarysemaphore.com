@@ -3,6 +3,8 @@ import notesWindow from "@/images/notes-window.jpg";
 import wireframes from "@/images/wireframes.jpg";
 import tornPaper from "@/images/torn-paper.jpg";
 import forceNote from "@/images/the-force-note.jpg";
+import colorStacks from "@/images/color-stacks.jpg";
+import planningNotes from "@/images/planning-notes.jpg";
 
 /**
  * Maps a thread slug to its cover photo. Threads without an entry simply render
@@ -14,4 +16,6 @@ export const threadCovers: Record<string, StaticImageData> = {
   "how-semantic-search-works": wireframes,
   "an-mcp-server-for-your-notes": tornPaper,
   "what-local-first-buys-you": forceNote,
+  "why-typescript-7-is-written-in-go": colorStacks,
+  "upgrading-to-typescript-7": planningNotes,
 };

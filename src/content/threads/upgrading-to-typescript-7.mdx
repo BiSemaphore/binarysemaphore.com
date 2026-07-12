@@ -1,0 +1,127 @@
+---
+title: "Upgrading to TypeScript 7: what actually breaks"
+description: "A field guide to the TypeScript 7 migration: the compiler options that are now hard errors, the missing programmatic API, and why a Next.js + MDX site like this one still needs TypeScript 6 in the editor."
+date: 2026-07-12
+tags: ["typescript", "tooling", "migration"]
+---
+
+[TypeScript 7 is 8-12x faster](/threads/why-typescript-7-is-written-in-go), which makes the
+upgrade tempting to do on a Friday afternoon. Don't. The speed is real, but 7.0 is the
+release where the team cashed in every deprecation they've been sitting on *and* shipped
+without a programmatic API. Whether you can move depends less on your code than on your
+toolchain.
+
+Here's the honest checklist, in the order the breakage actually hits you.
+
+## 1. Options that are now hard errors
+
+TypeScript 6 made these warnings. TypeScript 7 makes them errors, so `tsc` refuses to start
+rather than silently doing something else. Removed outright:
+
+| Removed | What to do instead |
+| --- | --- |
+| `target: es5` | Target a modern runtime; downlevel in your bundler if you truly must |
+| `downlevelIteration` | Gone with ES5 |
+| `moduleResolution: node` / `node10` | `nodenext` (Node) or `bundler` (Vite, webpack, Next) |
+| `module: amd` / `umd` / `systemjs` / `none` | `esnext` |
+| `baseUrl` | `paths`, resolved relative to the project root |
+| `esModuleInterop: false`, `allowSyntheticDefaultImports: false` | Cannot be disabled; delete them |
+
+If you're on a modern setup, most of this is a no-op. If you're carrying a `tsconfig.json`
+that has been copy-pasted since 2019, this is where your afternoon goes.
+
+## 2. Defaults that changed under you
+
+More dangerous than the removals, because these don't error, they just change what your
+build means.
+
+- **`strict: true` is the default.** If you were implicitly relying on `strict` being off,
+  you now have every error `strict` catches, all at once. Set `"strict": false` explicitly
+  if you're not ready — but note you're now opting *out*, in writing, which is the point.
+- **`module: esnext` is the default.**
+- **`noUncheckedSideEffectImports: true`** — a bare `import "./thing"` that resolves to
+  nothing is now an error. This catches real bugs and a few false ones (side-effect imports
+  of CSS or assets need the right ambient declarations).
+- **`stableTypeOrdering: true`, and it cannot be disabled.** The checker is parallel now, so
+  deterministic type ordering has to be enforced rather than assumed.
+- **`rootDir` now defaults to `./`.** If your `tsconfig.json` lives above your sources, your
+  output layout just changed. Say what you mean:
+
+  ```json
+  {
+    "compilerOptions": {
+      "rootDir": "./src"
+    }
+  }
+  ```
+
+- **`types` defaults to `[]`** instead of auto-discovering everything in
+  `node_modules/@types`. This is a genuinely good change (auto-discovery was a common source
+  of "why is `describe` a global in my production build") and a genuinely annoying one,
+  because you must now list what you use:
+
+  ```json
+  {
+    "compilerOptions": {
+      "types": ["node", "vitest/globals"]
+    }
+  }
+  ```
+
+  Missing globals after upgrading — `process`, `describe`, `expect` — is almost always this.
+
+## 3. Checked JavaScript got stricter
+
+If you run `checkJs` over a JS codebase with JSDoc types, several patterns are gone: values
+can no longer stand in for types (use `typeof x`), `@enum` is no longer recognized (use
+`@typedef`), the postfix `!` non-null operator is out, and Closure-style function syntax
+isn't supported. Small surface, but if you're a big JSDoc shop it's the whole migration.
+
+## 4. The one that actually decides your timeline: no API
+
+TypeScript 7.0 ships with **no programmatic API**. Anything that imports `typescript` and
+walks the AST or asks the checker questions does not work on 7 yet. That includes:
+
+- typescript-eslint (so: most people's lint setup)
+- Vue, Svelte, Astro, **MDX** — anything that embeds or templates TypeScript
+- Angular's template type-checking
+- ts-morph, most codemods, most custom transformers
+
+The supported path is to run both compilers side by side: TypeScript 7 for the fast CLI
+builds, TypeScript 6 via `@typescript/typescript6` (an npm alias) for the tools that still
+need the API. A real API is expected in 7.1.
+
+So the practical question is not "does my code compile under 7" but "which of my tools reach
+into the compiler". Most teams will find the answer is *at least one*.
+
+## What this means for a site like this one
+
+This site is Next.js App Router plus MDX (that's how these threads are written). MDX needs
+the TypeScript API to type-check inside `.mdx`, so per the release notes, MDX projects stay
+on TypeScript 6 for now. The realistic setup is split:
+
+- **CLI type-check and CI:** TypeScript 7. `npm run typecheck` is the single slowest thing
+  in our pipeline, and it's the thing every push waits on.
+- **Editor and lint:** TypeScript 6 until 7.1 lands the API, because typescript-eslint and
+  the MDX toolchain need it.
+
+That's not a clean win, and it's worth being clear-eyed about it rather than performing an
+upgrade for the changelog entry. A codebase this size type-checks in a couple of seconds
+either way. The 8-12x is transformative for a 130-second build and a rounding error for a
+2-second one, so we'll take the CI half now and move the editor when the API is real.
+
+## A migration order that works
+
+1. Upgrade to the **latest TypeScript 6** first, and fix every deprecation warning. This is
+   the actual work, and you can do it incrementally while your tooling still functions.
+2. Modernize `tsconfig.json`: `moduleResolution` to `bundler` or `nodenext`, drop `baseUrl`,
+   drop `esModuleInterop: false`, make `rootDir` and `types` explicit.
+3. Turn `strict` on, or explicitly turn it off, so nothing changes silently under you.
+4. Inventory what touches the compiler API: lint, test transforms, codemods, framework
+   plugins. That list is your gate.
+5. Run TypeScript 7 for CLI builds and CI, keep TypeScript 6 wherever the API is required.
+6. Revisit when 7.1 ships an API and the ecosystem catches up.
+
+Steps 1-3 are worth doing even if you never adopt 7. That's usually the sign of a
+well-designed breaking release: the migration path improves your codebase whether or not you
+arrive at the destination.

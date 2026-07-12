@@ -1,0 +1,156 @@
+---
+title: "Why TypeScript 7 is written in Go"
+description: "TypeScript 7 shipped on July 8, 2026 with an 8-12x faster compiler. The speedup isn't a clever optimization, it's the consequence of leaving a runtime that couldn't express the thing the checker wanted to do all along."
+date: 2026-07-12
+tags: ["typescript", "compilers", "go", "concurrency"]
+---
+
+TypeScript 7.0 [shipped on July 8, 2026](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
+The headline is the number: vscode's build went from 125.7s to 10.6s, sentry from 139.8s
+to 15.7s, playwright from 12.8s to 1.47s. Roughly 8-12x, plus 6-26% less memory. Editors
+got the bigger win in practice — opening a file with errors in VS Code fell from 17.5
+seconds to 1.3.
+
+The interesting part isn't the number. It's that the number came from a *port*, not a
+redesign. Same architecture, same algorithms, same type system, largely the same code
+structure, moved from TypeScript to Go. When a straight port makes something an order of
+magnitude faster, the old implementation wasn't slow because it was badly written. It was
+slow because the runtime under it couldn't express what the program actually wanted to do.
+
+## Where the time was going
+
+`tsc` was a TypeScript program compiled to JavaScript, running on Node. That gives you
+three costs that no amount of micro-optimization removes.
+
+**You pay for the JIT, every time.** A compiler run is short and cold. V8 has to parse,
+interpret, profile and eventually optimize hot functions — but batch `tsc` often exits
+before the JIT has finished paying itself back. The checker is a mess of megamorphic call
+sites (a `Type` can be one of dozens of shapes), which is exactly the pattern inline caches
+handle worst.
+
+**Every node is a heap object.** ASTs, symbols, types: millions of small objects, each a
+V8 object with a hidden class and a pointer chase to reach any field. Type checking is
+pointer-chasing all the way down, so cache behavior *is* the performance story, and
+JavaScript gives you no control over layout.
+
+**And the hard one: you cannot share memory.** Node's concurrency story is worker threads
+with structured-cloned messages or `SharedArrayBuffer` (raw bytes, no objects). The type
+checker's core structure is a giant cyclic graph — symbol tables pointing at declarations,
+declarations at AST nodes, AST nodes back at symbols, types recursing into themselves. To
+check two files in parallel, both workers need to *read that same graph*. Serializing it
+per worker costs more than the checking does. So `tsc` stayed single-threaded, on machines
+where 8 or 16 idle cores were watching it work.
+
+That last constraint is the whole story. The checker is embarrassingly parallel by nature —
+files are mostly independent, and the shared graph is read-mostly once it's built. The
+algorithm wanted threads. The runtime had none to give.
+
+## Why Go, and not Rust
+
+This is where most of the noise was, and the reasoning is more interesting than the tribal
+answer.
+
+Go's memory model is the one the compiler already assumed: a garbage-collected heap where
+any goroutine can hold a pointer to any object, and goroutines share one address space. You
+can spawn workers that all read the same symbol tables with no copying, no `Arc`, no
+serialization. That is precisely the capability JavaScript couldn't offer, and it's where
+the 10x lives.
+
+Rust would have fought the data model. The compiler's graph is *deliberately* cyclic: a
+node points at its parent and its children; a symbol points at the declarations that create
+it, which point back at the symbol; recursive types loop by construction. That's ownership's
+worst case. You'd end up with `Rc<RefCell<...>>` or arena indices everywhere — either
+paying the cost you were trying to avoid, or rewriting the type checker's data flow from
+scratch. And a rewrite is a different, much riskier project than a port: you have to
+re-derive twenty years of accumulated behavior that only exists as code.
+
+The port mattered for a second reason. The existing compiler is written in a function-heavy,
+closure-and-data style rather than a deeply object-oriented one, which maps onto Go almost
+one-to-one. That kept the port mostly mechanical, and mechanical means the type system's
+thousand undocumented edge cases survive the move.
+
+Go isn't "faster than Rust" here. It's the language whose defaults match the shape of this
+specific program, at a level of effort that made the project finishable.
+
+## What native + threads actually buys
+
+Three separate wins, worth keeping apart:
+
+1. **Native code.** No JIT warmup, no deopt cliffs. Structs are laid out flat, so walking
+   an AST touches fewer cache lines. Call this a solid constant factor.
+2. **Shared-memory parallelism.** Parsing, checking and emitting run concurrently across
+   goroutines over one graph. This is the multiplier, and it's the one that was previously
+   impossible rather than merely slow.
+3. **Control over allocation.** A compiler allocates in bulk and frees in bulk. In Go you
+   can shape that; in JavaScript you get whatever V8 decides.
+
+The parallelism is exposed, not hidden. TypeScript 7 adds `--checkers` (default 4) for
+type-checking workers, `--builders` for parallelizing project references, and
+`--singleThreaded` when you need deterministic behavior for debugging:
+
+```bash
+# More checkers: faster on big projects, more memory.
+tsc --checkers 8
+
+# Reproducible ordering while chasing a compiler bug.
+tsc --singleThreaded
+```
+
+The team reports up to 16.7x with `--checkers 8` on large projects, trading memory for it.
+That knob existing at all is the tell: concurrency is now a first-class part of the
+compiler's design, not an afterthought bolted onto a single-threaded core.
+
+There's a subtle consequence of going parallel, and TypeScript 7 handles it rather than
+ignoring it. If workers check files in nondeterministic order, the order that types get
+*created* in can vary, and anything that prints types — declaration emit, error messages,
+union ordering — could shift between runs. So `stableTypeOrdering` is on and cannot be
+turned off. Determinism is now a property the compiler has to maintain deliberately, because
+the machine underneath it no longer provides it for free.
+
+## The editor was always the real workload
+
+Batch builds are the number people quote, but the language service is where developers
+actually feel a compiler. It's a long-lived process holding the same graph, answering
+latency-sensitive questions: hover, completions, go-to-definition, find-all-references.
+
+TypeScript 7 rebuilt this on the Language Server Protocol with multithreading, and the
+numbers that matter aren't speed at all: an 80% reduction in failing language server
+commands and 60% fewer server crashes. A single-threaded server that blocks for 17 seconds
+on a big file isn't slow, it's *broken* — it drops requests, times out, and gets killed. A
+lot of what everyone experienced as TypeScript being flaky in large repos was a
+concurrency-starved process failing under load.
+
+They also rewrote the file watcher, porting Parcel's C++ watcher to Go. Watching is one of
+those problems that looks trivial and is not: it's where "my editor didn't notice the file
+changed" bugs are born.
+
+## What it cost
+
+TypeScript 7.0 ships **without a programmatic API**. Not a smaller one — none. Everything
+that imports `typescript` and pokes at the AST (typescript-eslint, ts-morph, Vue, Svelte,
+Astro, MDX, Angular's template checker, most codemods) cannot run on TypeScript 7 today. The
+compatibility answer is to keep TypeScript 6 side by side via `@typescript/typescript6`,
+with an API promised in 7.1.
+
+That's a big bill, and it's honest about the tradeoff being made. A JavaScript API handing
+out object references into a graph is a very different thing to design when that graph is
+being read by a pool of goroutines and owned by a Go garbage collector. They shipped the
+compiler and deferred the boundary rather than shipping a bad boundary and living with it
+for a decade. Worth respecting, and worth knowing before you plan an upgrade — we wrote up
+[what the migration actually involves](/threads/upgrading-to-typescript-7) separately.
+
+## The part worth stealing
+
+Nobody found a magic algorithm. They took a program whose *natural* structure was a
+shared, read-mostly graph traversed in parallel, and moved it to a runtime that can
+represent that structure. The 10x wasn't created; it was already there, sitting behind an
+abstraction that couldn't reach it.
+
+Which is the useful question to carry back to your own systems: not "how do I make this
+loop faster", but "what is this program obviously trying to do, and what is stopping it?"
+Sometimes the answer is a better data structure. Sometimes the honest answer is that the
+platform you chose cannot express your problem, and every optimization from here is
+interest payments on that decision.
+
+The TypeScript team spent a year answering that question with a full port. The rest of us
+usually get to answer it for the price of a weekend spike.
