@@ -7,6 +7,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.3.0] - 2026-07-12
+
+### Added
+
+- Two threads on TypeScript 7, which shipped on 2026-07-08 as a native Go port
+  of the compiler:
+  - `why-typescript-7-is-written-in-go` covers the architecture. The 8-12x
+    speedup came from a port rather than a redesign: the type checker's data is
+    one cyclic graph that parallel workers must share, JavaScript workers cannot
+    share objects, and so the checker had stayed single-threaded. Also covers why
+    Go over Rust, the new `--checkers` / `--builders` flags, why
+    `stableTypeOrdering` cannot be disabled, and the LSP rewrite.
+  - `upgrading-to-typescript-7` is the migration guide: the compiler options that
+    are now hard errors, the defaults that change a build silently (`strict`,
+    `rootDir`, `types`), and the missing programmatic API that keeps
+    typescript-eslint, Vue, Svelte, Astro and MDX on TypeScript 6 for now.
+- Cover images for both threads in `src/lib/thread-covers.ts` (`color-stacks`,
+  `planning-notes`).
+
 ## [0.2.1] - 2026-07-01
 
 ### Security
@@ -134,6 +153,7 @@ marketing site rebrand.
 - Invalid nested `<a>` in template cards (hydration error).
 - Tolerate a missing `text_align` column before the migration runs.
 
+[0.3.0]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.3.0
 [0.2.1]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.2.1
 [0.2.0]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.2.0
 [0.1.4]: https://github.com/BiSemaphore/binarysemaphore.com/releases/tag/v0.1.4
