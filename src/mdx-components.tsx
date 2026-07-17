@@ -1,6 +1,9 @@
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import type { AnchorHTMLAttributes } from "react";
+import { Underline, Circle, Box, Strike, Highlight } from "@/components/annotate";
+import { CronDiagram } from "@/components/cron-diagram";
+import { Pre } from "@/components/code-block";
 
 /**
  * Global MDX element styling for thread content. Required by @next/mdx in the
@@ -84,6 +87,16 @@ const components: MDXComponents = {
   td: (props) => (
     <td className="border-b border-border px-3 py-2 text-muted" {...props} />
   ),
+  // Hand-drawn pen annotations, usable inline in any thread.
+  Underline,
+  Circle,
+  Box,
+  Strike,
+  Highlight,
+  // Cron expression breakdown.
+  CronDiagram,
+  // Code blocks, with a copy-to-clipboard button.
+  pre: Pre,
 };
 
 export function useMDXComponents(): MDXComponents {
