@@ -1,0 +1,145 @@
+---
+title: "Cron was easy because the job was dumb"
+description: "Claude routines are cron jobs where the payload is an agent instead of a script. That one swap breaks most of the assumptions cron quietly relied on — determinism, idempotency, cheap retries — and it changes how you should design the thing you schedule."
+date: 2026-07-17
+tags: ["ai", "agents", "cron", "distributed-systems"]
+---
+
+Cron is one of the most durable pieces of software ever written. You give it five fields and
+a command, and for forty years it has run that command on time and gotten out of the way. It
+works because it makes almost no promises. It fires a process; it does not care what the
+process does, whether it succeeded, or whether the last one is still running.
+
+Claude *routines* — scheduled agents that run on a cron expression — look like the same idea
+with a smarter payload. Point one at "every morning at 8, review yesterday's failed CI runs
+and open an issue for anything that looks like a real regression," pick a schedule, and it
+runs on its own. Underneath, the scheduling primitive really is just cron.
+
+But the payload is no longer a script. It's a nondeterministic agent that reads, decides, and
+writes to the outside world. That single swap invalidates most of the assumptions cron got to
+be simple by ignoring. This is a note about which assumptions break, and how to design a
+routine so they don't hurt.
+
+## A routine is a cold start every time
+
+The first thing to internalize: a scheduled run does **not** inherit the conversation you were
+in when you created it. It starts cold. No memory of "the above," no working directory you had
+open, no half-finished reasoning. The prompt you save is the entire context the next run gets.
+
+This is the right design — a job that only works because of state trapped in one person's
+terminal session is not a job, it's a demo — but it flips how you write the instruction. You're
+not talking to an assistant that already knows what you meant. You're writing a spec for a
+stranger who will execute it once, alone, months from now:
+
+```text
+Bad:  "do that check we talked about and let me know"
+Good: "Fetch the last 24h of runs from the `deploy-production` workflow in
+       BiSemaphore/binarysemaphore. For each failure, read the logs. If the
+       failure is a real regression (not a flaky timeout or a cancelled run),
+       open a GitHub issue titled `CI regression: <job>` with the failing step
+       and a link. If everything passed, do nothing and post no message."
+```
+
+Everything the run needs — repo, tool, definition of "real regression," what to do on the happy
+path — is in the text, because there is nothing else. The discipline this forces is the same
+discipline behind a good `README` or a good on-call runbook: assume the reader has none of your
+context, because they don't.
+
+## Cron's promises, and which ones the agent revokes
+
+Cron's simplicity came from a short list of things it refused to guarantee. Each one was fine
+when the payload was `backup.sh`. Each one is now yours to think about.
+
+| Cron quietly assumes | Fine for a script because | Now that the payload is an agent |
+| --- | --- | --- |
+| The job is deterministic | Same input, same output | Same prompt can produce different actions each run |
+| Retrying is safe | Re-running `rsync` is idempotent | A retry might file the issue *again* |
+| Overlap is your problem | Two `backup.sh` rarely race | Two runs can both act on the same event |
+| Exit code 0 means success | The script knows if it failed | "Success" is a judgement the model is making |
+| Missed runs just… don't happen | You'll notice a stale backup | A skipped morning review is silent |
+
+None of these are reasons not to use routines. They're the checklist you'd apply to any
+unattended distributed job, surfaced by the fact that the payload can now think. The good news
+is the fixes are old and well understood.
+
+### Make the action idempotent, not the agent
+
+You cannot make the model deterministic, and you shouldn't try. What you *can* do is make the
+side effect safe to repeat. This is the same move you make with any at-least-once system: push
+idempotency into the write, not the caller.
+
+Instead of "open an issue," the instruction becomes "open an issue **if one with this title
+doesn't already exist**." Instead of "send the summary," it's "send the summary for *this
+date*, and check the channel for one already posted today first." The routine is allowed to run
+twice — because eventually it will — and the second run is a no-op. A cron job for a dumb script
+gets this for free. A routine gets it because you designed the target of the action to tolerate
+a duplicate.
+
+### Decide what overlap means before it happens
+
+If your review job takes eleven minutes and you schedule it every five, cron will happily start
+a second one while the first is still going. For `backup.sh` that's an annoyance. For an agent
+with write access it's two runs reasoning about the same world and possibly both acting on it.
+
+Pick a schedule with generous headroom over the worst-case runtime, and lean on the idempotent
+writes above as the real backstop, since headroom is a guess and idempotency is a guarantee.
+
+## The five fields still bite
+
+The agent is the interesting part, but the boring part — the cron expression itself — is still
+where a lot of routines quietly go wrong. Three classics survive intact into the AI era:
+
+- **Time zones.** `0 8 * * *` is 8am in *some* zone. If you don't know which, you don't know
+  when your routine runs. State the zone explicitly; don't let a server's `UTC` default decide
+  your "every morning" is happening at midnight local.
+- **Daylight saving.** Twice a year a wall-clock time either doesn't exist or happens twice. A
+  job at `2:30` on the spring-forward night can be skipped entirely; on the fall-back night it
+  can fire twice. If the run matters, don't schedule it in the 1am–3am window, and — again —
+  make it idempotent so the double-fire is harmless.
+- **The day-of-month / day-of-week trap.** When you set *both* fields five,
+  cron treats them as **OR**, not AND. `0 9 13 * 5` is not "the 13th if it's a Friday." It's
+  "the 13th, *and also* every Friday." This one has been surprising people since the 1970s and
+  it will surprise you too.
+
+The routine wrapper doesn't rescue you from any of this. Cron semantics are cron semantics; the
+agent just does something more expensive than usual when the expression is wrong.
+
+## Routines vs. loops: schedule vs. session
+
+There's a neighbouring feature worth drawing a line against, because they solve different
+problems. A **loop** re-runs a prompt on an interval *inside the current session* — it keeps
+your context and is meant for "watch this thing until it's done": babysit a deploy, poll a build,
+iterate on a task while you're around. A **routine** is a scheduled *cloud* run with no session
+and no you: it wakes up cold, does one self-contained job, and exits.
+
+The rule of thumb: if the work needs the conversation you're in right now, it's a loop. If the
+work should happen whether or not you're at your machine, it's a routine. Reaching for a routine
+to babysit something you're actively watching gives you a cold agent fumbling for context it
+would have had for free in-session. Reaching for a loop to run a nightly job means it only runs
+on the nights you happened to leave the session open.
+
+## Design a routine like an unattended job, because it is one
+
+Strip away the novelty and a routine is a cron-scheduled batch job whose worker happens to be a
+language model. The engineering that makes it trustworthy is the same engineering that makes any
+unattended job trustworthy, and none of it is new:
+
+1. **Keep the scope narrow.** One routine, one job. "Review CI failures" is a routine. "Manage
+   the repo" is a wish. A tight objective is easier to write, cheaper to run, and far easier to
+   trust when nobody's watching.
+2. **Make success and failure observable.** A silent routine is indistinguishable from a broken
+   one. Have it leave a trace — an issue, a message, a line in a log — even on the "nothing to
+   do" path, at least until you trust it. Cron mailed you the job's stdout for exactly this
+   reason.
+3. **Make the writes idempotent.** Covered above, and it's the single highest-leverage habit.
+   Assume at-least-once, design for it, stop worrying about double-fires.
+4. **Bound the blast radius.** The same instinct as [starting an MCP server
+   read-only](/threads/an-mcp-server-for-your-notes): give the routine exactly the reach its job
+   needs and nothing more. An unattended agent with broad write access is a standing risk that
+   fires on a timer.
+
+Cron got to be simple because it never had to understand its payload. Routines hand the payload
+a mind, which is genuinely useful — a nightly job that can *read logs and judge* is worth a
+lot — but the price is that all the guarantees cron waved off are now yours to provide. Provide
+them, and a routine is a tireless teammate that shows up on schedule. Skip them, and it's a very
+articulate way to do the wrong thing at 8am every day.
