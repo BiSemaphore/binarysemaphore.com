@@ -7,6 +7,24 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.4.0] - 2026-07-17
+
+### Added
+
+- New thread: **"Cron was easy because the job was dumb"** — a deep, practical
+  guide to Claude routines (cron jobs whose payload is an agent). Covers routine
+  anatomy, a gallery of real routines with schedules and prompts, idempotency
+  patterns, a cron syntax refresher, routines vs. loops, and observability.
+  Includes a companion video link and a new `claude` tag.
+- Hand-drawn **pen annotations** for thread prose (`Underline`, `Circle`, `Box`,
+  `Strike`, `Highlight`) that draw themselves on scroll and are gated behind
+  `prefers-reduced-motion`. Wired into MDX, so any thread can use them.
+- **"On this page"** table of contents: a sticky right rail with scroll-spy that
+  highlights the current section and jumps to any heading.
+- **Cron diagram** component: a styled five-field breakdown replacing brittle
+  ASCII art.
+- **Copy to clipboard** buttons on thread code blocks.
+
 ## [0.3.0] - 2026-07-12
 
 ### Added

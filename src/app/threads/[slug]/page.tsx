@@ -11,6 +11,7 @@ import { threadCovers } from "@/lib/thread-covers";
 import { Photo } from "@/components/photo";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { TableOfContents } from "@/components/table-of-contents";
 
 type Params = { slug: string };
 
@@ -67,6 +68,7 @@ export default async function ThreadPage({
       <Header />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-20">
+       <div className="relative">
         <nav className="pt-10 pb-8 text-sm" aria-label="Breadcrumb">
           <Link
             href="/threads"
@@ -154,6 +156,13 @@ export default async function ThreadPage({
             <span aria-hidden="true">&larr;</span> All threads
           </Link>
         </div>
+
+        <aside className="absolute left-full top-0 hidden h-full pl-10 min-[1300px]:block">
+          <div className="sticky top-24 w-52">
+            <TableOfContents />
+          </div>
+        </aside>
+       </div>
       </main>
 
       <Footer />
