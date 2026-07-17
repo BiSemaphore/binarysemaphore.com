@@ -7,6 +7,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.4.1] - 2026-07-17
+
+### Added
+
+- Cover image for the "Cron was easy because the job was dumb" thread, so it no
+  longer renders coverless on the /threads grid. Designed in the site's canvas
+  and fonts (the cron field motif with a hand-drawn ring) to match the thread's
+  own pen annotations.
+
 ## [0.4.0] - 2026-07-17
 
 ### Added
