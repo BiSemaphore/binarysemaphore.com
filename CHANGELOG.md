@@ -7,6 +7,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Every release corresponds to a `staging` to `main` pull request and a matching
 `vX.Y.Z` tag on `main`.
 
+## [0.4.2] - 2026-07-17
+
+### Changed
+
+- Retitled the routines thread to "Claude routines are cron jobs that can think"
+  so the title, the /threads card, and the OG/SEO metadata name Claude. The slug
+  is unchanged, so `/threads/claude-routines-and-cron` still resolves.
+
 ## [0.4.1] - 2026-07-17
 
 ### Added
