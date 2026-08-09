@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { team, getTeamMember, site } from "@/lib/site";
 import { Header } from "@/components/header";
@@ -76,12 +77,23 @@ export default async function TeamMemberPage({
 
         {/* Header: avatar + name + role */}
         <header className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-6">
-          <span
-            className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-accent text-2xl font-extrabold text-white shadow-soft"
-            aria-hidden
-          >
-            {initials(member.name)}
-          </span>
+          {member.avatar ? (
+            <Image
+              src={member.avatar}
+              alt={member.avatarAlt ?? member.name}
+              width={128}
+              height={128}
+              priority
+              className="h-28 w-28 shrink-0 rounded-2xl object-cover shadow-soft sm:h-32 sm:w-32"
+            />
+          ) : (
+            <span
+              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-accent text-2xl font-extrabold text-white shadow-soft"
+              aria-hidden
+            >
+              {initials(member.name)}
+            </span>
+          )}
           <div>
             <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               {member.name}
@@ -175,11 +187,45 @@ export default async function TeamMemberPage({
                   </div>
                   <p className="text-sm font-medium text-accent-strong">
                     {job.company}
+                    {job.location ? (
+                      <span className="font-normal text-subtle">
+                        {" "}
+                        · {job.location}
+                      </span>
+                    ) : null}
                   </p>
                   {job.summary ? (
                     <p className="mt-1.5 text-[15px] leading-7 text-muted">
                       {job.summary}
                     </p>
+                  ) : null}
+                  {job.highlights && job.highlights.length > 0 ? (
+                    <ul className="mt-3 space-y-2">
+                      {job.highlights.map((point, j) => (
+                        <li
+                          key={j}
+                          className="relative pl-5 text-[15px] leading-7 text-muted"
+                        >
+                          <span
+                            aria-hidden
+                            className="absolute left-0 top-[0.7em] h-1.5 w-1.5 rounded-full bg-accent/60"
+                          />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {job.stack && job.stack.length > 0 ? (
+                    <ul className="mt-3 flex flex-wrap gap-1.5">
+                      {job.stack.map((tech) => (
+                        <li
+                          key={tech}
+                          className="rounded-full bg-card px-2.5 py-1 font-mono text-[11px] text-subtle ring-1 ring-inset ring-border"
+                        >
+                          {tech}
+                        </li>
+                      ))}
+                    </ul>
                   ) : null}
                 </li>
               ))}
@@ -233,6 +279,40 @@ export default async function TeamMemberPage({
           </section>
         ) : null}
 
+        {/* Education */}
+        {member.education && member.education.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              Education
+            </h2>
+            <ul className="space-y-3">
+              {member.education.map((edu, i) => (
+                <li
+                  key={i}
+                  className="rounded-card border border-border bg-card px-5 py-4 shadow-soft"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                    <h3 className="text-base font-semibold text-foreground">
+                      {edu.degree}
+                    </h3>
+                    {edu.period ? (
+                      <span className="font-mono text-xs text-subtle">
+                        {edu.period}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-0.5 text-sm text-muted">
+                    {edu.school}
+                    {edu.location ? (
+                      <span className="text-subtle"> · {edu.location}</span>
+                    ) : null}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
         {/* Certifications */}
         {member.certifications && member.certifications.length > 0 ? (
           <section className="mt-12">
@@ -278,8 +358,38 @@ export default async function TeamMemberPage({
           </section>
         ) : null}
 
-        {/* Skills */}
-        {member.skills && member.skills.length > 0 ? (
+        {/* Skills — grouped when skillGroups is set, flat chips otherwise. */}
+        {member.skillGroups && member.skillGroups.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              Skills
+            </h2>
+            <dl className="space-y-5">
+              {member.skillGroups.map((group) => (
+                <div
+                  key={group.title}
+                  className="sm:grid sm:grid-cols-[7rem_1fr] sm:gap-4"
+                >
+                  <dt className="text-sm font-semibold text-foreground">
+                    {group.title}
+                  </dt>
+                  <dd className="mt-2 sm:mt-0">
+                    <ul className="flex flex-wrap gap-2">
+                      {group.items.map((skill) => (
+                        <li
+                          key={skill}
+                          className="rounded-full bg-card px-3 py-1.5 font-mono text-xs text-subtle ring-1 ring-inset ring-border"
+                        >
+                          {skill}
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ) : member.skills && member.skills.length > 0 ? (
           <section className="mt-12">
             <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
               Focus areas

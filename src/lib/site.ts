@@ -54,17 +54,37 @@ export type TeamMember = {
   focus?: string;
   /** Short one-line description shown on the card. */
   description?: string;
+  /** Square avatar (path under /public). Falls back to initials when unset. */
+  avatar?: string;
+  /** Alt text for the avatar. Required when `avatar` is set. */
+  avatarAlt?: string;
   /** Longer bio paragraphs for the detail page. DRAFT — edit freely. */
   bio?: string[];
   /** Skills / focus areas shown as chips on the detail page. */
   skills?: string[];
+  /** Skills grouped by area. Takes over from `skills` when present. */
+  skillGroups?: { title: string; items: string[] }[];
   /** Work experience (paste from LinkedIn). Rendered only when present. */
   experience?: {
     role: string;
     company: string;
     /** e.g. "2023 - Present" or "Jun 2022 - Jan 2024". */
     period?: string;
+    /** City, country. */
+    location?: string;
     summary?: string;
+    /** What was actually built there, one line each. */
+    highlights?: string[];
+    /** Tech used on that role, rendered as small mono chips. */
+    stack?: string[];
+  }[];
+  /** Education. Rendered only when present. */
+  education?: {
+    degree: string;
+    school: string;
+    /** e.g. "2021 - 2023". */
+    period?: string;
+    location?: string;
   }[];
   /** Projects (paste from LinkedIn). Rendered only when present. */
   projects?: { name: string; description?: string; href?: string }[];
@@ -567,59 +587,250 @@ export const team: TeamMember[] = [
     focus: "Core development",
     description:
       "Leads core development, turning ideas into working software and sweating the details that make it feel right.",
+    avatar: "/team/shahid-raza.png",
+    avatarAlt:
+      "Illustrated portrait of Shahid Raza, arms folded, in a cream shirt on a blue background.",
     bio: [
       "Shahid leads core development at Binary Semaphore. He spends most of his time on the essential complexity of a problem: modeling it well, drawing clean boundaries, and turning that into software that holds up.",
-      "He works mostly in Go, with a soft spot for tools that run on your own machine and the Unix philosophy. inode, the studio's CLI knowledge base, started as one of his side projects and became the team's main focus.",
+      "Three years of full-stack work, owning modules end to end: data modeling and API design through deployment and the performance work that comes after. Mostly Node.js, NestJS, and TypeScript over MongoDB and PostgreSQL, with React and Next.js on the front, shipped for B2B enterprise clients and US platforms across CMS, LMS, ERP, and community events.",
+      "The parts he keeps coming back to are the ones where getting it wrong is expensive: authentication and authorization, payments and subscription billing, database transactions, message queues, and concurrency control.",
+      "Outside client work he writes Go, with a soft spot for tools that run on your own machine and the Unix philosophy. inode, the studio's CLI knowledge base, started as one of his side projects.",
     ],
-    skills: [
-      "Go",
-      "Node.js",
-      "Next.js",
-      "Microservices",
-      "REST & GraphQL APIs",
-      "PostgreSQL",
-      "Retrieval-augmented generation",
-      "System design",
+    skillGroups: [
+      {
+        title: "Languages",
+        items: ["TypeScript", "JavaScript", "Go", "Python", "Java"],
+      },
+      {
+        title: "Backend",
+        items: [
+          "Node.js",
+          "NestJS",
+          "Express",
+          "REST",
+          "GraphQL",
+          "Apollo Server",
+          "WebSockets",
+          "Microservices",
+          "Swagger/OpenAPI",
+          "JWT",
+          "OAuth2",
+          "RBAC",
+        ],
+      },
+      {
+        title: "Frontend",
+        items: [
+          "React",
+          "Next.js",
+          "Server Components",
+          "SSR/SSG/ISR",
+          "Redux",
+          "React Query",
+          "Zustand",
+          "React Hook Form",
+          "Zod",
+          "Apollo Client",
+          "Radix UI",
+          "shadcn/ui",
+          "Tailwind CSS",
+          "Angular",
+        ],
+      },
+      {
+        title: "Data",
+        items: [
+          "PostgreSQL",
+          "MongoDB",
+          "MySQL",
+          "Redis",
+          "Mongoose",
+          "Sequelize",
+          "Drizzle",
+          "pgvector",
+          "sqlite-vec",
+        ],
+      },
+      {
+        title: "Architecture",
+        items: [
+          "SOLID",
+          "Dependency injection",
+          "Layered architecture",
+          "Event-driven architecture",
+          "Transactional outbox",
+          "Database transactions",
+          "Concurrency control",
+          "System design",
+        ],
+      },
+      {
+        title: "Infrastructure",
+        items: [
+          "Docker",
+          "AWS (EC2, S3, Lambda)",
+          "Kafka",
+          "Kong API Gateway",
+          "Nginx",
+          "GitHub Actions",
+          "CI/CD",
+          "Git",
+          "PM2",
+          "Linux",
+        ],
+      },
+      {
+        title: "AI",
+        items: [
+          "LLM integration",
+          "Embeddings",
+          "Vector search",
+          "RAG",
+          "MCP",
+          "Claude API",
+          "Ollama",
+        ],
+      },
+      { title: "Payments", items: ["Stripe", "Razorpay", "Paytm"] },
     ],
     email: "razashahid@gmail.com",
     linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
     github: "https://github.com/shahid-io",
     experience: [
       {
-        role: "Software Engineer",
-        company: "SkillSnap Learning",
-        period: "Jun 2026 - Present",
+        role: "Full-Stack Developer",
+        company: "SkillSnap Learning (company closed)",
+        period: "Jun 2026 - Jul 2026",
+        location: "Gurugram, India",
         summary:
-          "Founding engineer working across product strategy, architecture, and full-stack development. Partners with leadership to define the product and make the technical calls behind it, taking features from idea to production.",
+          "Built the course platform and the CRM behind it, then spent the rest of the time making the public site fast.",
+        highlights: [
+          "Designed the MongoDB schema for courses and enrollments, the backend data model that the CRM and the public course pages both read from.",
+          "Moved the CRM to server-side NextAuth sessions with token refresh, rotation, reuse detection, and a grace window per OWASP, holding access tokens in memory rather than localStorage.",
+          "Migrated fifteen CRM modules from client-side rendering to React Server Components with colocated Server Actions, splitting the remaining client state between React Query and a Zustand store with SSR-safe persistence.",
+          "Built the YouTube Data API v3 integration behind one HTTP layer with a typed error taxonomy and backoff honoring Retry-After, batching statistics at the API maximum of 50 per call and caching daily with ISR behind a static fallback.",
+        ],
+        stack: [
+          "Next.js",
+          "React",
+          "TypeScript",
+          "MongoDB",
+          "NextAuth",
+          "React Query",
+          "Zustand",
+        ],
       },
       {
-        role: "Full Stack Developer",
+        role: "Full-Stack Developer",
         company: "NewAgeSys Solutions",
         period: "Nov 2025 - May 2026",
+        location: "Kochi, India",
         summary:
-          "Built across frontend, backend, and databases to ship reliable, scalable products.",
+          "Owned admin modules end to end on two US products: a community events platform and a driving academy.",
+        highlights: [
+          "Owned the community admin module of LOCAL-IL, a US community events platform: creation, editing, status switching, organization-initiated email changes, a per-admin activity log, and the dashboard across its aggregation APIs and its UI.",
+          "Built event and camp management on Next.js server actions with React Hook Form and Zod validation at the boundary, including guest lists, approve and deny on join requests, payment status, and separate cancellation paths for the community and the parent organization.",
+          "Integrated Stripe for checkout and subscription billing, wrapping each state change in a database transaction so the subscription record and its side effects committed together or not at all.",
+          "Kept signed contracts and support-ticket attachments in a private S3 bucket, released only as pre-signed URLs issued per request, so no document was ever reachable from a guessable address.",
+        ],
+        stack: [
+          "Next.js",
+          "React",
+          "NestJS",
+          "Angular",
+          "PostgreSQL",
+          "MongoDB",
+          "Stripe",
+          "AWS S3",
+        ],
       },
       {
         role: "Software Developer",
         company: "TechwareLab",
         period: "Apr 2024 - Oct 2025",
+        location: "Kochi, India",
         summary:
-          "Designed and built scalable backend services, mostly in Node.js and TypeScript.",
+          "Designed and built backend services for B2B enterprise clients, mostly in NestJS and TypeScript.",
+        highlights: [
+          "Designed and built Munawel's internal ERP, the HRMS, sales, and invoicing modules, from schema and API design through release, sharing domain models across them instead of duplicating them.",
+          "Ran GraphQL alongside REST on every project, served from Apollo Server inside NestJS and consumed through Apollo Client, with lookups batched in Sequelize to avoid N+1 queries and subscriptions pushing live notifications.",
+          "Fronted the NestJS services with a Kong API gateway, authenticating through its JWT plugin against a Kong consumer per user and rate-limiting at the gateway rather than reimplementing it in every service.",
+          "Built the NetSuite integration for Infithra, a UAE HR and payroll platform, keeping payroll data in sync across the two systems.",
+        ],
+        stack: [
+          "NestJS",
+          "TypeScript",
+          "GraphQL",
+          "Apollo",
+          "Kong",
+          "PostgreSQL",
+          "Sequelize",
+          "Docker",
+        ],
       },
       {
         role: "Junior Software Developer",
         company: "TechwareLab",
         period: "Apr 2023 - Apr 2024",
+        location: "Kochi, India",
         summary:
-          "Worked across the backend, learning to write code that holds up in production.",
+          "Backend work across client projects, moving from supervised tickets to owning features end to end.",
+        highlights: [
+          "Built REST APIs and backend services for B2B enterprise clients including XLRI and Kinderpass, in two-week Scrum sprints tracked in Jira.",
+          "Modeled and built the MongoDB data layer behind the CMS, LMS, and payment-transaction modules, from collection and document design through the queries the application ran against them.",
+          "Integrated Stripe, Razorpay, and Paytm checkout flows, modeling transaction states so a payment was never ambiguous, with failure and retry handling.",
+          "Cut latency on the hottest read paths by caching them in Redis and reshaping the queries behind them, across PostgreSQL, MySQL, and MongoDB.",
+        ],
+        stack: [
+          "Node.js",
+          "NestJS",
+          "TypeScript",
+          "MongoDB",
+          "Redis",
+          "Stripe",
+          "Docker",
+          "Jira",
+        ],
+      },
+    ],
+    education: [
+      {
+        degree: "Master of Computer Applications (MCA)",
+        school: "Cochin University of Science and Technology",
+        period: "2021 - 2023",
+        location: "Kochi, India",
+      },
+      {
+        degree: "Bachelor of Computer Applications (BCA)",
+        school: "Nalanda Open University",
+        period: "2017 - 2020",
+        location: "Patna, India",
       },
     ],
     projects: [
+      {
+        name: "Ascent",
+        description:
+          "A cohort-based LMS built as five NestJS services, each with its own Postgres database, behind an Nginx gateway. Kafka carries domain events over the transactional outbox pattern with idempotent consumers; enrollment claims a seat with an atomic conditional update, load-tested at 20 concurrent requests on a 5-seat cohort with no overselling.",
+        href: "https://github.com/BiSemaphore/ascent",
+      },
       {
         name: "inode",
         description:
           "A CLI knowledge base in Go. Save anything from the terminal, retrieve it later in plain English. End-to-end RAG pipeline over a pluggable adapter architecture: SQLite + sqlite-vec by default, Postgres + pgvector as a zero-CGO alternative, with swappable embedding and LLM providers. Encrypted at rest, and it exposes a read-only MCP server so AI clients can query it.",
         href: "https://github.com/shahid-io/inode",
+      },
+      {
+        name: "Resume builder",
+        description:
+          "A browser-based resume builder on Next.js and Supabase. Preview and print share one pagination module that measures real DOM line boxes, so a page break lands between two lines of a bullet instead of through one; export runs headless Chromium inside a serverless function.",
+        href: "https://resume.binarysemaphore.com",
+      },
+      {
+        name: "Booking.go",
+        description:
+          "A multi-tenant SaaS for slot-based booking, where one backend serves many independent businesses without their data crossing. Express and TypeScript on a strict route to service to repository path, with Postgres, MongoDB, and Redis each doing what they are good at.",
+        href: "https://github.com/Booking-Go",
       },
       {
         name: "notchify",
@@ -635,6 +846,22 @@ export const team: TeamMember[] = [
       },
     ],
     certifications: [
+      {
+        name: "Data Structures, Algorithms and System Design",
+        issuer: "Scaler Academy",
+        year: "2026",
+        href: "https://www.scaler.com/academy/profile/7fa6a80ade33",
+      },
+      {
+        name: "Backend Engineering with Java and Spring Boot, cohort programme",
+        issuer: "Algocamp",
+        year: "2025",
+      },
+      {
+        name: "Backend Engineering Cohort",
+        issuer: "Airtribe",
+        year: "2024",
+      },
       {
         name: "Go for Developers: Practical Techniques for Effective Coding",
         issuer: "LinkedIn",
@@ -742,6 +969,73 @@ export const projects: Project[] = [
     href: "https://resume.binarysemaphore.com",
     status: "live",
     featured: true,
+    slug: "resume",
+    detail: {
+      lede: "A resume builder where the preview is the PDF: same pagination, same page breaks, no surprises on export.",
+      statements: [
+        "What you see paginated is what you export.",
+        "Free. Your data stays in your account.",
+      ],
+      overview: [
+        "Most browser-based resume builders show you a preview that is roughly what you will get. Then you export, and a bullet is cut in half across the page break, or a section heading is stranded alone at the bottom of page one. The preview and the exporter were two different pieces of code that agreed on the styling and disagreed on the math.",
+        "This one shares the math. The on-screen preview and the print document run the same pagination module, so a break in the preview is a break in the PDF, in the same place, every time. You draft on the left, watch the paginated pages on the right at true print size, and export what you already looked at.",
+        "It is free, it runs in the browser, and your resumes live in your own account. Sign in with GitHub or Google, pick from 21 templates, write with rich text where it helps, and download a PDF when you are done.",
+      ],
+      howItWorks: [
+        {
+          step: "Sign in",
+          body: "GitHub or Google OAuth through Supabase Auth. Row-level security scopes every read and write to your account, so the database itself enforces the boundary rather than the application remembering to.",
+        },
+        {
+          step: "Draft side by side",
+          body: "The editor holds the content; the paper beside it renders at true print size. Rich text is supported where a resume actually needs it, and templates change the presentation without touching what you wrote.",
+        },
+        {
+          step: "Paginate honestly",
+          body: "The preview measures the laid-out document and slices it into pages at safe boundaries: between two lines of a paragraph, never through one, and never leaving a heading alone at the foot of a page.",
+        },
+        {
+          step: "Export",
+          body: "A serverless function opens the chrome-free print route in headless Chromium, carrying your session so it renders your document, and streams back a PDF as a direct download with no browser print dialog.",
+        },
+      ],
+      features: [
+        {
+          title: "One pagination module, two renderers",
+          body: "The preview and the print page import the same pure-DOM measurement code. That is the whole trick behind WYSIWYG here: there is no second implementation to drift out of agreement with the first.",
+        },
+        {
+          title: "Breaks between lines, not through them",
+          body: "Most page-break logic works on block boundaries, which is why a five-line bullet either overflows or jumps wholesale to the next page. This measures the individual client rects of a block's text, merging the fragments a bold or a link splits a line into, so a break can land between line three and line four of one bullet.",
+        },
+        {
+          title: "Headings keep their content",
+          body: "Section labels and entry titles are marked keep-with-next, so a page never ends with a heading whose content starts overleaf. It is a small rule that separates a document that looks typeset from one that looks generated.",
+        },
+        {
+          title: "PDF export inside the size limit",
+          body: "Headless Chromium does not fit in a serverless bundle by default. The build ships brotli-compressed binaries via @sparticuz/chromium and runs on the Node runtime with a longer duration, so a cold start still renders. Locally it drives your installed Chrome instead.",
+        },
+        {
+          title: "Export that fails loudly",
+          body: "The renderer authenticates by forwarding the caller's cookies, and the target host is validated before Chromium is ever pointed at it. If the forwarded session does not authenticate, the print page redirects to login, and the route returns an error rather than handing you a PDF of a login screen.",
+        },
+        {
+          title: "Templates without lock-in",
+          body: "21 templates sit on top of one content model, so switching template is a presentation change and never a rewrite. Content stays yours in Supabase, scoped to your account.",
+        },
+      ],
+      facts: [
+        { label: "Type", value: "Web app, free" },
+        { label: "Live at", value: "resume.binarysemaphore.com" },
+        { label: "Frontend", value: "Next.js 16 · React 19 · Tailwind v4" },
+        { label: "Backend", value: "Supabase (Postgres + Auth, RLS)" },
+        { label: "Auth", value: "GitHub and Google OAuth" },
+        { label: "Export", value: "puppeteer-core + @sparticuz/chromium" },
+        { label: "Templates", value: "21" },
+        { label: "Hosting", value: "Vercel" },
+      ],
+    },
   },
   {
     name: "inode",
@@ -831,6 +1125,87 @@ export const projects: Project[] = [
         { label: "Integrations", value: "MCP (Claude Code, Cursor)" },
         { label: "Categories", value: "9 (credentials, commands, runbooks, …)" },
         { label: "Platforms", value: "macOS · Linux · Windows" },
+      ],
+    },
+  },
+  {
+    name: "Ascent",
+    tagline: "A cohort-based learning platform, built as a real distributed system.",
+    description:
+      "An LMS where instructors author curricula, admins open cohorts with limited seats, and learners move through the content together. Five NestJS services, one database each, Kafka between them, with deliberate depth on the hard parts: seat concurrency, event-driven consistency, and payments.",
+    tags: ["NestJS", "TypeScript", "PostgreSQL", "Kafka", "Microservices"],
+    href: "https://github.com/BiSemaphore/ascent",
+    status: "v0.3",
+    slug: "ascent",
+    detail: {
+      lede: "A cohort-based EdTech platform built as a microservices system, with the seat and event problems solved properly rather than papered over.",
+      statements: [
+        "Five services. One database each. No shared tables.",
+        "Two people, one last seat. Only one gets in.",
+      ],
+      overview: [
+        "Ascent is a cohort-based learning platform in the shape of Scaler or a bootcamp: instructors author programs, courses, modules, and lessons; admins open a scheduled cohort with a fixed number of seats; learners buy a seat and move through the content as a group. Content authoring is the CMS side, delivery is the learner side, one product with two audiences.",
+        "It is built as a microservices system on purpose. The interesting part of a platform like this is not the CRUD, it is what happens when a hundred people hit a five-seat cohort at the same time, or when a payment succeeds but the service that grants the seat is down. Those are the problems the architecture is arranged around.",
+        "The build is phased and each phase ships as a tagged release: auth and content behind a gateway, then cohorts and concurrency-safe enrollment, then the Kafka event backbone and a projection service, then payments. The roadmap, architecture decisions, and per-service data model are written down in the repo rather than living in someone's head.",
+      ],
+      howItWorks: [
+        {
+          step: "Everything enters through one door",
+          body: "An Nginx gateway is the single entry point on port 8080, routing /api/* to the service that owns it and doing per-IP rate limiting at the edge, so no service has to reimplement it.",
+        },
+        {
+          step: "Each service owns its data",
+          body: "Auth, content, cohort, payment, and progress each have their own Postgres database with Drizzle migrations. Services share code through workspace libraries, never through tables, so one service cannot quietly depend on another's schema.",
+        },
+        {
+          step: "A seat is claimed atomically",
+          body: "Enrollment runs an atomic conditional update (WHERE seats_taken < seat_limit) inside a transaction, backed by a unique constraint. The database decides the winner, so two concurrent requests for the last seat cannot both succeed.",
+        },
+        {
+          step: "State changes become events",
+          body: "The event is written to an outbox table in the same transaction as the state change. A relay polls it with FOR UPDATE SKIP LOCKED, publishes to Kafka, and stamps it published, so there is no dual write and nothing is lost when the broker is down.",
+        },
+        {
+          step: "Consumers project, idempotently",
+          body: "The progress service holds no source of truth. It consumes learner.enrolled and lesson.completed and rebuilds per-learner state from them, deduplicating on a processed_events table so at-least-once redelivery never double counts.",
+        },
+      ],
+      features: [
+        {
+          title: "Concurrency-safe enrollment, load-tested",
+          body: "Reading the seat count and then writing it back is the classic lost-update bug, and it only shows up under real traffic. Ascent claims the seat in one conditional statement instead. Load-tested at 20 concurrent enrollments against a 5-seat cohort: exactly 5 learners get in, every run, with no overselling.",
+        },
+        {
+          title: "Transactional outbox instead of dual writes",
+          body: "Writing to the database and then publishing to Kafka is two writes that can disagree: the row commits, the publish fails, and the rest of the system never hears about it. The outbox makes the event part of the same transaction, and a separate relay does the publishing, which turns an impossible guarantee into an ordinary one.",
+        },
+        {
+          title: "Payments decoupled from seat allocation",
+          body: "Stripe Checkout takes the money and a signature-verified webhook writes payment.completed to the payment service's own outbox. Cohort consumes that event and enrolls the buyer through the same concurrency-safe path. Paid cohorts reject direct enrollment; free ones still enroll straight through.",
+        },
+        {
+          title: "One service per bounded context",
+          body: "Auth, content, cohort, payment, and progress are split by what they own, not by layer. Each is a NestJS service with validated env config that fails fast, a health check that pings its datastores, graceful shutdown, Swagger docs, and RBAC from a shared @ascent/auth library.",
+        },
+        {
+          title: "The right store for each job",
+          body: "Postgres holds the transactional core, one database per service. MongoDB takes the append-heavy activity and audit logs, kept off the relational path. Event contracts live in a shared @ascent/contracts package so producers and consumers cannot drift.",
+        },
+        {
+          title: "A frontend with real layering",
+          body: "The Angular app follows component to facade to repository to HttpClient, feature-first with lazy routes, auth and error interceptors, OnPush change detection, and a role directive for permission gating. A public catalog lets anonymous visitors browse open cohorts over safe projections that never expose internal fields.",
+        },
+      ],
+      facts: [
+        { label: "Type", value: "Cohort-based LMS, microservices" },
+        { label: "Services", value: "auth · content · cohort · payment · progress" },
+        { label: "Data", value: "PostgreSQL (one per service) · MongoDB · Redis" },
+        { label: "Async", value: "Kafka (KRaft), transactional outbox" },
+        { label: "Gateway", value: "Nginx (routing, rate limiting)" },
+        { label: "Frontend", value: "Angular (standalone, signals)" },
+        { label: "Payments", value: "Stripe Checkout + webhooks" },
+        { label: "Local run", value: "Docker Compose, one command" },
+        { label: "Status", value: "v0.3.0 shipped, payments in progress" },
       ],
     },
   },

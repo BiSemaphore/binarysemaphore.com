@@ -59,9 +59,12 @@ export default async function ProjectPage({
   if (!project?.detail) notFound();
 
   const { detail } = project;
-  // Display label for the repo link, derived from the project's own href so it
-  // works for any GitHub owner (not just shahid-io).
+  // Display label for the primary link, derived from the project's own href so
+  // it works for any GitHub owner (not just shahid-io).
   const repoLabel = project.href.replace(/^https?:\/\//, "");
+  // Not every project points at a repo: a closed-source product links straight
+  // to the live app instead, and calling that "View on GitHub" would be a lie.
+  const isRepo = /^https?:\/\/(www\.)?github\.com\//.test(project.href);
 
   // When served from a product subdomain (set by the proxy), point the shared
   // chrome's internal links back at the apex.
@@ -125,8 +128,8 @@ export default async function ProjectPage({
                   : "bg-foreground text-background"
               }`}
             >
-              <GitHubIcon className="h-4 w-4" />
-              View on GitHub
+              {isRepo ? <GitHubIcon className="h-4 w-4" /> : null}
+              {isRepo ? "View on GitHub" : `Open ${project.name}`}
               <ArrowUpRightIcon className="h-3.5 w-3.5 opacity-70" />
             </a>
             <div className="flex flex-wrap gap-2">
@@ -329,10 +332,12 @@ export default async function ProjectPage({
         <section className="mt-14 rounded-panel border border-border bg-card p-6 shadow-soft sm:flex sm:items-center sm:justify-between sm:gap-6">
           <div>
             <p className="text-sm font-medium text-foreground">
-              Want the code?
+              {isRepo ? "Want the code?" : "Want to try it?"}
             </p>
             <p className="mt-1 text-sm text-muted">
-              {project.name} is open source and built in public.
+              {isRepo
+                ? `${project.name} is open source and built in public.`
+                : `${project.name} is live and free to use.`}
             </p>
           </div>
           <a
@@ -341,7 +346,7 @@ export default async function ProjectPage({
             rel="noreferrer noopener"
             className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-card-hover sm:mt-0"
           >
-            <GitHubIcon className="h-4 w-4" />
+            {isRepo ? <GitHubIcon className="h-4 w-4" /> : null}
             {repoLabel}
             <ArrowUpRightIcon className="h-3.5 w-3.5 text-subtle" />
           </a>
