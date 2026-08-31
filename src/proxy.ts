@@ -18,9 +18,14 @@ export async function proxy(request: NextRequest) {
   // whole route subtree, with auth.
   const appBase = appBasePath(sub);
   if (appBase) {
-    // Shared auth + api routes pass through unchanged so the OAuth callback and
-    // sign-out set cookies on this host; still refresh the session.
-    if (pathname.startsWith("/auth/") || pathname.startsWith("/api/")) {
+    // Shared routes pass through unchanged: /auth/* and /api/* so the OAuth
+    // callback and sign-out set cookies on this host, and /discord so the one
+    // permanent invite URL resolves from every host we serve.
+    if (
+      pathname.startsWith("/auth/") ||
+      pathname.startsWith("/api/") ||
+      pathname === "/discord"
+    ) {
       return await updateSession(request);
     }
     // Serve the app from its base path; the URL stays clean on the subdomain.
