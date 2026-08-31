@@ -38,15 +38,23 @@ export default async function LearnLayout({
             <a href={APEX} aria-label="Binary Semaphore home" className="shrink-0">
               <Wordmark textClassName="max-sm:hidden" />
             </a>
-            <span aria-hidden className="text-subtle">
-              /
+            {/* The wordmark is an SVG (viewBox "0 0 1036.28 150") whose text
+                baseline sits at y=103.6, i.e. 69% down, so at h-[18px] its
+                baseline is ~3.4px below the box centre. Mono text at this size
+                puts its own baseline ~5px below centre, so plain items-center
+                leaves "/ learn" sitting about 1.5px low against the lockup.
+                Nudge the pair back up so the baselines read as one line. */}
+            <span className="flex -translate-y-[1.5px] items-center gap-2">
+              <span aria-hidden className="select-none text-subtle/70">
+                /
+              </span>
+              <Link
+                href={base || "/"}
+                className="font-mono text-sm font-medium leading-none text-foreground"
+              >
+                learn
+              </Link>
             </span>
-            <Link
-              href={base || "/"}
-              className="font-mono text-sm font-medium text-foreground"
-            >
-              learn
-            </Link>
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
