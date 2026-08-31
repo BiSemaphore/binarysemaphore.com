@@ -32,6 +32,12 @@ export const navItems: NavItem[] = [
     label: "Resume",
     external: true,
   },
+  {
+    type: "link",
+    href: "https://learn.binarysemaphore.com",
+    label: "Learn",
+    external: true,
+  },
   { type: "link", href: "/threads", label: "Threads" },
 ];
 
