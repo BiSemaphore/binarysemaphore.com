@@ -17,17 +17,42 @@
  *
  *   SUPABASE_SECRET_KEY=... node scripts/upload-notebooks.mjs [--dry-run]
  *
+ * The project URL is read from .env.local, so only the key has to be passed.
+ *
  * Needs the secret (service-role) key, not the publishable one: uploading is
- * exactly the operation RLS is there to stop a user from doing. Never put that
- * key in .env.local or anywhere the client bundle can reach.
+ * exactly the operation RLS is there to stop a user from doing. Pass it inline
+ * as above rather than storing it: it bypasses every RLS policy in the project,
+ * so it does not belong in .env.local or anywhere the client bundle can reach.
  */
 import { createClient } from "@supabase/supabase-js";
 import { readFile, stat } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const BUCKET = "notebooks";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Fill in anything missing from .env.local. Node does not read that file, and
+ * the project URL already lives there, so without this the script asks for a
+ * value the repo already knows. Existing environment variables win, so an
+ * inline `SUPABASE_SECRET_KEY=... node ...` still overrides.
+ */
+function loadEnvLocal() {
+  const file = path.resolve(HERE, "../.env.local");
+  if (!existsSync(file)) return;
+
+  for (const line of readFileSync(file, "utf8").split("\n")) {
+    const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)$/);
+    if (!match) continue;
+    const [, key, rawValue] = match;
+    if (process.env[key] !== undefined) continue;
+    process.env[key] = rawValue.trim().replace(/^["'](.*)["']$/, "$1");
+  }
+}
+
+loadEnvLocal();
 
 /** Where `learnings/notebooks/build.sh` writes its output. */
 const PDF_ROOT =
@@ -52,9 +77,18 @@ const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const secret = process.env.SUPABASE_SECRET_KEY;
 
 if (!dryRun && (!url || !secret)) {
-  console.error(
-    "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY (or pass --dry-run).",
-  );
+  if (!url) {
+    console.error(
+      "No NEXT_PUBLIC_SUPABASE_URL. Expected it in .env.local, or in the environment.",
+    );
+  }
+  if (!secret) {
+    console.error(
+      "No SUPABASE_SECRET_KEY. Get the service_role key from the Supabase\n" +
+        "dashboard (Project Settings -> API Keys) and pass it inline:\n\n" +
+        "  SUPABASE_SECRET_KEY='...' node scripts/upload-notebooks.mjs\n",
+    );
+  }
   process.exit(1);
 }
 
