@@ -15,6 +15,11 @@ const migration = readFileSync(
   "utf8",
 );
 
+const schema = readFileSync(
+  path.join(process.cwd(), "supabase/schema.sql"),
+  "utf8",
+);
+
 describe("the notebook catalog", () => {
   it("has a unique slug per notebook", () => {
     const slugs = notebooks.map((n) => n.slug);
@@ -74,6 +79,17 @@ describe("learn_products stays in step with the catalog", () => {
     for (const notebook of notebooks) {
       expect(migration, notebook.slug).toContain(`('${notebook.slug}'`);
     }
+  });
+
+  // supabase/schema.sql mirrors the migrations by convention (see the header on
+  // 0001_init.sql), so a notebook added to one and not the other would leave a
+  // freshly built database missing a row.
+  it("keeps schema.sql in step with the migration", () => {
+    for (const notebook of notebooks) {
+      expect(schema, notebook.slug).toContain(`('${notebook.slug}'`);
+    }
+    expect(schema).toContain("public.start_learn_trial");
+    expect(schema).toContain("public.has_learn_access");
   });
 
   it("seeds nothing the catalog does not have", () => {
