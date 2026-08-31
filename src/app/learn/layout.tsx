@@ -88,7 +88,7 @@ export default async function LearnLayout({
 
           {site.discord ? (
             <a
-              href={site.discord}
+              href="/discord"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-xs text-muted transition-colors hover:text-foreground"
