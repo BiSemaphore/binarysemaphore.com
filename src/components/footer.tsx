@@ -3,6 +3,7 @@ import { site } from "@/lib/site";
 import { Wordmark } from "@/components/wordmark";
 import { productSubdomainUrl } from "@/lib/subdomains";
 import {
+  DiscordIcon,
   GitHubIcon,
   InstagramIcon,
   LinkedInIcon,
@@ -66,6 +67,17 @@ export function Footer({ linkBase = "" }: { linkBase?: string } = {}) {
             >
               <GitHubIcon className="h-[18px] w-[18px]" />
             </a>
+            {site.discord ? (
+              <a
+                href="/discord"
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label="Discord"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/60 transition-colors duration-300 hover:bg-white/10 hover:text-white"
+              >
+                <DiscordIcon className="h-[18px] w-[18px]" />
+              </a>
+            ) : null}
             {site.linkedin ? (
               <a
                 href={site.linkedin}
