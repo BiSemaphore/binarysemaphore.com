@@ -73,6 +73,23 @@ If the storage policy in `0003_learn.sql` fails to apply on hosted Supabase
 as `postgres`), create it by hand in Storage -> Policies with the same
 expression. Do not work around it by making the bucket public.
 
+### Grants, not just policies
+
+RLS filters rows; it does not grant access to the table. Both are needed.
+`0003_learn.sql` grants `select` explicitly rather than relying on Supabase's
+default privileges for `public`, because on a stack built by the current CLI
+those hand `anon` and `authenticated` only `Dxtm` (truncate, references,
+trigger) with **no** `select`. Verified against a local `supabase db reset`:
+without the explicit grant, `has_learn_access()` fails with "permission denied
+for table entitlements" for every signed-in user.
+
+Nothing grants insert, update or delete on `entitlements` to anybody. That is
+what makes the trial tamper-proof: a signed-in user cannot mint a grant, extend
+one, or delete a lapsed one to start over.
+
+Note the same gap exists on `public.resumes` and `public.contact_messages`,
+which were created before this was understood and carry no explicit grants.
+
 Signed URLs last **60 seconds**. They cannot be revoked before they expire, so
 the window is deliberately short.
 

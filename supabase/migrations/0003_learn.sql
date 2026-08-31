@@ -71,6 +71,22 @@ create trigger entitlements_set_updated_at
   for each row execute function public.set_updated_at();
 
 -- ---------------------------------------------------------------------------
+-- Table privileges.
+--
+-- RLS filters rows; it does not grant access to the table in the first place.
+-- Both are needed, and Supabase's default privileges for the `public` schema
+-- cannot be relied on (on a stack built by the current CLI they hand `anon` and
+-- `authenticated` only Dxtm, with no SELECT), so say it explicitly here.
+--
+-- Note what is NOT granted: no insert, update or delete on entitlements, to
+-- anyone. Writes go through start_learn_trial(), which is security definer and
+-- runs as the table owner, and later through the payment webhook, which uses
+-- the secret key. A signed-in user holds read access and nothing more.
+-- ---------------------------------------------------------------------------
+grant select on public.learn_products to anon, authenticated;
+grant select on public.entitlements to authenticated;
+
+-- ---------------------------------------------------------------------------
 -- The single access predicate. Everything (pages, download route, storage
 -- policy) asks this one question, so there is one definition of "may read".
 -- security invoker: it reads public.entitlements under the caller's own RLS.
