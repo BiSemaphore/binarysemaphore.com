@@ -132,7 +132,7 @@ export function AccessPanel({
             href={site.discord}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
           >
             <DiscordIcon className="h-4 w-4" />
             Join the Discord
@@ -164,7 +164,7 @@ export function AccessPanel({
 
         <Link
           href={`${base}/login?next=${encodeURIComponent(`${base}/${notebook.slug}`)}`}
-          className="mt-5 inline-flex items-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          className="mt-5 inline-flex items-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
         >
           Sign in with GitHub or Google
         </Link>
@@ -194,7 +194,7 @@ export function AccessPanel({
         <input type="hidden" name="slug" value={notebook.slug} />
         <button
           type="submit"
-          className="inline-flex items-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          className="inline-flex items-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
         >
           Start reading
         </button>
