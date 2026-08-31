@@ -36,7 +36,10 @@ export const slugToSub = new Map(
  * app, unlike showcase product subdomains which render a single project page.
  * Maps subdomain -> the route-tree base path it is served from.
  */
-export const APP_SUBDOMAINS = new Map<string, string>([["resume", "/resume"]]);
+export const APP_SUBDOMAINS = new Map<string, string>([
+  ["resume", "/resume"],
+  ["learn", "/learn"],
+]);
 
 /** The base path an app subdomain is served from, or null if not an app sub. */
 export function appBasePath(sub: string | null): string | null {

@@ -125,6 +125,12 @@ export type SiteConfig = {
   github: string;
   linkedin: string;
   org: string;
+  /**
+   * Public Discord invite ("" hides every Discord link). Use the permanent
+   * invite from Server Settings -> Invites, not a 7-day one from the channel
+   * menu, or every link on the site dies after a week.
+   */
+  discord: string;
   /** Public Instagram profile URL ("" hides Instagram links/feed). */
   instagram: string;
   /** Handle without the @, used for labels. */
@@ -217,6 +223,8 @@ export const site: SiteConfig = {
   // Company LinkedIn page.
   linkedin: "https://www.linkedin.com/company/binary-semaphore/",
   org: "https://github.com/BiSemaphore",
+  // TODO(shahid): paste the permanent Discord invite. Empty hides the links.
+  discord: "",
   instagram: "https://www.instagram.com/binary.semaphore/",
   instagramHandle: "binary.semaphore",
 

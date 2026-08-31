@@ -327,3 +327,48 @@ export function TrashIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function DiscordIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M20.317 4.369A19.79 19.79 0 0 0 15.432 3a13.86 13.86 0 0 0-.617 1.269 18.34 18.34 0 0 0-5.63 0A13.28 13.28 0 0 0 8.56 3a19.74 19.74 0 0 0-4.885 1.372C.554 9.02-.32 13.555.113 18.026a19.9 19.9 0 0 0 6.005 3.04c.487-.66.92-1.36 1.293-2.096a12.9 12.9 0 0 1-2.036-.98c.171-.125.338-.255.5-.389a14.2 14.2 0 0 0 12.145 0c.164.14.331.27.5.389-.65.384-1.334.712-2.04.98.374.735.807 1.436 1.294 2.095a19.86 19.86 0 0 0 6.008-3.038c.508-5.184-.869-9.678-3.645-13.66ZM8.02 15.278c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.955 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.947 2.418-2.157 2.418Z" />
+    </svg>
+  );
+}
+
+export function DownloadIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M12 3v12" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M4 20h16" />
+    </svg>
+  );
+}
+
+export function LockIcon(props: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <rect x="4" y="10" width="16" height="11" rx="2" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+    </svg>
+  );
+}

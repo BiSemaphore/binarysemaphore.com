@@ -71,6 +71,7 @@ describe("subdomain registries", () => {
   it("maps the resume app subdomain to its base path", () => {
     expect(APP_SUBDOMAINS.get("resume")).toBe("/resume");
     expect(appBasePath("resume")).toBe("/resume");
+    expect(appBasePath("learn")).toBe("/learn");
     expect(appBasePath("inode")).toBeNull();
     expect(appBasePath(null)).toBeNull();
   });
