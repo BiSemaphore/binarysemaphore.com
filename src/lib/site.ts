@@ -223,8 +223,10 @@ export const site: SiteConfig = {
   // Company LinkedIn page.
   linkedin: "https://www.linkedin.com/company/binary-semaphore/",
   org: "https://github.com/BiSemaphore",
-  // TODO(shahid): paste the permanent Discord invite. Empty hides the links.
-  discord: "",
+  // TODO(shahid): this invite expires 2026-09-30. Replace it with a
+  // never-expiring one (Server Settings -> Invites -> Edit -> Expire After:
+  // Never), or every Discord link on the site breaks that day.
+  discord: "https://discord.gg/cKtUvbC5K",
   instagram: "https://www.instagram.com/binary.semaphore/",
   instagramHandle: "binary.semaphore",
 
