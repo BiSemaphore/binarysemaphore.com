@@ -90,7 +90,27 @@ one, or delete a lapsed one to start over.
 Note the same gap exists on `public.resumes` and `public.contact_messages`,
 which were created before this was understood and carry no explicit grants.
 
-Signed URLs last **60 seconds**. They cannot be revoked before they expire, so
+### Watermarks
+
+Two, doing different jobs.
+
+**Brand, baked in at build time.** `BINARYSEMAPHORE.COM/LEARN` sits in the
+running head of every page, added in `header_tpl` in the `learnings` repo's
+`build.sh`. Same on every copy, costs nothing at download time. Changing it
+means rebuilding and re-uploading the PDFs.
+
+**Per reader, applied at download.** `src/lib/learn/watermark.ts` stamps
+"Prepared for <email> · Binary Semaphore · <date>" into the bottom margin of
+every page with `pdf-lib`. It does not stop anyone sharing the file, and is not
+meant to: it makes a shared copy traceable. Roughly 200ms for a 71-page
+notebook, and the output is smaller than the input because pdf-lib re-saves with
+object streams.
+
+Because the file is now personalised, the download route streams the bytes
+rather than redirecting to a signed URL, and the response is
+`Cache-Control: private, no-store`. A stamping failure falls back to the
+unstamped file: an entitled reader must not lose their download over a
+watermark. They cannot be revoked before they expire, so
 the window is deliberately short.
 
 ## Publishing a notebook
