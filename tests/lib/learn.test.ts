@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, it, expect } from "vitest";
 import {
@@ -10,10 +10,14 @@ import {
   totalPages,
 } from "@/lib/learn";
 
-const migration = readFileSync(
-  path.join(process.cwd(), "supabase/migrations/0003_learn.sql"),
-  "utf8",
-);
+const migrationsDir = path.join(process.cwd(), "supabase/migrations");
+
+/** Every migration concatenated, so a slug retired in a later one is visible. */
+const migration = readdirSync(migrationsDir)
+  .filter((f) => f.endsWith(".sql"))
+  .sort()
+  .map((f) => readFileSync(path.join(migrationsDir, f), "utf8"))
+  .join("\n");
 
 const schema = readFileSync(
   path.join(process.cwd(), "supabase/schema.sql"),
@@ -92,13 +96,37 @@ describe("learn_products stays in step with the catalog", () => {
     expect(schema).toContain("public.has_learn_access");
   });
 
-  it("seeds nothing the catalog does not have", () => {
+  // A slug can leave the catalog (a notebook is retired) but its row must stay,
+  // because entitlements reference it. What must not happen is a row that is
+  // still active while the site no longer lists it: start_learn_trial() would
+  // hand out access to something with no page.
+  it("deactivates any seeded slug the catalog no longer lists", () => {
     const seeded = [...migration.matchAll(/^ {2}\('([a-z0-9-]+)',/gm)].map(
       (m) => m[1],
     );
-    expect(seeded.length).toBe(notebooks.length);
+    const retired = new Set(
+      [
+        ...migration.matchAll(
+          /set\s+active\s*=\s*false\s+where\s+id\s*=\s*'([a-z0-9-]+)'/gm,
+        ),
+      ].map((m) => m[1]),
+    );
+
     for (const slug of seeded) {
-      expect(getNotebook(slug), slug).toBeDefined();
+      if (getNotebook(slug)) continue;
+      expect(retired, `${slug} is seeded, absent from the catalog, and never retired`).toContain(slug);
+    }
+  });
+
+  it("does not retire a notebook that is still on the site", () => {
+    const retired = [
+      ...migration.matchAll(
+        /set\s+active\s*=\s*false\s+where\s+id\s*=\s*'([a-z0-9-]+)'/gm,
+      ),
+    ].map((m) => m[1]);
+
+    for (const slug of retired) {
+      expect(getNotebook(slug), `${slug} is retired but still in the catalog`).toBeUndefined();
     }
   });
 });

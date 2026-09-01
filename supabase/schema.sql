@@ -305,3 +305,9 @@ insert into public.learn_products (id, title) values
   ('scaling', 'Scaling and Performance'),
   ('real-time-backends', 'Real-Time Backends')
 on conflict (id) do update set title = excluded.title;
+
+-- Retired: see supabase/migrations/0004_retire_code_review.sql. Kept as an
+-- inactive row rather than deleted, because entitlements reference it.
+update public.learn_products
+set active = false
+where id = 'full-stack-code-review';
