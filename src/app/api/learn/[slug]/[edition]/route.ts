@@ -2,11 +2,9 @@ import { NextResponse } from "next/server";
 import { getNotebook, objectKey, editions } from "@/lib/learn";
 import type { EditionId } from "@/lib/learn";
 import { canRead, getAccess } from "@/lib/learn/access";
+import { stampForReader } from "@/lib/learn/watermark";
+import { getCurrentUser } from "@/utils/supabase/auth";
 import { createClient, isSupabaseConfigured } from "@/utils/supabase/server";
-
-/** How long a download link stays valid. Long enough to click, short enough
- * that a copied URL is worthless by the time it is shared. */
-const SIGNED_URL_TTL_SECONDS = 60;
 
 function isEditionId(value: string): value is EditionId {
   return editions.some((e) => e.id === value);
@@ -15,12 +13,14 @@ function isEditionId(value: string): value is EditionId {
 /**
  * GET /api/learn/<slug>/<edition>
  *
- * Hands out a short-lived signed URL for one notebook PDF and redirects to it.
+ * Streams one notebook PDF, stamped with who it was prepared for.
  *
- * This route is a convenience, not the security boundary. The bucket is private
- * and its RLS policy re-checks `has_learn_access()` against the first segment of
- * the object path, so `createSignedUrl` fails for a user without a live grant
- * even if the check below were wrong. See supabase/migrations/0003_learn.sql.
+ * The download is served through this route rather than by redirecting to a
+ * signed URL, because the stamp has to be applied per reader. The bucket stays
+ * private either way: `download()` runs as the signed-in user, and the bucket's
+ * RLS policy re-checks `has_learn_access()` against the first segment of the
+ * object path, so the fetch fails for a user without a live grant even if the
+ * check below were wrong. See supabase/migrations/0003_learn.sql.
  */
 export async function GET(
   _request: Request,
@@ -64,23 +64,37 @@ export async function GET(
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.storage
-    .from("notebooks")
-    .createSignedUrl(key, SIGNED_URL_TTL_SECONDS, {
-      // Content-Disposition: attachment, with a sensible file name.
-      download: notebook.assets[edition]!.file,
-    });
+  const { data, error } = await supabase.storage.from("notebooks").download(key);
 
-  if (error || !data?.signedUrl) {
+  if (error || !data) {
     return NextResponse.json(
       { error: "That file is not available right now." },
       { status: 502 },
     );
   }
 
-  // 302, and never cached: the URL it points at is dead in a minute.
-  return NextResponse.redirect(data.signedUrl, {
-    status: 302,
-    headers: { "Cache-Control": "no-store" },
+  // Whatever the reader would recognise as themselves. Falls back to the user
+  // id when the provider gave us no email, so a copy is always attributable.
+  const user = await getCurrentUser();
+  const identity = user?.email ?? user?.id ?? "an unnamed account";
+
+  let pdf: Uint8Array;
+  try {
+    pdf = await stampForReader(await data.arrayBuffer(), identity);
+  } catch {
+    // A stamping failure must not cost an entitled reader their download.
+    pdf = new Uint8Array(await data.arrayBuffer());
+  }
+
+  const fileName = notebook.assets[edition]!.file;
+
+  return new NextResponse(pdf as unknown as BodyInit, {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="${fileName}"`,
+      "Content-Length": String(pdf.byteLength),
+      // Personalised, so it must never be cached by a shared cache.
+      "Cache-Control": "private, no-store",
+    },
   });
 }
