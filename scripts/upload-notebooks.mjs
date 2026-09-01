@@ -68,6 +68,8 @@ const SOURCE_DIRS = {
   security: "05-security",
   scaling: "06-scaling",
   "real-time-backends": "07-real-time",
+  "rest-api-design": "08-rest-api",
+  "design-principles": "09-design-principles",
 };
 
 const dryRun = process.argv.includes("--dry-run");
