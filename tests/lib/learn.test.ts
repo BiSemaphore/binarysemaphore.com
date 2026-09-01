@@ -8,6 +8,7 @@ import {
   notebooks,
   objectKey,
   totalPages,
+  type Notebook,
 } from "@/lib/learn";
 
 const migrationsDir = path.join(process.cwd(), "supabase/migrations");
@@ -139,10 +140,15 @@ describe("objectKey", () => {
     );
   });
 
-  it("returns null for an edition that was never built", () => {
-    const notebook = getNotebook("real-time-backends")!;
-    expect(notebook.assets.tablet).toBeUndefined();
-    expect(objectKey(notebook, "tablet")).toBeNull();
+  // Constructed rather than pinned to a real notebook: which editions exist
+  // changes every time the books are rebuilt, and that is not what this checks.
+  it("returns null for an edition a notebook does not have", () => {
+    const partial: Notebook = {
+      ...getNotebook("postgres")!,
+      assets: { reading: { file: "Only-Reading.pdf", bytes: 1 } },
+    };
+    expect(objectKey(partial, "reading")).toBe("postgres/Only-Reading.pdf");
+    expect(objectKey(partial, "tablet")).toBeNull();
   });
 });
 
