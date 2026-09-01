@@ -78,10 +78,10 @@ export const notebooks: Notebook[] = [
     number: "00",
     title: "Question Bank",
     subtitle:
-      "234 prompts pulled from notebooks 01 to 07, answers at the back",
+      "253 prompts pulled from notebooks 01 to 09, answers at the back",
     blurb:
-      "Work in pen. A prompt you can only half answer is the whole point of the exercise: mark it, and go back to the section it names. Generated from every other notebook, so it stays in step with them.",
-    pages: 135,
+      "Work in pen. A prompt you can only half answer is the whole point of the exercise: mark it, and go back to the section it names. Regenerated from every other notebook, so it stays in step with them.",
+    pages: 150,
     contents: [
       "1. Opening",
       "2. Framing the problem",
@@ -145,18 +145,27 @@ export const notebooks: Notebook[] = [
       "60. Delivery: gaps, storms and fan-out",
       "61. The parts the lecture left out",
       "62. Final review",
-      "63. Answers, Notebook 01",
-      "64. Answers, Notebook 02",
-      "65. Answers, Notebook 03",
-      "66. Answers, Notebook 04",
-      "67. Answers, Notebook 05",
-      "68. Answers, Notebook 06",
-      "69. Answers, Notebook 07",
+      "63. Opening",
+      "64. The standard exists so you do not have to negotiate",
+      "65. Opening",
+      "66. The words that came before the acronym",
+      "67. The five",
+      "68. Using them without being used by them",
+      "69. The interview itself",
+      "70. Answers, Notebook 01",
+      "71. Answers, Notebook 02",
+      "72. Answers, Notebook 03",
+      "73. Answers, Notebook 04",
+      "74. Answers, Notebook 05",
+      "75. Answers, Notebook 06",
+      "76. Answers, Notebook 07",
+      "77. Answers, Notebook 08",
+      "78. Answers, Notebook 09",
     ],
     assets: {
-      reading: { file: "Question-Bank-Reading.pdf", bytes: 2393018 },
-      print: { file: "Question-Bank-Print.pdf", bytes: 3309606 },
-      tablet: { file: "Question-Bank-Tablet.pdf", bytes: 4737045 },
+      reading: { file: "Question-Bank-Reading.pdf", bytes: 2818488 },
+      print: { file: "Question-Bank-Print.pdf", bytes: 4080973 },
+      tablet: { file: "Question-Bank-Tablet.pdf", bytes: 5905901 },
     },
   },
   {
@@ -207,9 +216,9 @@ export const notebooks: Notebook[] = [
       "Appendix C. Self-test",
     ],
     assets: {
-      reading: { file: "Large-Scale-Data-Ingestion-Reading.pdf", bytes: 1808224 },
-      print: { file: "Large-Scale-Data-Ingestion-Print.pdf", bytes: 2729849 },
-      tablet: { file: "Large-Scale-Data-Ingestion-Tablet.pdf", bytes: 3291267 },
+      reading: { file: "Large-Scale-Data-Ingestion-Reading.pdf", bytes: 1812365 },
+      print: { file: "Large-Scale-Data-Ingestion-Print.pdf", bytes: 2585802 },
+      tablet: { file: "Large-Scale-Data-Ingestion-Tablet.pdf", bytes: 3088390 },
     },
   },
   {
@@ -279,9 +288,9 @@ export const notebooks: Notebook[] = [
       "Appendix C. Self-test",
     ],
     assets: {
-      reading: { file: "Object-Storage-Reading.pdf", bytes: 2272763 },
-      print: { file: "Object-Storage-Print.pdf", bytes: 3507932 },
-      tablet: { file: "Object-Storage-Tablet.pdf", bytes: 4562978 },
+      reading: { file: "Object-Storage-Reading.pdf", bytes: 2278606 },
+      print: { file: "Object-Storage-Print.pdf", bytes: 3236643 },
+      tablet: { file: "Object-Storage-Tablet.pdf", bytes: 4229404 },
     },
   },
   {
@@ -347,9 +356,9 @@ export const notebooks: Notebook[] = [
       "Appendix C. Self-test",
     ],
     assets: {
-      reading: { file: "Postgres-Reading.pdf", bytes: 2091035 },
-      print: { file: "Postgres-Print.pdf", bytes: 3124823 },
-      tablet: { file: "Postgres-Tablet.pdf", bytes: 4005262 },
+      reading: { file: "Postgres-Reading.pdf", bytes: 2095920 },
+      print: { file: "Postgres-Print.pdf", bytes: 3139141 },
+      tablet: { file: "Postgres-Tablet.pdf", bytes: 4021915 },
     },
   },
   {
@@ -400,9 +409,9 @@ export const notebooks: Notebook[] = [
       "Appendix C. Self-test",
     ],
     assets: {
-      reading: { file: "Backend-Security-Reading.pdf", bytes: 1631002 },
-      print: { file: "Backend-Security-Print.pdf", bytes: 2285416 },
-      tablet: { file: "Backend-Security-Tablet.pdf", bytes: 2638682 },
+      reading: { file: "Backend-Security-Reading.pdf", bytes: 1634760 },
+      print: { file: "Backend-Security-Print.pdf", bytes: 2293363 },
+      tablet: { file: "Backend-Security-Tablet.pdf", bytes: 2648466 },
     },
   },
   {
@@ -464,9 +473,9 @@ export const notebooks: Notebook[] = [
       "Appendix C. Final review",
     ],
     assets: {
-      reading: { file: "Scaling-and-Performance-Reading.pdf", bytes: 2368293 },
-      print: { file: "Scaling-and-Performance-Print.pdf", bytes: 3793157 },
-      tablet: { file: "Scaling-and-Performance-Tablet.pdf", bytes: 5096111 },
+      reading: { file: "Scaling-and-Performance-Reading.pdf", bytes: 2373735 },
+      print: { file: "Scaling-and-Performance-Print.pdf", bytes: 3809134 },
+      tablet: { file: "Scaling-and-Performance-Tablet.pdf", bytes: 5114928 },
     },
   },
   {
@@ -531,8 +540,9 @@ export const notebooks: Notebook[] = [
       "Appendix C. Self-test",
     ],
     assets: {
-      reading: { file: "Real-Time-Backends-Reading.pdf", bytes: 2480974 },
-      print: { file: "Real-Time-Backends-Print.pdf", bytes: 3578823 },
+      reading: { file: "Real-Time-Backends-Reading.pdf", bytes: 2487020 },
+      print: { file: "Real-Time-Backends-Print.pdf", bytes: 3382139 },
+      tablet: { file: "Real-Time-Backends-Tablet.pdf", bytes: 4402860 },
     },
   },
 ];
