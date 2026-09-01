@@ -64,7 +64,6 @@ const SOURCE_DIRS = {
   "question-bank": "00-questions",
   "large-scale-ingestion": "01-ingestion",
   "object-storage": "02-object-storage",
-  "full-stack-code-review": "03-code-review",
   postgres: "04-postgres",
   security: "05-security",
   scaling: "06-scaling",
