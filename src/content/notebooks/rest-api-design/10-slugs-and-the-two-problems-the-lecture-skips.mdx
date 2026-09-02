@@ -1,0 +1,71 @@
+---
+number: "10"
+title: "Slugs, and the two problems the lecture skips"
+part: "II"
+partTitle: "Resources, and the URL that names them"
+---
+A <Pink>slug</Pink> is a human-readable identifier derived from a resource's own content,
+used in a URL in place of an opaque id. The transformation the lecture gives is
+correct:
+
+```text
+   "Harry Potter"  ──▶  lowercase   ──▶  "harry potter"
+                   ──▶  spaces to hyphens  ──▶  "harry-potter"
+
+   /books/harry-potter
+```
+
+**Lowercase**, because the URL will travel across systems that disagree about
+case: some path handling is case-sensitive, some is not, and a mixed-case URL
+eventually becomes two URLs for one thing. **Hyphens, not underscores**, partly by
+convention and partly because search engines have long treated hyphens as word
+separators and underscores as joiners. **No spaces**, which would have to be
+percent-encoded as `%20` and become unreadable, which defeats the entire purpose.
+
+That is where the lecture stops, and slugs have two problems that will reach you
+within a year.
+
+**Problem one: slugs collide.** Two books called *Foundation*. Two organisations
+called *Acme*. Ids are unique by construction; <Peach>slugs are unique only if you
+force them to be</Peach>, and forcing them means either a per-scope uniqueness
+constraint or an increasing suffix, `acme-2`, which is ugly and leaks how many
+collisions you have had.
+
+There is also a collision you will not expect: <Mint>a slug can collide with your own
+routes.</Mint> If `/books/new` renders a creation form and a book is titled "New", its
+slug is `new` and the two are now the same URL.
+
+**Problem two: slugs change.** The title is edited, so the slug should follow, and
+every link anyone saved now points at nothing. Ids never do this. <Peach>A slug is
+derived from mutable content, which makes it a mutable identifier, and mutable
+identifiers are not identifiers.</Peach>
+
+**Three practical answers**, in the order most teams should consider them:
+
+| Approach | Shape | Trade |
+|---|---|---|
+| Hybrid | `/books/44-harry-potter` | Route on the id, ignore the slug. Never breaks. Used by Stack Overflow and Medium |
+| Immutable slug | Set once at creation, never regenerate | Simple, but the URL drifts from the title |
+| Slug plus redirect | Keep old slugs, `301` to the current one | Correct and the most work: you need a history table |
+
+<Mint>The hybrid is the default worth reaching for.</Mint> The id makes the route
+unambiguous and permanent, the slug makes it readable and helps search, and
+because the server keys on the number, an out-of-date or hand-mangled slug still
+resolves.
+
+<DoThis>
+
+If you use bare slugs, add a uniqueness constraint in the database, a reserved
+word list covering your own route names, and a decision written down about what
+happens when the title changes. <Mint>All three are cheap on day one and expensive
+after launch, because by then the answer has to preserve links that exist.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>A slug is a display convenience, not an identifier.</Peach> Route on something that
+cannot change, and let the readable part be decoration that you are free to
+correct.
+
+</KeyIdea>

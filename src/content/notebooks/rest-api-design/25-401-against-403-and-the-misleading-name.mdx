@@ -1,0 +1,55 @@
+---
+number: "25"
+title: "401 against 403, and the misleading name"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+The most commonly confused pair in HTTP, made worse by the fact that <Peach>`401` is
+named "Unauthorized" and means unauthenticated.</Peach>
+
+```text
+   401 Unauthorized    I do not know who you are.
+                       No credentials, expired token, bad signature
+
+   403 Forbidden       I know exactly who you are, and you may not do this
+```
+
+The test is one question: <Mint>would different credentials help?</Mint> If yes, it is
+`401`, and the client's correct response is to log in or refresh its token. If
+no, it is `403`, and retrying with the same identity will never work.
+
+**`401` has a requirement people forget.** RFC 9110 says a `401` response must
+include a `WWW-Authenticate` header naming the scheme:
+
+```text
+   401 Unauthorized
+   WWW-Authenticate: Bearer realm="api", error="invalid_token"
+```
+
+Without it the response is technically malformed. In practice its value is the
+`error` parameter, which lets a client distinguish an expired token, where the
+fix is to refresh silently, from an invalid one, where the fix is to send the
+user back to a login screen. <Peach>Those two look identical without it, and the
+difference is whether your users get logged out at random.</Peach>
+
+**Where `403` and `404` overlap.** <Ref to="#23-404-and-the-collection-that-is-empty">Section 23</Ref> covered it: if telling the truth
+about permission also confirms that a resource exists, `404` may be the better
+answer. The usual policy is <Mint>`403` when the client can already see the resource
+exists, `404` when confirming existence is itself a leak.</Mint> <Ref to="/security">Notebook 05</Ref> covers
+authorisation properly; this book only decides which number comes back.
+
+<Signal>
+
+"`401` is authentication, `403` is authorisation, and the test is whether
+different credentials would help. On `401` I always send `WWW-Authenticate` with
+an error code, so clients can tell an expired token from a revoked one and only
+one of those interrupts the user."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Would different credentials help? Yes is `401`, no is `403`.</Peach> The name of
+`401` is wrong and knowing that it is wrong is most of the answer.
+
+</KeyIdea>

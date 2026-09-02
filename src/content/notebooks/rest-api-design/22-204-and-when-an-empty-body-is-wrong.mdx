@@ -1,0 +1,58 @@
+---
+number: "22"
+title: "204, and when an empty body is wrong"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+`204 No Content` means the request succeeded and there is deliberately nothing to
+send back. It is the standard response to a successful `DELETE`, which is what
+the lecture demonstrates.
+
+Two rules follow from the name, and both are absolute:
+
+```text
+   204 has NO body           not {}, not null, not an empty string.
+                             nothing after the headers
+
+   204 is still success      it is in the 2xx family. a client treating
+                             any non-200 as failure is broken
+```
+
+**The interesting question is when `204` is the wrong choice**, and the answer is
+"more often than people use it".
+
+After an update, `204` is legal and unhelpful. The server has just recomputed the
+resource: it has the new `updatedAt`, any fields a trigger or default touched, and
+the new version. <Peach>Returning nothing forces every client into a `GET` it should
+not have needed</Peach>, and the two requests can interleave with someone else's write,
+so what the client eventually displays may not be what it just wrote.
+
+| Operation | Return | Why |
+|---|---|---|
+| `DELETE` | `204` | There is genuinely nothing left to describe |
+| `PATCH`, `PUT` | <Peach>`200` with the updated resource</Peach> | The client needs the new state and you already have it |
+| Custom action | `200` with the affected resource | Same reason. The lecture does this correctly |
+| Async action | `202`, <Ref to="#28-202-429-and-the-responses-that-ask-the-client-to-wait">section 28</Ref> | It has not happened yet |
+
+The lecture returns `200` with the updated organisation after its `PATCH`, which
+is right, and it is worth understanding that this is a choice rather than an
+accident.
+
+<Trap>
+
+<Rose>"`204` is more efficient because it sends less data."</Rose>
+
+It sends less data on that request and causes a second one. <Mint>A response body of
+a few hundred bytes is far cheaper than an additional round trip</Mint>, which on a
+mobile connection costs a hundred milliseconds or more before a single byte
+moves. The saving is real only where the client provably does not need the new
+state, which for a delete is true and for an update almost never is.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Use `204` when there is nothing to say, not when you cannot be bothered to say
+it.</Peach> A delete has nothing to return. An update always does.
+
+</KeyIdea>

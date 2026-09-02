@@ -1,0 +1,61 @@
+---
+number: "31"
+title: "The envelope: what wraps your data"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+The lecture returns this shape, and it is a reasonable one:
+
+```text
+   { "data":       [ ... ],
+     "total":      50,
+     "page":       1,
+     "totalPages": 5 }
+```
+
+The alternative is to return a bare array and put the pagination information in
+headers, which is what GitHub does:
+
+```text
+   [ ... ]
+   Link: </organizations?page=2>; rel="next",
+         </organizations?page=5>; rel="last"
+```
+
+| | Envelope | Bare array plus headers |
+|---|---|---|
+| Metadata is visible in the body | <Peach>Yes</Peach> | No, and many clients never read headers |
+| Works in a browser address bar | Yes | Partly |
+| Adds a field to unwrap everywhere | <Peach>Yes, and clients must</Peach> | No |
+| Room for future metadata | Plenty | Header sprawl |
+| Follows <Ref to="#5-the-constraint-nobody-implements">section 5</Ref>'s hypermedia | No | <Peach>Yes, this is the one place it pays</Peach> |
+
+<Mint>Use the envelope.</Mint> It is what most consumers expect, it keeps the pagination
+state visible in the thing they are already looking at, and it leaves room to add
+metadata later without inventing headers. The `Link` header approach is more
+correct by the hypermedia argument and asks more of clients than most of them
+give.
+
+**One thing worth taking from the header approach: send the cursors or links, not
+only the numbers.** <Peach>If the client has to construct the next request by
+incrementing a number you gave it, you can never change how paging works.</Peach> If
+you send a `next` value it treats as opaque, <Ref to="#33-keyset-pagination">section 33</Ref>'s migration is invisible
+to it.
+
+```text
+   { "data": [ ... ],
+     "page": { "next": "eyJpZCI6Ijhm...", "hasMore": true } }
+```
+
+**Whatever you choose, the envelope is a decision you make once for every list
+endpoint in the API.** A consumer who unwraps `data` on one endpoint will write
+the same unwrapping for the next, and <Rose>an endpoint that returns a bare array
+where the others return an envelope will break their generic client code.</Rose>
+
+<KeyIdea>
+
+<Peach>Pick one envelope and use it on every list endpoint.</Peach> Send an opaque cursor
+rather than only a page number, because that is the one decision here that
+determines whether you can change pagination later.
+
+</KeyIdea>

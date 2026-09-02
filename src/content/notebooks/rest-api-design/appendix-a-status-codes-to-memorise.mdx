@@ -1,0 +1,38 @@
+---
+number: ""
+title: "Appendix A. Status codes to memorise"
+part: "IX"
+partTitle: "Appendices"
+---
+Eleven codes cover essentially every API. The right-hand column is the question
+each one answers, which is how to recall them under pressure.
+
+| Code | Name | The question it answers |
+|---|---|---|
+| `200` | OK | It worked, here is the result |
+| `201` | Created | A new thing exists. <Peach>Send `Location`</Peach> |
+| `202` | Accepted | Taken, not finished. Send somewhere to poll |
+| `204` | No Content | It worked and there is nothing to say |
+| `400` | Bad Request | I could not parse it. Developer error |
+| `401` | Unauthorized | <Peach>I do not know who you are.</Peach> Send `WWW-Authenticate` |
+| `403` | Forbidden | I know who you are and no |
+| `404` | Not Found | That specific thing is not here. <Peach>Never for empty lists</Peach> |
+| `409` | Conflict | Valid, but conflicts with current state |
+| `422` | Unprocessable Content | I parsed it and refused it. User error |
+| `429` | Too Many Requests | Slow down. <Peach>Send `Retry-After`</Peach> |
+
+Three more worth recognising: `304 Not Modified` for conditional reads,
+`412 Precondition Failed` for a stale `If-Match`, and `503 Service Unavailable`
+with `Retry-After` for temporary overload.
+
+```text
+   2xx   it worked
+   3xx   look somewhere else, or you already have it
+   4xx   you did something wrong        ← retrying identically will not help
+   5xx   I did something wrong          ← retrying might
+```
+
+<Peach>That last distinction is the one that matters most to a client</Peach>, because it is
+the difference between fixing a request and retrying it. A `500` returned for a
+validation failure tells every client in the world to retry a request that can
+never succeed.

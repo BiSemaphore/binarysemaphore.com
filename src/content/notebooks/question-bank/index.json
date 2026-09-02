@@ -18,8 +18,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "72-answers-notebook-03",
-      "73-answers-notebook-04"
+      "80-answers-notebook-03",
+      "81-answers-notebook-04"
     ]
   },
   {
@@ -31,10 +31,10 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "70-answers-notebook-01",
-      "71-answers-notebook-02",
-      "75-answers-notebook-06",
-      "76-answers-notebook-07"
+      "78-answers-notebook-01",
+      "79-answers-notebook-02",
+      "83-answers-notebook-06",
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -50,9 +50,9 @@
       "s:9-the-interview-itself"
     ],
     "backrefs": [
-      "70-answers-notebook-01",
-      "77-answers-notebook-08",
-      "78-answers-notebook-09"
+      "78-answers-notebook-01",
+      "85-answers-notebook-08",
+      "86-answers-notebook-09"
     ]
   },
   {
@@ -64,9 +64,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "71-answers-notebook-02",
-      "72-answers-notebook-03",
-      "75-answers-notebook-06"
+      "79-answers-notebook-02",
+      "80-answers-notebook-03",
+      "83-answers-notebook-06"
     ]
   },
   {
@@ -78,15 +78,15 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "70-answers-notebook-01",
-      "71-answers-notebook-02",
-      "72-answers-notebook-03",
-      "73-answers-notebook-04",
-      "74-answers-notebook-05",
-      "75-answers-notebook-06",
-      "76-answers-notebook-07",
-      "77-answers-notebook-08",
-      "78-answers-notebook-09"
+      "78-answers-notebook-01",
+      "79-answers-notebook-02",
+      "80-answers-notebook-03",
+      "81-answers-notebook-04",
+      "82-answers-notebook-05",
+      "83-answers-notebook-06",
+      "84-answers-notebook-07",
+      "85-answers-notebook-08",
+      "86-answers-notebook-09"
     ]
   },
   {
@@ -101,8 +101,8 @@
       "s:20-opening"
     ],
     "backrefs": [
-      "70-answers-notebook-01",
-      "71-answers-notebook-02"
+      "78-answers-notebook-01",
+      "79-answers-notebook-02"
     ]
   },
   {
@@ -116,8 +116,8 @@
     "backrefs": [
       "3-ingestion-getting-the-bytes-in",
       "45-finding-the-bottleneck",
-      "70-answers-notebook-01",
-      "72-answers-notebook-03"
+      "78-answers-notebook-01",
+      "80-answers-notebook-03"
     ]
   },
   {
@@ -129,8 +129,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "71-answers-notebook-02",
-      "73-answers-notebook-04"
+      "79-answers-notebook-02",
+      "81-answers-notebook-04"
     ]
   },
   {
@@ -146,11 +146,12 @@
     ],
     "backrefs": [
       "3-ingestion-getting-the-bytes-in",
-      "70-answers-notebook-01",
-      "72-answers-notebook-03",
-      "75-answers-notebook-06",
-      "76-answers-notebook-07",
-      "78-answers-notebook-09"
+      "78-answers-notebook-01",
+      "80-answers-notebook-03",
+      "83-answers-notebook-06",
+      "84-answers-notebook-07",
+      "85-answers-notebook-08",
+      "86-answers-notebook-09"
     ]
   },
   {
@@ -165,7 +166,7 @@
     ],
     "backrefs": [
       "45-finding-the-bottleneck",
-      "71-answers-notebook-02"
+      "79-answers-notebook-02"
     ]
   },
   {
@@ -179,12 +180,12 @@
       "n:object-storage"
     ],
     "backrefs": [
-      "70-answers-notebook-01",
-      "71-answers-notebook-02",
-      "72-answers-notebook-03",
-      "73-answers-notebook-04",
-      "75-answers-notebook-06",
-      "76-answers-notebook-07"
+      "78-answers-notebook-01",
+      "79-answers-notebook-02",
+      "80-answers-notebook-03",
+      "81-answers-notebook-04",
+      "83-answers-notebook-06",
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -196,8 +197,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "71-answers-notebook-02",
-      "74-answers-notebook-05"
+      "79-answers-notebook-02",
+      "82-answers-notebook-05"
     ]
   },
   {
@@ -209,8 +210,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "71-answers-notebook-02",
-      "75-answers-notebook-06"
+      "79-answers-notebook-02",
+      "83-answers-notebook-06"
     ]
   },
   {
@@ -222,8 +223,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "72-answers-notebook-03",
-      "74-answers-notebook-05"
+      "80-answers-notebook-03",
+      "82-answers-notebook-05"
     ]
   },
   {
@@ -235,9 +236,10 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "68-using-them-without-being-used-by-them",
-      "70-answers-notebook-01",
-      "78-answers-notebook-09"
+      "76-using-them-without-being-used-by-them",
+      "78-answers-notebook-01",
+      "85-answers-notebook-08",
+      "86-answers-notebook-09"
     ]
   },
   {
@@ -252,10 +254,10 @@
       "s:31-why-a-database-at-all"
     ],
     "backrefs": [
-      "70-answers-notebook-01",
-      "71-answers-notebook-02",
-      "73-answers-notebook-04",
-      "76-answers-notebook-07"
+      "78-answers-notebook-01",
+      "79-answers-notebook-02",
+      "81-answers-notebook-04",
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -267,9 +269,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "70-answers-notebook-01",
-      "72-answers-notebook-03",
-      "76-answers-notebook-07"
+      "78-answers-notebook-01",
+      "80-answers-notebook-03",
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -281,10 +283,11 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "69-the-interview-itself",
-      "70-answers-notebook-01",
-      "71-answers-notebook-02",
-      "73-answers-notebook-04"
+      "77-the-interview-itself",
+      "78-answers-notebook-01",
+      "79-answers-notebook-02",
+      "81-answers-notebook-04",
+      "85-answers-notebook-08"
     ]
   },
   {
@@ -298,10 +301,11 @@
       "n:object-storage"
     ],
     "backrefs": [
-      "70-answers-notebook-01",
-      "72-answers-notebook-03",
-      "75-answers-notebook-06",
-      "76-answers-notebook-07"
+      "78-answers-notebook-01",
+      "80-answers-notebook-03",
+      "83-answers-notebook-06",
+      "84-answers-notebook-07",
+      "85-answers-notebook-08"
     ]
   },
   {
@@ -314,7 +318,8 @@
     "refs": [],
     "backrefs": [
       "6-processing",
-      "70-answers-notebook-01"
+      "78-answers-notebook-01",
+      "85-answers-notebook-08"
     ]
   },
   {
@@ -327,9 +332,9 @@
     "refs": [],
     "backrefs": [
       "47-caching",
-      "70-answers-notebook-01",
-      "71-answers-notebook-02",
-      "72-answers-notebook-03"
+      "78-answers-notebook-01",
+      "79-answers-notebook-02",
+      "80-answers-notebook-03"
     ]
   },
   {
@@ -341,9 +346,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "71-answers-notebook-02",
-      "76-answers-notebook-07",
-      "77-answers-notebook-08"
+      "79-answers-notebook-02",
+      "84-answers-notebook-07",
+      "85-answers-notebook-08"
     ]
   },
   {
@@ -355,8 +360,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "70-answers-notebook-01",
-      "72-answers-notebook-03"
+      "78-answers-notebook-01",
+      "80-answers-notebook-03",
+      "85-answers-notebook-08"
     ]
   },
   {
@@ -368,10 +374,10 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "71-answers-notebook-02",
-      "74-answers-notebook-05",
-      "75-answers-notebook-06",
-      "76-answers-notebook-07"
+      "79-answers-notebook-02",
+      "82-answers-notebook-05",
+      "83-answers-notebook-06",
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -383,7 +389,7 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "70-answers-notebook-01"
+      "78-answers-notebook-01"
     ]
   },
   {
@@ -396,8 +402,8 @@
     "refs": [],
     "backrefs": [
       "48-more-machines",
-      "70-answers-notebook-01",
-      "76-answers-notebook-07"
+      "78-answers-notebook-01",
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -409,8 +415,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "70-answers-notebook-01",
-      "75-answers-notebook-06"
+      "78-answers-notebook-01",
+      "83-answers-notebook-06",
+      "85-answers-notebook-08"
     ]
   },
   {
@@ -422,7 +429,7 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "71-answers-notebook-02"
+      "79-answers-notebook-02"
     ]
   },
   {
@@ -436,8 +443,8 @@
       "s:31-why-a-database-at-all"
     ],
     "backrefs": [
-      "75-answers-notebook-06",
-      "76-answers-notebook-07"
+      "83-answers-notebook-06",
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -452,8 +459,8 @@
     ],
     "backrefs": [
       "43-final-review",
-      "71-answers-notebook-02",
-      "73-answers-notebook-04"
+      "79-answers-notebook-02",
+      "81-answers-notebook-04"
     ]
   },
   {
@@ -479,8 +486,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "73-answers-notebook-04",
-      "76-answers-notebook-07"
+      "81-answers-notebook-04",
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -492,7 +499,7 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "76-answers-notebook-07"
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -515,7 +522,7 @@
     "refs": [],
     "backrefs": [
       "50-moving-work-in-space-and-time",
-      "75-answers-notebook-06"
+      "83-answers-notebook-06"
     ]
   },
   {
@@ -527,7 +534,7 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "76-answers-notebook-07"
+      "84-answers-notebook-07"
     ]
   },
   {
@@ -553,7 +560,7 @@
       "n:security"
     ],
     "backrefs": [
-      "71-answers-notebook-02"
+      "79-answers-notebook-02"
     ]
   },
   {
@@ -595,9 +602,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "71-answers-notebook-02",
-      "73-answers-notebook-04",
-      "75-answers-notebook-06"
+      "79-answers-notebook-02",
+      "81-answers-notebook-04",
+      "83-answers-notebook-06"
     ]
   },
   {
@@ -673,7 +680,9 @@
       "n:scaling",
       "s:26-mongodb"
     ],
-    "backrefs": []
+    "backrefs": [
+      "71-the-interview-itself"
+    ]
   },
   {
     "slug": "49-the-stateful-part",
@@ -848,8 +857,92 @@
     "backrefs": []
   },
   {
-    "slug": "65-opening",
+    "slug": "65-resources-and-the-url-that-names-them",
     "number": "65",
+    "title": "Resources, and the URL that names them",
+    "part": "08",
+    "partTitle": "REST API Design",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "66-the-method-is-a-promise-about-repeating",
+    "number": "66",
+    "title": "The method is a promise about repeating",
+    "part": "08",
+    "partTitle": "REST API Design",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "67-the-response-is-the-other-half-of-the-interface",
+    "number": "67",
+    "title": "The response is the other half of the interface",
+    "part": "08",
+    "partTitle": "REST API Design",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "68-the-list-endpoint-is-where-apis-go-wrong",
+    "number": "68",
+    "title": "The list endpoint is where APIs go wrong",
+    "part": "08",
+    "partTitle": "REST API Design",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "69-when-crud-runs-out",
+    "number": "69",
+    "title": "When CRUD runs out",
+    "part": "08",
+    "partTitle": "REST API Design",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "70-consistency-is-the-whole-product",
+    "number": "70",
+    "title": "Consistency is the whole product",
+    "part": "08",
+    "partTitle": "REST API Design",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "71-the-interview-itself",
+    "number": "71",
+    "title": "The interview itself",
+    "part": "08",
+    "partTitle": "REST API Design",
+    "length": 0,
+    "refs": [
+      "s:48-more-machines"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "72-final-review",
+    "number": "72",
+    "title": "Final review",
+    "part": "08",
+    "partTitle": "REST API Design",
+    "length": 0,
+    "refs": [
+      "n:rest-api-design"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "73-opening",
+    "number": "73",
     "title": "Opening",
     "part": "09",
     "partTitle": "Design Principles",
@@ -860,8 +953,8 @@
     "backrefs": []
   },
   {
-    "slug": "66-the-words-that-came-before-the-acronym",
-    "number": "66",
+    "slug": "74-the-words-that-came-before-the-acronym",
+    "number": "74",
     "title": "The words that came before the acronym",
     "part": "09",
     "partTitle": "Design Principles",
@@ -870,8 +963,8 @@
     "backrefs": []
   },
   {
-    "slug": "67-the-five",
-    "number": "67",
+    "slug": "75-the-five",
+    "number": "75",
     "title": "The five",
     "part": "09",
     "partTitle": "Design Principles",
@@ -880,8 +973,8 @@
     "backrefs": []
   },
   {
-    "slug": "68-using-them-without-being-used-by-them",
-    "number": "68",
+    "slug": "76-using-them-without-being-used-by-them",
+    "number": "76",
     "title": "Using them without being used by them",
     "part": "09",
     "partTitle": "Design Principles",
@@ -892,8 +985,8 @@
     "backrefs": []
   },
   {
-    "slug": "69-the-interview-itself",
-    "number": "69",
+    "slug": "77-the-interview-itself",
+    "number": "77",
     "title": "The interview itself",
     "part": "09",
     "partTitle": "Design Principles",
@@ -904,8 +997,8 @@
     "backrefs": []
   },
   {
-    "slug": "70-answers-notebook-01",
-    "number": "70",
+    "slug": "78-answers-notebook-01",
+    "number": "78",
     "title": "Answers, Notebook 01",
     "part": "10",
     "partTitle": "Answers",
@@ -934,8 +1027,8 @@
     "backrefs": []
   },
   {
-    "slug": "71-answers-notebook-02",
-    "number": "71",
+    "slug": "79-answers-notebook-02",
+    "number": "79",
     "title": "Answers, Notebook 02",
     "part": "10",
     "partTitle": "Answers",
@@ -965,8 +1058,8 @@
     "backrefs": []
   },
   {
-    "slug": "72-answers-notebook-03",
-    "number": "72",
+    "slug": "80-answers-notebook-03",
+    "number": "80",
     "title": "Answers, Notebook 03",
     "part": "10",
     "partTitle": "Answers",
@@ -987,8 +1080,8 @@
     "backrefs": []
   },
   {
-    "slug": "73-answers-notebook-04",
-    "number": "73",
+    "slug": "81-answers-notebook-04",
+    "number": "81",
     "title": "Answers, Notebook 04",
     "part": "10",
     "partTitle": "Answers",
@@ -1008,8 +1101,8 @@
     "backrefs": []
   },
   {
-    "slug": "74-answers-notebook-05",
-    "number": "74",
+    "slug": "82-answers-notebook-05",
+    "number": "82",
     "title": "Answers, Notebook 05",
     "part": "10",
     "partTitle": "Answers",
@@ -1024,8 +1117,8 @@
     "backrefs": []
   },
   {
-    "slug": "75-answers-notebook-06",
-    "number": "75",
+    "slug": "83-answers-notebook-06",
+    "number": "83",
     "title": "Answers, Notebook 06",
     "part": "10",
     "partTitle": "Answers",
@@ -1049,8 +1142,8 @@
     "backrefs": []
   },
   {
-    "slug": "76-answers-notebook-07",
-    "number": "76",
+    "slug": "84-answers-notebook-07",
+    "number": "84",
     "title": "Answers, Notebook 07",
     "part": "10",
     "partTitle": "Answers",
@@ -1075,24 +1168,31 @@
     "backrefs": []
   },
   {
-    "slug": "77-answers-notebook-08",
-    "number": "77",
+    "slug": "85-answers-notebook-08",
+    "number": "85",
     "title": "Answers, Notebook 08",
     "part": "10",
     "partTitle": "Answers",
-    "length": 989,
+    "length": 3832,
     "refs": [
       "n:rest-api-design",
       "n:security",
+      "s:15-inside-the-system",
+      "s:18-getting-the-bytes-out",
+      "s:19-final-review",
+      "s:20-opening",
       "s:22-the-node-js-runtime",
+      "s:23-express-and-the-http-boundary",
+      "s:27-kafka",
       "s:3-ingestion-getting-the-bytes-in",
-      "s:5-the-queue"
+      "s:5-the-queue",
+      "s:9-the-interview-itself"
     ],
     "backrefs": []
   },
   {
-    "slug": "78-answers-notebook-09",
-    "number": "78",
+    "slug": "86-answers-notebook-09",
+    "number": "86",
     "title": "Answers, Notebook 09",
     "part": "10",
     "partTitle": "Answers",

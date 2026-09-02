@@ -1,0 +1,72 @@
+---
+number: "19"
+title: "DELETE, and the 404 on the second call"
+part: "III"
+partTitle: "The method is a promise about repeating"
+---
+The lecture's account is right and stops one step short. First `DELETE` removes
+the organisation. Second `DELETE` finds nothing and returns `404`. The lecture
+concludes that the method is still idempotent because no side effect occurred the
+second time, <Peach>and that conclusion is correct</Peach>: idempotence is about server
+state, and the state is the same either way.
+
+The step it does not take is asking what the client is supposed to do with that
+`404`.
+
+**Consider the case that actually happens.** A client sends `DELETE`, the
+connection drops before the response arrives, and the client retries. It receives
+`404`. It now cannot distinguish between three situations:
+
+```text
+   1. my first request succeeded, this 404 confirms it     → success
+   2. someone else deleted it between my two attempts      → fine, probably
+   3. it never existed and my id was wrong                 → a real error
+```
+
+<Peach>The response is honest about the current state and useless for deciding what to
+do.</Peach> That is the design tension, and there are two defensible schools.
+
+| Choice | Argument | Cost |
+|---|---|---|
+| `404` on repeat | Honest: the resource is not there now | Retrying clients cannot tell success from error |
+| `204` on repeat | The requested end state holds, so report success | Hides genuine wrong-id bugs from clients |
+
+<Mint>`404` is the more common choice and the easier one to defend</Mint>, because
+inventing success for a resource you have never seen is its own kind of lie. But
+if your clients are mobile, or anything else that retries aggressively, `204` on
+a repeat is a deliberate and reasonable trade. What is not defensible is choosing
+by accident and never writing it down.
+
+**Two further things `DELETE` has to decide.**
+
+**Hard or soft.** A soft delete sets `deleted_at` and keeps the row. It is
+usually the right call for anything a user can regret, and it changes every other
+endpoint in the API, because <Peach>every list, every lookup and every uniqueness
+constraint must now exclude soft-deleted rows.</Peach> Forgetting one is how deleted
+records reappear in search results. <Ref to="/postgres">Notebook 04</Ref> covers the query and index side.
+
+**Children.** Deleting an organisation with fifty projects is a decision, not an
+implementation detail: refuse with `409 Conflict`, cascade, or orphan them. <Mint>A
+cascade that a consumer did not expect is the most destructive thing an API can
+do quietly.</Mint> If it cascades, say so in the documentation and consider requiring
+an explicit `?cascade=true`.
+
+<Ask>
+
+"Is `DELETE` idempotent if the second call returns 404?"
+
+Yes. Idempotence is defined over the effect on server state, not over the
+response, and after either one call or five the resource is equally gone. The
+follow-up worth volunteering is that <Peach>a retrying client cannot use the `404` to
+tell success from error</Peach>, which is why some APIs return `204` on a repeated
+delete, and why the two schools exist.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>Repeated `DELETE` is idempotent and its response is ambiguous.</Peach> Pick `404` or
+`204` deliberately, write it down, and decide separately what happens to
+children.
+
+</KeyIdea>

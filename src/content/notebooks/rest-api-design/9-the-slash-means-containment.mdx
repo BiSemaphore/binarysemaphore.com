@@ -1,0 +1,69 @@
+---
+number: "9"
+title: "The slash means containment"
+part: "II"
+partTitle: "Resources, and the URL that names them"
+---
+The lecture's framing is right and underused: <Peach>a slash in a path expresses a
+hierarchical relationship.</Peach> Each segment is contained by the one before it.
+
+```text
+   /organizations/8f2a/projects
+    ─────────────  ────  ────────
+    all of them    this   the ones inside this one
+                   one
+```
+
+Read that way, `/organizations/8f2a/projects` says "the projects belonging to
+organisation 8f2a", and it is a different resource from `/projects`, which is all
+of them. Both can legitimately exist.
+
+**The rule the lecture does not give you is when to stop.** Its own example
+naturally extends, and the extension is where it goes wrong:
+
+```text
+   /organizations/8f2a/projects/91b/tasks/44        ✗  four levels
+   /tasks/44                                        ✓  the same task
+```
+
+Both address one task. The first makes the consumer know and carry three ids to
+reach a thing that has its own unique id, breaks if the task moves between
+projects, and produces a URL nobody can read aloud. <Mint>The convention, and it is
+close to universal, is to nest at most one level deep.</Mint>
+
+The test for whether to nest at all:
+
+| Situation | Design |
+|---|---|
+| The child has a globally unique id | `/tasks/44`. Do not nest |
+| The child is only unique within the parent | `/orders/9/lines/3`. Nest |
+| You want the list of children of one parent | `/projects/91b/tasks`. Nest, for the list only |
+
+That third row is the common and correct pattern: <Peach>nest the collection, flatten
+the item.</Peach> `GET /projects/91b/tasks` to list them, `GET /tasks/44` to fetch one.
+The nesting appears exactly where it carries information, the scope of a list,
+and disappears where it would be redundant.
+
+<Ask>
+
+"Should `/projects/91b/tasks/44` return a 404 if task 44 exists but belongs to a
+different project?"
+
+Yes, and the reasoning matters more than the answer. If you accept the URL and
+return the task anyway, the path segment `91b` is decorative, and consumers will
+build URLs with the wrong parent and never find out. <Mint>A hierarchical URL is a
+claim about containment, and a claim your server does not check is a claim your
+consumers will break.</Mint> This is also an authorisation trap: if the parent is
+where your permission check lives and you do not verify the child belongs to it,
+you have built an access control bug. <Ref to="/security">Notebook 05</Ref> <Ref to="#18-what-a-patch-body-actually-is">section 18</Ref> covers it as an
+insecure direct object reference.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>Nest the collection, flatten the item, and never go past one level.</Peach> If a
+resource has its own unique id, that id is its address, and any parent segments
+in front of it are claims you are now obliged to verify.
+
+</KeyIdea>

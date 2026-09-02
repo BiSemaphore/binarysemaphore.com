@@ -1,0 +1,72 @@
+---
+number: "44"
+title: "Naming, and the standard that does not exist"
+part: "VII"
+partTitle: "Consistency is the whole product"
+---
+The lecture states that JSON fields always follow camelCase and calls it a common
+standard. <Peach>The advice is fine and the justification is wrong</Peach>, and the
+correction matters because it is the difference between a rule you can defend and
+one you cannot.
+
+**There is no JSON naming standard.** JSON specifies syntax and says nothing about
+naming. The largest APIs in the world disagree:
+
+| API | Convention |
+|---|---|
+| Stripe | `snake_case` |
+| GitHub | `snake_case` |
+| Google (JSON style guide) | `camelCase` |
+| JSON:API | `kebab-case` recommended, camelCase common |
+
+<Mint>So camelCase is a convention, not a standard, and snake_case is equally
+defensible.</Mint> What the lecture gets right is the part underneath: pick one and
+never deviate. <Peach>The specific choice is arbitrary and the consistency is not</Peach>,
+which is the whole of <Ref to="#43-the-second-endpoint-should-cost-nothing-to-learn">section 43</Ref> applied to a smaller question.
+
+One practical tiebreaker: match your ecosystem. A JSON API consumed mainly by
+JavaScript is slightly easier in camelCase because it needs no key transformation
+at the boundary. One consumed by Python or Ruby services is slightly easier in
+snake_case. Neither difference is large.
+
+**Five naming decisions that matter more than case**, and that the lecture does
+not reach:
+
+**Dates: RFC 3339, in UTC, always.** `"2026-08-30T10:14:22Z"`. Not epoch seconds,
+which are unreadable in a log and ambiguous about units. Not local time, ever.
+<Rose>A date field with no timezone is a bug waiting for a customer in another
+country.</Rose>
+
+**Money: never a float.** `0.1 + 0.2` is not `0.3` in any language using binary
+floating point, and an invoice total that is out by a hundredth is a support
+ticket you cannot close. <Mint>Use an integer count of minor units (`1050` for
+£10.50) with an explicit currency, which is what Stripe does</Mint>, or a decimal
+string.
+
+**Booleans: name them positively.** `isActive`, not `isNotArchived`. A field
+requiring the reader to work out a double negative will be misread eventually.
+
+**Enums: lowercase strings, not integers.** `"archived"` is self-describing in a
+log; `3` requires your documentation to be open. The cost of the string is a few
+bytes.
+
+**Abbreviations: do not.** This is the lecture's own closing point and it is
+right. `desc` might be description or descending. <Peach>You know what you meant and
+the consumer has to guess</Peach>, and the entire book is about not making them guess.
+
+<DoThis>
+
+Write these down in one page before the second endpoint exists: case convention,
+date format, money representation, id format, enum style, and the error shape from
+<Ref to="#29-one-error-shape-everywhere">section 29</Ref>. <Mint>Six decisions, made once, that determine whether your API feels
+designed or accumulated.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>The choice is arbitrary, the consistency is not.</Peach> camelCase is a convention
+rather than a standard, and dates, money and enums are the naming decisions that
+cause real damage.
+
+</KeyIdea>

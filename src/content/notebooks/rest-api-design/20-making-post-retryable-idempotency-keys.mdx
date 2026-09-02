@@ -1,0 +1,106 @@
+---
+number: "20"
+title: "Making POST retryable: idempotency keys"
+part: "III"
+partTitle: "The method is a promise about repeating"
+---
+The lecture labels `POST` non-idempotent and stops there. Production APIs do not
+get to stop there, because the failure it describes is not rare:
+
+```text
+   client            network            server
+     │  POST /orders ────────────────────▶ │  order created, charged
+     │                                     │
+     │  ◀────────── 201 ────────  ✗ lost   │
+     │                                     │
+     │  retry? ─── duplicate order         │
+     │  give up? ─ user thinks it failed   │
+```
+
+<Peach>The client cannot tell a lost response from a lost request</Peach>, and both are
+common on mobile networks. The industry's answer, popularised by Stripe and now
+near-universal for payments, is the <Pink>idempotency key</Pink>.
+
+**The mechanism is small.** The client generates a unique key, typically a UUID,
+and sends it with the request. The server stores the key alongside the response
+it produced. If the same key arrives again, the server <Mint>returns the stored
+response without executing anything</Mint>.
+
+```text
+   POST /orders
+   Idempotency-Key: 7c1e-44b9-a2f0
+
+   first time   → execute, store (key → 201 + body), return it
+   second time  → look up key, return the stored 201 + body
+                  no second order, no second charge
+```
+
+**Four decisions it forces**, and they are what an interviewer probes:
+
+| Decision | The usual answer |
+|---|---|
+| Who generates the key | <Peach>The client</Peach>, once per logical operation, kept across retries |
+| How long to keep it | 24 hours is the common window. Long enough for retries, short enough to bound storage |
+| Scope | Per endpoint and per authenticated caller, so two users' keys cannot collide |
+| Same key, different body | <Peach>Reject with an error.</Peach> It means a client bug, not a retry |
+
+That last row is the one people miss. If key `7c1e` first arrived with a £10
+order and returns with a £4,000 order, replaying the stored response would be
+wrong and executing it would be worse. <Mint>Store a hash of the request body with
+the key and reject a mismatch</Mint>, which is what Stripe does.
+
+**The concurrency case.** Two requests with the same key can arrive at once, from
+a client that retried before the first finished. The server needs a lock or a
+unique constraint on the key so that the second either waits for the first or is
+rejected with `409`. <Peach>Without that, the whole mechanism has a race in exactly
+the situation it was built for.</Peach>
+
+This is the same problem, and largely the same solution, as at-least-once
+delivery in a queue: you cannot prevent duplicates on an unreliable channel, so
+you make the consumer able to recognise them. <Ref to="/large-scale-ingestion">Notebook 01</Ref> sections 12 and 13
+cover the ingestion side.
+
+<DoThis>
+
+Add idempotency keys to any endpoint that moves money, sends a message, or
+creates something a user would notice twice. <Mint>Do not add them everywhere: they
+cost a storage lookup and a write on every request, and a duplicated read-only
+action harms nobody.</Mint>
+
+</DoThis>
+
+<Signal>
+
+"`POST` is not idempotent, so for anything with an external side effect we make
+it idempotent at the application layer with a client-supplied key, a stored
+response, and a body hash to catch key reuse. The interesting part is the
+concurrent case, which needs a unique constraint on the key rather than a
+check-then-write."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Non-idempotent is a problem to solve, not a label to apply.</Peach> An idempotency
+key turns a `POST` into something a client can retry safely, and the details that
+matter are the body hash and the race.
+
+</KeyIdea>
+
+<Recall>
+
+Give the safe and idempotent status of all six methods, and one consequence of each property. | 8
+
+</Recall>
+
+<Recall>
+
+Why is PATCH not idempotent? Give the counter-example in one line. | 5
+
+</Recall>
+
+<Recall>
+
+Design an idempotency key mechanism: four decisions and the race condition. | 8
+
+</Recall>

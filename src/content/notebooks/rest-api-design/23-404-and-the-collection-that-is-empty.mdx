@@ -1,0 +1,59 @@
+---
+number: "23"
+title: "404, and the collection that is empty"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+The lecture's rule is exactly right and worth stating precisely, because it is
+one of the most common mistakes in real APIs:
+
+> <Mint>A `404` is for a resource you asked for by identity and that does not exist.
+> A list that matched nothing is a `200` with an empty array.</Mint>
+
+```text
+   GET /organizations/nonexistent    ──▶  404   you named a thing, it is not here
+   GET /organizations?status=zzz     ──▶  200   { "data": [], "total": 0 }
+```
+
+The reasoning is that <Peach>a collection endpoint always succeeds if the collection
+exists</Peach>, and an empty result is a successful answer to a question, not a missing
+resource. A client rendering a list wants to show "no results"; a client that
+receives `404` will show an error page, because that is what `404` means
+everywhere else.
+
+**Two extensions the lecture does not reach.**
+
+**`404` is also the correct answer for "exists but you may not know that".** If a
+user requests an organisation belonging to someone else, `403 Forbidden` is
+honest and leaks the fact that the id is real. Returning `404` reveals nothing.
+<Mint>The trade is between a clear error for legitimate users and a silent one for
+attackers enumerating ids</Mint>, and for anything sensitive the silent one wins.
+<Ref to="/security">Notebook 05</Ref> <Ref to="#18-what-a-patch-body-actually-is">section 18</Ref> covers the enumeration attack this defends against.
+
+**`410 Gone` exists and is occasionally right.** It means the resource was here
+and has been deliberately removed, permanently. <Peach>Its practical value is that it
+tells a client to stop asking and to drop its cached copy</Peach>, where `404` only says
+"not right now". Use it for hard-deleted resources whose ids are never reused,
+and do not feel obliged to.
+
+<Ask>
+
+"Should `GET /organizations/8f2a/projects` return `404` if organisation 8f2a does
+not exist?"
+
+Yes, and this is the case that trips people who learned the rule as "lists never
+`404`". The list is scoped to a parent you named by identity, and <Peach>that parent
+does not exist</Peach>, so the `404` is about the organisation rather than about the
+projects. If the organisation exists and has no projects, it is a `200` with an
+empty array. Both rules are consistent once you see that the `404` refers to the
+part of the URL that names a specific thing.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>`404` answers "which one", never "how many".</Peach> An empty collection is a
+successful answer, and a nested list can still `404` when its parent is the thing
+that is missing.
+
+</KeyIdea>

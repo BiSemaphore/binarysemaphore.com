@@ -1,0 +1,61 @@
+---
+number: "43"
+title: "The second endpoint should cost nothing to learn"
+part: "VII"
+partTitle: "Consistency is the whole product"
+---
+The lecture's argument runs like this, and it is exactly right. A frontend
+engineer integrates `POST /organizations`. They learn that collections are plural,
+that the body takes `name` and `description`, that dates come back as ISO strings,
+that errors have a `message` field, that lists are paginated with `page` and
+`limit`.
+
+Then they need projects. <Peach>They do not read your documentation. They write what
+they expect</Peach>, and if you designed consistently, it works.
+
+```text
+   POST /organizations   { "name": ..., "description": ... }   integrated
+                                    │
+                                    ▼  what they now assume
+   POST /projects        { "name": ..., "description": ... }   ← and it works,
+                                                                 or it costs
+                                                                 them an hour
+```
+
+**What has to be consistent is longer than people expect.** Every row here is a
+place a consumer will generalise from one endpoint to the next:
+
+| | Must match across every endpoint |
+|---|---|
+| Route shape | Plural collections, same nesting rules, same verb placement |
+| Field naming | `description` everywhere, never `desc` in one place |
+| Case convention | One of camelCase or snake_case. Never both |
+| Dates | One format, one timezone, one field naming pattern |
+| Identifiers | Same shape, same field name, opaque everywhere |
+| Pagination | Same parameters, same envelope, same defaults |
+| Errors | One shape, <Ref to="#29-one-error-shape-everywhere">section 29</Ref> |
+| Auth | One scheme, one header, one failure code |
+
+**The point that makes this more than tidiness:** <Peach>being uniformly unusual is
+cheaper for a consumer than being occasionally standard.</Peach> An API that uses
+snake_case everywhere costs one observation. An API that is camelCase on four
+endpoints and snake_case on the fifth costs a lookup on every endpoint forever,
+because the consumer can no longer trust a pattern and must check each one.
+
+That is why the lecture's advice to "follow the standard, but if you cannot,
+follow something and stick to it" is correct rather than a cop-out.
+
+<Signal>
+
+"Consistency beats correctness here. A consumer who has integrated one endpoint
+has already guessed the next one, so the expensive failure is not being unusual,
+it is being unpredictable."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Every inconsistency is a lookup, forever, for everyone.</Peach> The second endpoint
+should cost nothing to learn, and the twentieth should cost less.
+
+</KeyIdea>

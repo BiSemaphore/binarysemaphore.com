@@ -1,0 +1,58 @@
+---
+number: "34"
+title: "`total` costs a second query"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+The lecture returns `total` and `totalPages` on every list response. It is
+genuinely useful: it drives "showing 10 of 50" and lets a client know when to stop
+requesting. It is also the most expensive field in the response, and the lecture
+never says so.
+
+```text
+   SELECT * FROM organizations WHERE status='active'
+   ORDER BY created_at DESC LIMIT 20 OFFSET 0        ← the page: uses the index
+
+   SELECT COUNT(*) FROM organizations WHERE status='active'
+                                                      ← the total: counts
+                                                        every matching row
+```
+
+<Peach>The page query returns twenty rows and stops. The count query has to visit every
+row that matches the filter, every time.</Peach> On ten thousand rows nobody notices. On
+ten million, with a filter that is not selective, the count is the slowest thing
+your API does, and it is being computed so that a user interface can print a
+number next to a list they are not going to page through anyway.
+
+**Four ways out**, roughly in order of how often they are right:
+
+| Approach | Shape | When |
+|---|---|---|
+| Do not send it | `{ data, page: { next, hasMore } }` | <Peach>Infinite scroll, mobile feeds.</Peach> Most modern lists |
+| Make it opt-in | `?includeTotal=true` | You have both kinds of client |
+| Approximate it | Postgres `reltuples`, or a maintained counter | Dashboards, "about 40,000 results" |
+| Cap it | Count up to 1,000, report `1000+` | Search results. What Google does |
+
+<Mint>`hasMore` is the field most clients actually need.</Mint> It is one row cheaper to
+compute: request `limit + 1` rows, and if you got `limit + 1` back, there is
+another page. No count, no scan, exact answer.
+
+```text
+   LIMIT 21          asked for 21, got 21  →  hasMore: true,  return 20
+                     asked for 21, got 14  →  hasMore: false, return 14
+```
+
+<Signal>
+
+"We return `hasMore` by fetching one extra row rather than `total` by running a
+count, because the count scans every matching row and the extra row costs
+nothing. Clients that genuinely need a total ask for it explicitly."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>A total is a full scan of the filtered set, priced into every request.</Peach> Most
+interfaces need only "is there more", and that costs one extra row.
+
+</KeyIdea>

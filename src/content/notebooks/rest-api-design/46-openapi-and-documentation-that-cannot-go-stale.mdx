@@ -1,0 +1,68 @@
+---
+number: "46"
+title: "OpenAPI, and documentation that cannot go stale"
+part: "VII"
+partTitle: "Consistency is the whole product"
+---
+The lecture recommends interactive documentation and names Swagger. Right advice,
+and the interesting question is the one underneath it: <Peach>all documentation drifts,
+so which direction should the arrow point?</Peach>
+
+<Term name="OpenAPI">
+
+A specification format for describing HTTP APIs: paths, methods, parameters,
+schemas, responses. Swagger is the older name and now refers mainly to the
+tooling. A single document that both people and machines can read.
+
+</Term>
+
+**Three arrangements, and only two of them survive contact with a deadline.**
+
+| Approach | How | Drift |
+|---|---|---|
+| Hand-written docs | A wiki page someone updates | <Peach>Immediate and permanent</Peach> |
+| Spec generated from code | Annotations on handlers | Stays true. Reflects what is, not what was designed |
+| Code generated from spec | Types and stubs from the document | Stays true. Puts design first |
+
+<Rose>The hand-written page is the one to avoid.</Rose> It is correct on the day it is
+written and wrong within a month, and being subtly wrong is worse than being
+absent, because a consumer trusts it.
+
+<Mint>Either generated direction works.</Mint> Generating the spec from code suits teams
+who work code-first and want the document to be honest. Generating from the spec
+suits <Ref to="#45-design-first-the-interface-before-the-code">section 45</Ref>'s design-first workflow. What both give you is the property that
+matters: <Peach>the document cannot disagree with the implementation without something
+breaking.</Peach>
+
+**What good documentation contains beyond the endpoint list.** The generated part
+is the easy part, and on its own it is a reference rather than documentation:
+
+```text
+   generated       every path, method, parameter, schema, status code
+   written once    authentication: how to get a token, how to refresh it
+                   pagination: which style, what the cursor is, defaults
+                   errors: the shape, the type URIs, what to retry
+                   rate limits: the numbers, the headers, the backoff
+                   versioning: the policy, and how deprecation is announced
+                   a worked example: one real flow, end to end
+```
+
+<Mint>The second block is what a consumer reads first and no generator can produce
+it.</Mint> It is half a day of writing and it removes most of the questions that would
+otherwise arrive as messages to you.
+
+<DoThis>
+
+Serve the interactive documentation from the API's own deployment, so the version
+of the docs is necessarily the version of the code. <Mint>A documentation site
+deployed separately is a documentation site that is one release behind.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Generate the reference in one direction or the other, and hand-write the six
+things a generator cannot know.</Peach> Documentation that can disagree with the code
+eventually will.
+
+</KeyIdea>

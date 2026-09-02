@@ -1,0 +1,58 @@
+---
+number: "8"
+title: "Plural nouns, and where the rule breaks"
+part: "II"
+partTitle: "Resources, and the URL that names them"
+---
+The rule, and it is close to universal:
+
+> <Mint>Collections are plural nouns, in lowercase, always, including when you are
+> fetching exactly one.</Mint>
+
+```text
+   GET  /organizations          list          ✓
+   GET  /organizations/8f2a     one of them   ✓
+   GET  /organization/8f2a      one of them   ✗   the common mistake
+```
+
+The lecture is emphatic about the third line and correct. The reasoning is worth
+having, because "because it is the standard" does not survive a follow-up.
+<Peach>`/organizations` names the collection, and `8f2a` selects one member of it.</Peach>
+You are not naming the organisation, you are naming the set and then indexing
+into it. Under that reading the singular form is not a style preference, it is a
+category error, and the plural stays plural at every depth.
+
+It also removes a decision. If the rule were "plural for lists, singular for
+items", every endpoint would require a judgement, and judgements produce
+inconsistency across a team.
+
+**Three places the rule genuinely does not hold**, which the lecture presents as
+absolute:
+
+| Shape | Example | Why |
+|---|---|---|
+| Singletons | `/me`, `/settings`, `/health` | There is exactly one, ever. There is no collection to index into |
+| Non-resources | `/search`, `/graphql`, `/metrics` | Not a resource at all. A processing endpoint |
+| Uncountables | `/analytics`, `/audit` | The plural is either meaningless or already implied |
+
+`/me` is the important one and appears in almost every real API. It is a
+singleton alias for "the resource identified by your credentials". <Peach>The
+alternative, making the client fetch its own id and then request
+`/users/{that id}`, costs a round trip and leaks nothing useful.</Peach>
+
+<DoThis>
+
+Write the rule down for your team as "plural, except for the three singleton
+endpoints we already have, which are `/me`, `/health` and `/settings`". <Mint>An
+enumerated exception list is followable; a principle with unstated exceptions
+produces one new exception per developer.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Plural for anything you can have more than one of, at every level, including
+single fetches.</Peach> Singletons and processing endpoints are the exceptions, and
+they should be a short closed list rather than a judgement call.
+
+</KeyIdea>

@@ -1,0 +1,101 @@
+---
+number: "12"
+title: "Versioning: what actually forces a v2"
+part: "II"
+partTitle: "Resources, and the URL that names them"
+---
+The lecture puts `/v1` in the path, says most APIs do something like this, and
+moves on. Two questions are left, and both get asked.
+
+**Where does the version go?** Four options, and the trade is legibility against
+purity.
+
+| Where | Example | Argument |
+|---|---|---|
+| Path | `/v1/organizations` | Visible, greppable, testable in a browser. The common choice |
+| Media type | `Accept: application/vnd.acme.v1+json` | Purest: the resource is unchanged, only its representation is versioned |
+| Custom header | `X-API-Version: 1` | Keeps URLs clean, invisible in logs and bug reports |
+| Query | `?version=1` | Easy to forget, easy to cache wrongly. Avoid |
+
+<Mint>Use the path unless you have a specific reason not to.</Mint> The media type version
+is more correct by Fielding's reasoning, since `/v1/organizations` and
+`/v2/organizations` are arguably <Peach>two representations of one resource wearing
+two identities</Peach>. It is also harder to test, invisible in a screenshot, and
+regularly stripped by intermediaries. The industry has largely traded correctness
+for the ability to paste a URL into a terminal, and that is a defensible trade.
+
+**What forces a new version?** This is the question interviews actually ask, and
+the answer is a rule about the consumer's assumptions, not about your code.
+
+```text
+   BREAKING                          NOT BREAKING
+   removing a field                  adding a new optional field
+   renaming a field                  adding a new endpoint
+   changing a field's type           adding an optional query parameter
+   making an optional field required relaxing a validation rule
+   tightening validation             adding a new value to a response enum *
+   changing a default value
+   changing an error code's meaning
+   changing pagination defaults
+```
+
+<Peach>The asterisk is the interesting one.</Peach> Adding a new value to an enum you return
+is safe only if your consumers were written to tolerate unknown values, and many
+are not: a client with an exhaustive switch on `status` will break the day you add
+`suspended`. This is the <Pink>tolerant reader</Pink> principle, and it is a rule for
+consumers that you should state in your documentation, because you cannot enforce
+it and you will otherwise be blamed for it.
+
+**And the honest note.** <Mint>Most teams never ship a v2.</Mint> Versioning in the path
+looks like a plan for breaking changes, but the real strategy at almost every
+company is to add fields forever and never remove any, because a v2 means running
+both versions until the last consumer migrates, and the last consumer never
+migrates. <Peach>Design as though `/v1` is permanent, because it very likely is.</Peach>
+
+<DoThis>
+
+If you do deprecate an endpoint, say so in the response rather than only in a
+changelog nobody reads. The `Deprecation` and `Sunset` headers (RFC 8594) put a
+date on the response itself, so <Mint>a consumer's own logs tell them, which is the
+only channel that reliably reaches the team that integrated you two years ago and
+moved on.</Mint>
+
+</DoThis>
+
+<Trap>
+
+<Rose>"We will version every endpoint separately so consumers only migrate the parts
+that changed."</Rose>
+
+It sounds considerate and it produces an interface where `/v1/organizations`,
+`/v3/projects` and `/v2/tasks` coexist, and no consumer can any longer state
+which version of your API they are on. <Mint>Version the interface as a whole, at one
+place, and change that number rarely.</Mint>
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>A version bump is what you owe consumers when you break an assumption they were
+entitled to make.</Peach> Adding is almost always safe, removing and tightening never
+are, and the cheapest v2 is the one you avoid by adding optional fields instead.
+
+</KeyIdea>
+
+<Recall>
+
+Give the test for whether a parameter belongs in the path or the query, with two examples of each. | 6
+
+</Recall>
+
+<Recall>
+
+When do you nest a URL, when do you flatten it, and what must the server verify if you nest? | 6
+
+</Recall>
+
+<Recall>
+
+Name four breaking changes and four safe ones, and explain the enum asterisk. | 7
+
+</Recall>

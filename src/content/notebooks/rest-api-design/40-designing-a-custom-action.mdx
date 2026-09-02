@@ -1,0 +1,78 @@
+---
+number: "40"
+title: "Designing a custom action"
+part: "VI"
+partTitle: "When CRUD runs out"
+---
+The shape, which is the lecture's and is close to universal:
+
+```text
+   POST  /v1/organizations/8f2a/archive
+   ────  ──  ───────────── ────  ───────
+    │     │        │         │      │
+    │     │        │         │      └── the verb, last, lowercase
+    │     │        │         └── which one
+    │     │        └── the collection, plural
+    │     └── the version
+    └── POST, because the method cannot promise anything about repeating
+```
+
+Read as containment, it says: of all organisations, this one, do this to it. The
+hierarchy from <Ref to="#9-the-slash-means-containment">section 9</Ref> still holds, <Peach>and the verb is the only place in a
+well-designed API where a path segment is not a noun.</Peach>
+
+**Five rules for the verb.**
+
+| Rule | |
+|---|---|
+| `POST`, always | It is not safe and rarely idempotent. `POST` is the method that promises nothing |
+| Verb last | After the identity of the thing being acted on |
+| Lowercase, hyphenated | `/send-invoice`, matching your other path segments |
+| Never in the collection position | `/archive/organizations/8f2a` inverts the hierarchy |
+| One verb per endpoint | `/archive-and-notify` is two operations wearing one name |
+
+**The status code is decided by what happened, not by the method.** This is the
+lecture's own point and it is worth holding:
+
+```text
+   POST /organizations/8f2a/archive   ──▶  200   nothing created, here is the org
+   POST /projects/91b/clone           ──▶  201   a new project exists
+                                             Location: /v1/projects/7c3
+   POST /organizations/8f2a/archive   ──▶  202   queued, cascade takes 40 seconds
+                                             Location: /v1/jobs/44
+```
+
+<Peach>Same method, three codes, and the difference is entirely about the result.</Peach> If
+you wrote `POST /organizations/5/archive` returning `200` on the title page of
+this book, that is the answer. If you wrote `202`, that is also the answer, and it
+is the better one as soon as the cascade is real work.
+
+**Two refinements the lecture does not reach.**
+
+**Actions can take a body.** `{"reason": "merged into 3d10"}`. If the action has
+options, they belong in the body exactly as they would for a create.
+
+**Some actions are idempotent, and you can say so.** Archiving twice leaves the
+organisation archived, so the operation is naturally idempotent even though
+`POST` does not promise it. <Mint>Keep `POST` for convention and add an idempotency
+key from <Ref to="#20-making-post-retryable-idempotency-keys">section 20</Ref> where the action has an external side effect</Mint>, such as
+sending an invoice or charging a card. Convention keeps the method predictable;
+the key does the actual work.
+
+<DoThis>
+
+Before adding a custom action, try to name it as a noun for thirty seconds. Some
+of them are hiding a resource: `/orders/44/cancel` may be better as
+`POST /orders/44/cancellations`, <Mint>which gives you somewhere to record who
+cancelled it, when, and why</Mint>, and something to `GET`. If the noun does not
+appear naturally in that time, use the verb and move on.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>`POST /collection/{id}/verb`, with the status code decided by what happened.</Peach>
+Verb last, one per endpoint, and reach for a noun first in case the action is
+concealing a resource.
+
+</KeyIdea>

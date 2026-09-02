@@ -24,7 +24,7 @@ sounds like an inconvenience until you put a load balancer in front of four
 instances: because no instance remembers anything, <Peach>any of them can serve any
 request, and adding a fifth requires no coordination at all.</Peach> Every horizontal
 scaling story you have ever heard is downstream of this constraint. <Ref to="/scaling">Notebook 06</Ref>
-section 12 covers what it costs and where sessions actually go; <Ref to="/real-time-backends">Notebook 07</Ref> is
+<Ref to="#12-versioning-what-actually-forces-a-v2">section 12</Ref> covers what it costs and where sessions actually go; <Ref to="/real-time-backends">Notebook 07</Ref> is
 the book about what happens when you break it deliberately.
 
 **Layered system is why you can put things in front of your API.** A component
@@ -67,7 +67,7 @@ can validate it without shared memory. A session table breaks statelessness,
 because the server now remembers something between calls, and the fix people
 reach for first, sticky sessions, actually breaks the layered-system constraint
 too by making the load balancer care which instance you spoke to last. <Ref to="/security">Notebook
-05</Ref> section 22 covers the token side properly.
+05</Ref> <Ref to="#22-204-and-when-an-empty-body-is-wrong">section 22</Ref> covers the token side properly.
 
 </Ask>
 

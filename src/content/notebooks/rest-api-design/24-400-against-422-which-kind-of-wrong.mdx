@@ -1,0 +1,50 @@
+---
+number: "24"
+title: "400 against 422: which kind of wrong"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+The first status code the lecture does not cover, and the first question an
+interviewer asks after the easy ones. Both mean the client sent something
+unacceptable. The distinction is where it failed.
+
+```text
+   400 Bad Request            I could not parse this at all
+   { "name": "Acme",          ← trailing comma, invalid JSON
+   422 Unprocessable Content  I parsed it, and it does not make sense
+   { "email": "not-an-email" }   valid JSON, invalid value
+```
+
+<Peach>`400` is a syntax failure and `422` is a semantic one.</Peach> A `400` means your
+parser gave up: malformed JSON, a missing required header, a query parameter that
+cannot be coerced to the declared type. A `422` means the document was
+well-formed and its contents violate your rules: an email that is not an email, a
+`quantity` of `-3`, an end date before a start date.
+
+| Failure | Code |
+|---|---|
+| Malformed JSON, unparseable body | `400` |
+| Wrong content type | `415 Unsupported Media Type` |
+| A required field is missing | <Peach>`422`</Peach> |
+| A field has the wrong type | `422`, or `400` if you decode strictly |
+| A value fails a business rule | `422` |
+| The whole request is fine but conflicts with state | `409`, <Ref to="#26-409-and-the-duplicate-you-did-not-plan-for">section 26</Ref> |
+
+**An honest note on the disagreement.** `422` came from WebDAV (RFC 4918) and was
+adopted into general HTTP use later; some engineers argue `400` should cover
+everything a client got wrong, and that position is defensible. <Mint>What is not
+defensible is using both at random.</Mint> The practical advice: use `422` for
+validation failures, because it lets a client distinguish "my code built a broken
+request" from "the user typed something invalid", and <Peach>those two need completely
+different handling in a UI.</Peach>
+
+That distinction is the argument to give if challenged. A `400` is a bug for the
+developer to fix. A `422` is a message to show the user.
+
+<KeyIdea>
+
+<Peach>`400` means I could not read it, `422` means I read it and refused it.</Peach> The
+value of separating them is that one is a programming error and the other is user
+input, and only one of them should ever be shown to a person.
+
+</KeyIdea>

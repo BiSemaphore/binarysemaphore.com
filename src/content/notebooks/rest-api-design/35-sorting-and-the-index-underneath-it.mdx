@@ -1,0 +1,59 @@
+---
+number: "35"
+title: "Sorting, and the index underneath it"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+The lecture's design is right: `sortBy` for the field, `sortOrder` for the
+direction, sensible defaults for both. Three things sit underneath it.
+
+**The sortable fields must be a whitelist.** `sortBy` arrives from the client and
+ends up in an `ORDER BY`. If it reaches the query as a string, you have handed a
+stranger control of your SQL.
+
+```text
+   ORDER BY ${sortBy}          ← ?sortBy=name;DROP TABLE...
+```
+
+<Mint>Map the parameter to a fixed set of allowed columns and reject anything else
+with a `422`.</Mint> <Ref to="/security">Notebook 05</Ref> <Ref to="#6-finding-the-nouns">section 6</Ref> covers injection generally; this is the
+place in an API design where it most often reappears, because the parameter feels
+like configuration rather than input.
+
+**Every sortable field needs an index, or you have built a table scan endpoint.**
+Sorting a million rows by an unindexed column makes the database materialise and
+sort the whole set. <Peach>The list of sortable fields is therefore a design decision
+with a storage cost</Peach>, not a free courtesy, and "we let them sort by anything" is
+how a list endpoint becomes the slowest route in the system. <Ref to="/postgres">Notebook 04</Ref> covers
+which indexes serve which sorts.
+
+**A sort needs a tie-breaker.** This is the one that produces the strangest bugs.
+If you sort by `created_at` and two rows share a timestamp, <Peach>their relative order
+is undefined and may differ between two executions of the same query.</Peach> Combined
+with pagination, one of those rows can appear on both page one and page two while
+the other appears on neither.
+
+```text
+   ORDER BY created_at DESC                     ← unstable
+   ORDER BY created_at DESC, id DESC            ← total order, deterministic
+```
+
+<Mint>Always append a unique column to every sort.</Mint> It costs nothing, it makes the
+order total, and it is required for keyset pagination to work at all, which is why
+<Ref to="#33-keyset-pagination">section 33</Ref>'s cursor carries both values.
+
+<DoThis>
+
+Write the sortable fields as an explicit list in code, index every one of them,
+and append the primary key to all of them as a final tie-breaker. <Mint>Those three
+things together are the entire correctness and safety story for sorting.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Whitelist the field, index the field, and always add a unique tie-breaker.</Peach>
+Without the third, the same row can appear on two pages with nothing having
+changed.
+
+</KeyIdea>

@@ -6,7 +6,9 @@
     "part": "",
     "partTitle": "",
     "length": 4262,
-    "refs": [],
+    "refs": [
+      "s:41-custom-actions-are-not-rest-and-that-is-fine"
+    ],
     "backrefs": []
   },
   {
@@ -50,9 +52,12 @@
       "n:real-time-backends",
       "n:scaling",
       "n:security",
+      "s:12-versioning-what-actually-forces-a-v2",
+      "s:22-204-and-when-an-empty-body-is-wrong",
       "s:5-the-constraint-nobody-implements"
     ],
     "backrefs": [
+      "41-custom-actions-are-not-rest-and-that-is-fine",
       "5-the-constraint-nobody-implements"
     ]
   },
@@ -77,7 +82,642 @@
       "s:3-fielding-s-six-constraints"
     ],
     "backrefs": [
+      "3-fielding-s-six-constraints",
+      "31-the-envelope-what-wraps-your-data"
+    ]
+  },
+  {
+    "slug": "6-finding-the-nouns",
+    "number": "6",
+    "title": "Finding the nouns",
+    "part": "II",
+    "partTitle": "Resources, and the URL that names them",
+    "length": 1564,
+    "refs": [
+      "n:postgres"
+    ],
+    "backrefs": [
+      "35-sorting-and-the-index-underneath-it"
+    ]
+  },
+  {
+    "slug": "7-anatomy-of-a-url",
+    "number": "7",
+    "title": "Anatomy of a URL",
+    "part": "II",
+    "partTitle": "Resources, and the URL that names them",
+    "length": 1138,
+    "refs": [
+      "n:security",
+      "s:31-the-envelope-what-wraps-your-data"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "8-plural-nouns-and-where-the-rule-breaks",
+    "number": "8",
+    "title": "Plural nouns, and where the rule breaks",
+    "part": "II",
+    "partTitle": "Resources, and the URL that names them",
+    "length": 1523,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "9-the-slash-means-containment",
+    "number": "9",
+    "title": "The slash means containment",
+    "part": "II",
+    "partTitle": "Resources, and the URL that names them",
+    "length": 1400,
+    "refs": [
+      "n:security",
+      "s:18-what-a-patch-body-actually-is"
+    ],
+    "backrefs": [
+      "11-path-or-query-and-what-an-id-should-look-like",
+      "40-designing-a-custom-action"
+    ]
+  },
+  {
+    "slug": "10-slugs-and-the-two-problems-the-lecture-skips",
+    "number": "10",
+    "title": "Slugs, and the two problems the lecture skips",
+    "part": "II",
+    "partTitle": "Resources, and the URL that names them",
+    "length": 2062,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "11-path-or-query-and-what-an-id-should-look-like",
+    "number": "11",
+    "title": "Path or query, and what an id should look like",
+    "part": "II",
+    "partTitle": "Resources, and the URL that names them",
+    "length": 1425,
+    "refs": [
+      "n:security",
+      "s:18-what-a-patch-body-actually-is",
+      "s:38-sane-defaults-sending-nothing-must-work",
+      "s:9-the-slash-means-containment"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "12-versioning-what-actually-forces-a-v2",
+    "number": "12",
+    "title": "Versioning: what actually forces a v2",
+    "part": "II",
+    "partTitle": "Resources, and the URL that names them",
+    "length": 1222,
+    "refs": [],
+    "backrefs": [
+      "3-fielding-s-six-constraints",
+      "38-sane-defaults-sending-nothing-must-work",
+      "47-reviewing-an-api-diff"
+    ]
+  },
+  {
+    "slug": "13-safe-idempotent-and-the-difference-nobody-draws",
+    "number": "13",
+    "title": "Safe, idempotent, and the difference nobody draws",
+    "part": "III",
+    "partTitle": "The method is a promise about repeating",
+    "length": 1580,
+    "refs": [
+      "s:17-patch-is-not-idempotent-and-the-lecture-says-it-is"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "14-get-and-the-day-google-deleted-a-company-s-data",
+    "number": "14",
+    "title": "GET, and the day Google deleted a company's data",
+    "part": "III",
+    "partTitle": "The method is a promise about repeating",
+    "length": 2015,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "15-post-and-why-it-is-the-odd-one",
+    "number": "15",
+    "title": "POST, and why it is the odd one",
+    "part": "III",
+    "partTitle": "The method is a promise about repeating",
+    "length": 969,
+    "refs": [
+      "s:20-making-post-retryable-idempotency-keys"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "16-put-and-patch-replace-against-modify",
+    "number": "16",
+    "title": "PUT and PATCH: replace against modify",
+    "part": "III",
+    "partTitle": "The method is a promise about repeating",
+    "length": 1473,
+    "refs": [
+      "n:object-storage"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "17-patch-is-not-idempotent-and-the-lecture-says-it-is",
+    "number": "17",
+    "title": "PATCH is not idempotent, and the lecture says it is",
+    "part": "III",
+    "partTitle": "The method is a promise about repeating",
+    "length": 1542,
+    "refs": [],
+    "backrefs": [
+      "13-safe-idempotent-and-the-difference-nobody-draws"
+    ]
+  },
+  {
+    "slug": "18-what-a-patch-body-actually-is",
+    "number": "18",
+    "title": "What a PATCH body actually is",
+    "part": "III",
+    "partTitle": "The method is a promise about repeating",
+    "length": 1300,
+    "refs": [],
+    "backrefs": [
+      "11-path-or-query-and-what-an-id-should-look-like",
+      "23-404-and-the-collection-that-is-empty",
+      "9-the-slash-means-containment"
+    ]
+  },
+  {
+    "slug": "19-delete-and-the-404-on-the-second-call",
+    "number": "19",
+    "title": "DELETE, and the 404 on the second call",
+    "part": "III",
+    "partTitle": "The method is a promise about repeating",
+    "length": 1748,
+    "refs": [
+      "n:postgres"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "20-making-post-retryable-idempotency-keys",
+    "number": "20",
+    "title": "Making POST retryable: idempotency keys",
+    "part": "III",
+    "partTitle": "The method is a promise about repeating",
+    "length": 1869,
+    "refs": [
+      "n:large-scale-ingestion"
+    ],
+    "backrefs": [
+      "15-post-and-why-it-is-the-odd-one",
+      "40-designing-a-custom-action"
+    ]
+  },
+  {
+    "slug": "21-200-201-and-the-location-header",
+    "number": "21",
+    "title": "200, 201, and the Location header",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 1423,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "22-204-and-when-an-empty-body-is-wrong",
+    "number": "22",
+    "title": "204, and when an empty body is wrong",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 1325,
+    "refs": [
+      "s:28-202-429-and-the-responses-that-ask-the-client-to-wait"
+    ],
+    "backrefs": [
       "3-fielding-s-six-constraints"
     ]
+  },
+  {
+    "slug": "23-404-and-the-collection-that-is-empty",
+    "number": "23",
+    "title": "404, and the collection that is empty",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 1501,
+    "refs": [
+      "n:security",
+      "s:18-what-a-patch-body-actually-is"
+    ],
+    "backrefs": [
+      "25-401-against-403-and-the-misleading-name"
+    ]
+  },
+  {
+    "slug": "24-400-against-422-which-kind-of-wrong",
+    "number": "24",
+    "title": "400 against 422: which kind of wrong",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 1231,
+    "refs": [
+      "s:26-409-and-the-duplicate-you-did-not-plan-for"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "25-401-against-403-and-the-misleading-name",
+    "number": "25",
+    "title": "401 against 403, and the misleading name",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 1289,
+    "refs": [
+      "n:security",
+      "s:23-404-and-the-collection-that-is-empty"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "26-409-and-the-duplicate-you-did-not-plan-for",
+    "number": "26",
+    "title": "409, and the duplicate you did not plan for",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 1735,
+    "refs": [],
+    "backrefs": [
+      "24-400-against-422-which-kind-of-wrong"
+    ]
+  },
+  {
+    "slug": "27-the-lost-update-and-the-two-headers-that-prevent-it",
+    "number": "27",
+    "title": "The lost update, and the two headers that prevent it",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 974,
+    "refs": [
+      "n:scaling"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "28-202-429-and-the-responses-that-ask-the-client-to-wait",
+    "number": "28",
+    "title": "202, 429, and the responses that ask the client to wait",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 1096,
+    "refs": [
+      "n:large-scale-ingestion",
+      "n:scaling",
+      "s:29-one-error-shape-everywhere"
+    ],
+    "backrefs": [
+      "22-204-and-when-an-empty-body-is-wrong"
+    ]
+  },
+  {
+    "slug": "29-one-error-shape-everywhere",
+    "number": "29",
+    "title": "One error shape, everywhere",
+    "part": "IV",
+    "partTitle": "The response is the other half of the interface",
+    "length": 1948,
+    "refs": [
+      "n:security"
+    ],
+    "backrefs": [
+      "28-202-429-and-the-responses-that-ask-the-client-to-wait",
+      "43-the-second-endpoint-should-cost-nothing-to-learn",
+      "44-naming-and-the-standard-that-does-not-exist"
+    ]
+  },
+  {
+    "slug": "30-three-features-one-endpoint",
+    "number": "30",
+    "title": "Three features, one endpoint",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 657,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "31-the-envelope-what-wraps-your-data",
+    "number": "31",
+    "title": "The envelope: what wraps your data",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 1258,
+    "refs": [
+      "s:33-keyset-pagination",
+      "s:5-the-constraint-nobody-implements"
+    ],
+    "backrefs": [
+      "7-anatomy-of-a-url"
+    ]
+  },
+  {
+    "slug": "32-offset-pagination-and-the-page-2-bug",
+    "number": "32",
+    "title": "Offset pagination, and the page-2 bug",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 1011,
+    "refs": [
+      "n:postgres",
+      "s:33-keyset-pagination",
+      "s:35-sorting-and-the-index-underneath-it"
+    ],
+    "backrefs": [
+      "37-the-unbounded-limit"
+    ]
+  },
+  {
+    "slug": "33-keyset-pagination",
+    "number": "33",
+    "title": "Keyset pagination",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 1526,
+    "refs": [
+      "s:37-the-unbounded-limit"
+    ],
+    "backrefs": [
+      "31-the-envelope-what-wraps-your-data",
+      "32-offset-pagination-and-the-page-2-bug",
+      "35-sorting-and-the-index-underneath-it"
+    ]
+  },
+  {
+    "slug": "34-total-costs-a-second-query",
+    "number": "34",
+    "title": "`total` costs a second query",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 741,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "35-sorting-and-the-index-underneath-it",
+    "number": "35",
+    "title": "Sorting, and the index underneath it",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 1154,
+    "refs": [
+      "n:postgres",
+      "n:security",
+      "s:33-keyset-pagination",
+      "s:6-finding-the-nouns"
+    ],
+    "backrefs": [
+      "32-offset-pagination-and-the-page-2-bug",
+      "36-filtering-operators-and-the-namespace-collision"
+    ]
+  },
+  {
+    "slug": "36-filtering-operators-and-the-namespace-collision",
+    "number": "36",
+    "title": "Filtering, operators, and the namespace collision",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 1138,
+    "refs": [
+      "s:35-sorting-and-the-index-underneath-it",
+      "s:42-the-api-level-n-1-and-why-graphql-exists"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "37-the-unbounded-limit",
+    "number": "37",
+    "title": "The unbounded limit",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 910,
+    "refs": [
+      "n:scaling",
+      "n:security",
+      "s:32-offset-pagination-and-the-page-2-bug"
+    ],
+    "backrefs": [
+      "33-keyset-pagination"
+    ]
+  },
+  {
+    "slug": "38-sane-defaults-sending-nothing-must-work",
+    "number": "38",
+    "title": "Sane defaults: sending nothing must work",
+    "part": "V",
+    "partTitle": "The list endpoint is where APIs go wrong",
+    "length": 1279,
+    "refs": [
+      "s:12-versioning-what-actually-forces-a-v2"
+    ],
+    "backrefs": [
+      "11-path-or-query-and-what-an-id-should-look-like"
+    ]
+  },
+  {
+    "slug": "39-the-action-that-is-not-a-verb-on-a-noun",
+    "number": "39",
+    "title": "The action that is not a verb on a noun",
+    "part": "VI",
+    "partTitle": "When CRUD runs out",
+    "length": 1154,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "40-designing-a-custom-action",
+    "number": "40",
+    "title": "Designing a custom action",
+    "part": "VI",
+    "partTitle": "When CRUD runs out",
+    "length": 1501,
+    "refs": [
+      "s:20-making-post-retryable-idempotency-keys",
+      "s:9-the-slash-means-containment"
+    ],
+    "backrefs": [
+      "41-custom-actions-are-not-rest-and-that-is-fine"
+    ]
+  },
+  {
+    "slug": "41-custom-actions-are-not-rest-and-that-is-fine",
+    "number": "41",
+    "title": "Custom actions are not REST, and that is fine",
+    "part": "VI",
+    "partTitle": "When CRUD runs out",
+    "length": 2013,
+    "refs": [
+      "s:3-fielding-s-six-constraints",
+      "s:40-designing-a-custom-action"
+    ],
+    "backrefs": [
+      "how-to-use-this-book"
+    ]
+  },
+  {
+    "slug": "42-the-api-level-n-1-and-why-graphql-exists",
+    "number": "42",
+    "title": "The API-level N+1, and why GraphQL exists",
+    "part": "VI",
+    "partTitle": "When CRUD runs out",
+    "length": 1614,
+    "refs": [
+      "n:postgres"
+    ],
+    "backrefs": [
+      "36-filtering-operators-and-the-namespace-collision"
+    ]
+  },
+  {
+    "slug": "43-the-second-endpoint-should-cost-nothing-to-learn",
+    "number": "43",
+    "title": "The second endpoint should cost nothing to learn",
+    "part": "VII",
+    "partTitle": "Consistency is the whole product",
+    "length": 1701,
+    "refs": [
+      "s:29-one-error-shape-everywhere"
+    ],
+    "backrefs": [
+      "44-naming-and-the-standard-that-does-not-exist"
+    ]
+  },
+  {
+    "slug": "44-naming-and-the-standard-that-does-not-exist",
+    "number": "44",
+    "title": "Naming, and the standard that does not exist",
+    "part": "VII",
+    "partTitle": "Consistency is the whole product",
+    "length": 2097,
+    "refs": [
+      "s:29-one-error-shape-everywhere",
+      "s:43-the-second-endpoint-should-cost-nothing-to-learn"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "45-design-first-the-interface-before-the-code",
+    "number": "45",
+    "title": "Design first: the interface before the code",
+    "part": "VII",
+    "partTitle": "Consistency is the whole product",
+    "length": 1341,
+    "refs": [
+      "s:46-openapi-and-documentation-that-cannot-go-stale"
+    ],
+    "backrefs": [
+      "46-openapi-and-documentation-that-cannot-go-stale"
+    ]
+  },
+  {
+    "slug": "46-openapi-and-documentation-that-cannot-go-stale",
+    "number": "46",
+    "title": "OpenAPI, and documentation that cannot go stale",
+    "part": "VII",
+    "partTitle": "Consistency is the whole product",
+    "length": 795,
+    "refs": [
+      "s:45-design-first-the-interface-before-the-code"
+    ],
+    "backrefs": [
+      "45-design-first-the-interface-before-the-code"
+    ]
+  },
+  {
+    "slug": "47-reviewing-an-api-diff",
+    "number": "47",
+    "title": "Reviewing an API diff",
+    "part": "VII",
+    "partTitle": "Consistency is the whole product",
+    "length": 781,
+    "refs": [
+      "s:12-versioning-what-actually-forces-a-v2"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "48-the-delivery-script",
+    "number": "48",
+    "title": "The delivery script",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "length": 1528,
+    "refs": [],
+    "backrefs": [
+      "50-follow-up-question-bank"
+    ]
+  },
+  {
+    "slug": "49-whiteboard-designing-an-api-live",
+    "number": "49",
+    "title": "Whiteboard: designing an API live",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "length": 1209,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "50-follow-up-question-bank",
+    "number": "50",
+    "title": "Follow-up question bank",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "length": 1605,
+    "refs": [
+      "s:48-the-delivery-script"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "appendix-a-status-codes-to-memorise",
+    "number": "",
+    "title": "Appendix A. Status codes to memorise",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "length": 1156,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "appendix-b-the-design-checklist",
+    "number": "",
+    "title": "Appendix B. The design checklist",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "length": 34,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "appendix-c-glossary",
+    "number": "",
+    "title": "Appendix C. Glossary",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "appendix-d-self-test",
+    "number": "",
+    "title": "Appendix D. Self-test",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   }
 ]

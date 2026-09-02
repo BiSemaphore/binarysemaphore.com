@@ -1,0 +1,57 @@
+---
+number: "37"
+title: "The unbounded limit"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+The lecture says the server should apply a default `limit` if the client sends
+none. It never says the server must apply a maximum, and that omission is a
+vulnerability rather than a style point.
+
+```text
+   GET /organizations?limit=1000000
+```
+
+<Peach>Nothing in the lecture's design stops that request</Peach>, and it does not need
+authentication beyond an ordinary account. One request makes the database
+materialise a million rows, the application serialise them, and the process hold
+the whole set in memory while it does. <Mint>Serialisation is the expensive part</Mint>,
+which the lecture itself points out when explaining why pagination exists, and
+this request is that cost with the safety removed.
+
+A handful of concurrent requests like this will exhaust memory or connection pool
+capacity. It is a denial of service that costs the attacker one line of curl and
+requires no vulnerability anywhere else in the system.
+
+**Three caps, and you want all three:**
+
+| Cap | Typical | What it stops |
+|---|---|---|
+| Maximum `limit` | 100, and clamp rather than reject | A single enormous page |
+| Maximum offset or page depth | 10,000 rows | The deep-scan cost from <Ref to="#32-offset-pagination-and-the-page-2-bug">section 32</Ref> |
+| Rate limit on the endpoint | Per client | Many medium requests in a loop |
+
+<Mint>Clamp rather than error.</Mint> A request for `limit=5000` should return 100 with the
+applied limit stated in the response, not a `422`. Erroring breaks a client that
+was being greedy but not malicious; clamping keeps it working while protecting
+you. Say the effective limit in the envelope so the behaviour is visible rather
+than mysterious.
+
+<Ref to="/security">Notebook 05</Ref> covers resource exhaustion as an attack class and <Ref to="/scaling">Notebook 06</Ref> covers
+the rate limiting; the design obligation here is one line of validation on one
+parameter.
+
+<DoThis>
+
+Every list endpoint, on the day it is written: default limit, <Mint>maximum limit</Mint>,
+maximum offset. <Mint>The default is a convenience and the maximum is a control</Mint>, and
+the lecture only gives you the first.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>A limit with no ceiling is a denial of service parameter you documented and
+published.</Peach> Clamp it, cap the depth, and report the applied value.
+
+</KeyIdea>

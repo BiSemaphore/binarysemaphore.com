@@ -1,0 +1,76 @@
+---
+number: "32"
+title: "Offset pagination, and the page-2 bug"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+This is what the lecture teaches, and it is what almost every API starts with:
+
+```text
+   GET /organizations?page=2&limit=20
+
+   SELECT * FROM organizations
+   ORDER BY created_at DESC
+   LIMIT 20 OFFSET 20
+```
+
+It is simple, it gives you random access to any page, and it has two problems
+that both get worse with scale.
+
+**Problem one: it is wrong when the data changes.** Offsets index into a result
+set that is recomputed on every request. If a row is inserted before your
+position between two requests, everything shifts down by one.
+
+```text
+   t0   page 1, limit 3, newest first
+        ┌──────────────────────────────┐
+        │ 10  9  8 │ 7  6  5 │ 4 ...   │      client receives 10, 9, 8
+        └──────────────────────────────┘
+
+   t1   row 11 is created
+
+   t2   page 2, OFFSET 3
+        ┌──────────────────────────────┐
+        │ 11 10  9 │ 8  7  6 │ 5 ...   │      client receives 8, 7, 6
+        └──────────────────────────────┘
+                     ▲
+                     8 was already on page 1. the client has it twice,
+                     and if a row had been DELETED instead, it would
+                     have skipped one entirely and never known
+```
+
+<Peach>A duplicate is embarrassing; a silent skip is a correctness bug.</Peach> If the client
+is paging through to export, reconcile or sum, it will produce a wrong answer and
+no error. This is the direct correction to the lecture: its pagination is fine for
+a demo with six organisations created by one person, and it is wrong for a list
+that anyone else is writing to.
+
+**Problem two: deep offsets are slow.** `OFFSET 100000` does not skip ahead. The
+database produces the first hundred thousand rows in order and throws them away.
+<Peach>The cost of page 5,000 is five thousand times the cost of page one</Peach>, and it is
+paid on every request. <Ref to="/postgres">Notebook 04</Ref> covers why the index cannot help here.
+
+**When offset is still the right answer.** Small, stable datasets. Admin screens.
+Anywhere a user genuinely wants "jump to page 7". <Mint>It is not wrong, it is
+wrong at scale and under concurrent writes</Mint>, and knowing precisely when it
+breaks is more useful than avoiding it.
+
+<Trap>
+
+<Rose>"We sort by `created_at` so the order is stable and offsets are safe."</Rose>
+
+Two separate problems, and this fixes neither. A stable sort key does not stop
+new rows appearing above your offset, which is the shifting problem. And if
+`created_at` is not unique, <Mint>rows with identical timestamps can come back in a
+different order on each query</Mint>, so the same row can appear on two pages with no
+inserts at all. <Ref to="#35-sorting-and-the-index-underneath-it">Section 35</Ref>'s tie-breaker addresses the second; only <Ref to="#33-keyset-pagination">section 33</Ref>
+addresses the first.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Offset pagination indexes into a moving list.</Peach> Under concurrent writes it
+duplicates and skips rows silently, and its cost grows linearly with page depth.
+
+</KeyIdea>
