@@ -6,3 +6,37 @@ partTitle: "The interview itself"
 ---
 **When asked "what is SOLID", do not list the five.** Everyone lists the five.
 Answer the question underneath first, then list them, in about forty seconds:
+
+> "They are five heuristics about containing change. Each one is a different
+> answer to the question of what has to change together. Single responsibility is
+> about actors: one module should answer to one source of requirements.
+> Open-closed is about adding rather than editing on the axis you expect to vary.
+> Liskov is substitutability, and it generalises to schema compatibility between
+> services. Interface segregation is depending on the narrowest thing that does
+> the job. Dependency inversion is pointing the import arrow at whatever changes
+> least, usually the business rules. In practice they conflict with each other
+> and with YAGNI, so I treat them as arguments rather than rules."
+
+That answer does five things at once: it names the unifying idea, it uses the
+refined SRP, it generalises L past inheritance, it states D correctly as being
+about direction, and it pre-empts the follow-up about over-abstraction.
+
+**Then expect one of three follow-ups**, and have the concrete example ready:
+
+| Follow-up | Go to |
+|---|---|
+| "Give me an example of a violation you fixed" | A real one. Section 15's smells |
+| "Aren't these just excuses for over-engineering?" | Section 13, rule of three |
+| "Which one is most important?" | D, and say why: it is the one that survives |
+
+For the last one, a defensible answer: <Peach>dependency inversion, because it is the
+only one that determines what your code can outlive.</Peach> The others improve a
+codebase; that one decides whether the business rules survive replacing the
+database.
+
+<KeyIdea>
+
+<Peach>Lead with the unifying question, not the list.</Peach> The list is table stakes and
+signals nothing.
+
+</KeyIdea>

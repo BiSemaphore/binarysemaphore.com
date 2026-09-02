@@ -6,3 +6,39 @@ partTitle: "The interview itself"
 ---
 "Two users have the same board open. One moves a task and the other should see it
 live. Design it." About twelve minutes, in this order.
+
+1. **Clarify, in three questions.** How many concurrent viewers per board, how
+   often do things change, and does the client need to push at a high rate? Those
+   three answers are `U`, `E` and the direction question, and <Peach>they decide the
+   design before you name any technology</Peach>.
+2. **Do the polling arithmetic out loud.** `U/T` requests per second, `T/2`
+   average latency, and the product is fixed at `U/2`. Say that polling is a
+   correct answer if `U/T` is near `E`, and that you are moving on because it is
+   not. <Peach>Thirty seconds, and it establishes the entire cost model.</Peach>
+3. **Skip long polling in one sentence.** One message per connection, then a gap
+   where the server cannot reach you. RFC 6202 puts the worst case at more than
+   three network transits.
+4. **Choose SSE or WebSocket and justify it by direction.** SSE if the client only
+   receives, and say that the browser gives you reconnection and `Last-Event-ID`
+   resumption free. WebSocket if the client pushes at a rate that makes POSTs
+   silly. <Mint>Naming SSE at all is a differentiator</Mint>, because most candidates
+   reach straight for WebSockets.
+5. **Now say the important sentence.** "The moment I hold a connection, my
+   backend is stateful: that socket lives in one process and cannot be moved."
+   Draw two instances and two browsers, and show that instance 2 cannot reach
+   browser A. <Peach>This is the centre of the answer.</Peach>
+6. **Resolve it with pub/sub, and pick the topic.** Topic per board. Publish on
+   change, every instance delivers to its own sockets. Then volunteer that Redis
+   pub/sub is at-most-once and that a deploy is when that bites.
+7. **Volunteer the production failures before you are asked.** Sequence numbers
+   and the catch-up path. Fan-out as `events × subscribers` with Discord's
+   numbers. Reconnect storms and jittered backoff. Draining on deploy. <Peach>Each of
+   these is one sentence and each one reads as having operated a system.</Peach>
+8. **Give capacity numbers if asked.** Descriptors, then client ports, then about
+   10 KB per idle connection, so a million is roughly 10 GB. Then correct it
+   yourself: that is a floor from an empty program, and a slow client with an
+   unbounded queue is what actually kills the process.
+
+Then name what you left out: "I have not covered collaborative editing, which
+needs a CRDT on top of this transport, or presence, which is a TTL heartbeat with
+quadratic fan-out." <Peach>Naming the boundary reads as judgement, not as a gap.</Peach>

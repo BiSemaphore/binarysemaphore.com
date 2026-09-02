@@ -16,3 +16,28 @@ blocking writers, and it means dead rows accumulate.
                 └── still on disk, still in every index,
                     until VACUUM reclaims it
 ```
+
+| Symptom | Cause |
+|---|---|
+| Table much larger than its data | <Peach>Bloat</Peach>. Dead tuples not reclaimed |
+| Queries slowing with no schema change | Scanning dead rows and bloated indexes |
+| Bad plans after a bulk load | Stale statistics. `ANALYZE` not run |
+| `Heap Fetches` high on index-only scans | Visibility map behind |
+
+Autovacuum handles this by default. It falls behind under heavy update or delete
+load, and <Peach>a long-running transaction blocks it entirely</Peach>, because rows visible
+to that transaction cannot be reclaimed. This is one more reason section 37's
+rule about short transactions is not stylistic.
+
+<DoThis>
+
+What to actually watch
+
+Monitor `pg_stat_user_tables.n_dead_tup` against `n_live_tup`, and the age of
+your oldest transaction. On a table with a high update rate, tune
+`autovacuum_vacuum_scale_factor` down for that table specifically rather than
+globally. And know the words <Peach>transaction ID wraparound</Peach>: if vacuum falls far
+enough behind, Postgres will refuse writes to protect itself, which is a
+full outage with a recovery measured in hours.
+
+</DoThis>

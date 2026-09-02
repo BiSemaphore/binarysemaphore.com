@@ -9,3 +9,37 @@ one disk holds the only copy of a user's photos, that disk's failure is
 permanent data loss.
 
 Two words get used interchangeably in casual conversation and must not be:
+
+| | Availability | Durability |
+|---|---|---|
+| Question | Can I reach the data right now? | Does the data still exist? |
+| Failure looks like | 500s, timeouts, a slow endpoint | The bytes are gone |
+| Recovery | <Peach>Wait.</Peach> It comes back | You cannot wait. There is nothing to wait for |
+| Measured as | uptime %, e.g. 99.99% | annual object loss probability, e.g. 11 nines |
+
+<Signal>
+
+"An availability incident is a bad afternoon. <Peach>A durability incident is a bad
+company.</Peach> You can apologise for slow. You cannot apologise for gone."
+
+</Signal>
+
+The only known cure for a durability problem is redundancy: more than one copy,
+in more than one failure domain. And the moment you have copies you have signed
+up for the rest of it:
+
+- checksums, so you can tell a good copy from a silently corrupted one
+- background scrubbers that read cold data looking for bit rot
+- repair processes that rebuild a lost copy before a second failure catches you
+- placement rules, so the copies are not in one rack on one power feed
+
+That is a serious, permanent engineering programme. It is not something you
+build alongside your product.
+
+<KeyIdea>
+
+You do not want to be in the durability business. Paying someone else for it
+is one of the few clearly correct build-versus-buy decisions in backend
+engineering.
+
+</KeyIdea>

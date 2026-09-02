@@ -27,3 +27,45 @@ your API using your user's cookies.
   7. evil.example now has an authenticated, bidirectional socket
      into your API as the victim
 ```
+
+This is CSRF with a persistent channel and a readable response, which is worse
+than CSRF: the attacker not only acts as the user, they <Peach>receive everything you
+push to that user, continuously</Peach>.
+
+**Modern `SameSite` defaults mitigate this substantially.** Chrome treats cookies
+without an explicit `SameSite` as `Lax`, and a handshake initiated by another site
+is a cross-site request, so the cookie is not attached. <Mint>That is a real defence
+and you should set `SameSite=Lax` or `Strict` explicitly rather than relying on a
+browser default.</Mint> <Rose>But do not treat it as the whole answer</Rose>: cookies
+deliberately set to `SameSite=None` for other reasons are exposed again, and
+non-browser clients send whatever they like.
+
+<Mint>The defence that does not depend on any of that is to check `Origin` on every
+handshake, against an allowlist, and reject with 403 before upgrading.</Mint>
+
+```text
+  origin := r.Header.Get("Origin")
+  if !allowed[origin] { http.Error(w, "forbidden", 403); return }
+```
+
+And the better structural answer is section 37's ticket: <Peach>a credential the
+attacker's page cannot obtain</Peach>. An `Origin` check is a blocklist against browsers;
+a ticket the attacker cannot mint is a positive proof, and it makes the ambient
+cookie irrelevant.
+
+<Trap>
+
+<Rose>"Our CORS policy is strict, so cross-origin sockets are blocked."</Rose> CORS does
+not apply to the WebSocket handshake. Many libraries default to <Peach>accepting any
+origin</Peach>, and some log a warning nobody reads. Check what your library does; the
+default is frequently permissive.
+
+</Trap>
+
+<KeyIdea>
+
+CORS does not protect the WebSocket handshake. <Peach>Validate `Origin` explicitly</Peach>,
+set `SameSite` explicitly, and prefer a ticket over an ambient cookie so the
+question does not arise.
+
+</KeyIdea>

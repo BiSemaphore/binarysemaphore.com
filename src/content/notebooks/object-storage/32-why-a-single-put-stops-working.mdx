@@ -17,3 +17,52 @@ This is not your framework, your proxy or your timeout. The storage service
 refuses it. If your product takes video, CAD files, database dumps or drone
 footage, you are <Peach>architecturally required</Peach> to do something else. There is no
 configuration that raises it.
+
+#### 2. All or nothing
+
+```text
+  4.8 GB of 5 GB transferred
+        │
+        │  the wifi blinks. the phone hands over from wifi to cellular.
+        ▼
+  connection drops  ──▶  the upload is cancelled
+                    ──▶  the next attempt starts at byte 0
+```
+
+There is no resume button on a PUT. On a real consumer connection a multi-gigabyte
+transfer takes twenty to thirty minutes, and a network that glitches once in
+thirty minutes is not an unlucky network, it is a normal one.
+
+#### 3. One TCP connection cannot saturate a link
+
+This is the reason people find surprising, and it is the most interesting one.
+
+```text
+  throughput  ≈  window size / round-trip time
+
+  and one lost packet collapses the congestion window,
+  which then has to climb back up.
+
+  your link:            200 Mbps
+  your single stream:    30 Mbps        ← not a bug, this is TCP
+```
+
+The fix is at the network layer: more connections. Parallel streams each get
+their own congestion window, so one stalling does not affect the others.
+
+This is exactly what download managers have always done. They do not make your
+connection faster. They open eight of them.
+
+#### 4. User experience
+
+A single PUT gives you a rough progress number, no pause, and no survival across
+a tab close. All three are product requirements the moment files are large
+enough for a user to walk away mid-upload.
+
+<KeyIdea>
+
+Multipart upload is not an optimisation for large files. It is the <Peach>only</Peach>
+mechanism above 5 GiB, and above a few hundred megabytes it is the only one that
+survives a real network.
+
+</KeyIdea>

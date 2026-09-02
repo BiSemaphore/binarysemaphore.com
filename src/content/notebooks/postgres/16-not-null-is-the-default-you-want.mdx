@@ -6,3 +6,38 @@ partTitle: "Designing the schema"
 ---
 Every column in Postgres is nullable unless you say otherwise. That default is
 backwards for application schemas.
+
+```text
+  nullable column           every reader must handle NULL, forever
+                            every join must consider it
+                            NULL = NULL is not true, it is NULL
+                            COUNT(col) silently skips them
+                            a bug in one script poisons the column permanently
+```
+
+Null is not "empty". It is "unknown", and it propagates: `NULL + 1` is `NULL`,
+`WHERE status <> 'active'` does <Peach>not</Peach> return rows where status is null, and
+`UNIQUE` permits many nulls.
+
+<DoThis>
+
+Make the column `NOT NULL` unless nullability is a real domain fact
+
+The lecture's rule of thumb is that most of your columns should be `NOT NULL`,
+and that matches practice. Nullable is correct for genuinely optional facts:
+`bio`, `avatar_url`, `phone`, `assigned_to`, `completed_at`. It is wrong as a
+default just because you had not decided yet.
+
+</DoThis>
+
+<Ask>
+
+Empty string or NULL for an optional text field?
+
+Pick one and enforce it, because <Peach>the failure is having both</Peach>: half the rows
+with `''` and half with `NULL`, and every query needing
+`WHERE bio IS NOT NULL AND bio <> ''`. My preference is `NULL` for absent, since
+it is what indexes, aggregates and `COALESCE` are designed for, plus a
+`CHECK (bio <> '')` to stop the empty string ever appearing.
+
+</Ask>

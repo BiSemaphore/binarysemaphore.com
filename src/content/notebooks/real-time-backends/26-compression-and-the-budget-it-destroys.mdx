@@ -6,3 +6,63 @@ partTitle: "How many connections fit on one machine"
 ---
 One extension deserves its own page, because it silently invalidates the
 arithmetic of section 24.
+
+`permessage-deflate` is the WebSocket compression extension, negotiated at the
+handshake and signalled per message by the RSV1 bit from section 16. It is
+attractive: JSON compresses well, often by 70% or more, and enabling it is one
+option in most libraries.
+
+The cost is that <Peach>deflate is stateful</Peach>. A sliding-window context is allocated
+per connection, per direction, and at the default window size that is on the order
+of <Peach>hundreds of kilobytes per connection</Peach>.
+
+```text
+  per-connection memory
+
+  no compression       ~10 KB          1M conns ──▶  ~10 GB
+  permessage-deflate,  ~300 KB         1M conns ──▶  ~300 GB
+  default windows                                    ↑
+                                       not a tuning problem. a
+                                       different machine order.
+```
+
+<Mint>Enable it with an explicitly reduced window size, or enable it only for
+connections whose message profile justifies it, or leave it off.</Mint> Most real-time
+messages are small state deltas where the framing is already six bytes and
+compression saves little while costing a great deal.
+
+<DoThis>
+
+If you enable `permessage-deflate`, set the window bits down explicitly, disable
+context takeover unless you have measured that you need it, and <Mint>re-measure heap
+per connection afterwards</Mint>. Never carry a memory estimate across a compression
+decision.
+
+</DoThis>
+
+<KeyIdea>
+
+Compression trades a large, stateful, per-connection allocation for bandwidth.
+<Peach>At a million connections that trade is usually wrong</Peach>, and it is the most
+common reason a measured memory budget turns out to be off by an order of
+magnitude.
+
+</KeyIdea>
+
+<Recall>
+
+Name the three ceilings in the order a machine hits them, and the error message for each. | 8
+
+</Recall>
+
+<Recall>
+
+Why is 65,000 connections per server a myth? Give the four-tuple argument. | 6
+
+</Recall>
+
+<Recall>
+
+Decompose the 10 KB per connection, then give three ways to reduce it. | 7
+
+</Recall>

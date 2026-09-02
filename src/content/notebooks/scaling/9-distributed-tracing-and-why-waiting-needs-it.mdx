@@ -7,3 +7,55 @@ partTitle: "Finding the bottleneck"
 Most backend latency is <Pink>IO bound</Pink>: waiting on a database, a queue, a cache,
 an object store, another service. The work is not computing, it is waiting, and
 waiting is what a trace measures.
+
+<Pink>Distributed tracing</Pink> follows one request through every component it touches
+and records when each stage started and ended. One request produces one trace,
+made of nested <Pink>spans</Pink>.
+
+```text
+  trace: GET /orders/8f21                                  842 ms
+  ├─ span  api-gateway                                     842 ms
+  │  ├─ span  auth-service.verify                    ▉      18 ms
+  │  ├─ span  orders.handler                         ▉▉▉▉▉ 800 ms
+  │  │  ├─ span  db.select orders                    ▉      12 ms
+  │  │  ├─ span  db.select line_items  (× 24)        ▉▉▉   310 ms   ← N+1
+  │  │  └─ span  payments.getStatus                  ▉▉▉▉  470 ms   ← external
+  │  └─ span  serialize response                     ▉      21 ms
+```
+
+That single picture answers the question the whole of Part II is about. The time
+is in two places, an N+1 and an external call, and neither of them is "the
+database is slow".
+
+<Signal>
+
+The phrase to have ready is <Peach>logs, metrics and traces</Peach>. Logs tell you what
+happened in one component. Metrics tell you the aggregate shape over time.
+Traces tell you where one request spent its life across components. They answer
+different questions and you need all three. Naming the three and saying what
+each is for is a complete answer to a very common interview question.
+
+</Signal>
+
+<Ask>
+
+Is tracing every request too expensive?
+
+Yes, at volume, which is why nobody does it. You sample: typically 1% of normal
+traffic plus 100% of anything that errored or exceeded a latency threshold, a
+strategy called <Mint>tail-based sampling</Mint>. You keep the interesting traces and
+throw away the boring ones. The overhead of the instrumentation itself is
+usually a low single-digit percentage, which is cheap compared to a week spent
+guessing.
+
+</Ask>
+
+<Trap>
+
+<Rose>Averaging away the trace you needed.</Rose> A dashboard showing mean span duration
+per service has the same defect as any average: the one pathological request is
+invisible. Keep the slow traces individually. The useful artifact is not "the
+p99 of the payments span", it is <Peach>one actual request that took 8 seconds, with
+all its spans</Peach>.
+
+</Trap>

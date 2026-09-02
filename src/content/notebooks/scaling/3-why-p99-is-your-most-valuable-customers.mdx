@@ -23,3 +23,60 @@ page is fast because it is doing nothing.
   GET /products (cached)             GET /reports/annual
   browsing                           paying
 ```
+
+So the population sitting at P99 skews towards __users doing the things you
+charge for__. Optimising the median makes your marketing pages faster.
+Optimising the tail makes your checkout faster.
+
+<Signal>
+
+"We watch P99, not because of the average user, but because the tail correlates
+with the expensive operations, which correlate with the paying customers." That
+one sentence connects a performance metric to revenue, which is the connection
+most candidates never make.
+
+</Signal>
+
+#### The gap the lecture leaves: tail latency amplification
+
+Here is something the lecture does not cover, and it is the single most
+important consequence of caring about tails.
+
+Suppose one request to your API fans out to ten internal services. Each of them
+is well behaved: P99 of 100ms, meaning each is slow one time in a hundred. Your
+overall request is only fast if <Peach>every single one</Peach> of the ten is fast.
+
+```text
+  P(all ten fast)  =  0.99 ^ 10  =  0.904
+
+  so roughly 1 request in 10 hits at least one slow call.
+  a 1-in-100 event at the service level
+  becomes a 1-in-10 event at the request level.
+```
+
+Your P90 is now determined by your dependencies' P99. Fan out to a hundred
+services and it is worse than a coin flip.
+
+<KeyIdea>
+
+<Rose>Fan-out amplifies tails.</Rose> Every extra service on the critical path multiplies
+the chance of hitting somebody's bad day. This is why large systems obsess over
+tail latency in ways that look paranoid from the outside, and it is the real
+performance argument against chatty microservices, which we return to in
+section 37.
+
+</KeyIdea>
+
+<DoThis>
+
+Three fixes for an amplified tail
+
+- <Mint>Hedged requests.</Mint> After waiting P95 for a reply, send the same read to a
+  second replica and take whichever answers first. Costs a few percent extra
+  load, cuts the tail hard.
+- <Mint>Fewer hops on the critical path.</Mint> The cheapest fix by far. Every hop you
+  remove removes its whole distribution.
+- <Mint>Aggressive per-call timeouts with a fallback.</Mint> A degraded answer in 200ms
+  usually beats a perfect answer in 3 seconds. Decide that in advance, per call.
+
+</DoThis>

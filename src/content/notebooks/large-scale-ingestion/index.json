@@ -5,8 +5,7 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "gated": true,
-    "teaser": "Every page has a dotted rail on the right. Use it. The people who do well in system design interviews are the ones who can draw the architecture from memory under pressure, and"
+    "length": 1418
   },
   {
     "slug": "the-whole-system-on-one-page",
@@ -14,8 +13,7 @@
     "title": "The whole system on one page",
     "part": "",
     "partTitle": "",
-    "gated": true,
-    "teaser": "The rest of this book is the justification for every arrow above, and what happens when each one fails."
+    "length": 103
   },
   {
     "slug": "1-the-problem-stated-properly",
@@ -23,8 +21,7 @@
     "title": "The problem, stated properly",
     "part": "I",
     "partTitle": "Framing the problem",
-    "gated": true,
-    "teaser": "Write that at the top of your notes in the interview. It reframes the question from a throughput problem into a reliability and state-management problem, which is what the"
+    "length": 1093
   },
   {
     "slug": "2-clarifying-questions-that-buy-you-the-design",
@@ -32,8 +29,7 @@
     "title": "Clarifying questions that buy you the design",
     "part": "I",
     "partTitle": "Framing the problem",
-    "gated": true,
-    "teaser": ""
+    "length": 1194
   },
   {
     "slug": "3-back-of-the-envelope-before-the-boxes",
@@ -41,8 +37,7 @@
     "title": "Back-of-the-envelope, before the boxes",
     "part": "I",
     "partTitle": "Framing the problem",
-    "gated": true,
-    "teaser": "Thirteen minutes is far longer than any sane HTTP timeout, and long enough that a transient network failure is likely rather than exotic. That single number justifies both the"
+    "length": 329
   },
   {
     "slug": "4-the-first-principle-separate-ingestion-from-processing",
@@ -50,8 +45,7 @@
     "title": "The first principle: separate ingestion from processing",
     "part": "I",
     "partTitle": "Framing the problem",
-    "gated": true,
-    "teaser": "So split it in two, and treat them as separate problems with separate failure models:"
+    "length": 876
   },
   {
     "slug": "5-why-object-storage-not-the-database",
@@ -59,8 +53,7 @@
     "title": "Why object storage, not the database",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "gated": true,
-    "teaser": "Keying everything by job-id is deliberate. It makes cleanup, debugging, per-job access control and lifecycle rules trivial, and it means an operator with a job ID can find"
+    "length": 885
   },
   {
     "slug": "6-presigned-urls-keeping-the-bytes-out-of-your-backend",
@@ -68,8 +61,7 @@
     "title": "Presigned URLs, keeping the bytes out of your backend",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "gated": true,
-    "teaser": "The backend keeps the job it is good at, authorisation and orchestration, and hands the job it is bad at, moving bytes, to infrastructure designed for it. Your API tier stays"
+    "length": 662
   },
   {
     "slug": "7-multipart-and-resumable-upload",
@@ -77,8 +69,7 @@
     "title": "Multipart and resumable upload",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "gated": true,
-    "teaser": "Resuming needs only two things: the uploadId and the set of parts already accepted. Both survive a browser refresh if you persist the uploadId on the job row and keep part state"
+    "length": 392
   },
   {
     "slug": "8-choosing-the-part-size",
@@ -86,8 +77,7 @@
     "title": "Choosing the part size",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "gated": true,
-    "teaser": ""
+    "length": 392
   },
   {
     "slug": "9-when-the-network-fails-mid-upload",
@@ -95,8 +85,7 @@
     "title": "When the network fails mid-upload",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "gated": true,
-    "teaser": ""
+    "length": 141
   },
   {
     "slug": "10-completing-the-upload-and-verifying-it",
@@ -104,8 +93,7 @@
     "title": "Completing the upload and verifying it",
     "part": "III",
     "partTitle": "The handoff",
-    "gated": true,
-    "teaser": "Two designs, and the choice is worth stating explicitly."
+    "length": 558
   },
   {
     "slug": "11-the-dual-write-problem-and-the-outbox",
@@ -113,8 +101,7 @@
     "title": "The dual-write problem and the outbox",
     "part": "III",
     "partTitle": "The handoff",
-    "gated": true,
-    "teaser": "You are trying to write atomically to two systems that do not share a transaction. That is the dual-write problem, and the standard answer is the transactional outbox."
+    "length": 496
   },
   {
     "slug": "12-why-a-queue-at-all",
@@ -122,8 +109,7 @@
     "title": "Why a queue at all",
     "part": "IV",
     "partTitle": "The queue",
-    "gated": true,
-    "teaser": "The API becomes trivially fast, because it only writes a row and an outbox entry:"
+    "length": 588
   },
   {
     "slug": "13-kafka-or-rabbitmq-or-sqs",
@@ -131,8 +117,7 @@
     "title": "Kafka or RabbitMQ or SQS",
     "part": "IV",
     "partTitle": "The queue",
-    "gated": true,
-    "teaser": "Kafka's strength, an ordered immutable log consumed by offset, is a poor fit for long heterogeneous tasks:"
+    "length": 960
   },
   {
     "slug": "14-the-worker-loop",
@@ -140,8 +125,7 @@
     "title": "The worker loop",
     "part": "V",
     "partTitle": "Processing",
-    "gated": true,
-    "teaser": "The terminal-status check on the second line is not defensive clutter. Because delivery is at-least-once, a worker will eventually receive a message for a job that is already"
+    "length": 260
   },
   {
     "slug": "15-streaming-never-loading",
@@ -149,8 +133,7 @@
     "title": "Streaming, never loading",
     "part": "V",
     "partTitle": "Processing",
-    "gated": true,
-    "teaser": ""
+    "length": 331
   },
   {
     "slug": "16-chunking-and-checkpointing",
@@ -158,8 +141,7 @@
     "title": "Chunking and checkpointing",
     "part": "V",
     "partTitle": "Processing",
-    "gated": true,
-    "teaser": "The chunk must be a deterministic function of the input, so that any worker computes the same boundaries. Byte ranges are the usual answer, snapped to the next record delimiter:"
+    "length": 533
   },
   {
     "slug": "17-idempotency",
@@ -167,8 +149,7 @@
     "title": "Idempotency",
     "part": "V",
     "partTitle": "Processing",
-    "gated": true,
-    "teaser": "Since delivery is at-least-once, at-least-once processing is a certainty, not a risk. The system must therefore be built so that repeating work is harmless."
+    "length": 470
   },
   {
     "slug": "18-the-lease-problem-when-the-queue-thinks-you-died",
@@ -176,8 +157,7 @@
     "title": "The lease problem: when the queue thinks you died",
     "part": "V",
     "partTitle": "Processing",
-    "gated": true,
-    "teaser": "On Kafka the equivalent is keeping max.poll.interval.ms above your worst-case processing time, or calling pause() and processing off the poll thread so the consumer keeps"
+    "length": 845
   },
   {
     "slug": "19-parallelising-one-big-file",
@@ -185,8 +165,7 @@
     "title": "Parallelising one big file",
     "part": "V",
     "partTitle": "Processing",
-    "gated": true,
-    "teaser": "The naive check (\"count the DONE chunks, if it equals the total, finish the job\") races: two workers finishing simultaneously both see the full count and both finalise. Make the"
+    "length": 633
   },
   {
     "slug": "20-retries-poison-pills-and-the-dlq",
@@ -194,8 +173,7 @@
     "title": "Retries, poison pills and the DLQ",
     "part": "V",
     "partTitle": "Processing",
-    "gated": true,
-    "teaser": ""
+    "length": 458
   },
   {
     "slug": "21-the-job-state-machine",
@@ -203,8 +181,7 @@
     "title": "The job state machine",
     "part": "VI",
     "partTitle": "State and visibility",
-    "gated": true,
-    "teaser": "It compresses a great deal of reasoning into one picture, and it makes every failure path something you can point at."
+    "length": 145
   },
   {
     "slug": "22-progress-without-hammering-the-database",
@@ -212,8 +189,7 @@
     "title": "Progress without hammering the database",
     "part": "VI",
     "partTitle": "State and visibility",
-    "gated": true,
-    "teaser": "For finer granularity without the write load, keep the hot counter in Redis and let the database hold the durable, coarse checkpoint:"
+    "length": 473
   },
   {
     "slug": "23-telling-the-frontend",
@@ -221,8 +197,7 @@
     "title": "Telling the frontend",
     "part": "VI",
     "partTitle": "State and visibility",
-    "gated": true,
-    "teaser": "Simple, cache-friendly, survives reconnects | | Server-sent events | One held connection per viewer | Immediate | Server-to-client only, and you want live updates | | WebSocket |"
+    "length": 543
   },
   {
     "slug": "24-scaling-workers-backpressure-and-queue-depth",
@@ -230,8 +205,7 @@
     "title": "Scaling: workers, backpressure and queue depth",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "gated": true,
-    "teaser": "Scaling up is only half the answer. When the downstream cannot keep up, the system must slow down rather than fall over."
+    "length": 137
   },
   {
     "slug": "25-multi-tenancy-and-fairness",
@@ -239,8 +213,7 @@
     "title": "Multi-tenancy and fairness",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "gated": true,
-    "teaser": ""
+    "length": 538
   },
   {
     "slug": "26-partial-failure-what-failed-means",
@@ -248,8 +221,7 @@
     "title": "Partial failure: what \"failed\" means",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "gated": true,
-    "teaser": "There is no universally correct answer, which is exactly why you should raise it. What matters is that the behaviour is a decision, not an accident."
+    "length": 148
   },
   {
     "slug": "27-cost-the-bill-nobody-mentions",
@@ -257,8 +229,7 @@
     "title": "Cost, the bill nobody mentions",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "gated": true,
-    "teaser": ""
+    "length": 864
   },
   {
     "slug": "28-observability-and-security",
@@ -266,8 +237,7 @@
     "title": "Observability and security",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "gated": true,
-    "teaser": ""
+    "length": 825
   },
   {
     "slug": "29-the-seven-step-delivery-script",
@@ -275,8 +245,7 @@
     "title": "The seven-step delivery script",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "gated": true,
-    "teaser": ""
+    "length": 672
   },
   {
     "slug": "30-whiteboard-drawing-order",
@@ -284,8 +253,7 @@
     "title": "Whiteboard drawing order",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "gated": true,
-    "teaser": "Never draw everything and then explain."
+    "length": 80
   },
   {
     "slug": "31-follow-up-question-bank",
@@ -293,8 +261,7 @@
     "title": "Follow-up question bank",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "gated": true,
-    "teaser": ""
+    "length": 3273
   },
   {
     "slug": "appendix-a-numbers-to-memorise",
@@ -302,8 +269,7 @@
     "title": "Appendix A. Numbers to memorise",
     "part": "IX",
     "partTitle": "Appendices",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "appendix-b-glossary",
@@ -311,8 +277,7 @@
     "title": "Appendix B. Glossary",
     "part": "IX",
     "partTitle": "Appendices",
-    "gated": false,
-    "teaser": ""
+    "length": 1330
   },
   {
     "slug": "appendix-c-self-test",
@@ -320,7 +285,6 @@
     "title": "Appendix C. Self-test",
     "part": "IX",
     "partTitle": "Appendices",
-    "gated": true,
-    "teaser": ""
+    "length": 1196
   }
 ]

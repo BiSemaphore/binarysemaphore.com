@@ -37,3 +37,65 @@ Two wins at once. Each shard holds fewer rows, so queries against it are faster.
 And each shard is a separate machine, so total write capacity multiplied.
 
 #### Choosing the key, where the lecture is loose
+
+The lecture suggests sharding orders by date: January to June on one instance,
+July to December on the other. That is a clean way to explain the mechanism and
+<Peach>a poor sharding key in practice</Peach>, and knowing why is exactly the kind of
+detail an interview probes.
+
+```text
+  sharded by order_date
+  ─────────────────────
+  shard 1   Jan-Jun    ▁▁▁▁▁   cold. nobody writes to the past.
+  shard 2   Jul-Dec    ██████  every single new order lands here.
+
+  → you have two machines and one of them is doing all the work.
+```
+
+That is a <Pink>hot shard</Pink>. You paid for distribution and got none, because time
+only moves in one direction.
+
+| Strategy | Spreads writes | Range queries | Watch out for |
+|---|---|---|---|
+| Hash of `user_id` | Evenly | Lost, hashing destroys order | Resharding is painful |
+| Range of `user_id` | Unevenly, early users cluster | Preserved | Hot shard on new signups |
+| Range of date | Terribly, all writes on the newest | Excellent | The hot shard above |
+| Geography | By population | Within a region | Regulatory upside, uneven sizes |
+
+<DoThis>
+
+How to actually choose
+
+- <Mint>Shard by the thing you filter on most.</Mint> If nearly every query says
+  `WHERE user_id = ?`, shard on `user_id`. Queries then hit exactly one shard,
+  which is the entire point.
+- <Mint>Hash it unless you need ranges.</Mint> Hashing spreads writes evenly. Only use
+  range sharding when scanning a contiguous range is a query you actually run.
+- <Mint>Make sure the key is on every hot query.</Mint> A query that does not include the
+  shard key must be sent to every shard and the results merged. That is a
+  <Pink>scatter-gather</Pink>, and it is as slow as the slowest shard.
+
+</DoThis>
+
+#### The three costs nobody mentions up front
+
+```text
+  cross-shard joins       two shards, two machines. the join now happens in
+                          your application code, or not at all.
+
+  cross-shard transactions  ACID across machines needs two-phase commit or
+                          sagas. both are hard and both are slow.
+
+  resharding              going from 4 shards to 8 means moving billions of
+                          rows while serving traffic. plan it before you need
+                          it, or use consistent hashing so the move is partial.
+```
+
+<KeyIdea>
+
+<Peach>Shard last.</Peach> It is the least reversible decision in this book. Before it:
+index properly, cache, add replicas, archive old rows, upgrade the instance, and
+consider whether one table needs to be one table. Teams that shard early spend
+years working around a key they picked in a hurry.
+
+</KeyIdea>

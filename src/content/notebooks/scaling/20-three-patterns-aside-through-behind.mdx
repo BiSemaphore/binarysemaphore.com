@@ -24,3 +24,35 @@ request after any write always misses.
   read:    check cache → almost always hit
   write:   write db AND write cache, both before responding
 ```
+
+The cache is never stale and reads essentially never miss. Writes get slower,
+because you are doing two writes on the critical path, and you cache data that
+may never be read.
+
+#### Write-behind, also called write-back
+
+```text
+  read:    check cache
+  write:   write cache → respond → write db asynchronously, later
+```
+
+The fastest writes by a wide margin, because the client waits only for the
+cache. And the sharpest edge: <Rose>there is a window where the cache holds data the
+database does not.</Rose> If the process dies in that window, the write is gone, and
+you already told the user it succeeded.
+
+| Pattern | Read | Write | Use when |
+|---|---|---|---|
+| Cache-aside | Miss costs full latency | DB, then invalidate | Almost always. Start here |
+| Write-through | Near-always hit | Slower, two writes | Reads dominate and staleness is unacceptable |
+| Write-behind | Near-always hit | Fastest | Write-heavy, and losing a write is survivable |
+
+<Trap>
+
+<Rose>Reaching for write-behind because it is the fastest.</Rose> It is fastest because it
+lies to the client about durability. That is a legitimate trade for a view
+counter and a firing offence for a payment. <Mint>The question is never which is
+fastest, it is what you can afford to lose</Mint>, and you should say so out loud
+when asked.
+
+</Trap>

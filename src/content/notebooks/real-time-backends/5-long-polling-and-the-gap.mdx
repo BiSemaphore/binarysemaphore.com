@@ -28,3 +28,46 @@ processes it, and immediately opens a new request.
 This works, and it carried real-time features on the web for the better part of a
 decade. The cost is now attached to `E` rather than `U`, which was the whole
 point. Empty polls are gone.
+
+The problem is __the gap__. Between the server writing the response and the
+client's next request arriving, <Peach>there is no channel</Peach>. If two events happen in
+quick succession, the second one lands while nobody is listening, and the server
+has to buffer it or lose it. And the client is not idle in that window: it has to
+parse the response, run its handler, re-render, then open a fresh connection,
+which means a new request and possibly a new TCP and TLS handshake.
+
+This is written down. RFC 6202 (*Known Issues and Best Practices for the Use of
+Long Polling and Streaming in Bidirectional HTTP*) is the document, and it does
+not oversell the technique: it puts the average latency at about one network
+transit, but <Peach>the worst case at more than three</Peach>, because of the round trip
+spent re-establishing the channel after every single message.
+
+<Trap>
+
+"Long polling is basically WebSockets over HTTP." No. A WebSocket carries an
+unbounded number of messages over one connection. Long polling carries <Peach>exactly
+one message per connection</Peach> and then must rebuild the channel. That difference
+is the entire reason the next two designs exist, and it is also why long polling
+gets more expensive as events get more frequent, which is precisely backwards.
+
+</Trap>
+
+<Ask>
+
+If long polling is worse, why does it still appear in production stacks?
+
+Because it needs nothing from the network path. Every proxy, every corporate
+middlebox and every CDN understands a slow `GET`, and none of them need to
+understand an upgrade or an event stream. It is still the correct fallback tier
+in libraries that negotiate a transport, and it is what those libraries drop to
+when the environment refuses anything better.
+
+</Ask>
+
+<KeyIdea>
+
+Long polling fixed the cost model and left the latency model broken. One message
+per connection means the channel has to be rebuilt after every message, and the
+window while it is being rebuilt is a window where the server cannot reach you.
+
+</KeyIdea>

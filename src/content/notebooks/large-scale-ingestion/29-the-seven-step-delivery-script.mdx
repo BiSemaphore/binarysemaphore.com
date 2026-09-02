@@ -20,3 +20,24 @@ as much as the answer.
   7. SCALE AND      5 min   more workers, fairness, cost, metrics, security
      OPERATE
 ```
+
+<Signal>
+
+Step 6 is where the interview is decided, so get there deliberately and early
+rather than being dragged. Saying "the happy path is straightforward, so let me
+spend our time on the failure modes" tells the interviewer you know where the
+difficulty lives, and it puts you in control of the session.
+
+</Signal>
+
+#### Phrases worth having ready
+
+- "Let me size this before I draw anything."
+- "The object at rest in S3 is the handoff between two independent failure
+  domains."
+- "Exactly-once delivery is not achievable, so I want at-least-once delivery
+  plus idempotent processing, which gives effectively-once semantics."
+- "Long jobs and message leases are in tension. Either the lease follows the
+  work, or the work is cut to fit the lease."
+- "The queue is the backpressure mechanism."
+- "That is a product decision. Here are the two behaviours and what each costs."

@@ -26,3 +26,44 @@ socket. Aas moves a task in browser A.
               has never heard     has never heard
               of B                of A
 ```
+
+Instance 1 has, in its own memory, a socket, a goroutine, and a note that this
+socket cares about board 412. Instance 2 has <Peach>no way to learn any of that</Peach>.
+They are separate processes, possibly in separate data centres, sharing nothing
+but a database.
+
+**This is the contradiction.** Statelessness was the property that made horizontal
+scaling work: any instance can serve any request, so you can add instances, kill
+instances, and deploy without coordination. Notebook 06 section 21 is the full
+treatment.
+
+<Peach>A persistent connection breaks it, permanently and by definition.</Peach> The moment
+instance 1 accepts a WebSocket from browser A, instance 1 is the only machine in
+the world that can send anything to browser A. Not because of configuration.
+Because the socket is a file descriptor in that process's table, and file
+descriptors do not travel.
+
+```text
+  stateless HTTP                    a held connection
+  --------------                    -----------------
+  any instance serves any request   one instance serves one client
+  scale by adding instances         adding instances helps new clients only
+  deploy by replacing instances     replacing an instance drops its clients
+  no coordination needed            the instances must now talk
+```
+
+<Signal>
+
+"A WebSocket is state, and unlike session state I cannot externalise it to Redis,
+because the thing that is stateful is the file descriptor itself. So the fix is
+never to share the connection. It is to route the <Peach>event</Peach> to the instance that
+holds it." That reframing is the whole of the next three sections.
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>You cannot move a connection.</Peach> Every solution from here accepts that the socket
+stays where it is and moves the message to it instead.
+
+</KeyIdea>

@@ -21,3 +21,58 @@ front.
 
 The theoretical wins are real and they are the mirror image of the three
 ceilings:
+
+- **No hard limit.** One instance takes 1,000 rps, five take 5,000. Add more.
+- **Redundancy.** One instance dies and the other two absorb its traffic. The
+  system degrades instead of stopping.
+- **Geography.** Instances can live in different regions, and a request can be
+  routed to the nearest one.
+
+Now the bill, because every one of those wins is bought with a question you now
+have to answer:
+
+```text
+  how do requests get distributed?          → a load balancer, and an algorithm
+  how do instances share state?             → externalise all of it. section 24
+  how do you know an instance is dead?      → health checks. section 26
+  what happens when the network between
+    them fails?                             → they make conflicting decisions
+  when do you add and remove instances?     → autoscaling, section 38
+```
+
+<KeyIdea>
+
+<Peach>Distributed systems do not remove problems. They trade one set of problems for
+another.</Peach> You give up "my server is too small" and receive "my servers disagree
+about what is true". Sometimes that is a much better trade. It is never a free
+one, and an interviewer is listening for whether you know that.
+
+</KeyIdea>
+
+#### The gap the lecture leaves: linear scaling is a lie you should price in
+
+"Five servers give five times the throughput" is the pitch. It is never quite
+true, and knowing why is a strong signal.
+
+```text
+  ideal        │                                    ╱
+               │                                  ╱
+  real         │                            ____╱‾‾‾‾‾───___
+               │                        ___╱                 ‾‾‾──
+               │                    ___╱
+               └──────────────────────────────────────────── instances
+```
+
+Two forces bend the line. **Contention**: the shared thing everybody still
+queues for, which is usually the database. **Coherence**: the cost of keeping
+instances in agreement, which grows faster than linearly because it is pairwise.
+Past some count, adding a machine makes the system slower.
+
+<Trap>
+
+<Rose>Assuming the bottleneck moved because you added servers.</Rose> If ten instances all
+talk to one database, ten instances are ten times the pressure on the one thing
+you did not scale. <Peach>Horizontal scaling of the stateless tier relocates the
+bottleneck to the stateful tier</Peach>, which is what Part VI is about.
+
+</Trap>

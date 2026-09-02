@@ -9,3 +9,24 @@ partTitle: "Getting the bytes out"
 | 1. CDN in front, bucket private | Private, CDN-only read | Public assets: images, CSS, product photos |
 | 2. Presigned GET | Private | Private per-user content, moderate volume |
 | 3. CDN signed URLs or cookies | Private, CDN-only read | Private content at volume, and video |
+
+#### Pattern 1: public content, private bucket
+
+Do not make the bucket public. Put a CDN in front, let only the CDN read it, and
+then:
+
+```text
+  key = <sha256 of the contents>.jpg      ← content-addressed
+  Cache-Control: public, max-age=31536000, immutable
+```
+
+Because the key is derived from the bytes, <Peach>the URL changes whenever the
+content changes</Peach>. No invalidation, no purge, no stale reads, and rollback is a
+row update. Cheapest and fastest option available.
+
+#### Pattern 2: presigned GET
+
+Exactly the mirror of section 26: the browser asks your server, your server
+authorises and returns a URL valid for five to fifteen minutes, the browser
+fetches from the bucket. Simple, and correct at moderate volume. It has one
+serious problem, which is the next section.

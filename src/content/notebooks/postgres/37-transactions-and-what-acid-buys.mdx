@@ -10,3 +10,26 @@ BEGIN;
   UPDATE accounts SET balance = balance + 100 WHERE id = 'b';
 COMMIT;                      -- both, or neither. never one.
 ```
+
+| Property | Means | Failure it prevents |
+|---|---|---|
+| <Peach>Atomicity</Peach> | All statements or none | Money debited but never credited |
+| <Peach>Consistency</Peach> | Constraints hold at commit | A row that violates a `CHECK` |
+| <Peach>Isolation</Peach> | Concurrent transactions do not corrupt each other | Section 38 |
+| <Peach>Durability</Peach> | Committed means survives a crash | "It said saved" and it was not |
+
+The practical rule: <Peach>a transaction should wrap one unit of business meaning</Peach>,
+and it should be as short as possible in wall-clock time, because everything it
+touches stays locked until it ends.
+
+<Trap>
+
+"Wrap the whole request handler in a transaction, to be safe"
+
+Now an HTTP call to a payment provider, a slow template render, or a sleepy
+client holds database locks for seconds. Long transactions block other writers,
+prevent `VACUUM` from cleaning rows, and turn one slow dependency into a
+database-wide stall. <Peach>Open the transaction as late as possible and close it as
+early as possible</Peach>, and never make a network call inside one.
+
+</Trap>

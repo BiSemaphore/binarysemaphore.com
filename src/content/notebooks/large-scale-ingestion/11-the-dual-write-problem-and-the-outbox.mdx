@@ -28,3 +28,75 @@ Reversing the order does not help, it changes which way you break:
 
   Result: a worker picks up a job whose row still says UPLOADING.
 ```
+
+You are trying to write atomically to two systems that do not share a
+transaction. That is the <Peach>dual-write problem</Peach>, and the standard answer is the
+<Peach>transactional outbox</Peach>.
+
+```sql
+CREATE TABLE outbox (
+  id           BIGSERIAL PRIMARY KEY,
+  aggregate_id UUID NOT NULL,
+  event_type   TEXT NOT NULL,
+  payload      JSONB NOT NULL,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  published_at TIMESTAMPTZ
+);
+CREATE INDEX outbox_unpublished ON outbox (id) WHERE published_at IS NULL;
+```
+
+```java
+// One transaction, one database, therefore actually atomic.
+@Transactional
+public void markUploaded(UUID jobId) {
+    jobs.updateStatus(jobId, Status.UPLOADED);
+    outbox.insert(jobId, "job.ready", payloadFor(jobId));
+}
+```
+
+A separate relay reads unpublished rows, publishes them, and marks them
+published. If it dies mid-flight it republishes, which is fine, because the
+consumer is idempotent (section 17).
+
+```text
+  ┌────────────────── one ACID transaction ──────────────────┐
+  │   jobs.status = UPLOADED      outbox: job.ready          │
+  └────────────────────────────┬─────────────────────────────┘
+                               │
+                      relay polls / reads the WAL
+                               │
+                               ▼
+                          message queue        at-least-once
+                               │
+                               ▼
+                            workers            idempotent consumer
+```
+
+<KeyIdea>
+
+Outbox converts an impossible atomic write across two systems into an ordinary
+atomic write to one system, plus an at-least-once delivery you were already
+required to tolerate.
+
+</KeyIdea>
+
+<Ask>
+
+Isn't polling the outbox table wasteful?
+
+At low volume, polling every 200 ms is fine and trivially correct. At high
+volume, read the write-ahead log instead with change data capture (Debezium on
+Postgres logical replication), which removes the polling entirely. Name both and
+say which you would start with, and why.
+
+</Ask>
+
+<Trap>
+
+"Just publish inside the transaction"
+
+Publishing to Kafka inside a database transaction does not make it
+transactional. The broker has already accepted the message when the transaction
+rolls back. The message is out, the row is not, and the two systems now disagree.
+
+</Trap>

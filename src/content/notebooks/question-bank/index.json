@@ -5,8 +5,7 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "gated": true,
-    "teaser": "Each prompt carries the notebook and section it came from, printed small beside its number, so a blank is never a dead end."
+    "length": 655
   },
   {
     "slug": "1-opening",
@@ -14,8 +13,7 @@
     "title": "Opening",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "2-framing-the-problem",
@@ -23,8 +21,7 @@
     "title": "Framing the problem",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "3-ingestion-getting-the-bytes-in",
@@ -32,8 +29,7 @@
     "title": "Ingestion, getting the bytes in",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "4-the-handoff",
@@ -41,8 +37,7 @@
     "title": "The handoff",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "5-the-queue",
@@ -50,8 +45,7 @@
     "title": "The queue",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "6-processing",
@@ -59,8 +53,7 @@
     "title": "Processing",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "7-state-and-visibility",
@@ -68,8 +61,7 @@
     "title": "State and visibility",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "8-senior-concerns",
@@ -77,8 +69,7 @@
     "title": "Senior concerns",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "9-the-interview-itself",
@@ -86,8 +77,7 @@
     "title": "The interview itself",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "10-final-review",
@@ -95,8 +85,7 @@
     "title": "Final review",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "11-opening",
@@ -104,8 +93,7 @@
     "title": "Opening",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "12-the-naive-design-and-the-seven-ways-it-dies",
@@ -113,8 +101,7 @@
     "title": "The naive design, and the seven ways it dies",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "13-three-kinds-of-storage",
@@ -122,8 +109,7 @@
     "title": "Three kinds of storage",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "14-anatomy-of-an-object",
@@ -131,8 +117,7 @@
     "title": "Anatomy of an object",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "15-inside-the-system",
@@ -140,8 +125,7 @@
     "title": "Inside the system",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "16-getting-the-bytes-in",
@@ -149,8 +133,7 @@
     "title": "Getting the bytes in",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "17-large-files",
@@ -158,8 +141,7 @@
     "title": "Large files",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "18-getting-the-bytes-out",
@@ -167,8 +149,7 @@
     "title": "Getting the bytes out",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "19-final-review",
@@ -176,8 +157,7 @@
     "title": "Final review",
     "part": "02",
     "partTitle": "Object Storage",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "20-opening",
@@ -185,8 +165,7 @@
     "title": "Opening",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "21-how-to-review-code-out-loud",
@@ -194,8 +173,7 @@
     "title": "How to review code out loud",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "22-the-node-js-runtime",
@@ -203,8 +181,7 @@
     "title": "The Node.js runtime",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "23-express-and-the-http-boundary",
@@ -212,8 +189,7 @@
     "title": "Express and the HTTP boundary",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "24-the-client-react-and-redux",
@@ -221,8 +197,7 @@
     "title": "The client: React and Redux",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "25-postgresql",
@@ -230,8 +205,7 @@
     "title": "PostgreSQL",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "26-mongodb",
@@ -239,8 +213,7 @@
     "title": "MongoDB",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "27-kafka",
@@ -248,8 +221,7 @@
     "title": "Kafka",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "28-twenty-four-more-drills",
@@ -257,8 +229,7 @@
     "title": "Twenty-four more drills",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "29-delivery",
@@ -266,8 +237,7 @@
     "title": "Delivery",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "30-opening",
@@ -275,8 +245,7 @@
     "title": "Opening",
     "part": "04",
     "partTitle": "Postgres",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "31-why-a-database-at-all",
@@ -284,8 +253,7 @@
     "title": "Why a database at all",
     "part": "04",
     "partTitle": "Postgres",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "32-types-are-the-first-constraint",
@@ -293,8 +261,7 @@
     "title": "Types are the first constraint",
     "part": "04",
     "partTitle": "Postgres",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "33-designing-the-schema",
@@ -302,8 +269,7 @@
     "title": "Designing the schema",
     "part": "04",
     "partTitle": "Postgres",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "34-querying-for-an-api",
@@ -311,8 +277,7 @@
     "title": "Querying for an API",
     "part": "04",
     "partTitle": "Postgres",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "35-making-it-fast",
@@ -320,8 +285,7 @@
     "title": "Making it fast",
     "part": "04",
     "partTitle": "Postgres",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "36-correctness-under-concurrency",
@@ -329,8 +293,7 @@
     "title": "Correctness under concurrency",
     "part": "04",
     "partTitle": "Postgres",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "37-final-review",
@@ -338,8 +301,7 @@
     "title": "Final review",
     "part": "04",
     "partTitle": "Postgres",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "38-opening",
@@ -347,8 +309,7 @@
     "title": "Opening",
     "part": "05",
     "partTitle": "Backend Security",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "39-injection",
@@ -356,8 +317,7 @@
     "title": "Injection",
     "part": "05",
     "partTitle": "Backend Security",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "40-authentication",
@@ -365,8 +325,7 @@
     "title": "Authentication",
     "part": "05",
     "partTitle": "Backend Security",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "41-authorization",
@@ -374,8 +333,7 @@
     "title": "Authorization",
     "part": "05",
     "partTitle": "Backend Security",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "42-the-browser-is-a-boundary-too",
@@ -383,8 +341,7 @@
     "title": "The browser is a boundary too",
     "part": "05",
     "partTitle": "Backend Security",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "43-final-review",
@@ -392,8 +349,7 @@
     "title": "Final review",
     "part": "05",
     "partTitle": "Backend Security",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "44-what-fast-means",
@@ -401,8 +357,7 @@
     "title": "What \"fast\" means",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "45-finding-the-bottleneck",
@@ -410,8 +365,7 @@
     "title": "Finding the bottleneck",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "46-the-database",
@@ -419,8 +373,7 @@
     "title": "The database",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "47-caching",
@@ -428,8 +381,7 @@
     "title": "Caching",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "48-more-machines",
@@ -437,8 +389,7 @@
     "title": "More machines",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "49-the-stateful-part",
@@ -446,8 +397,7 @@
     "title": "The stateful part",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "50-moving-work-in-space-and-time",
@@ -455,8 +405,7 @@
     "title": "Moving work in space and time",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "51-architecture-decisions",
@@ -464,8 +413,7 @@
     "title": "Architecture decisions",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "52-the-interview",
@@ -473,8 +421,7 @@
     "title": "The interview",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "53-final-review",
@@ -482,8 +429,7 @@
     "title": "Final review",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "54-opening",
@@ -491,8 +437,7 @@
     "title": "Opening",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "55-the-client-always-spoke-first",
@@ -500,8 +445,7 @@
     "title": "The client always spoke first",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "56-server-sent-events-the-response-that-never-ends",
@@ -509,8 +453,7 @@
     "title": "Server-sent events: the response that never ends",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "57-websocket-leaving-http-behind",
@@ -518,8 +461,7 @@
     "title": "WebSocket: leaving HTTP behind",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "58-how-many-connections-fit-on-one-machine",
@@ -527,8 +469,7 @@
     "title": "How many connections fit on one machine",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "59-the-connection-is-state",
@@ -536,8 +477,7 @@
     "title": "The connection is state",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "60-delivery-gaps-storms-and-fan-out",
@@ -545,8 +485,7 @@
     "title": "Delivery: gaps, storms and fan-out",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "61-the-parts-the-lecture-left-out",
@@ -554,8 +493,7 @@
     "title": "The parts the lecture left out",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "62-final-review",
@@ -563,8 +501,7 @@
     "title": "Final review",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "63-opening",
@@ -572,8 +509,7 @@
     "title": "Opening",
     "part": "08",
     "partTitle": "REST API Design",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "64-the-standard-exists-so-you-do-not-have-to-negotiate",
@@ -581,8 +517,7 @@
     "title": "The standard exists so you do not have to negotiate",
     "part": "08",
     "partTitle": "REST API Design",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "65-opening",
@@ -590,8 +525,7 @@
     "title": "Opening",
     "part": "09",
     "partTitle": "Design Principles",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "66-the-words-that-came-before-the-acronym",
@@ -599,8 +533,7 @@
     "title": "The words that came before the acronym",
     "part": "09",
     "partTitle": "Design Principles",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "67-the-five",
@@ -608,8 +541,7 @@
     "title": "The five",
     "part": "09",
     "partTitle": "Design Principles",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "68-using-them-without-being-used-by-them",
@@ -617,8 +549,7 @@
     "title": "Using them without being used by them",
     "part": "09",
     "partTitle": "Design Principles",
-    "gated": true,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "69-the-interview-itself",
@@ -626,8 +557,7 @@
     "title": "The interview itself",
     "part": "09",
     "partTitle": "Design Principles",
-    "gated": false,
-    "teaser": ""
+    "length": 0
   },
   {
     "slug": "70-answers-notebook-01",
@@ -635,8 +565,7 @@
     "title": "Answers, Notebook 01",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "Q13 The file is a 4 GB gzip. Does streaming still work? Notebook 01, section 15."
+    "length": 7498
   },
   {
     "slug": "71-answers-notebook-02",
@@ -644,8 +573,7 @@
     "title": "Answers, Notebook 02",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "When you need what it gave up. Small mutable state with transactions belongs in a database. Microsecond latency and in-place writes belong on block storage, which is why databases"
+    "length": 7681
   },
   {
     "slug": "72-answers-notebook-03",
@@ -653,8 +581,7 @@
     "title": "Answers, Notebook 03",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "Body means the client stores it, and localStorage is readable by any XSS. A HttpOnly; Secure; SameSite=Lax cookie is not reachable from JavaScript, which removes the XSS"
+    "length": 9534
   },
   {
     "slug": "73-answers-notebook-04",
@@ -662,8 +589,7 @@
     "title": "Answers, Notebook 04",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "You lose everything the type gives you: now() - createdat, datetrunc, range queries reading naturally, interval arithmetic, index-friendly comparisons against a literal, and any"
+    "length": 4027
   },
   {
     "slug": "74-answers-notebook-05",
@@ -671,8 +597,7 @@
     "title": "Answers, Notebook 05",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "A pepper is a secret value mixed into the hash that lives in your application config or an HSM rather than the database. It means a stolen database alone is not enough to attack"
+    "length": 2072
   },
   {
     "slug": "75-answers-notebook-06",
@@ -680,8 +605,7 @@
     "title": "Answers, Notebook 06",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "No, and saying so is a useful nuance. For N of three, on a warm connection, the extra round trips cost microseconds and the batched version is harder to read. The problem is"
+    "length": 5582
   },
   {
     "slug": "76-answers-notebook-07",
@@ -689,8 +613,7 @@
     "title": "Answers, Notebook 07",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "Buffering first, then timeouts. Curl the endpoint directly against the app, bypassing the proxy: if events arrive there and not through the proxy, it is buffering. If both work"
+    "length": 5692
   },
   {
     "slug": "77-answers-notebook-08",
@@ -698,8 +621,7 @@
     "title": "Answers, Notebook 08",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "The token serves statelessness: it travels with every request, so any instance can validate it without shared memory. A session table breaks statelessness, because the server now"
+    "length": 989
   },
   {
     "slug": "78-answers-notebook-09",
@@ -707,7 +629,6 @@
     "title": "Answers, Notebook 09",
     "part": "10",
     "partTitle": "Answers",
-    "gated": true,
-    "teaser": "No, and the distinction is worth having. Separation of concerns is about categories of work: HTTP handling is one concern, persistence another, business rules a third, and they"
+    "length": 1553
   }
 ]

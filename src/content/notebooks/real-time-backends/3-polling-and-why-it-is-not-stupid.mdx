@@ -25,3 +25,31 @@ interval and applies whatever came back. It uses nothing you do not already have
 your existing routes, your existing auth middleware, your existing handlers. It
 survives every proxy, every corporate firewall and every ancient browser, because
 it is not a special case of anything.
+
+<Mint>For internal tooling with a few dozen users, polling every few seconds is a
+correct engineering decision and you should not apologise for it.</Mint> It is the
+design with the fewest moving parts, and the failure mode of a missed poll is
+"the next poll picks it up", which is the best failure mode any design in this
+book has.
+
+The reason to keep going is not that polling is wrong. It is that its cost is
+attached to the wrong number, and section 4 does that arithmetic.
+
+<Trap>
+
+"Polling is the naive solution, so I would never use it." That answer is worse
+than the design it rejects. Every real-time system has a polling fallback,
+because when the socket path breaks you need something that still delivers, and
+the reconnect-and-refetch path in section 32 is polling with a longer interval.
+The senior position is that polling is the correct default until you can name
+which of its two costs you are actually hitting.
+
+</Trap>
+
+<KeyIdea>
+
+Polling is not a beginner's mistake. It is the design whose cost is tied to the
+number of users rather than the number of events, and that single property is
+what eventually disqualifies it.
+
+</KeyIdea>

@@ -5,8 +5,7 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "gated": true,
-    "teaser": "If you can say, for any design decision, what it tells the consumer and what it leaves them guessing, you can answer almost any API design question in an interview, including the"
+    "length": 4262
   },
   {
     "slug": "the-whole-picture-on-one-page",
@@ -14,8 +13,7 @@
     "title": "The whole picture on one page",
     "part": "",
     "partTitle": "",
-    "gated": true,
-    "teaser": "Four rules are encoded in that picture, and they are the whole book."
+    "length": 2045
   },
   {
     "slug": "1-the-requirement-an-interface-two-strangers-agree-on",
@@ -23,8 +21,7 @@
     "title": "The requirement: an interface two strangers agree on",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "gated": true,
-    "teaser": "Now consider what happens if you design it carelessly. Say you used POST where a PUT belonged, called one field description and another desc, returned 404 for an empty search"
+    "length": 1713
   },
   {
     "slug": "2-1990-to-1993-the-web-outgrows-its-inventor",
@@ -32,8 +29,7 @@
     "title": "1990 to 1993: the web outgrows its inventor",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "gated": true,
-    "teaser": "Then it grew, and growth was the problem. The design assumed a research network. What arrived was the public, in numbers nobody had planned for. By 1993 the project was heading"
+    "length": 1754
   },
   {
     "slug": "3-fielding-s-six-constraints",
@@ -41,8 +37,7 @@
     "title": "Fielding's six constraints",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "gated": true,
-    "teaser": "Stateless is the one your architecture rests on. Each request must carry everything needed to understand it. The server keeps nothing between calls. This sounds like an"
+    "length": 2511
   },
   {
     "slug": "4-why-it-is-called-rest",
@@ -50,8 +45,7 @@
     "title": "Why it is called REST",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "gated": true,
-    "teaser": "==The resource has one identity and many representations, and the URL names the resource, not the format.== This is why /users/8f2a.json is a slightly wrong URL and /users/8f2a"
+    "length": 1280
   },
   {
     "slug": "5-the-constraint-nobody-implements",
@@ -59,7 +53,6 @@
     "title": "The constraint nobody implements",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "gated": true,
-    "teaser": "Almost nobody does this. The industry mostly stops one level short, and there is a standard vocabulary for how short, the Richardson Maturity Model:"
+    "length": 2146
   }
 ]

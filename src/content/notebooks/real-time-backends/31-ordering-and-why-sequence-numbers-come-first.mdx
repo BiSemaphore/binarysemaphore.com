@@ -20,3 +20,73 @@ the last write your client applied was not the last write that happened.
 ```
 
 Three mechanisms fix this, in increasing strength.
+
+**1. Order per topic at the bus.** A partitioned log gives you total order within
+a partition. <Peach>Partition by the entity, board id here</Peach>, and every event for one
+board is ordered, while different boards stay parallel. This is the standard use
+of a Kafka partition key and it is usually enough, because ordering across boards
+does not mean anything.
+
+**2. A sequence number per topic.** Assign a monotonic integer as the event is
+created, and put it in the payload.
+
+```text
+  { "seq": 1841, "type": "task.moved", "task": 9, "to": "doing" }
+```
+
+<Mint>The client tracks the highest sequence it has applied and discards anything
+lower.</Mint> That fixes reordering with no help from the bus at all. More
+importantly, <Peach>it makes a gap detectable</Peach>: a client that holds 1841 and receives
+1843 knows for certain that it is missing something, which no amount of ordering
+alone can tell it.
+
+**3. Version the entity itself.** Include the entity's version in each event and
+have the client apply only if it is newer. This survives out-of-order delivery
+across topics too, and it is what makes a resync idempotent.
+
+```text
+  seq gives you:        did I miss anything?         ← detection
+  ordering gives you:   is this the newest state?    ← correctness
+  versions give you:    can I apply this twice?      ← idempotence
+```
+
+You want all three eventually. <Peach>If you only add one thing on day one, add the
+sequence number</Peach>, because it is a field in a JSON payload and it is the
+precondition for everything in Part VI. Retrofitting it after launch means
+migrating every client and every producer at once.
+
+<Trap>
+
+<Rose>"The bus preserves order, so the client will see events in order."</Rose> Order at
+the bus is not order at the browser. Between them sit an instance that may batch
+or coalesce, a socket that may be reconnecting, and a client that may be applying
+a resync concurrently with live frames. <Peach>The client must be able to order and
+deduplicate independently</Peach>, which is what the sequence number is for.
+
+</Trap>
+
+<KeyIdea>
+
+Partition by entity for ordering, carry a per-topic sequence number for gap
+detection, and version entities for idempotence. <Peach>The sequence number is the one
+that must exist from day one</Peach>, because everything in Part VI is built on it.
+
+</KeyIdea>
+
+<Recall>
+
+Explain why a WebSocket breaks statelessness, and why the fix is not to share the connection. | 7
+
+</Recall>
+
+<Recall>
+
+Give the sharp objection to sticky sessions, not the usual one. | 5
+
+</Recall>
+
+<Recall>
+
+Draw the pub/sub path for one task move across two instances, labelling the topic. | 8
+
+</Recall>

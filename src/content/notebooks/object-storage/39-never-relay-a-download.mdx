@@ -19,3 +19,17 @@ The rule from section 7, restated where it matters most.
 ```
 
 Three costs, all of them avoidable:
+
+- **A worker per download.** Section 7. A goroutine or event-loop slot spends
+  minutes copying bytes at the user's speed.
+- **Bandwidth you pay for.** Every provider bills egress. Relaying means paying
+  for the same bytes leaving the bucket and then leaving your server.
+- **It is slow.** Your service is in one region, or three. A CDN is in hundreds.
+
+<KeyIdea>
+
+Bytes should leave the <Peach>bucket or the CDN</Peach>, never your application. Uploads go
+browser to bucket, downloads go CDN to browser. Your service authorises and
+records; it does not carry payload in either direction.
+
+</KeyIdea>

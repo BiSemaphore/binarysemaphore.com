@@ -16,8 +16,8 @@ Two options, and a third that is both.
 
 Fastest possible read: nanoseconds, no network, no serialization. And with three
 instances you now have three caches that disagree. Invalidate on instance A and
-B and C keep serving the old value until their own TTLs expire. ==The
-inconsistency window is not a bug you can fix; it is the architecture.==
+B and C keep serving the old value until their own TTLs expire. <Peach>The
+inconsistency window is not a bug you can fix; it is the architecture.</Peach>
 
 #### Distributed: Redis, Valkey, Memcached
 
@@ -26,3 +26,42 @@ inconsistency window is not a bug you can fix; it is the architecture.==
   instance B ─┼──→ [ Redis ] ──→ database
   instance C ─┘
 ```
+
+One copy, so one truth. Invalidation works. Every instance sees the same value.
+The cost is a network round trip on every read, so you are trading roughly 2ms
+of in-process lookup for maybe 1ms on a local network, and considerably more if
+the hop crosses an availability zone.
+
+| | Local | Distributed |
+|---|---|---|
+| Read latency | Sub-millisecond | Network round trip |
+| Consistency | Per instance, diverges | One copy |
+| Survives a deploy | No, memory is lost | Yes |
+| Capacity | Bounded by process memory | Bounded by the cluster |
+| Failure mode | Silent staleness | A dependency that can be down |
+
+#### Tiered: the small hot set locally, everything else shared
+
+```text
+  request → local map (hot set) → Redis (everything) → database
+              ~0 ms                 ~1 ms               ~800 ms
+```
+
+The usual production answer. Keep a small local cache for the handful of keys
+read constantly, back it with a shared cache, and give the local tier a short
+TTL so the inconsistency window is measured in seconds.
+
+<Ask>
+
+What happens when Redis goes down?
+
+The honest answer is what separates candidates. <Peach>A cache in front of a database
+that cannot survive a cache outage is not a cache, it is a load-bearing
+dependency you have not budgeted for.</Peach> If your steady-state hit rate is 95%,
+losing the cache means twenty times the query volume arriving at once, which
+will take the database with it. Plan for it: fail open with a circuit breaker,
+shed load while it recovers, and know from a load test whether your database can
+take the cold-start traffic. Many teams discover the answer is no during the
+incident.
+
+</Ask>

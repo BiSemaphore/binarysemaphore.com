@@ -20,3 +20,19 @@ CREATE TABLE projects (
 DROP TABLE projects;
 DROP TYPE project_status;
 ```
+
+Note the down section reverses the up section <Peach>in the opposite order</Peach>: the
+table depends on the type, so the table goes first. Getting that backwards is
+the most common reason a rollback fails at exactly the moment you need it.
+
+<DoThis>
+
+Write the down migration, and test it once
+
+Some teams have moved to forward-only migrations, and that is a defensible
+position at scale, because a down migration that drops a column destroys data
+that the rollback cannot restore. But "we do not write them" and "we decided not
+to" are different. If you write them, <Peach>run `up` then `down` then `up` locally
+before you commit</Peach>, or you have written a rollback that has never executed.
+
+</DoThis>

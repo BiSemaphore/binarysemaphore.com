@@ -5,3 +5,43 @@ part: "IV"
 partTitle: "Inside the system"
 ---
 You send a 100 MB object. Follow it.
+
+```text
+  1.  request lands on one of thousands of STATELESS FRONT-END NODES
+      (any node can serve any request, because every request is
+       self-contained: that is the design from section 11)
+
+  2.  the node AUTHENTICATES by recomputing the signature over the
+      canonical request and comparing (section 26)
+
+  3.  the problem SPLITS IN TWO
+            │
+      ┌─────┴──────────────────────────────┐
+      ▼                                    ▼
+  DATA PLANE                          METADATA PLANE
+  "keep these 100 MB alive"           "remember that bucket+key
+                                       maps to those shards"
+
+  huge volume of bytes                small volume of data
+  simple operations                   enormous operation count
+  eventual internal repair            STRONGLY CONSISTENT
+  optimise for $/TB                   optimise for latency
+
+  4.  bytes are erasure coded and scattered (section 18)
+  5.  the index entry is committed (section 20)
+  6.  200 OK with an ETag
+```
+
+That split is the core architectural idea of every object store, and it is worth
+saying out loud in an interview, because it explains almost every behaviour that
+follows.
+
+<Signal>
+
+"Separating the metadata plane from the data plane lets each side be optimised
+for a completely different workload. Storing exabytes on drives has been a
+solved problem for decades. <Peach>Maintaining a strongly consistent, globally
+distributed sorted index over trillions of keys with millisecond lookups is the
+genuinely hard part</Peach>, and it is where the engineering went."
+
+</Signal>

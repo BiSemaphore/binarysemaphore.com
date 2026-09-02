@@ -31,5 +31,58 @@ independent of whether anything happened:
 
 And each one of those is a real request. It crosses the load balancer, runs your
 authentication middleware and validates a token, writes a log line, enters a
-service, queries the database, and serialises a response. ==Ten thousand database
-queries per second, and almost all of them return "nothing changed".==
+service, queries the database, and serialises a response. <Peach>Ten thousand database
+queries per second, and almost all of them return "nothing changed".</Peach>
+
+Now multiply the two together:
+
+```text
+  rps  ×  average delay  =  (U / T) × (T / 2)  =  U / 2
+```
+
+The interval cancels. <Peach>With polling, requests per second multiplied by average
+delay is a constant, fixed by your user count.</Peach> You cannot improve latency
+without paying exactly proportionally in load, forever, at every scale. Making
+the interface three times snappier makes the infrastructure bill three times
+larger, and no amount of caching or tuning changes the shape of that trade,
+because the trade is in the design and not in the implementation.
+
+There is a third number that makes it vivid. Call the actual event rate on the
+board `E`:
+
+```text
+  waste ratio  =  (U / T) / E
+
+  10,000 users, T = 3s, 5 events/sec on the board
+                       ──▶  3,333 / 5  =  ((667 requests per useful event))
+```
+
+**And the shape of that is the real problem.** The cost scales with `U`, the
+number of people watching. It does not scale with `E`, the number of things
+happening. A board where nothing occurs all day costs exactly as much to serve as
+a board changing every second. <Peach>You are paying for the medium and not for the
+message.</Peach>
+
+**On a phone it is worse than the arithmetic suggests.** A cellular radio is not
+a switch. Sending anything moves it from idle into a connected high-power state,
+and it stays there through a tail period of several seconds before stepping back
+down. A poll every three seconds means <Peach>the tail never expires and the radio
+never idles</Peach>, so the phone pays continuously for a connection that is mostly
+carrying "nothing changed". This is why polling loops show up in battery blame
+screens far out of proportion to the bytes they move.
+
+<DoThis>
+
+Before choosing any real-time transport, write down `U`, `T` and `E` for the
+feature. If `U / T` is within an order of magnitude of `E`, polling is fine and
+you are done. The whole rest of this book is for the case where it is not.
+
+</DoThis>
+
+<KeyIdea>
+
+Polling's cost is `U / T` and its latency is `T / 2`, so their product is `U / 2`
+and cannot be improved. <Peach>The goal of every design that follows is to make cost
+scale with `E`, the number of events, instead of with `U`.</Peach>
+
+</KeyIdea>

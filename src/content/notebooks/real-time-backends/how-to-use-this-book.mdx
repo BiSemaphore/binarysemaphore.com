@@ -25,3 +25,74 @@ costs until the cost forces the next design.
 
 That question generates every part of this book, because the inversion is not
 free and the bill arrives in six different currencies:
+
+| Part | The currency |
+|---|---|
+| I | Requests and latency, traded against each other |
+| II | One direction only, and the proxies in between |
+| III | Everything HTTP gave you: headers, caching, methods, statelessness |
+| IV | File descriptors, ports, and roughly 10 KB of RAM per connection |
+| V | The stateless architecture you spent the whole playlist building |
+| VI | Delivery guarantees, and work that scales with subscribers |
+| VII | A new authentication model and a new attack surface |
+
+If you can say what each design bought and what it charged, you can answer
+almost any real-time question asked in an interview, including the ones about
+technologies this book does not name.
+
+#### The five block types
+
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or the number. |
+| Key idea | The one thing to carry out of that section. |
+
+#### The four highlighters
+
+Colour is never decorative here. Each one means one thing, so a marked phrase is
+already half-read before you reach the words.
+
+| Mark | Means |
+|---|---|
+| <Peach>peach</Peach> | The sentence to carry away |
+| <Rose>rose</Rose> | The wrong answer, the thing that bites |
+| <Mint>mint</Mint> | The correct practice |
+| <Pink>pink</Pink> | A definition, at the point it is first defined |
+
+Figures follow the same discipline. Box drawing recedes to a pale wire so the
+shape reads first, NODE LABELS take full ink, and anything after a left arrow is
+an annotation in pencil rather than part of the machine.
+
+#### What is in the lecture and what is not
+
+Parts I to VI are the lecture, expanded, with the arithmetic filled in where it
+hand-waves and the production details added where it stops. Part VII is entirely
+outside it: authenticating a long-lived socket, the hijack that CORS does not
+protect you from, presence, collaborative editing, and what replaces WebSockets
+next. The lecture names presence and collaborative editing as things it is not
+covering; they are asked about constantly, so they are here.
+
+Sections that overlap Notebook 06 (*Scaling and Performance*) on load balancing
+and statelessness, or Notebook 05 (*Backend Security*) on authorisation, say so
+and point at the section that goes deeper rather than repeating it badly.
+
+#### A suggested route
+
+1. Read Part I in one sitting, with a pen, and do the arithmetic yourself. The
+   cost model in section 4 is the argument for everything that follows.
+2. Read Parts II and III together. They are one comparison, not two topics.
+3. Work Part IV with a terminal open. `ulimit -n` and
+   `sysctl net.ipv4.ip_local_port_range` on whatever machine you have.
+4. Parts V and VI are where interviews actually go. Drill them.
+
+<KeyIdea>
+
+Real-time is not a technology choice. It is the decision to stop paying per
+request and start paying per connection, and then discovering that a connection
+is <Peach>state that lives in one process</Peach> and cannot be moved. Everything hard about
+real-time backends is downstream of that one sentence.
+
+</KeyIdea>

@@ -13,3 +13,20 @@ Objects should not all live forever in the most expensive tier.
   day 180  Glacier Deep Archive  ~$0.00099/GB  compliance, hours to restore
   day 365  expire
 ```
+
+The trap is the minimums: 30 days minimum billable duration on IA, 90 on Glacier
+Flexible, 180 on Deep Archive, plus per-object overhead and a transition request
+per object. Moving millions of small objects to a cold class <Peach>can cost more
+than leaving them in Standard</Peach>. Check the size distribution first.
+
+<DoThis>
+
+Lifecycle rules to write on day one
+
+- <Mint>Abort incomplete multipart uploads after 7 days.</Mint> (Section 36. Non-negotiable.)
+- <Mint>Delete anything under `pending/` or `tmp/` after 24 hours.</Mint> (Section 30.)
+- <Mint>Expire non-current versions after 30 to 90 days</Mint>, so versioning stays a
+  safety net rather than an unbounded cost.
+- Only then consider cold-tier transitions.
+
+</DoThis>

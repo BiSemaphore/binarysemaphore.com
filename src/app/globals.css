@@ -523,6 +523,106 @@ body {
   background: color-mix(in srgb, var(--foreground) 6%, transparent);
 }
 
+/* --- Study notebook reader ----------------------------------------------- */
+/* The notebooks have their own typography, set in the `learnings` repo's
+   engine/theme.css and visible in the PDFs: a serif body, handwritten section
+   titles, navy ink. Reading them in a generic sans lost the thing that makes a
+   notebook feel like one, so the reader adopts the book's own system.
+
+   A deliberate departure from docs/brand.md, scoped to `.notebook` so nothing
+   reaches /threads or the rest of the site. Same footing as the resume product
+   using Figtree: a product with its own established identity keeps it. */
+
+.notebook {
+  /* The exact stack engine/theme.css uses, so the web matches the PDF and no
+     extra webfont is loaded. */
+  --nb-serif: "Charter", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --nb-ink: #0d1b2a;
+  --nb-ink-2: #1b263b;
+  --nb-rule: #d8e2dc;
+  --nb-blue: #2e6ff2;
+}
+
+.dark .notebook {
+  --nb-ink: #e8edf2;
+  --nb-ink-2: #cfd8e3;
+  --nb-rule: #2b3440;
+  --nb-blue: #7aa2ff;
+}
+
+.notebook p,
+.notebook li {
+  font-family: var(--nb-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--nb-ink);
+}
+
+.notebook strong {
+  color: var(--nb-ink);
+  font-weight: 700;
+}
+
+/* Section headings are handwritten in the PDF. Caveat is already loaded. */
+.nb-section-title {
+  font-family: var(--font-caveat), "Marker Felt", cursive;
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--nb-ink-2);
+}
+.nb-section-number {
+  font-family: var(--font-mono), monospace;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--subtle);
+}
+.nb-book-title {
+  font-family: var(--font-caveat), "Marker Felt", cursive;
+  font-size: 3.5rem;
+  font-weight: 600;
+  line-height: 1.05;
+  color: var(--nb-ink-2);
+}
+
+/* Sub-headings: serif, blue, with the rule the PDF draws in the margin. */
+.notebook h3 {
+  font-family: var(--nb-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--nb-blue);
+  margin: 1.75rem 0 0.25rem;
+  padding-left: 0.6rem;
+  margin-left: -0.75rem;
+  border-left: 2.5px solid var(--nb-blue);
+}
+.notebook h4 {
+  font-family: var(--nb-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--nb-ink-2);
+  margin-top: 1.5rem;
+}
+
+.notebook blockquote {
+  border-left: 2px solid var(--nb-rule);
+  font-family: var(--nb-serif);
+}
+.notebook table {
+  font-family: var(--nb-serif);
+}
+.notebook td {
+  color: var(--nb-ink);
+}
+
+/* Annotation blocks keep their mono labels, but their prose is the book's. */
+.notebook aside p,
+.notebook aside li,
+.notebook figure p {
+  font-family: var(--nb-serif);
+  color: var(--nb-ink);
+}
+
 /* --- Study notebook marks ------------------------------------------------ */
 /* Notebook sections use .thread for prose, exactly like a thread. These are the
    only additions: the four highlighters the books are written with, which the

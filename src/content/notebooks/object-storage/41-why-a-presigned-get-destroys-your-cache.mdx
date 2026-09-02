@@ -6,3 +6,53 @@ partTitle: "Getting the bytes out"
 ---
 This is the most valuable thing in the download half of the lecture, and it is
 not obvious.
+
+```text
+  every presigned URL carries a fresh timestamp and signature
+
+  user A:  /cat.jpg?X-Amz-Date=…101500Z&X-Amz-Signature=3f9c1a…
+  user B:  /cat.jpg?X-Amz-Date=…101812Z&X-Amz-Signature=b7e204…
+  user A:  /cat.jpg?X-Amz-Date=…103344Z&X-Amz-Signature=c19fe8…
+                    └──────── different URL every single time ────────┘
+
+  to the CDN these are THREE DIFFERENT RESOURCES.
+
+  cache hit rate:  0%
+  you are paying full egress, and paying for a CDN that caches nothing.
+```
+
+You installed a CDN specifically to cut egress, and it is doing nothing at all.
+
+<DoThis>
+
+Two fixes, cheap and proper
+
+- **Cheap: round the expiry.** Sign "valid until the top of the next hour"
+  rather than "valid for 15 minutes from now". Every user requesting that object
+  within the same hour gets the <Peach>identical URL</Peach>, so the CDN can cache it. You
+  trade precision on expiry for a cache hit rate, which is usually a good trade.
+- **Proper: sign at the edge.** Use the CDN's own signed URLs or signed cookies.
+  Authorisation happens at the edge, the CDN keeps full control of caching, and
+  your backend is out of the read path entirely.
+
+</DoThis>
+
+<Signal>
+
+"Signed cookies matter most for video. A single viewing session pulls hundreds
+or thousands of segments, so per-object presigned URLs would mean my backend
+signing thousands of URLs per viewer. <Peach>One signed cookie authorises the whole
+session at the edge.</Peach>"
+
+</Signal>
+
+<Trap>
+
+"We put a CDN in front of S3, so egress is handled"
+
+Only if the CDN can cache. Presigned GET URLs, `Vary` headers set too broadly,
+and per-user query strings each drive the hit rate toward zero while the bill
+looks exactly the same as before. Measure <Peach>cache hit ratio</Peach>, not whether a CDN
+exists.
+
+</Trap>

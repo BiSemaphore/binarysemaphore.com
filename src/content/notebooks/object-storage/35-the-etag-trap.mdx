@@ -12,3 +12,32 @@ A reasonable integrity check, which is wrong:
   compare your hash to the ETag the service returned
   ✓ they match, so the upload was clean
 ```
+
+That works for a single PUT, where the ETag <Peach>is</Peach> the MD5 of the body. It
+breaks silently the moment you switch to multipart.
+
+```text
+  single PUT     ETag = "9f3a1c8e4b214d0f9a772c1e5b8d6f04"
+                        MD5 of the object
+
+  multipart      ETag = "5e2f01c9a8b34d67e0f1a2b3c4d5e6f7-42"
+                        MD5 of the concatenated part MD5s, then "-42"
+                        for 42 parts.  NOT THE HASH OF YOUR FILE.
+```
+
+Your check now fails for every large file, and the natural reaction, "the upload
+must be corrupting things", sends you debugging the wrong system.
+
+<DoThis>
+
+Get real end-to-end integrity, three options
+
+- Use the SDK's checksum feature. Modern S3 SDKs compute CRC32C or SHA-256 per
+  part and can give you a full-object checksum the service verifies for you.
+- Or compute SHA-256 of the file client-side, send it as <Peach>user metadata</Peach>, and
+  verify it in a background job after upload. This gives you content-addressed
+  deduplication for free: same hash, same object, skip the upload.
+- Either way, treat the ETag as <Peach>an opaque version token for conditional
+  requests</Peach> (sections 22 and 42), never as a content hash.
+
+</DoThis>

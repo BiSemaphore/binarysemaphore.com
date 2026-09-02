@@ -13,3 +13,39 @@ There is a hard cap of <Peach>10,000 parts</Peach>, and this is where people get
       parts 1 … 10,000     upload fine        ← 50 GB transferred
       part 10,001          ✗ rejected         ← and now you start over
 ```
+
+Failing at part 10,001 is the worst possible failure: it happens at the end,
+after everything expensive has already been paid for.
+
+#### So compute it, do not hardcode it
+
+```js
+const FLOOR = 16 * 1024 * 1024;            // 16 MiB
+const partSize = Math.max(FLOOR, Math.ceil(fileSize / 10_000));
+const partCount = Math.ceil(fileSize / partSize);
+```
+
+Take whichever is larger: your sensible floor, or the size that keeps you inside
+10,000 parts. A 16 MiB floor carries you to 160 GB without the formula ever
+binding; a 32 MiB floor to 320 GB.
+
+#### Why not just use enormous parts
+
+Because <Peach>the part is your retry granularity</Peach>.
+
+```text
+  500 MiB parts   ──▶  one failure on a mobile connection costs 500 MiB
+   16 MiB parts   ──▶  one failure costs 16 MiB
+
+  16 to 64 MiB is the sweet spot: few enough parts to stay well
+  inside the cap, small enough that a retry is cheap.
+```
+
+<DoThis>
+
+The part size rule, in one line
+
+`partSize = max(16 MiB, ceil(fileSize / 10000))`, and never a fixed constant.
+Notebook 01 section 8 works the same trade through from the ingestion side.
+
+</DoThis>

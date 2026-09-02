@@ -19,3 +19,14 @@ partTitle: "The browser is a boundary too"
              ▼
   the victim clicks your button, on your site, with their session.
 ```
+
+<DoThis>
+
+Two headers, and set both
+
+<Mint>`Content-Security-Policy: frame-ancestors 'none'`</Mint> is the modern control.
+<Mint>`X-Frame-Options: DENY`</Mint> is the legacy one, still worth sending for older
+clients. Use `frame-ancestors 'self' https://partner.example` if you genuinely
+need to be embedded.
+
+</DoThis>

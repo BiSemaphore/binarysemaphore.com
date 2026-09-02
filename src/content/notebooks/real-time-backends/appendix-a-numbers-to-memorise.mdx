@@ -8,9 +8,42 @@ partTitle: "Appendices"
 |---|---|
 | Polling requests per second | `U / T` |
 | Polling average latency | `T / 2` |
-| Polling cost times latency | ==`U / 2`, a constant== |
+| Polling cost times latency | <Peach>`U / 2`, a constant</Peach> |
 | Long polling worst-case latency | More than 3 network transits (RFC 6202) |
 | SSE MIME type | `text/event-stream` |
 | SSE resume header | `Last-Event-ID` |
 | SSE heartbeat interval | 15 seconds, a `:` comment |
-| HTTP/1.1 connections per origin | ~6.
+| HTTP/1.1 connections per origin | ~6. HTTP/2 multiplexes instead |
+| WebSocket RFC | 6455 |
+| WebSocket handshake status | <Peach>101 Switching Protocols</Peach> |
+| `Sec-WebSocket-Key` | 16 random bytes, base64 |
+| Handshake constant | `258EAFA5-E914-47DA-95CA-C5AB0DC85B11` |
+| Accept computation | `base64(SHA1(key + constant))` |
+| Opcodes | 0 continuation, 1 text, 2 binary, 8 close, 9 ping, 10 pong |
+| Frame header, small payload | <Peach>2 bytes, +4 for the client mask</Peach> |
+| Payload length encoding | 7 bits; 126 means 2 more bytes; 127 means 8 more |
+| HTTP overhead per poll | ~1 KB, mostly cookies |
+| Masking key | 4 bytes, cleartext, fresh per frame, client to server only |
+| Ping interval, typical | 20 to 30 seconds |
+| Pong deadline, typical | 30 seconds |
+| TCP keepalive default (Linux) | <Peach>2 hours. Useless for this</Peach> |
+| Close code 1006 | Abnormal. Set locally, <Peach>never sent</Peach> |
+| Application close codes | 4000 to 4999 |
+| Descriptor overhead per process | ~7 (stdio, listener, epoll, internals) |
+| Default `ulimit -n` | 1,024 soft |
+| Go's raised limit | Hard limit minus one (e.g. 1,048,575) |
+| Default ephemeral port range | 32,768 to 60,999 = <Peach>28,232 ports</Peach> |
+| TCP connection identity | The 4-tuple, not the port |
+| Heap per idle connection | <Peach>~10 KB</Peach> (measured 9,751 / 9,752 / 9,881) |
+| 1M idle connections | ~10 GB of heap, before kernel structures |
+| Buffers' share of that 10 KB | ~80%: two 4 KB buffers |
+| `permessage-deflate` per connection | Hundreds of KB at default window size |
+| ALB idle timeout | 60 seconds |
+| Nginx `proxy_read_timeout` | 60 seconds |
+| ALB deregistration delay | 300 seconds |
+| Kubernetes grace period default | 30 seconds |
+| Discord fan-out, 30k online | <Peach>900 ms to 2.1 s for one message</Peach> |
+| Coalescing tick | 50 ms, imperceptible |
+| Presence TTL / refresh | 45 s TTL, refreshed every 15 s |
+| Presence fan-out | <Peach>`n²` in a room of `n`</Peach> |
+| Backoff formula | `random(0, min(cap, base × 2^attempt))` |

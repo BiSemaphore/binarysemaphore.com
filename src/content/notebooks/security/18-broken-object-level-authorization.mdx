@@ -7,3 +7,45 @@ partTitle: "Authorization"
 The lecture's name for it is BOLA; you will also hear <Peach>IDOR</Peach>, insecure direct
 object reference. It is consistently the most commonly exploited API flaw, and
 it requires no tooling at all.
+
+<Figure>
+
+No exploit. No payload. The attacker changed a number in the URL.
+
+</Figure>
+
+```text
+  GET /api/invoices/101     ✓ mine
+  GET /api/invoices/102     ← and now?
+  GET /api/invoices/103
+  ...
+  a loop from 1 to 100000 downloads every invoice in the system.
+```
+
+There is nothing to detect in the request. It is well-formed, authenticated,
+and matches your API contract exactly. <Peach>The only thing wrong with it is that
+you answered.</Peach>
+
+<Trap>
+
+"We use UUIDs, so they cannot be guessed"
+
+That is obscurity, not authorization, and it fails in ordinary ways: ids leak
+through shared links, referrer headers, screenshots, support tickets, exports,
+a partner's logs, and any other endpoint that returns a list. <Peach>Random ids are
+worth having and they are not a control.</Peach> The control is the ownership check.
+
+</Trap>
+
+<DoThis>
+
+Make the unsafe call impossible to write
+
+- <Mint>Scope every fetch by the caller</Mint>, always: `WHERE id = $1 AND tenant_id = $2`.
+- <Mint>Put the tenant in the repository signature</Mint> so it cannot be omitted.
+- <Mint>Consider row-level security</Mint> in Postgres, with the tenant set per
+  connection, so the database enforces it below all your code.
+- <Mint>Test for it</Mint>: every list and detail endpoint gets a test where user B asks
+  for user A's id and must be refused. This is a test you can generate.
+
+</DoThis>

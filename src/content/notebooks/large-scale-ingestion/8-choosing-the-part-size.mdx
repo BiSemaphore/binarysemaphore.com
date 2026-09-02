@@ -8,3 +8,61 @@ Interviewers like this because it is where "I have used S3" separates from "I
 have read about S3".
 
 #### The hard limits
+
+| Limit | Value |
+|---|---|
+| Minimum part size | 5 MiB (the final part is exempt) |
+| Maximum part size | 5 GiB |
+| Maximum parts per upload | 10,000 |
+| Maximum object size | 5 TiB |
+| Maximum single `PUT` | 5 GiB |
+
+#### The consequence
+
+```text
+  10,000 parts is the ceiling, so:
+
+  part size    max object      parts for 10 GB    parts for 1 TB
+  ─────────    ──────────      ───────────────    ──────────────
+   5 MiB        48.8 GiB           2,048          too many, invalid
+  16 MiB       156.2 GiB             640          65,536  invalid
+  64 MiB       625.0 GiB             160          16,384  invalid
+ 128 MiB         1.2 TiB              80           8,192  ok
+ 512 MiB         4.8 TiB              20           2,048  ok
+```
+
+<DoThis>
+
+Compute the part size, do not hardcode it
+
+```text
+part_size = max(8 MiB, ceil(file_size / 9500))
+part_size = round_up_to_power_of_two(part_size)
+```
+Dividing by 9,500 rather than 10,000 leaves headroom for rounding. Small files
+get small parts and fast retries, huge files automatically get bigger parts and
+stay under the part ceiling.
+
+</DoThis>
+
+#### The trade-off in both directions
+
+```text
+  smaller parts                          larger parts
+  ────────────                           ────────────
+  + cheap retry (lose 8 MiB)             + fewer requests, lower request cost
+  + finer progress reporting             + less per-part overhead
+  - more requests, more request cost     - expensive retry (lose 512 MiB)
+  - more round trips, latency-bound      - coarse progress
+  - risk of hitting the 10,000 cap       - a slow part stalls the tail
+```
+
+<Signal>
+
+Tie part size to network quality, not just file size. On a lossy mobile
+connection, 8 MiB parts with six-way concurrency finish faster than 128 MiB
+parts, because the expected cost of a retry dominates. On a datacentre link the
+opposite holds. Saying "the optimum depends on failure rate, not just bandwidth"
+is the senior version of this answer.
+
+</Signal>

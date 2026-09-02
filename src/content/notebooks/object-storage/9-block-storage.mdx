@@ -19,3 +19,32 @@ each with a number, and that is the entire interface.
 Blocks are typically 512 bytes or 4 KB. There is no file, no name, no directory,
 no permission. Your SSD is a block device. AWS EBS is a block device delivered
 over a network.
+
+| Property | Block storage |
+|---|---|
+| Interface | Read and write numbered fixed-size blocks |
+| Latency | <Peach>Microseconds</Peach> |
+| Examples | SSD, NVMe, AWS EBS, GCP Persistent Disk |
+| Attach to | <Peach>Exactly one machine at a time</Peach> |
+| Typical use | Boot volumes, database data directories |
+
+Two facts matter for interviews.
+
+First, this is why databases live here. PostgreSQL and MySQL want to control
+their own page layout, their own write ordering and their own fsync behaviour,
+so they want the thinnest possible layer between them and the device. They sit
+on a file system, but they use it as little as possible, with pre-allocated
+files, direct IO and explicit flushes, precisely to keep block-level latency.
+
+Second, <Peach>a block device attaches to one machine</Peach>. That single sentence
+disqualifies it for shared user content and is worth having ready, because it is
+the fastest way to explain why EBS is not the answer to "where do the uploads
+go".
+
+<KeyIdea>
+
+Block storage is the fastest and the least useful on its own. You cannot build
+an application directly on numbered blocks; something has to give them meaning.
+That something is a file system.
+
+</KeyIdea>

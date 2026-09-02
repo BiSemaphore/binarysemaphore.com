@@ -7,3 +7,63 @@ partTitle: "The stateful part"
 Once your instances are stateless and behind a load balancer, you can add as
 many as you can afford. All of them talk to one database, and that database is
 now taking the entire pressure of a tier you just made arbitrarily wide.
+
+<Term name="Read replica">
+
+A copy of your database that receives a continuous stream of changes from the
+main instance and serves read queries only. Writes still go to one place. Also
+called a follower, a secondary, or a standby.
+
+</Term>
+
+<Term name="Primary">
+
+The one database instance that accepts writes. Every change is made here first
+and then propagated to the replicas. Older documentation calls it the master or
+the leader; the concept is identical.
+
+</Term>
+
+```text
+                  writes
+  app instances ──────────→  PRIMARY
+                                │  replication stream
+                                ├──────→ replica (Mumbai)
+      reads ────────────────────┼──────→ replica (Frankfurt)
+                                └──────→ replica (Singapore)
+```
+
+Two things this buys you.
+
+**Load.** Most applications read far more than they write. If reads are 80% of
+your queries and they all move to replicas, <Peach>your primary's query load drops by
+80%</Peach> without you having optimised a single query.
+
+**Latency.** A replica in Mumbai serving Indian users is a few milliseconds
+away. The primary in Virginia is 200ms away. For reads, geography stops being a
+tax.
+
+<Ask>
+
+What read-write ratio should I assume?
+
+Do not assume; measure it, and say so. The usual claim is 90/10 or 80/20, and it
+is true for content-heavy applications and false for plenty of others. An
+analytics ingest pipeline can be 95% writes. An internal admin tool can be
+50/50. <Peach>Read replicas only help in proportion to how read-heavy you actually
+are</Peach>, and quoting a measured ratio for your own system is a much better answer
+than quoting the industry average.
+
+</Ask>
+
+<Trap>
+
+<Rose>"Replicas make my database highly available."</Rose> Not by themselves. If the
+primary dies, writes stop, and something has to promote a replica to primary,
+update every client's idea of where to write, and guarantee that no two
+instances think they are the primary at once. That machinery is <Pink>failover</Pink>,
+and it is a separate feature with its own failure modes. Replication gives you
+read capacity; failover gives you availability, and they are not the same
+purchase.
+
+</Trap>

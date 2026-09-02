@@ -37,3 +37,22 @@ partTitle: ""
                         │  seq 1..N    │   and a catch-up path
                         └──────────────┘
 ```
+
+Four rules are encoded in that picture, and they are the whole architecture.
+
+- <Peach>A connection is state, and it lives in exactly one process.</Peach> Instance 1 is
+  the only machine in the world that can write to browser A. No load balancer
+  setting changes that.
+- <Peach>The instances must talk to each other, because the connections cannot.</Peach> That
+  is the entire job of the pub/sub layer.
+- <Peach>Every event carries a sequence number.</Peach> It is the only thing that makes a
+  dropped connection recoverable, and it costs almost nothing to add on day one.
+- <Peach>The database is still the source of truth.</Peach> The real-time path is a delivery
+  optimisation on top of it, never a replacement for it. If the socket path is
+  broken, a refresh must still show the correct board.
+
+<Redraw>
+
+The path of one task move, from browser A's click to browser B's screen, across two instances. | Seven arrows. Mark which one crosses a process boundary.
+
+</Redraw>

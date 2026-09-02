@@ -23,10 +23,8 @@ export type SectionEntry = {
   /** Roman part number, as the books number them. Empty when outside a part. */
   part: string;
   partTitle: string;
-  /** False when the whole section is free, so the page draws no gate. */
-  gated: boolean;
-  /** The opening of the gated half, already truncated at generation time. */
-  teaser: string;
+  /** Prose length in characters, used to find where the free part ends. */
+  length: number;
 };
 
 /** Every section of a notebook, in reading order. */
@@ -64,4 +62,45 @@ export function getSection(
     position: index + 1,
     total: sections.length,
   };
+}
+
+/**
+ * How much of a book a signed-out reader gets.
+ *
+ * A share of the book's prose rather than a section count, because sections run
+ * from a few hundred to several thousand characters. Enough to judge whether the
+ * writing is worth an account, not enough to be the book.
+ */
+const FREE_SHARE = 0.15;
+
+/** At least this many sections, however long they are. */
+const MIN_FREE = 2;
+
+/**
+ * Split a book's sections into what a signed-out reader may read and what sits
+ * behind the gate.
+ *
+ * Whole sections, in order. The gated ones are never imported by the reader, so
+ * they are not in the page at all: there is nothing hidden to reveal.
+ */
+export function splitBook(sections: SectionEntry[]): {
+  free: SectionEntry[];
+  gated: SectionEntry[];
+} {
+  if (sections.length <= 1) return { free: sections, gated: [] };
+
+  const budget = sections.reduce((n, s) => n + s.length, 0) * FREE_SHARE;
+
+  let spent = 0;
+  let cut = 0;
+  for (const [i, section] of sections.entries()) {
+    if (cut >= MIN_FREE && spent + section.length > budget) break;
+    spent += section.length;
+    cut = i + 1;
+  }
+
+  // Always show something, and always hold something back.
+  cut = Math.min(Math.max(cut, MIN_FREE), sections.length - 1);
+
+  return { free: sections.slice(0, cut), gated: sections.slice(cut) };
 }

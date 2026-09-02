@@ -16,3 +16,56 @@ user uploads a 4 GB video, walk me through it", and the answer is judged by
 whether you know <Peach>which failure you are avoiding at each step</Peach>.
 
 #### The five block types
+
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or command. |
+| Key idea | The one thing to carry out of that section. |
+
+#### The four highlighters
+
+Colour in this book is never decorative. Each one means one thing, so a marked
+phrase is already half-read before you get to the words.
+
+| Mark | Means |
+|---|---|
+| <Peach>peach</Peach> | The sentence to carry away |
+| <Rose>rose</Rose> | The wrong answer, the thing that bites |
+| <Mint>mint</Mint> | The correct practice |
+| <Pink>pink</Pink> | A definition, a term of art, at the point it is first defined |
+
+Figures follow the same discipline. Box drawing recedes to a pale wire so the
+shape reads first, NODE LABELS take full ink, and anything after a left arrow
+is an annotation in pencil rather than part of the machine.
+
+#### What is in the lecture and what is not
+
+Parts I to VII are the two lectures, expanded and reordered. Parts VIII onwards
+are the production concerns that turn up in interviews immediately after the
+upload path is agreed, and are not in either lecture: the access-control
+mechanisms, encryption, lifecycle and untrusted content. Sections overlapping
+Notebook 01
+(*Large-Scale Data Ingestion*) say so and point at the section there that goes
+deeper, rather than repeating it.
+
+#### A suggested route
+
+1. Read Part I in one sitting. Do not skip to the answer. The seven failures are
+   the actual content of an interview answer; object storage is just the noun at
+   the end of them.
+2. Read Parts II to IV. These are the "do you understand the system or have you
+   only used the SDK" sections.
+3. Work Part V with an editor open. Build the two-phase flow once.
+4. Skim VI and VII, then drill VIII.
+
+<KeyIdea>
+
+Object storage is not "a folder in the cloud". It is a deliberate trade: you
+give up in-place modification, hierarchy and locking, and in exchange you get
+capacity, durability and horizontal scale with no coordination. Every quirk in
+this book falls out of that one trade.
+
+</KeyIdea>

@@ -21,3 +21,20 @@ they are syntax the database obeyed.
 -- what the database received and executed
 SELECT * FROM users WHERE email = '' OR '1'='1' --'
 ```
+
+Read the last line as the database reads it. The quote closes the string early,
+`OR '1'='1'` is a condition that is always true, and `--` comments out
+everything that followed. The `WHERE` clause now matches <Peach>every row in the
+table</Peach>.
+
+Nothing malformed happened. The database did exactly its job. <Peach>The developer
+handed it a sentence and it parsed the sentence.</Peach>
+
+<Signal>
+
+"The bug is not the quote character. The bug is that <Peach>the query was assembled
+as a string</Peach>, so there was no moment at which the database could tell which
+parts came from me and which came from a stranger. Every fix in this part is
+the same fix: keep the two apart."
+
+</Signal>

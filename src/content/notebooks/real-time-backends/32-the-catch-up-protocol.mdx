@@ -9,3 +9,54 @@ restarts. <Peach>What happens to events published while the client was gone?</Pe
 
 By default, nothing. They were delivered to whoever was connected and
 forgotten, so the user reconnects to a live stream and a stale board.
+
+The fix has one shape, and you saw it in section 9. <Peach>Name every message, and let
+the client tell you where it got to.</Peach>
+
+```text
+  client ──▶ connect, "I am at sequence 0"
+  server ──▶ seq 1   task.created
+  server ──▶ seq 2   task.moved
+             connection breaks
+
+  client ──▶ reconnect, "I got up to sequence 2"
+  server ──▶ seq 3, 4, 5 ...          ← the backlog, immediately
+  server ──▶ then live frames
+```
+
+SSE gives you this free through `Last-Event-ID`. On a WebSocket <Peach>you build it
+yourself</Peach>, and it is the most valuable thing you will build. Uber's push platform
+does exactly this.
+
+Four things have to exist for it to work:
+
+| Requirement | Why |
+|---|---|
+| A monotonic sequence per topic | Section 31. The precondition |
+| A durable log with retention | You cannot replay what you did not keep |
+| The client persisting its position | Across reconnects, ideally across reloads |
+| <Mint>A fallback when the gap is too large</Mint> | Below |
+
+**The fallback is what people forget.** Retention is finite, so a client away for
+two hours may ask for a sequence that has aged out. Answer that honestly:
+
+```text
+  client asks for seq 41                     client asks for seq 41
+  log retains 900 ... 1841                   log retains 12 ... 1841
+                                             ↓
+  ══▶ "too old. here is a full snapshot,     ══▶ replay 42 ... 1841
+       resync from seq 1841"
+```
+
+<Mint>Every real-time client needs both paths.</Mint> Resync is also your escape hatch for
+any unrecoverable disagreement, which is why the board must always be correct on
+refresh. <Peach>The socket is an optimisation over a correct request path, never a
+replacement for one.</Peach>
+
+<KeyIdea>
+
+Sequence numbers, a retained log, and a client that remembers its position.
+<Peach>Plus a snapshot path for when the gap exceeds retention</Peach>, because retention is
+finite and the client will eventually exceed it.
+
+</KeyIdea>

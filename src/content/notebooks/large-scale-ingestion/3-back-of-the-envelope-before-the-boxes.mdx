@@ -15,3 +15,45 @@ Numbers stop the design from being hand-waving. Do this arithmetic out loud.
   10 GB = 10,240 MB
   10,240 / 12.5 = 819 s = ~13.6 minutes   (best case, single stream)
 ```
+
+Thirteen minutes is far longer than any sane HTTP timeout, and long enough that
+a transient network failure is likely rather than exotic. That single number
+justifies both the async design and resumability.
+
+#### Processing time
+
+```text
+10 GB CSV, ~200 bytes per row  ->  ~53 million rows
+
+  single worker at 20k rows/s   ->  ~44 minutes
+  8 workers at 20k rows/s each  ->  ~5.5 minutes
+```
+
+#### Load
+
+```text
+100 concurrent jobs x 10 GB = 1 TB in flight
+  storage: cheap and fine for object storage
+  workers: 100 jobs x 44 min = 73 worker-hours of compute
+  at 8 workers  -> ~9 hours of backlog
+  at 60 workers -> ~1.2 hours
+```
+
+<KeyIdea>
+
+The backlog calculation is the one that matters. It shows the queue is not
+decoration, it is the mechanism that lets you absorb a burst you cannot serve
+immediately, and it makes worker count a dial rather than a guess.
+
+</KeyIdea>
+
+<Ask>
+
+Where does the bottleneck actually sit?
+
+Usually the destination database, not the parser. Bulk inserts into an indexed
+table are frequently slower than reading and transforming the rows. Say this
+early, because it leads naturally to batching, copy-style bulk loading, and
+dropping or deferring indexes during load.
+
+</Ask>

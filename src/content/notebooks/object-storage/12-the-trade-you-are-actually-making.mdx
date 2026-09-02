@@ -18,3 +18,42 @@ often a level up.
 ```
 
 The same trade recurs everywhere in distributed systems:
+
+| Domain | Mutable version | Immutable version that scales |
+|---|---|---|
+| Storage | File system | Object storage |
+| Servers | Stateful server, sessions in memory | Stateless servers, state externalised |
+| Deployment | SSH in and patch the box | Immutable images, replace the container |
+| Caching | Update the cached entry | New key, or invalidate and re-fetch |
+| Data | UPDATE the row | Append-only log, event sourcing |
+
+Each row is the same bargain: <Peach>give up in-place mutation, receive unbounded
+horizontal scale</Peach>, because mutation is what forces coordination and
+coordination is what does not scale.
+
+<KeyIdea>
+
+Object storage is the purest, most widely deployed instance of the central trade
+in distributed systems: <Pink>mutability for scale</Pink>. If you can state it that way,
+you have understood the topic rather than memorised an API.
+
+</KeyIdea>
+
+<Ask>
+
+So when would you not use object storage?
+
+When you need what it gave up. Small mutable state with transactions belongs in
+a database. Microsecond latency and in-place writes belong on block storage,
+which is why databases sit there. Legacy software that requires POSIX belongs on
+a network file system. And very small blobs, a few KB, that must appear and
+disappear atomically with a row can reasonably live in the database itself:
+the per-object request overhead can exceed the benefit at that size.
+
+</Ask>
+
+<Recall>
+
+Block, file, object: name the interface, the latency and the sharing model of each. | 6
+
+</Recall>

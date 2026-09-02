@@ -32,3 +32,43 @@ Two things dominate the delay, and the industry has attacked both:
 
 Cloudflare Workers are fast at this precisely because they attacked both at once:
 V8 isolates instead of VMs, and JavaScript instead of a compiled runtime.
+
+<DoThis>
+
+Living with cold starts
+
+- <Mint>Provisioned concurrency, if the platform offers it.</Mint> Keep N instances warm.
+  Honest, supported, and it reintroduces an idle cost, which is the trade.
+- <Mint>Keep the deployment package small.</Mint> Load time is part of the cold start, and
+  a 200MB bundle of dependencies is a self-inflicted wound.
+- <Rose>Do not use scheduled pings to keep things warm.</Rose> It is the folk remedy and it
+  is bad: it does not scale to real concurrency, and if it worked you would be
+  paying for an always-on instance with extra steps.
+
+</DoThis>
+
+#### Limits
+
+Every platform caps execution time. Lambda's ceiling is 15 minutes; edge runtimes
+are far tighter, often measured in CPU milliseconds. <Peach>A long-running job is not
+a serverless workload</Peach>, or rather it is one only if you split it into steps that
+each finish comfortably inside the limit.
+
+#### Statelessness, enforced
+
+Section 24 recommended statelessness. Serverless makes it mandatory, and this is
+where the model bites hardest.
+
+```text
+  no local disk that survives           write to object storage
+  no in-memory cache between calls      use a shared cache
+  no long-lived TCP connections         and this one is the real problem
+  no WebSocket you can hold             use a managed realtime service
+```
+
+The database connection is the classic collision. A traditional server opens a
+pool once and reuses it for its lifetime. A serverless function may be a thousand
+concurrent instances, each wanting a connection, against a database that permits
+three hundred. <Peach>The connection ceiling from section 15 arrives all at once</Peach>,
+which is precisely why serverless-first databases with HTTP-based drivers and
+external pooling exist.

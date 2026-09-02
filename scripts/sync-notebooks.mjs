@@ -8,14 +8,13 @@
  *
  *   node scripts/sync-notebooks.mjs [--check]
  *
- * Two files per section:
+ * One file per section, plus an index.json listing them in reading order with
+ * each section's prose length.
  *
- *   src/content/notebooks/<slug>/<section>.mdx        the free preview
- *   src/content/notebooks/<slug>/<section>.rest.mdx   the rest, behind the gate
- *
- * Splitting here rather than at request time is what makes the gate honest: the
- * gated file is only imported for an entitled reader, so its content never
- * reaches the page otherwise. There is nothing to hide with CSS.
+ * The gate is per book, not per section: the reader renders whole sections until
+ * a share of the book is spent, then stops importing. A section past the cut is
+ * never imported, so it is not in the page at all and there is nothing to hide
+ * with CSS.
  *
  * `--check` exits non-zero if the output is out of date, without writing.
  */
@@ -59,30 +58,48 @@ const CALLOUTS = {
 const CONSUMED = new Set(["title", "toc", "glossary", "part"]);
 
 /** The four highlighters plus the circle, as the books write them. */
+/**
+ * A mark may wrap across lines, because the books are written at about 80
+ * columns and a marked phrase often straddles two. It may not cross a blank
+ * line: that would be two paragraphs, and an unclosed mark should stay literal
+ * rather than swallow the rest of the section.
+ */
+const inside = (ch) => `(?:[^${ch}\\n]|\\n(?!\\n))+`;
+
 const MARKS = [
-  [/==([^=\n]+)==/g, "Peach"],
-  [/!!([^!\n]+)!!/g, "Rose"],
-  [/\+\+([^+\n]+)\+\+/g, "Mint"],
-  [/%%([^%\n]+)%%/g, "Pink"],
-  [/\(\(([^)\n]+)\)\)/g, "Circle"],
+  [new RegExp(`==(${inside("=")})==`, "g"), "Peach"],
+  [new RegExp(`!!(${inside("!")})!!`, "g"), "Rose"],
+  [new RegExp(`\\+\\+(${inside("+")})\\+\\+`, "g"), "Mint"],
+  [new RegExp(`%%(${inside("%")})%%`, "g"), "Pink"],
+  [new RegExp(`\\(\\((${inside(")")})\\)\\)`, "g"), "Circle"],
 ];
 
 /** Segments marks must not touch: fenced and inline code. */
 const PROTECTED = /(```[\s\S]*?```|`[^`\n]+`)/g;
 
-/** Rewrite the highlighters as components, leaving code alone. */
+/**
+ * Rewrite the highlighters as components.
+ *
+ * Code is masked out rather than split around, because a mark often wraps a
+ * code span: `==\`LEFT JOIN\`==` is one mark containing one code span. Splitting
+ * on code leaves the two `==` in different pieces and the mark never matches,
+ * which silently dropped it.
+ *
+ * Masking keeps `==` and `++` *inside* code safe, since the mask hides them,
+ * while letting a mark spanning code still close.
+ */
 function applyMarks(text) {
-  return text
-    .split(PROTECTED)
-    .map((chunk, i) => {
-      if (i % 2 === 1) return chunk; // a captured code segment
-      let out = chunk;
-      for (const [pattern, name] of MARKS) {
-        out = out.replace(pattern, `<${name}>$1</${name}>`);
-      }
-      return out;
-    })
-    .join("");
+  const held = [];
+  let masked = text.replace(PROTECTED, (code) => {
+    held.push(code);
+    return `\u0000${held.length - 1}\u0000`;
+  });
+
+  for (const [pattern, name] of MARKS) {
+    masked = masked.replace(pattern, `<${name}>$1</${name}>`);
+  }
+
+  return masked.replace(/\u0000(\d+)\u0000/g, (_, i) => held[Number(i)]);
 }
 
 /** "12. Indexes: the catalogue" -> "12-indexes-the-catalogue". */
@@ -114,7 +131,12 @@ function parse(markdown) {
   };
   const close = () => {
     if (!current) return;
-    current.body = buffer.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+    // Marks are applied here, to the whole body, not line by line: a mark
+    // regularly wraps a line, because the books are set at about 80 columns,
+    // and per-line application could never close one.
+    current.body = applyMarks(
+      buffer.join("\n").replace(/\n{3,}/g, "\n\n").trim(),
+    );
     sections.push(current);
     current = null;
     buffer = [];
@@ -149,15 +171,15 @@ function parse(markdown) {
       } else if (name in CALLOUTS) {
         const tag = CALLOUTS[name];
         const text = args ? `${args}\n\n${inner}` : inner;
-        push(`\n<${tag}>\n\n${applyMarks(text.trim())}\n\n</${tag}>\n`);
+        push(`\n<${tag}>\n\n${text.trim()}\n\n</${tag}>\n`);
       } else if (name === "term") {
         push(
-          `\n<Term name=${quote(args)}>\n\n${applyMarks(inner)}\n\n</Term>\n`,
+          `\n<Term name=${quote(args)}>\n\n${inner}\n\n</Term>\n`,
         );
       } else if (name === "figure") {
-        push(`\n<Figure>\n\n${applyMarks(inner)}\n\n</Figure>\n`);
+        push(`\n<Figure>\n\n${inner}\n\n</Figure>\n`);
       } else if (!CONSUMED.has(name)) {
-        push(applyMarks(inner));
+        push(inner);
       }
       i = j + 1;
       continue;
@@ -178,7 +200,7 @@ function parse(markdown) {
       continue;
     }
 
-    push(applyMarks(line));
+    push(line);
     i += 1;
   }
 
@@ -187,20 +209,12 @@ function parse(markdown) {
 }
 
 /**
- * Where to cut a section between free and gated.
- *
- * A share of the prose, not a fixed number of paragraphs: sections run from a
- * few hundred to several thousand characters, and a fixed count opens a short
- * one entirely.
- */
-const FREE_SHARE = 0.35;
-
-/**
- * Break a section body into blocks that can be split between.
+ * Break a section body into blocks, so prose can be measured separately from
+ * figures and annotation blocks.
  *
  * A fenced block and a component block are atomic: both contain blank lines
  * (ASCII figures especially), so splitting on blank lines alone cuts through the
- * middle of one and leaves an unterminated fence in the preview.
+ * middle of one.
  */
 function blocks(body) {
   const lines = body.split("\n");
@@ -225,9 +239,8 @@ function blocks(body) {
       continue;
     }
 
-    // Only a tag alone on its own line opens a block. An inline mark such as
-    // <Pink>latency</Pink> can also start a line, and its closing tag is
-    // mid-line, so matching loosely here swallows the rest of the section.
+    // Only a tag alone on its line opens a block. An inline mark such as
+    // <Pink>latency</Pink> can also start a line but closes mid-line.
     const open = line.trim().match(/^<([A-Z][A-Za-z]*)(?:\s[^>]*)?>$/);
     if (open) {
       flushPara();
@@ -248,101 +261,6 @@ function blocks(body) {
   return out;
 }
 
-function split(body) {
-  const parts = blocks(body);
-
-  // Sentence-splitting is only safe on plain prose: doing it to a fence or a
-  // component flattens the newlines and destroys the block.
-  const splittable =
-    parts.length < 2 && !/^(```|<[A-Z])/m.test(body.trim());
-
-  if (splittable) {
-    const sentences = body.split(/(?<=\.)\s+/);
-    if (sentences.length < 2) return { free: body, rest: "" };
-    const keep = Math.max(1, Math.floor(sentences.length * FREE_SHARE));
-    return {
-      free: sentences.slice(0, keep).join(" ").trim(),
-      rest: sentences.slice(keep).join(" ").trim(),
-    };
-  }
-
-  // A single block that cannot be sentence-split stays whole and free.
-  if (parts.length < 2) return { free: body, rest: "" };
-
-  // Only prose counts towards the reading budget: a long ASCII figure is not
-  // reading. But zero-weight blocks must not be free without limit, or a
-  // section that is mostly figures and annotation blocks is given away whole.
-  // So a second, looser cap on raw characters runs alongside it.
-  const weight = (b) =>
-    b.startsWith("<") || b.startsWith("```") ? 0 : b.length;
-
-  const proseBudget = parts.reduce((n, b) => n + weight(b), 0) * FREE_SHARE;
-  const charBudget = parts.reduce((n, b) => n + b.length, 0) * 0.5;
-
-  let spent = 0;
-  let chars = 0;
-  let cut = 0;
-  for (const [i, block] of parts.entries()) {
-    if (
-      cut > 0 &&
-      (spent + weight(block) > proseBudget || chars + block.length > charBudget)
-    ) {
-      break;
-    }
-    spent += weight(block);
-    chars += block.length;
-    cut = i + 1;
-  }
-  if (cut === 0) cut = 1;
-  if (cut >= parts.length) cut = parts.length - 1;
-
-  let free = parts.slice(0, cut);
-  let rest = parts.slice(cut);
-
-  // When the opening block is itself most of the section, cutting after it
-  // gives the section away. Split that block's sentences instead.
-  const size = (list) => list.reduce((n, b) => n + weight(b), 0);
-  if (free.length === 1 && weight(free[0]) > 0) {
-    const total = size(free) + size(rest);
-    if (total > 0 && size(free) / total > 0.6) {
-      const sentences = free[0].split(/(?<=\.)\s+/);
-      if (sentences.length > 1) {
-        const keep = Math.max(1, Math.floor(sentences.length * FREE_SHARE));
-        rest = [sentences.slice(keep).join(" ").trim(), ...rest];
-        free = [sentences.slice(0, keep).join(" ").trim()];
-      }
-    }
-  }
-
-  return { free: free.join("\n\n"), rest: rest.join("\n\n") };
-}
-
-/** How much of what comes next to show, faded, under the gate. */
-const TEASER_CHARS = 180;
-
-function teaser(rest) {
-  // Only a plain paragraph. A table, list, heading, fence or component block
-  // all lose their meaning once flattened to a single line of text.
-  const first = blocks(rest).find((b) => {
-    const s = b.trim();
-    return s && !/^(<|```|\||#|[-*>]\s|\d+\.\s)/.test(s);
-  });
-  if (!first) return "";
-  // Rendered as plain text under the gate, so the component tags the marks were
-  // rewritten into, and markdown emphasis, have to come back off.
-  const text = first
-    .trim()
-    .replace(/<\/?[A-Z][A-Za-z]*(?:\s[^>]*)?>/g, "")
-    .replace(/[`*_]/g, "")
-    .replace(/^#{1,6}\s+/, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  if (text.length <= TEASER_CHARS) return text;
-  const cut = text.slice(0, TEASER_CHARS);
-  const space = cut.lastIndexOf(" ");
-  return (space > 60 ? cut.slice(0, space) : cut).trim();
-}
-
 const check = process.argv.includes("--check");
 const written = new Map();
 
@@ -357,7 +275,6 @@ for (const [slug, file] of Object.entries(BOOKS)) {
   const index = [];
 
   for (const section of sections) {
-    const { free, rest } = split(section.body);
     const part = section.part >= 0 ? parts[section.part] : null;
 
     const frontmatter = [
@@ -370,10 +287,10 @@ for (const [slug, file] of Object.entries(BOOKS)) {
       "",
     ].join("\n");
 
-    written.set(path.join(slug, `${section.slug}.mdx`), frontmatter + free + "\n");
-    if (rest) {
-      written.set(path.join(slug, `${section.slug}.rest.mdx`), rest + "\n");
-    }
+    written.set(
+      path.join(slug, `${section.slug}.mdx`),
+      frontmatter + section.body + "\n",
+    );
 
     index.push({
       slug: section.slug,
@@ -381,8 +298,12 @@ for (const [slug, file] of Object.entries(BOOKS)) {
       title: section.title,
       part: part?.number ?? "",
       partTitle: part?.title ?? "",
-      gated: Boolean(rest),
-      teaser: teaser(rest),
+      // Prose length, so the reader can find the gate without opening every
+      // file. Figures and annotation blocks do not count: they are not reading.
+      length: blocks(section.body).reduce(
+        (n, b) => n + (b.startsWith("<") || b.startsWith("```") ? 0 : b.length),
+        0,
+      ),
     });
   }
 

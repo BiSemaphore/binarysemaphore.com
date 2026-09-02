@@ -6,3 +6,33 @@ partTitle: "Framing the problem"
 ---
 Ask these before drawing anything. Each one is not politeness, it changes the
 architecture, and saying why makes that visible.
+
+| Question | Why it changes the design |
+|---|---|
+| How large, realistically? P50 and P99? | 50 MB means a simple upload. 500 GB forces multipart and split processing. |
+| Who produces the data: a user's browser, or another service? | Browser means presigned URLs and CORS. Service-to-service may mean pull, or a shared bucket. |
+| What does "processing" do? Row-wise, or does it need global state? | Row-wise is embarrassingly parallel. Sorting or joining across the whole file is not. |
+| How long may processing take, at the top end? | Minutes allows a simple queue. Hours forces lease renewal and checkpointing. |
+| How many concurrent jobs, and how bursty? | Sets worker count, queue choice and whether you need fairness between tenants. |
+| Is the output a file, rows in a database, or both? | Changes the write path and how you make it idempotent. |
+| Must results be exact, or is best-effort with an error report acceptable? | Decides whether one bad row fails the job. |
+| Retention: how long do inputs and outputs live? | Drives lifecycle policy and cost. |
+
+<Signal>
+
+Ask "row-wise or global?" early. It is the question that decides whether you can
+split one file across many workers, and most candidates never ask it. If
+processing is row-wise and order-independent, say so out loud, because it unlocks
+the fan-out design in section 19.
+
+</Signal>
+
+<Ask>
+
+Why do you need to know P99 file size, isn't the max enough?
+
+Because the max drives correctness and the P99 drives cost. If P99 is 80 MB and
+the max is 2 TB, you build the simple path for the common case and a split path
+for the tail, rather than paying multipart overhead on every 2 MB file.
+
+</Ask>

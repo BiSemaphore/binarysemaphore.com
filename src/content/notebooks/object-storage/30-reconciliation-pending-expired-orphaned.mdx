@@ -19,3 +19,36 @@ steady-state rate.
   ready                absent               CORRUPTION         alert, investigate
   (no row)             present              orphan             lifecycle delete
 ```
+
+Two mechanisms cover the whole table, and you want both:
+
+- **A bucket lifecycle rule** deleting anything under the `pending/` prefix
+  after 24 hours. Free, runs without your code, catches orphans.
+- **A background sweeper** that scans `pending` rows older than the window,
+  `HEAD`s each key, and either promotes the row to `ready` or marks it
+  `expired`. This one is worth writing carefully, because the "lost completion
+  call" row above is a real user losing a real upload they successfully made.
+
+<KeyIdea>
+
+The database is the source of truth for <Peach>what exists</Peach>. The bucket is the
+source of truth for <Peach>the bytes</Peach>. Two systems with no transaction between them
+will drift. A reconciliation job is not optional cleanup, it is <Peach>the mechanism
+that makes the design correct</Peach>.
+
+</KeyIdea>
+
+<Ask>
+
+Could you use bucket event notifications instead of the client calling complete?
+
+Yes, and it is stronger. S3 can publish `s3:ObjectCreated:*` to SQS, SNS, Lambda
+or EventBridge, so completion is driven by the storage system rather than
+trusted from a client that may never call back. The trade-offs to mention:
+delivery is asynchronous and <Peach>at least once</Peach>, so your handler must be
+idempotent; ordering is not guaranteed; and you now have a second failure domain
+in the path. The mature answer is <Peach>both</Peach>: the client's call for the fast path
+so the UI updates immediately, the event as the authoritative backstop, and the
+sweeper for whatever both of them miss.
+
+</Ask>
