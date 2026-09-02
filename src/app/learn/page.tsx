@@ -3,6 +3,8 @@ import Link from "next/link";
 import { editions, notebooks, totalPages } from "@/lib/learn";
 import { accessLabel, getAllAccess, TRIAL_DAYS } from "@/lib/learn/access";
 import { learnBase } from "@/lib/learn/paths";
+import { getAllProgress, summarise } from "@/lib/learn/progress";
+import { getSections } from "@/lib/learn/book";
 import { DiscordIcon } from "@/components/icons";
 import { site } from "@/lib/site";
 
@@ -41,7 +43,11 @@ function Colophon({ pages }: { pages: number }) {
 }
 
 export default async function LearnIndexPage() {
-  const [access, base] = await Promise.all([getAllAccess(), learnBase()]);
+  const [access, base, progress] = await Promise.all([
+    getAllAccess(),
+    learnBase(),
+    getAllProgress(),
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 pb-28 lg:px-10">
@@ -87,6 +93,8 @@ export default async function LearnIndexPage() {
             const label = accessLabel(
               access.get(notebook.slug) ?? { state: "none" },
             );
+            const read = progress.get(notebook.slug)?.read ?? new Set<string>();
+            const done = summarise(read, getSections(notebook.slug).length);
 
             return (
               <li key={notebook.slug} className="border-b border-border">
@@ -140,10 +148,22 @@ export default async function LearnIndexPage() {
                       </span>
                     </span>
 
-                    <span className="mt-1.5 block font-mono text-[0.7rem] text-subtle">
-                      {Object.keys(notebook.assets)
-                        .map((id) => editions.find((e) => e.id === id)!.name)
-                        .join(" · ")}
+                    <span className="mt-1.5 flex items-center gap-3 font-mono text-[0.7rem] text-subtle">
+                      <span>
+                        {Object.keys(notebook.assets)
+                          .map((id) => editions.find((e) => e.id === id)!.name)
+                          .join(" · ")}
+                      </span>
+                      {done.count > 0 ? (
+                        <>
+                          <span aria-hidden>·</span>
+                          <span className="text-accent-strong">
+                            {done.complete
+                              ? "finished"
+                              : `${done.count}/${done.total} read`}
+                          </span>
+                        </>
+                      ) : null}
                     </span>
                   </span>
                 </Link>

@@ -15,11 +15,14 @@ import type { SectionEntry } from "@/lib/learn/book";
 export function SectionNav({
   sections,
   current,
+  read,
   base,
   slug,
 }: {
   sections: SectionEntry[];
   current: string;
+  /** Section slugs already read, marked with a tick. */
+  read: Set<string>;
   base: string;
   slug: string;
 }) {
@@ -66,13 +69,16 @@ export function SectionNav({
                           : "text-muted hover:text-foreground"
                       }`}
                     >
-                      {section.number ? (
-                        <span className="w-5 shrink-0 font-mono text-[11px] text-subtle">
-                          {section.number}
-                        </span>
-                      ) : (
-                        <span aria-hidden className="w-5 shrink-0" />
-                      )}
+                      <span
+                        className={`w-5 shrink-0 font-mono text-[11px] ${
+                          read.has(section.slug)
+                            ? "text-accent-strong"
+                            : "text-subtle"
+                        }`}
+                        title={read.has(section.slug) ? "Read" : undefined}
+                      >
+                        {read.has(section.slug) ? "\u2713" : section.number}
+                      </span>
                       <span>{section.title}</span>
                     </Link>
                   </li>
