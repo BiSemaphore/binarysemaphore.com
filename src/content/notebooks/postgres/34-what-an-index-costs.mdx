@@ -17,3 +17,36 @@ Indexes are not free, and the cost is paid on <Peach>every write</Peach>.
              four extra writes per insert, plus disk space,
              plus more to keep in memory, plus more for vacuum
 ```
+
+| Cost | Detail |
+|---|---|
+| Write amplification | Every insert, update and delete maintains every index |
+| Disk and memory | An index on a large table can rival the table's own size |
+| Planning | More indexes means more plans to consider |
+| Maintenance | More for `VACUUM` to clean, more bloat to watch |
+
+<DoThis>
+
+Index deliberately, then verify
+
+- Start from the <Peach>query</Peach>, not the column. "This endpoint is called constantly
+  and filters on these two columns" is a reason; "this looks like a column
+  people search" is not.
+- Add the index, then confirm with `EXPLAIN` that the planner <Peach>actually uses
+  it</Peach> (section 35). An unused index is pure cost.
+- Find dead weight with `pg_stat_user_indexes`: an index with `idx_scan = 0`
+  after a representative period is being paid for and never used.
+- Drop them `CONCURRENTLY`, like you created them.
+
+</DoThis>
+
+<Trap>
+
+"More indexes make the database faster"
+
+They make <Peach>reads that use them</Peach> faster and <Peach>every write</Peach> slower, and a write-
+heavy table with a dozen indexes can be slower overall than one with three. The
+question is never "is this index useful" but "is it useful often enough to pay
+for on every insert".
+
+</Trap>

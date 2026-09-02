@@ -6,3 +6,40 @@ partTitle: "The database"
 ---
 On your laptop a database connection is instant and free, so you never think
 about it. In production it is neither, and finding this out at 2am is common.
+
+Here is what actually happens when your backend opens a connection:
+
+```text
+  1  TCP three-way handshake                    network round trips
+  2  TLS negotiation                            more round trips, crypto
+  3  authentication                             a lookup
+  4  session state setup                        server-side bookkeeping
+  5  the database allocates memory for it       several MB, per connection
+```
+
+Two consequences follow.
+
+<Peach>If you open a connection per query and close it, you pay all five costs on
+every query.</Peach> That is latency added to every single request, for nothing.
+
+And the second, which is worse: connections are a bounded resource. A Postgres
+instance is typically configured for a few hundred, because each one costs real
+memory and a backend process.
+
+```text
+  max_connections = 300
+  your traffic spikes to 5,000 concurrent requests
+  each request opens a connection
+
+  → connections refused, and the database is now the outage
+```
+
+<KeyIdea>
+
+<Peach>The database's connection limit is a hard ceiling that your application's
+concurrency can trivially exceed.</Peach> A web tier scales by adding concurrency; a
+database does not. The mechanism that reconciles those two facts is pooling, and
+without it horizontal scaling eventually kills your database rather than
+relieving it.
+
+</KeyIdea>

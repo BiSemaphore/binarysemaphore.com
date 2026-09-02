@@ -6,3 +6,64 @@ partTitle: "Finding the bottleneck"
 ---
 This is the story the whole lecture is built around, and it is worth telling
 carefully because you have already lived some version of it.
+
+There is an endpoint, `GET /products/:id`. It feels slow. What is the first
+thought? The database. It is always the database. So you do what everyone does:
+you add Redis, you put a cache in front of the query, you spend a week getting
+invalidation right, you deploy it.
+
+The endpoint is still slow.
+
+So now, a week late, you do what you should have done first. You add timing
+around every step:
+
+```text
+  GET /products/:id                                total  520 ms
+  ├── routing and deserialization           2 ms
+  ├── auth check                            3 ms
+  ├── database query                       10 ms   ← the suspect
+  ├── redis lookup                          5 ms   ← the week you spent
+  └── audit log write to Elasticsearch    500 ms   ← the actual bottleneck
+      (synchronous, blocking, in the request path)
+```
+
+The database was never the problem. It was 10ms. The cache you built saves 10ms
+on a 520ms request, a 2% improvement, which is why it looked like it did nothing.
+<Peach>The bottleneck was a logging call that nobody thought of as a network call.</Peach>
+
+<Figure>
+
+The measured request. Four of the five segments are rounding error. The one that
+matters was not on anyone's list of suspects, and the fix everyone reached for
+first targeted a segment worth 2% of the total.
+
+</Figure>
+
+<KeyIdea>
+
+<Peach>Never guess. Always measure.</Peach> Not because guessing is unprofessional, but
+because the bottleneck is almost never where you expect. If it were where you
+expected, you would have fixed it already. The surprise is the whole point of
+measuring.
+
+</KeyIdea>
+
+<Trap>
+
+<Rose>"The database is slow."</Rose> It is the reflex diagnosis and it is wrong more often
+than it is right. Databases are the loudest component, so they get blamed. In
+practice the culprits that actually show up are: a synchronous call to something
+external, serialization of a large payload, an N+1 hidden inside an ORM, and a
+response body big enough that the network transfer dominates. Any of those can
+be the 500ms while your query sits at 10.
+
+</Trap>
+
+<Signal>
+
+The senior move is not knowing more fixes. It is refusing to apply one until the
+measurement points at it. "I would not add a cache until I could see the query
+in a trace, because the last three times I have seen this, the time was
+somewhere else."
+
+</Signal>

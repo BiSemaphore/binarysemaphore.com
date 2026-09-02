@@ -27,3 +27,41 @@ forever.
 <Mint>Presence is derived from a heartbeat, never from an event.</Mint> The TTL does the
 work, so the failure mode of a missed disconnect is a 45-second delay rather than
 permanent wrongness. Three details make it work in practice:
+
+**Per device, not per user.** A user on a laptop and a phone has two connections
+on two instances. <Peach>Online means "any device key exists"</Peach>, which a key pattern or
+a Redis set with per-member expiry handles cleanly. A single per-user flag makes
+closing one tab appear to log you out.
+
+**Flapping.** A commuter's connection drops every ninety seconds, and a naive
+implementation broadcasts leave, join, leave, join to everyone watching. <Mint>Debounce
+the offline transition</Mint>: wait a few seconds before announcing a departure, and
+cancel it if they come back. Nobody notices a delayed goodbye; everybody notices a
+flickering list.
+
+**Presence fan-out is the worst fan-out in the system.** In a room of `n` people
+where everyone sees everyone's status, one join is `n` notifications, and everyone
+joining is <Peach>`n²`</Peach>. This is why large chat platforms do not show full member
+presence in large rooms: they show it for a visible subset, or they show a count,
+or they degrade above a threshold.
+
+```text
+  10 people   ──▶     100 updates    fine
+  1,000       ──▶ 1,000,000 updates  not fine
+```
+
+<DoThis>
+
+Above a room size threshold, <Mint>stop pushing per-member presence and push a
+count</Mint>, which is one small coalesced value regardless of membership. Fetch
+individual status on demand for the members actually rendered.
+
+</DoThis>
+
+<KeyIdea>
+
+Presence is a heartbeat with a TTL, per device, debounced on departure. <Peach>Its
+fan-out is quadratic</Peach>, which is why every large platform degrades it above a
+room size rather than scaling it.
+
+</KeyIdea>

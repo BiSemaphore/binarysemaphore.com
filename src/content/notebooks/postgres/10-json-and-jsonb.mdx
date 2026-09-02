@@ -5,3 +5,46 @@ part: "II"
 partTitle: "Types are the first constraint"
 ---
 Two types, and one is essentially always right.
+
+| | `json` | `jsonb` |
+|---|---|---|
+| Stored as | <Peach>Exact text</Peach>, reparsed on every read | Decomposed binary |
+| Preserves key order and whitespace | Yes | No |
+| Duplicate keys | Kept | <Peach>Last one wins</Peach> |
+| Reads | Slower, parses each time | Fast |
+| Indexable | No | <Peach>Yes, GIN</Peach> |
+
+```sql
+-- a settings column that has no fixed shape
+ALTER TABLE users ADD COLUMN preferences jsonb NOT NULL DEFAULT '{}';
+
+-- query into it
+SELECT * FROM users WHERE preferences->>'theme' = 'dark';
+SELECT * FROM users WHERE preferences @> '{"beta": true}';
+
+-- and index it, which is the part that makes this viable
+CREATE INDEX users_prefs_gin ON users USING gin (preferences);
+```
+
+<DoThis>
+
+Use `jsonb`, and use it for the parts that are genuinely shapeless
+
+The right pattern is <Peach>relational columns for what you query, filter, join and
+constrain; jsonb for the long tail</Peach>. A CMS article gets `id`, `title`, `slug`,
+`author_id`, `published_at` as real columns with real constraints, and `body` as
+jsonb. Putting `email` inside a jsonb blob because it was easier means giving up
+the unique constraint, the foreign key and the type check.
+
+</DoThis>
+
+<Trap>
+
+"jsonb means I do not need migrations"
+
+You still have a schema, it is just unenforced and undocumented (section 4). You
+also lose `NOT NULL`, `UNIQUE`, `CHECK` and foreign keys on anything inside the
+blob, and every reader has to defend against every shape any past version of the
+code ever wrote. Use it for the long tail, not the spine.
+
+</Trap>

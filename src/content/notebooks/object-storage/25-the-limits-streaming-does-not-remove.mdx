@@ -17,3 +17,24 @@ path.
                └── idle timeout, commonly 60 s
                    ──▶ 504 on a slow mobile upload
 ```
+
+| Limit | Typical default | Symptom |
+|---|---|---|
+| Load balancer idle timeout | 60 s (ALB) | Upload dies mid-transfer, 504 |
+| nginx `client_max_body_size` | 1 MB | <Peach>413 Request Entity Too Large</Peach> |
+| API Gateway payload cap | 10 MB, <Peach>not raisable</Peach> | 413, and no configuration will help |
+| Lambda / serverless request size | 6 MB sync | Hard wall |
+| Worker or connection slots | 100s | Slow uploaders exhaust the pool |
+| Egress and instance bandwidth | Instance-class dependent | Everything gets slower at once |
+
+That API Gateway row is the one that ends the argument. Some of these you can
+tune. That one you cannot, at any price.
+
+<KeyIdea>
+
+Streaming makes proxying <Peach>survivable</Peach>, not <Peach>correct</Peach>. Your application tier
+is still spending its bandwidth, its connection slots and its wall-clock time
+moving bytes it has no opinion about. The fix is not a bigger timeout. The fix
+is not being in the path.
+
+</KeyIdea>

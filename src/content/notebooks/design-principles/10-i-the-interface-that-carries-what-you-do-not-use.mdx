@@ -7,3 +7,51 @@ partTitle: "The five"
 Martin's formulation, from work at Xerox:
 
 > Clients should not be forced to depend upon interfaces that they do not use.
+
+A single fat interface forces every implementer to supply everything and every
+caller to depend on everything. <Peach>The cost is not the unused methods; it is that a
+change to one of them recompiles, redeploys and potentially breaks a client that
+never called it.</Peach>
+
+```text
+   FAT                                SEGREGATED
+
+   interface Machine {                interface Printer  { print() }
+     print()                          interface Scanner  { scan()  }
+     scan()                           interface Fax      { fax()   }
+     fax()
+   }                                  OldPrinter implements Printer
+                                      AllInOne   implements Printer,
+   OldPrinter implements Machine {                          Scanner, Fax
+     print() { ... }
+     scan()  { throw ... }   ← and now you are also breaking section 9
+     fax()   { throw ... }
+   }
+```
+
+Notice that the fat version forces an LSP violation as a side effect. <Mint>The two
+principles are closely related: ISP is largely how you avoid being cornered into
+breaking LSP.</Mint>
+
+**The practical form of ISP is about the consumer, not the implementer.** The
+better version of this rule, and the one that is genuinely useful in a codebase
+with services rather than devices: <Peach>define the interface where it is used, and
+make it as narrow as that use.</Peach> If a report generator needs only
+`findById`, it should depend on a one-method interface it declares, not on your
+forty-method `UserRepository`.
+
+<DoThis>
+
+When you write a dependency for a class, write down only the methods that class
+actually calls. If the resulting interface has one or two methods, that is
+correct, not too small. <Mint>Wide dependencies are what make a codebase impossible
+to test in isolation, and narrow ones make the test setup obvious.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Depend on the narrowest thing that does the job.</Peach> The interface belongs to the
+consumer that needs it, not to the class that happens to implement it.
+
+</KeyIdea>

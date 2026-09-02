@@ -5,8 +5,8 @@ part: "I"
 partTitle: "What \"fast\" means"
 ---
 If latency goes vertical near 100% utilization, then the practical rule follows
-immediately: ==you cannot run a system at 100% utilization and also expect it to
-work==. You need slack.
+immediately: <Peach>you cannot run a system at 100% utilization and also expect it to
+work</Peach>. You need slack.
 
 Production systems typically target 60% to 80% of capacity, reserving the rest
 as <Pink>headroom</Pink>. That reserve is not waste. It is the thing absorbing the
@@ -20,3 +20,63 @@ Because traffic does not arrive evenly.
   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄              ▁▁▇█▁▁▁▁▁▁▅█▇▁▁▁▁▁▁▁▁█▇
   a steady 400 rps                      the same 400 rps on average
 ```
+
+Traffic comes in <Pink>bursts</Pink>. A push notification goes out and thirty thousand
+people open the app in the same four seconds. A cron job fires on the hour
+across every tenant at once. Somebody's post gets traction. Your average for the
+hour is comfortably under capacity and your peak second is triple it.
+
+<Trap>
+
+<Rose>Sizing for average load.</Rose> It is arithmetically defensible and operationally
+useless. You will be fine for fifty-nine minutes and down for one, and the one
+is the minute somebody was checking out. Size for the peak you actually observe,
+then keep headroom on top of that.
+
+</Trap>
+
+#### The gap the lecture leaves: what to do when headroom runs out
+
+The lecture stops at "keep a buffer". But buffers get consumed, and what happens
+then decides whether you have a slow system or a dead one.
+
+When demand exceeds capacity, the requests have to go somewhere. By default they
+go into a queue: the socket backlog, the thread pool queue, the connection pool
+wait list. And an unbounded queue under sustained overload is a machine for
+converting a capacity problem into a total outage, because every request in it
+ages until the client has already given up, and you spend your remaining
+capacity computing answers nobody is waiting for any more.
+
+<DoThis>
+
+The two things you owe an overloaded system
+
+- <Mint>Bounded queues.</Mint> Every queue gets a maximum depth. When it is full, reject
+  immediately with 503 and `Retry-After`. <Peach>A fast rejection is a better answer
+  than a slow success no one is waiting for.</Peach> This is <Pink>load shedding</Pink>.
+- <Mint>Backpressure.</Mint> Push the limit outward: bounded pools, a concurrency cap per
+  endpoint, and a rate limit at the edge. The goal is that overload is felt at
+  the boundary where you can decide what to drop, not in the middle where you
+  cannot.
+
+</DoThis>
+
+<Signal>
+
+"Under overload we shed load rather than queue it, because queueing turns a
+degradation into an outage." Almost nobody says this in an interview. It is the
+difference between having read about scaling and having been paged at 3am.
+
+</Signal>
+
+<Recall>
+
+Define latency, throughput and utilization in one sentence each, then give the wait multiplier at 80% and at 95%. | 6
+
+</Recall>
+
+<Recall>
+
+Write out Little's Law, and use it to size a worker pool for 800 rps at 250ms. | 5
+
+</Recall>

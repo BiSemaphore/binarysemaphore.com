@@ -9,3 +9,30 @@ The tell is a candidate who names a fix before asking a question.
 
 **Quoting averages.** "Our average response time is 200ms." The follow-up is
 "and your P99?" If there is no answer, the first number was decoration.
+
+**Reaching for the most complex tool.** Microservices, Kubernetes and sharding
+mentioned in the first thirty seconds signal that you have read about scaling
+rather than done it. <Peach>Complexity is a cost you are asking somebody to pay.</Peach>
+
+**Ignoring the write path.** Nearly every technique in this book helps reads.
+Caches, replicas, CDNs, indexes: reads, reads, reads, and indexes actively make
+writes slower. If the interviewer says the workload is write-heavy, half your
+material is inapplicable and noticing that out loud is worth a lot.
+
+**Forgetting that scaling is a cost.** Every instance is money, monitoring, a
+patch surface and a thing that can fail. "We could halve the traffic by fixing
+this N+1" is a better answer than "we could double the servers", and it is
+cheaper in every dimension.
+
+<Ask>
+
+The interviewer says "assume infinite budget". Does that change your answer?
+
+Barely, and saying so is the point. <Peach>Money buys bigger machines and more of
+them; it does not buy consistency, it does not buy round trips back from the
+speed of light, and it does not buy away the coordination cost of a distributed
+system.</Peach> Infinite budget removes vertical scaling's ceiling and the cost
+argument against replicas. It leaves every hard problem in this book exactly
+where it was.
+
+</Ask>

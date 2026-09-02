@@ -6,3 +6,85 @@ partTitle: "Ingestion, getting the bytes in"
 ---
 This is the question your interviewer asked, and the one to answer with a
 protocol rather than a promise.
+
+```text
+  part 004 fails
+        │
+        ▼
+  is it retryable?
+        │
+        ├── 5xx, 429, timeout, connection reset  ──►  retry with backoff
+        │
+        └── 4xx (403 expired signature, 400 bad request)  ──►  do not retry
+                    │
+                    ▼
+              re-sign the part URL from the API, then retry
+```
+
+#### Exponential backoff with jitter
+
+```text
+  attempt 1  ──►  fail   wait  1s  x random(0.5 .. 1.5)
+  attempt 2  ──►  fail   wait  2s  x random(0.5 .. 1.5)
+  attempt 3  ──►  fail   wait  4s  x random(0.5 .. 1.5)
+  attempt 4  ──►  fail   wait  8s  x random(0.5 .. 1.5)
+  attempt 5  ──►  ok
+```
+
+<KeyIdea>
+
+The jitter is not a detail. Without it, every client that failed during the same
+network blip retries at the same instant, and you have built a synchronised
+thundering herd that recreates the outage you were recovering from.
+
+</KeyIdea>
+
+<DoThis>
+
+The client-side upload loop
+
+1. Bound concurrency (4 to 8 parts in flight). Unbounded parallelism starves
+   itself and hides failures behind timeouts.
+2. Retry per part, not per file. Cap at 5 attempts, then surface the part number.
+3. Refresh expired signatures rather than failing the job. A multi-hour upload
+   will outlive a 15-minute signature.
+4. Checksum each part locally and send the header. Detect corruption at the part
+   boundary, not after processing starts.
+5. Persist `{uploadId, completedParts}` to `localStorage` so a refresh resumes.
+6. On permanent failure, `AbortMultipartUpload` so the parts stop costing money.
+
+</DoThis>
+
+<Ask>
+
+The connection drops for good and the user never comes back. What happens?
+
+The job sits in `UPLOADING` forever unless you handle it. Two mechanisms: a
+lifecycle rule that aborts incomplete multipart uploads after N days, and a
+sweeper that moves jobs stuck in `UPLOADING` past a deadline to `UPLOAD_EXPIRED`.
+Without the first, you pay storage on parts belonging to an object that will
+never exist.
+
+</Ask>
+
+<Trap>
+
+Retrying a 403
+
+An expired presigned URL returns 403, which looks like a permission error and
+gets classified as permanent. Clients that do not special-case it fail
+multi-hour uploads at minute sixteen. Re-sign, then retry.
+
+</Trap>
+
+<Recall>
+
+Draw the failure decision tree for a failed part, from memory. | 7
+
+</Recall>
+
+<Redraw>
+
+Redraw Part II from memory | Frontend, API, presigned URLs, parts, retries, complete. Then check against section 7.
+
+</Redraw>

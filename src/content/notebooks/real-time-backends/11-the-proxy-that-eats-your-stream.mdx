@@ -9,3 +9,68 @@ and never on localhost: the stream works perfectly on your laptop and delivers
 nothing behind the load balancer.
 
 There are two causes and they are both defaults.
+
+**Buffering.** A reverse proxy is built to read a response and forward it
+efficiently, which for a normal response means accumulating it. Nginx has
+`proxy_buffering on` by default. Your server writes `data: ...` and flushes; the
+proxy holds it, waiting for more, and the browser receives nothing. The stream is
+not broken. <Peach>It is being helpfully collected on your behalf, forever.</Peach>
+
+```text
+  your app  ──▶  writes + flushes  ──▶  NGINX BUFFER  ──▶  ...nothing...
+                                        (waiting for a full buffer
+                                         or the end of a response
+                                         that will never come)
+```
+
+**Idle timeouts.** Every hop has one, and they are shorter than you expect.
+
+| Hop | Default idle timeout |
+|---|---|
+| AWS Application Load Balancer | 60 seconds |
+| Nginx `proxy_read_timeout` | 60 seconds |
+| Many corporate proxies | 30 to 120 seconds |
+
+If nothing crosses the connection for that long, the hop closes it. A quiet board
+at 3am produces no events for ten minutes, so <Peach>the connection is killed for being
+idle, not for being broken</Peach>, and every client in your system reconnects.
+
+Both fixes are one line each:
+
+```text
+  proxy_buffering off;                  # nginx, per location
+  proxy_read_timeout 3600s;             # or longer than your heartbeat interval
+
+  X-Accel-Buffering: no                 # response header; nginx honours it
+                                        # per response, so your app can ask
+```
+
+<DoThis>
+
+Set the response header `X-Accel-Buffering: no` from the application rather than
+relying on proxy configuration you may not own, <Mint>and send a heartbeat comment on
+an interval shorter than the shortest idle timeout in the path</Mint>. Fifteen seconds
+clears a 30-second timeout with room to spare. This is the same reasoning that
+produces WebSocket ping intervals in section 18.
+
+</DoThis>
+
+<Ask>
+
+The stream works locally and delivers nothing in staging. Where do you look?
+
+Buffering first, then timeouts. Curl the endpoint directly against the app,
+bypassing the proxy: if events arrive there and not through the proxy, it is
+buffering. If both work but the connection dies at a suspiciously round number of
+seconds, it is an idle timeout, and the round number tells you which hop. <Peach>A
+stream that dies at exactly 60 seconds is a configuration value, not a bug.</Peach>
+
+</Ask>
+
+<KeyIdea>
+
+Streaming responses break on middleboxes that were designed for responses that
+end. Turn buffering off and heartbeat more often than the shortest idle timeout,
+or the network will close your connection for you.
+
+</KeyIdea>

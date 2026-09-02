@@ -18,3 +18,63 @@ Without checkpoints, a crash at 90 percent costs you 90 percent.
 ```
 
 #### Defining a chunk
+
+The chunk must be a <Peach>deterministic function of the input</Peach>, so that any worker
+computes the same boundaries. Byte ranges are the usual answer, snapped to the
+next record delimiter:
+
+```text
+  chunk 7 = bytes [700,000,000 .. 800,000,000)
+
+  the reader:
+    seeks to 700,000,000
+    discards to the next newline      (that partial row belongs to chunk 6)
+    reads until past 800,000,000, then to the next newline  (completing the row)
+```
+
+That "discard to the next delimiter, finish the trailing record" rule is how
+every splittable-format reader works, and stating it shows you have actually
+thought about row boundaries rather than assuming they align with byte offsets.
+
+#### Recording progress
+
+```sql
+CREATE TABLE job_chunks (
+  job_id    UUID NOT NULL,
+  chunk_id  INT  NOT NULL,
+  status    TEXT NOT NULL,          -- PENDING | DONE | FAILED
+  rows_ok   INT  NOT NULL DEFAULT 0,
+  rows_bad  INT  NOT NULL DEFAULT 0,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (job_id, chunk_id)
+);
+```
+
+<DoThis>
+
+Commit the checkpoint with the data, not after it
+
+```sql
+BEGIN;
+  INSERT INTO results (...) VALUES (...);            -- the chunk's output
+  UPDATE job_chunks SET status='DONE', rows_ok=9987
+   WHERE job_id=$1 AND chunk_id=$2;
+COMMIT;
+```
+One transaction means the checkpoint can never disagree with the data. Writing
+results and then updating the checkpoint separately reintroduces the dual-write
+problem from section 11, in the hottest loop of the system.
+
+</DoThis>
+
+<Ask>
+
+What if results go to S3, which has no transaction with your database?
+
+Write the chunk output to a deterministic key (`processed/job-8f21/chunk-007`),
+then commit the checkpoint. A crash between the two leaves an orphan object that
+the retry simply overwrites, because the key is derived from the chunk ID and
+not from a timestamp or a random ID. Deterministic naming is what makes the
+retry safe.
+
+</Ask>

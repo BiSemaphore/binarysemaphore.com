@@ -17,3 +17,54 @@ Same shell, same machine, same moment. Ask two runtimes what their limit is:
 The Go runtime <Peach>raises its own soft limit at startup</Peach>. `ulimit -n` reports the
 *soft* limit, which is an advisory ceiling a process may lift up to the *hard*
 limit on its own, without privileges. Go does exactly that.
+
+The reason is in Go's own standard library comment: some systems set an
+artificially low soft limit for compatibility with code using `select()`, which
+has a hard-coded maximum descriptor number because of the fixed size of `fd_set`.
+<Mint>Go does not use `select`, so the runtime raises the limit for itself and leaves
+the old software alone.</Mint>
+
+And the number is not the hard limit, it is <Peach>the hard limit minus one</Peach>:
+1,048,576 minus 1. That is deliberate, so the runtime can later detect somebody
+else changing the limit underneath it.
+
+```text
+  soft limit    what ulimit -n shows. advisory. raiseable by the process
+  hard limit    the real ceiling. only root can raise it
+```
+
+So the folklore, "you will hit the thousand-descriptor problem", is true and
+<Peach>incomplete</Peach>. In Node, Python or Java you meet it at 1,024 unless you raise the
+limit yourself. In Go you do not meet it at all.
+
+<Trap>
+
+<Rose>"We set `ulimit -n` in our shell, so the service has a high limit."</Rose> Your shell
+is not your service's parent in production. Under systemd the value that applies
+is `LimitNOFILE` in the unit file; in a container it is the runtime's default and
+whatever the orchestrator sets. <Mint>Read the limit from inside the running process
+and export it as a metric</Mint>, because it is the only value that is definitely
+true.
+
+</Trap>
+
+<Ask>
+
+Why not just set the limit to a million everywhere?
+
+Because the descriptor limit is the only thing standing between a leak and the
+machine. It is a circuit breaker, not an obstacle. Raise it deliberately to a
+number you have sized against your memory budget from section 24, and alert on
+approaching it. A million descriptors on a box that runs out of memory at 200,000
+connections has converted a clean, immediate `too many open files` into an OOM
+kill that takes every connection with it.
+
+</Ask>
+
+<KeyIdea>
+
+The soft limit is advisory and Go raises it to hard-minus-one at startup. <Peach>The
+descriptor ceiling is a property of your runtime and your unit file, not of the
+machine</Peach>, and you should read it from inside the process.
+
+</KeyIdea>

@@ -29,3 +29,63 @@ rotation is blind to the difference, so a run of expensive requests can land on
 one instance and take it down while the other two are idle.
 
 #### Weighted round robin
+
+Same rotation, but a bigger server gets proportionally more. An instance with
+twice the CPU takes two requests per cycle instead of one. Fixes uneven
+hardware; does nothing about uneven requests.
+
+#### Least connections
+
+Send the next request to whichever instance currently has the fewest requests in
+flight.
+
+```text
+  A  [████████ 2s request, still open]   1 active
+  B  []                                  0 active   ← next request goes here
+  C  []                                  0 active
+```
+
+This is the first algorithm that is aware of cost, and it is aware of it in a
+clever indirect way: <Peach>an expensive request holds its connection open longer, so
+the instance handling it automatically looks busier.</Peach> You do not have to
+classify requests; the duration does it for you. For mixed workloads this is
+usually the right default.
+
+#### Least response time
+
+Track how fast each instance is actually answering and favour the quick ones. A
+struggling instance receives less traffic, which gives it room to recover.
+Guards against the instance that is slow but not dead.
+
+#### Resource-based
+
+The load balancer reads real CPU and memory from each instance and routes on
+that. Most accurate, most operationally involved, and it needs an agent
+reporting metrics.
+
+<DoThis>
+
+Choosing
+
+<Mint>Round robin for uniform work, least connections for anything else.</Mint> That
+covers the large majority of real systems. Reach past those two only when you
+have a measurement showing the imbalance they leave.
+
+</DoThis>
+
+#### L4 and L7, which the lecture does not separate
+
+Worth knowing because interviewers ask it and the answer is short.
+
+```text
+  L4  transport layer   routes on IP and port. does not read the request.
+                        fast, cheap, protocol-agnostic.
+                        cannot route by URL. cannot terminate TLS meaningfully.
+
+  L7  application layer routes on the HTTP request itself: path, host, headers,
+                        cookies. terminates TLS. can retry, rewrite, rate limit.
+                        this is what nginx, HAProxy, ALB and Envoy do.
+```
+
+<Peach>Anything that routes `/api` to one service and `/images` to another is
+operating at L7, because it had to read the URL to decide.</Peach>

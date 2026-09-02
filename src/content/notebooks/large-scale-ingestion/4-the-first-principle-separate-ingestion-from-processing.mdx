@@ -20,3 +20,45 @@ This is the decision the whole design rests on. The naive model is:
 
 This fails for at least five independent reasons, and it is worth naming them
 all rather than just saying "it does not scale":
+
+1. **The request outlives every timeout.** Load balancers, reverse proxies and
+   browsers all cut long-lived requests. AWS ALB defaults to 60 seconds idle.
+2. **The bytes flow through your compute.** Bandwidth and memory on the API tier
+   are consumed by data movement that adds no value.
+3. **A retry restarts everything.** There is no unit of progress smaller than the
+   whole job.
+4. **Deploys become destructive.** Any rolling restart kills in-flight work.
+5. **You cannot scale the two halves separately.** Upload capacity and processing
+   capacity have completely different demand curves.
+
+So split it in two, and treat them as separate problems with separate failure
+models:
+
+```text
+        RIGHT
+
+  ┌──────────── INGESTION ────────────┐   ┌──────── PROCESSING ────────┐
+  │                                   │   │                            │
+  │  Frontend ──► Object store        │   │  Queue ──► Workers ──► DB  │
+  │      (direct, resumable, retried) │   │       (leased, resumable)  │
+  │                                   │   │                            │
+  └───────────────────┬───────────────┘   └────────────┬───────────────┘
+                      │                                │
+                      └──────► durable handoff ◄───────┘
+                                 (an event)
+```
+
+<Signal>
+
+Say the phrase "the file at rest in object storage is the handoff point between
+two independent failure domains". Once the bytes are durably in S3, an upload
+failure and a processing failure are unrelated problems with unrelated
+recoveries. That framing is what makes the rest of the design tractable.
+
+</Signal>
+
+<Recall>
+
+Name the five reasons the synchronous model fails. No peeking. | 6
+
+</Recall>

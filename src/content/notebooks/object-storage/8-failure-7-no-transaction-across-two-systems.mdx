@@ -4,8 +4,8 @@ title: "Failure 7: no transaction across two systems"
 part: "I"
 partTitle: "The naive design, and the seven ways it dies"
 ---
-The last failure is the subtle one, and unlike the other six ==it does not go
-away when you adopt object storage==. It only becomes easier to manage.
+The last failure is the subtle one, and unlike the other six <Peach>it does not go
+away when you adopt object storage</Peach>. It only becomes easier to manage.
 
 You are writing to two systems that know nothing about each other, so there is
 no transaction spanning them. Both orderings are broken:
@@ -19,3 +19,45 @@ no transaction spanning them. Both orderings are broken:
   orphan: bytes nobody can             dangling pointer: every read
   reach, paid for forever              of that row 404s or 500s
 ```
+
+There is no ordering that fixes this, because the failure is between the two
+operations, not inside either.
+
+What you can do is choose <Peach>which failure mode you prefer</Peach>, and then reconcile:
+
+- Prefer the orphan. Write the object first, commit the row second. An
+  unreferenced object costs money and can be swept by a lifecycle rule. A
+  dangling row corrupts user-visible behaviour and every read path must defend
+  against it.
+- Make the intent durable first. Section 29's two-phase flow writes a `pending`
+  row <Peach>before</Peach> any bytes move, so a failure leaves a row you can reason about
+  rather than a mystery.
+- Reconcile on a schedule. A background job resolves disagreements between the
+  two sources of truth. Section 30.
+
+<KeyIdea>
+
+The database is the source of truth for <Peach>what exists and who owns it</Peach>. The
+bucket is the source of truth for <Peach>the bytes</Peach>. They will disagree. Design the
+reconciliation before you ship, not after the first support ticket.
+
+</KeyIdea>
+
+<Ask>
+
+This sounds like the dual-write problem. Is it?
+
+It is exactly the dual-write problem, and the transactional outbox is the
+general solution: commit the intent in the same transaction as your business
+data, then let a relay perform the second effect with retries. Notebook 01
+section 11 works this through in full. For upload specifically, two-phase plus
+a sweeper is usually enough, because the object store gives you a cheap,
+authoritative existence check (`HEAD`) that a message broker cannot.
+
+</Ask>
+
+<Recall>
+
+Name all seven failures of the local-disk design, in order, without looking. | 8
+
+</Recall>

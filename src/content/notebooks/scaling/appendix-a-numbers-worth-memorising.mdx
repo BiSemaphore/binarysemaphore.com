@@ -26,3 +26,41 @@ something is plausible.
   round trip, US to Europe             80,000,000 ns   = 80 ms
   round trip, US to Asia              150,000,000 ns   = 150 ms
 ```
+
+The gap to internalise is the one between memory and network: <Peach>a network round
+trip inside one datacenter costs five thousand times a memory reference</Peach>. That
+ratio is why N+1 is fatal and why chatty microservices are expensive.
+
+#### Rough capacities
+
+```text
+  Postgres, simple indexed query           0.1 - 2 ms
+  Postgres, default max_connections        100 - 500
+  Redis, single GET                        under 1 ms, ~100k ops/sec/core
+  a modest API instance                    500 - 2,000 rps for simple work
+  nginx as a reverse proxy                 tens of thousands of rps
+  Kafka, single partition                  tens of MB/sec
+```
+
+#### Utilization and latency
+
+```text
+  utilization    wait multiplier
+      50%              2x
+      70%            3.3x
+      80%              5x
+      90%             10x
+      95%             20x
+      99%            100x
+```
+
+#### Percentiles, said out loud
+
+```text
+  P50    half of requests
+  P90    one request in ten is worse
+  P95    one request in twenty is worse
+  P99    one request in a hundred is worse
+  P99.9  one in a thousand. matters at high volume: at 10,000 rps,
+         that is ten unhappy requests every second.
+```

@@ -8,3 +8,41 @@ Robert Martin's original formulation, from the 1990s and set down in *Agile
 Software Development* (2002):
 
 > A class should have only one reason to change.
+
+The word doing the work is __reason__, and it is not "responsibility" in the
+loose English sense. A class that validates an order, prices it, and emails a
+receipt has three reasons to change, because <Peach>three different forces in the
+world can independently require it to be edited.</Peach>
+
+```text
+   class OrderService
+     ├── validate()      changes when the rules team changes rules
+     ├── price()         changes when finance changes tax handling
+     └── sendReceipt()   changes when marketing changes the email
+
+   three forces, one file, one merge conflict every quarter
+```
+
+**The test is a question about the future, not about the code.** Ask: can I think
+of two changes that would arrive at different times, from different people, and
+both land in this file? If yes, it has more than one reason to change.
+
+<Trap>
+
+<Rose>"Single responsibility means a class should do one thing."</Rose>
+
+This is the most common and most damaging misreading, and it produces codebases
+with three hundred one-method classes, each perfectly focused and collectively
+incomprehensible. <Mint>"One thing" is not defined at any particular size, so the
+rule gives no guidance and people apply it until everything is atomised.</Mint>
+"One reason to change" is a real test with a real answer, because reasons for
+change are countable and they come from identifiable people.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>A reason to change is a person who can ask for it.</Peach> Count those, not methods,
+not lines, not concepts.
+
+</KeyIdea>

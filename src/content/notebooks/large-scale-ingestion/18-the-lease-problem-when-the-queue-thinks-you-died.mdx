@@ -33,3 +33,43 @@ scheduler.scheduleAtFixedRate(() ->
     sqs.changeMessageVisibility(queueUrl, receiptHandle, 300),
     60, 60, SECONDS);
 ```
+
+On Kafka the equivalent is keeping `max.poll.interval.ms` above your worst-case
+processing time, or calling `pause()` and processing off the poll thread so the
+consumer keeps heartbeating and is not evicted from the group.
+
+**2. Heartbeat the job row too**, so an operator (and your sweeper) can tell a
+running job from an abandoned one:
+
+```sql
+UPDATE jobs SET heartbeat_at = now() WHERE id = $1;
+
+-- the sweeper, every minute
+UPDATE jobs SET status = 'QUEUED'
+ WHERE status = 'PROCESSING' AND heartbeat_at < now() - INTERVAL '3 minutes';
+```
+
+**3. Split the work so no single lease is long.** If each message is one chunk
+rather than one file, no lease needs to outlive a few minutes, and the whole
+class of problem shrinks. This is the real motivation for section 19.
+
+<KeyIdea>
+
+Long jobs and message queues are in tension by design. Either the lease must
+follow the work (heartbeats), or the work must be cut to fit the lease
+(chunking). Choose consciously, and say which you chose.
+
+</KeyIdea>
+
+<Ask>
+
+SQS caps message retention and in-flight time at a maximum. What if a job exceeds it?
+
+The 12-hour ceiling on in-flight time is a hard limit, so you cannot heartbeat
+past it. That is a design signal, not a workaround problem: split the job into
+chunk messages, each comfortably short, and track overall completion in the
+database. If a single indivisible unit of work takes longer than twelve hours,
+the queue is the wrong orchestrator and you want a workflow engine (Step
+Functions, Temporal, Airflow) that is built for durable long-running state.
+
+</Ask>

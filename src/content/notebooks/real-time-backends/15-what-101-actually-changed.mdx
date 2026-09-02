@@ -4,8 +4,8 @@ title: "What 101 actually changed"
 part: "III"
 partTitle: "WebSocket: leaving HTTP behind"
 ---
-After the 101, the TCP connection stays open and ==everything you know about HTTP
-stops applying==. This is the sentence to be able to say, because most of the
+After the 101, the TCP connection stays open and <Peach>everything you know about HTTP
+stops applying</Peach>. This is the sentence to be able to say, because most of the
 architectural consequences in Parts IV and V fall straight out of it.
 
 ```text
@@ -21,3 +21,34 @@ architectural consequences in Parts IV and V fall straight out of it.
 ```
 
 The last two lines are the expensive ones.
+
+**Everything HTTP-shaped in your stack stops working.** Your CDN cannot cache a
+stream. Your API gateway's per-route rate limiting sees one request, not ten
+thousand messages. Your access logs record one line at connect time and nothing
+after. <Peach>Your observability goes blind at exactly the moment your traffic moves
+onto the socket</Peach>, and you have to rebuild it: messages per connection, bytes per
+connection, frames by opcode, connection lifetime.
+
+**Authentication happens once.** The cookie or token was validated during the
+handshake. The connection then lives for hours. <Peach>A token that expires in fifteen
+minutes does not close a socket that opened fourteen minutes ago</Peach>, and a user
+whose access you revoked keeps receiving events until something closes the
+connection. Section 37 is the fix.
+
+<Signal>
+
+"After the upgrade I have a raw bidirectional stream, so I lose caching, per-request
+auth, per-route rate limits and request logging. I plan for rebuilding those as
+part of adopting WebSockets, not after." Naming the collateral damage before you
+are asked is the difference between having used WebSockets and having operated
+them.
+
+</Signal>
+
+<KeyIdea>
+
+101 does not add a feature to HTTP. It <Peach>ends HTTP on that connection</Peach> and leaves
+you a TCP stream with framing. Everything HTTP was doing for you is now yours to
+rebuild.
+
+</KeyIdea>

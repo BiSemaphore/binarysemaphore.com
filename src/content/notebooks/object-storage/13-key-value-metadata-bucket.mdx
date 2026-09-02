@@ -27,3 +27,39 @@ An object has four parts.
 ```
 
 Two details worth holding on to.
+
+**The key is the identity.** Not a name, not a path, not a pointer: the string
+is the object's identity, which is why section 15 is about designing it.
+
+**User metadata is fixed at write time.** Because objects are immutable, you
+cannot change a metadata value without rewriting the object. Use it for facts
+that will never change (who uploaded it, the original filename), and keep
+anything mutable (status, visibility, tags your app filters on) in the database,
+where you can update and index it.
+
+<Ask>
+
+What is an ETag, exactly?
+
+An opaque entity tag the store returns for the current contents of an object.
+For a single-part PUT it is usually the MD5 of the body, which makes it a handy
+integrity check; for a multipart upload it is a hash of the part hashes with a
+`-N` suffix, so it is <Peach>not</Peach> the MD5 of the whole object and you should never
+present it as a content checksum. Its real job is conditional requests:
+`If-None-Match` for caching (section 42) and for the conditional writes in
+section 22. If you need a real content hash, ask for one explicitly with the
+checksum headers.
+
+</Ask>
+
+<Ask>
+
+Why does a bucket name have to be globally unique?
+
+Because objects are addressable over HTTP by hostname:
+`https://my-bucket.s3.amazonaws.com/key`. The bucket name is part of the DNS
+name, so it shares a global namespace across every account on the platform.
+That also means bucket names are <Peach>public information</Peach>: never encode a customer
+name or anything sensitive into one.
+
+</Ask>

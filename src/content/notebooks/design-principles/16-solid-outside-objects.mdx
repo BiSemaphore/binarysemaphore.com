@@ -7,3 +7,35 @@ partTitle: "Using them without being used by them"
 Every one of these principles was written about class-based object-oriented code
 in the 1980s and 1990s. Most backend code written now is services, functions and
 data. Three of the five transfer cleanly; two need translation.
+
+| Letter | Outside objects |
+|---|---|
+| S | Transfers exactly. A module, a service, a function: one actor |
+| O | Transfers. Extension by adding a case to a dispatch table or a new handler |
+| L | Becomes contract compatibility. The API version, the message schema |
+| I | Becomes the narrow dependency. Ask for the two fields, not the whole record |
+| D | Transfers exactly, and matters more across service boundaries than inside them |
+
+<Peach>L is the one that changes character most.</Peach> Between services there is no
+inheritance, so Liskov becomes a rule about schema evolution: a new version of a
+producer must not strengthen what it demands of consumers, nor weaken what it
+promises them. That is exactly the precondition and postcondition rule, moved
+onto the wire, and it is why adding a required field to a request payload is a
+breaking change while adding an optional one is not. Notebook 08 section 12 is
+the same argument in the vocabulary of API versioning.
+
+<Signal>
+
+"Liskov generalises past inheritance. Between services it is the compatibility
+rule: do not strengthen what you require, do not weaken what you promise. A new
+required request field is a strengthened precondition, which is why it breaks
+every existing caller."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>The five are about modules, not about classes.</Peach> The class-based phrasing is an
+accident of when they were written.
+
+</KeyIdea>

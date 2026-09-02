@@ -5,3 +5,65 @@ part: "II"
 partTitle: "Finding the bottleneck"
 ---
 A method, so that "measure first" is an instruction rather than a slogan.
+
+<DoThis>
+
+The order to work in
+
+1. <Mint>Confirm it is real.</Mint> Which endpoint, which percentile, since when, at what
+   throughput. If you cannot draw the graph, you do not have a problem yet.
+2. <Mint>Split the round trip.</Mint> Client-observed total, minus server-observed total,
+   is network and queueing. Knowing which side of that line the time is on
+   eliminates half the possible causes immediately.
+3. <Mint>Get one slow trace.</Mint> Not an aggregate. One real request that was slow, with
+   its spans. This usually ends the investigation.
+4. <Mint>Attribute the time.</Mint> Write down the segments and their milliseconds, like
+   the table in section 7. Anything under 5% of the total is not your problem, no
+   matter how ugly the code is.
+5. <Mint>Only now choose a technique.</Mint> And check the arithmetic before you build:
+   if the segment is 10% of the request, the best possible outcome of fixing it
+   perfectly is a 10% improvement.
+
+</DoThis>
+
+That last step has a name worth knowing, because it is the formal version of the
+week wasted in section 7.
+
+```text
+  Amdahl's law:   the most a fix can help is bounded by
+                  the share of total time it applies to.
+
+  a segment worth  60%  of the time, made infinitely fast  →  2.5x  faster
+  a segment worth  10%  of the time, made infinitely fast  →  1.1x  faster
+  a segment worth   2%  of the time, made infinitely fast  →  unmeasurable
+```
+
+<KeyIdea>
+
+<Peach>Fixing a 2% segment perfectly gives you a 2% improvement.</Peach> The cache in
+section 7 worked exactly as designed and was still a waste of a week, because
+the segment it targeted was worth 10ms out of 520. Do this multiplication before
+you start, not after you deploy.
+
+</KeyIdea>
+
+<Signal>
+
+"Before I optimise anything I want to know what share of the request it is,
+because that bounds the best possible outcome." This is Amdahl's law stated as a
+working habit rather than as a piece of trivia, and it is the single most
+senior-sounding thing you can say about performance work.
+
+</Signal>
+
+<Recall>
+
+Name the four measurement tools and the question each one answers. Then give the five-step order. | 7
+
+</Recall>
+
+<Redraw>
+
+The measured request from section 7, with milliseconds on every segment. | Then mark which segment the team optimised, and calculate the improvement that fix could possibly have produced.
+
+</Redraw>

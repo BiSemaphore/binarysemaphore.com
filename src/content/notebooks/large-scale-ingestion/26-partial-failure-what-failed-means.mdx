@@ -11,3 +11,40 @@ partTitle: "Senior concerns"
 
   Is this job COMPLETED or FAILED?
 ```
+
+There is no universally correct answer, which is exactly why you should raise
+it. What matters is that the behaviour is a decision, not an accident.
+
+<DoThis>
+
+Give the caller the full picture, and a policy dial
+
+```json
+{
+  "status": "COMPLETED_WITH_ERRORS",
+  "rows":   { "ok": 9999988, "rejected": 12 },
+  "errorReport": "s3://acme-ingest/processed/job-8f21/errors.csv",
+  "policy": { "failThresholdPercent": 1.0 }
+}
+```
+- Write every rejected row, with its row number and reason, to an error file.
+- Apply a threshold: above it, the file is probably wrong and the job should
+  fail outright rather than half-load a bad dataset.
+- Let the tenant configure `strict` (any error fails) or `lenient` (report and
+  continue). Different customers genuinely want different answers.
+
+</DoThis>
+
+<Ask>
+
+If the job fails at 80 percent, do you roll back the 80 percent?
+
+State the trade-off rather than picking blindly. Rolling back gives clean
+all-or-nothing semantics but throws away hours of work and needs either a staging
+table or a delete keyed by `job_id`. Leaving it lets the retry resume from the
+checkpoint, which is far cheaper, and is safe precisely because the writes are
+idempotent. The usual production answer is: load into a staging table, and make
+the atomic swap into the live table the final step, so consumers only ever see a
+complete dataset.
+
+</Ask>

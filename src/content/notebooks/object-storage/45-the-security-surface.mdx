@@ -5,3 +5,40 @@ part: "VIII"
 partTitle: "Production concerns"
 ---
 Four mechanisms control access, and knowing which is which is a common probe.
+
+| Mechanism | Attached to | Answers |
+|---|---|---|
+| IAM policy | A principal (role, user) | What may <Peach>this identity</Peach> do? |
+| Bucket policy | The bucket | Who may touch <Peach>this bucket</Peach>? Cross-account grants live here |
+| ACL | Bucket or object | Legacy. <Peach>Disable it</Peach> (bucket owner enforced) |
+| Presigned URL / POST policy | A single request | A capability: one operation, one key, one expiry |
+
+Access is granted only if nothing denies it and something allows it. An explicit
+`Deny` always wins, which makes a deny-based guardrail (deny any request without
+TLS, or without server-side encryption) a reliable control.
+
+<DoThis>
+
+Bucket defaults for anything holding user content
+
+- <Peach>Block Public Access</Peach> on, at the account level as well as the bucket.
+- Bucket owner enforced, ACLs disabled.
+- Default encryption on, versioning on.
+- Deny non-TLS requests via a condition on `aws:SecureTransport`.
+- Scope every role to a <Peach>prefix</Peach>, using the ownership structure from section
+  15, never to the whole bucket.
+- Access logs or CloudTrail data events to a <Peach>different bucket in a different
+  account</Peach>.
+
+</DoThis>
+
+#### Encryption
+
+| Mode | Key held by | Use when |
+|---|---|---|
+| SSE-S3 | The provider | Default. On by default now. Free |
+| SSE-KMS | Your KMS key | You need an audit trail of key use, or per-tenant keys. Costs per request and can throttle |
+| Client-side | You | The provider must never be able to read the bytes |
+
+All three encrypt at rest. <Peach>None of them stop a valid, authorised request</Peach>,
+which is the threat you are actually likely to face.

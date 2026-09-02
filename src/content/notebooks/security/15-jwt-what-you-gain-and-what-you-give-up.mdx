@@ -20,3 +20,45 @@ partTitle: "Authentication"
 
 A JWT is three base64 segments: header, payload, signature. Two facts follow
 immediately, and both are asked about:
+
+- <Peach>The payload is encoded, not encrypted.</Peach> Anyone holding the token can read
+  every claim in it. Never put anything secret in a JWT.
+- <Peach>The signature proves integrity, not secrecy.</Peach> Change one byte of the
+  payload and verification fails, which is exactly what you want, and it tells
+  you nothing about who is holding the token.
+
+| | Stateful session | Stateless JWT |
+|---|---|---|
+| Revocation | <Peach>Immediate.</Peach> Delete the row | <Peach>Not possible</Peach> before expiry |
+| "Log out all devices" | Trivial | Needs a version claim or a blocklist |
+| Storage | A row or a Redis key per session | None |
+| Verification cost | One lookup | One signature check |
+| Scaling | Shared store required | Any node can verify alone |
+| Size on the wire | ~40 bytes | Hundreds of bytes, every request |
+
+<Trap>
+
+"JWTs are more secure because they are signed"
+
+Signing gets you <Peach>integrity</Peach>, which a random opaque session id also has, by
+virtue of being unguessable and meaningless. What JWTs buy is <Peach>statelessness</Peach>,
+and what they cost is <Peach>revocation</Peach>. That is the trade. If you find yourself
+building a blocklist of revoked JWTs, checked on every request, you have
+rebuilt a session store with worse ergonomics.
+
+</Trap>
+
+<DoThis>
+
+If you use JWTs, do these
+
+- <Mint>Pin the algorithm server-side.</Mint> Never trust the `alg` header. Reject
+  `none`, and reject an HMAC token if you expect RS256. This is a real,
+  historic, catastrophic bug class.
+- <Mint>Verify `exp`, `iss` and `aud`</Mint>, not just the signature.
+- <Mint>Keep access tokens short-lived</Mint>, five to fifteen minutes, and pair them
+  with a refresh token that is stored server-side and therefore revocable.
+- <Mint>Rotate refresh tokens on use</Mint> and detect reuse: a refresh token presented
+  twice means one copy was stolen, so kill the whole family.
+
+</DoThis>

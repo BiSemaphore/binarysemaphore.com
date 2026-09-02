@@ -20,3 +20,17 @@ Once the password is verified, the user should not send it again. They carry a
                                     the id is a bearer token: whoever
                                     holds it IS the user, until it expires
 ```
+
+| Property | Requirement |
+|---|---|
+| Randomness | <Peach>A CSPRNG</Peach>, never `Math.random()`, never a counter, never a UUIDv1 |
+| Length | 128 bits of entropy minimum |
+| Content | <Peach>Meaningless.</Peach> The id maps to server state; it does not encode it |
+| Rotation | <Peach>Regenerate on login and on privilege change</Peach>, or you have session fixation |
+| Expiry | Absolute and idle timeouts, both enforced <Peach>server-side</Peach> |
+| Logout | Deletes the server-side record, not just the cookie |
+
+That rotation row is the one people miss. If an attacker can set a victim's
+session id before they log in (via a link, a subdomain, an XSS), and you keep
+the same id afterwards, the attacker's known id is now an authenticated
+session. Issuing a fresh id at login closes it.

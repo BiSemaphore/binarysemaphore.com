@@ -22,3 +22,38 @@ application code.
     LEFT JOIN tasks t ON t.project_id = p.id
     GROUP BY p.id;                                ── 1 round trip
 ```
+
+Each individual query is fast, which is what makes this hard to spot: nothing
+appears in a slow query log. What you see is an endpoint that takes 400ms for no
+apparent reason, and gets slower as the list grows, because the cost is <Peach>50
+network round trips</Peach>, not 50 slow queries.
+
+ORMs cause this by default, since lazy-loading a relation inside a loop looks
+exactly like ordinary code.
+
+<DoThis>
+
+Three fixes, in order of preference
+
+- <Mint>One query with a join and an aggregate</Mint>, as above.
+- <Mint>Eager loading</Mint>: `include` in Prisma, `joinedload` in SQLAlchemy,
+  `Preload` in GORM, `includes` in ActiveRecord.
+- <Mint>One extra query, not N</Mint>: fetch the parents, collect the ids, then
+  `WHERE project_id = ANY($1)` and stitch in application code. Two queries
+  regardless of list size, and often the most readable option.
+
+</DoThis>
+
+<Signal>
+
+"I watch the <Peach>query count per request</Peach>, not just query latency. N+1 never shows
+up in a slow query log, because every individual query is fast. It shows up as
+an endpoint whose latency scales with the size of the list it returns."
+
+</Signal>
+
+<Recall>
+
+Write the get-all-users query: join, embed the profile, filter by first letter, sort safely, paginate. | 8
+
+</Recall>

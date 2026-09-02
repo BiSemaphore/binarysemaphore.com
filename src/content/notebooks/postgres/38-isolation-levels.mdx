@@ -13,3 +13,27 @@ able to list.
   PHANTOM READ      you run the same query twice and get different ROWS
   LOST UPDATE       two read-modify-writes, one silently overwrites the other
 ```
+
+| Level | Dirty | Non-repeatable | Phantom |
+|---|---|---|---|
+| Read uncommitted | Not possible in PG | Possible | Possible |
+| <Peach>Read committed</Peach> (PG default) | No | Possible | Possible |
+| Repeatable read | No | No | <Peach>No, in PG</Peach> |
+| Serializable | No | No | No |
+
+Two Postgres-specific facts worth knowing:
+
+- Postgres has <Peach>no dirty reads at any level</Peach>. `READ UNCOMMITTED` is accepted
+  and behaves as `READ COMMITTED`.
+- Postgres's `REPEATABLE READ` is a snapshot, so it also prevents phantoms,
+  which is stronger than the SQL standard requires.
+
+<Signal>
+
+"The default is `READ COMMITTED`, which means <Peach>each statement sees a fresh
+snapshot</Peach>. So two statements in the same transaction can see different data,
+and that is exactly where read-modify-write bugs live. If a transaction's
+correctness depends on the world not changing underneath it, I raise the level
+or take an explicit lock rather than hoping."
+
+</Signal>

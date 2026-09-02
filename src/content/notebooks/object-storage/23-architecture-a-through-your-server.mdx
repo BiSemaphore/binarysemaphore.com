@@ -13,3 +13,17 @@ The obvious one. The browser posts to your API, your API forwards to the bucket.
 
 It has real advantages, and dismissing it outright is a worse answer than
 knowing when it applies:
+
+| You can | Because you hold the bytes |
+|---|---|
+| Validate content for real | Sniff magic bytes, not the declared content type |
+| Scan for malware inline | Before anything is stored |
+| Compute a hash, transcode, resize, strip EXIF | You have the data anyway |
+| Reject for any business reason | Quota, plan limits, moderation |
+| Use your ordinary auth middleware | Same session, same token, no CORS config |
+
+For profile pictures, CSVs, documents under a few megabytes, this is a
+defensible choice and plenty of production systems use it. It is not
+categorically wrong.
+
+The problem is what the convenient implementation does.

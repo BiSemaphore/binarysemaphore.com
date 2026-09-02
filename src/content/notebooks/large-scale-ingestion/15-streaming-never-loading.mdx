@@ -39,3 +39,44 @@ try (var in = s3.getObject(req);                     // InputStream
                                                                 ▼
                                                           checkpoint
 ```
+
+<KeyIdea>
+
+Memory usage becomes a function of <Peach>batch size</Peach>, not file size. A worker that
+handles 10 GB and one that handles 10 TB have identical memory profiles, so
+capacity planning stops depending on the largest file anyone might upload.
+
+</KeyIdea>
+
+#### Batch size is a real trade-off
+
+| Batch | Effect |
+|---|---|
+| Too small (10 rows) | Round-trip overhead dominates, the database is idle waiting |
+| Right (1k to 10k) | Amortised round trips, memory stays in tens of megabytes |
+| Too large (1M rows) | Memory spike, long transactions, lock contention, huge rollback on failure |
+
+<DoThis>
+
+Practical write-path tuning
+
+- Use the bulk path, not row-by-row inserts: `COPY` on Postgres, `LOAD DATA` on
+  MySQL, JDBC batch with `rewriteBatchedStatements=true`.
+- Bound the total number of worker connections. Fifty workers each holding a
+  connection pool of twenty will exhaust the database long before CPU.
+- If the destination is analytical, write Parquet to S3 and load once, rather
+  than pushing tens of millions of rows through the OLTP database.
+
+</DoThis>
+
+<Ask>
+
+The file is a 4 GB gzip. Does streaming still work?
+
+Yes, decompress in the stream (`GZIPInputStream`), memory stays bounded. But
+gzip is not splittable, so you cannot assign byte ranges to different workers
+and the fan-out in section 19 is unavailable. Formats matter: bzip2, zstd with
+frames, and Parquet are splittable, plain gzip is not. Knowing that distinction
+is a strong signal.
+
+</Ask>

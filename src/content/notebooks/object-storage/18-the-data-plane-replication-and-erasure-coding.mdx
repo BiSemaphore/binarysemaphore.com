@@ -18,3 +18,53 @@ Simple, and it works. The problem is cost: to hold 1 PB of customer data you buy
 3 PB of drives. At provider scale that is billions of dollars of pure overhead.
 
 #### The real answer: erasure coding
+
+Split the object into 14 data shards, run a Reed-Solomon transform to compute 6
+parity shards, and scatter all 20 across 20 drives in different racks, different
+power domains, ideally different buildings.
+
+```text
+        object
+          │
+          ▼  split
+  ┌──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+  │d1│d2│d3│d4│d5│d6│d7│d8│d9│..│..│..│..│14│   14 data shards
+  └──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┘
+          │  Reed-Solomon
+          ▼
+  ┌──┬──┬──┬──┬──┬──┐
+  │p1│p2│p3│p4│p5│p6│                            6 parity shards
+  └──┴──┴──┴──┴──┴──┘
+
+  20 shards, scattered across 20 failure domains.
+
+  ANY 14 of the 20 reconstruct the object exactly.
+  It does not matter which 14.
+```
+
+Run the numbers, because the comparison is the point:
+
+| | 3x replication | 14+6 erasure coding |
+|---|---|---|
+| Storage for 1 PB | 3 PB | <Peach>1.43 PB</Peach> |
+| Overhead | 200% | 43% |
+| Simultaneous failures tolerated | 2 | <Peach>6</Peach> |
+| Cost of a read | Read one copy | Read 14 shards, reassemble |
+| Cost of a repair | Copy one object | Read 14 shards, recompute the lost one |
+| Paid in | Drives | <Peach>CPU and internal network</Peach> |
+
+Cheaper **and** more failure-tolerant. What you pay is CPU for the coding maths
+and extra reads during recovery, and at provider scale drives cost far more than
+cycles. It is a very good trade, which is why everyone makes it.
+
+<Ask>
+
+Why not use erasure coding for everything, including small objects?
+
+Because the overhead is per object, not per byte. Splitting a 2 KB object into
+20 shards means 20 tiny IOs and 20 index entries to hold a fraction of a block,
+and the fixed per-shard cost dominates. Real systems batch small objects into
+larger internal containers first, then erasure code the container. This is also
+why very small objects have a minimum billable size, often 128 KB.
+
+</Ask>

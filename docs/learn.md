@@ -134,64 +134,54 @@ the window is deliberately short.
 
 ## Reading in the browser
 
-Every section of every notebook is a page: `learn.binarysemaphore.com/<slug>/<section>`.
-The contents list on a notebook's page links straight into them.
+A notebook is read continuously at `learn.binarysemaphore.com/<slug>/read`: every
+section on one page, with the contents beside it following the scroll. The 387
+old per-section URLs permanently redirect to their anchor.
 
-**Same pattern as `/threads`.** A section is MDX, compiled at build time and
-imported as a module, wrapped in `<article className="thread">`, styled by the
-same components in `src/mdx-components.tsx`. There is one prose standard here,
-not two.
+**Same MDX pattern as `/threads`**: compiled at build time, imported as a module.
 
 ### Generation
 
-The books are written next door in a directive syntax the PDF typesetter
-understands (`learnings/notebooks/AUTHORING.md`), so
-`scripts/sync-notebooks.mjs` converts rather than copies. Per section it writes:
-
-```
-src/content/notebooks/<slug>/<section>.mdx        the free preview
-src/content/notebooks/<slug>/<section>.rest.mdx   the rest, behind the gate
-src/content/notebooks/<slug>/index.json           the ordered section list
-```
+`scripts/sync-notebooks.mjs` converts the books next door rather than copying
+them. One `<section>.mdx` per section plus an `index.json` listing them in order
+with each section's prose length.
 
 `:::signal` becomes `<Signal>`, `:::term Sharding` becomes `<Term name="...">`,
-`==peach==` becomes `<Peach>`, and so on. Those components live in
-`src/components/learn/mdx.tsx` and are registered globally beside the thread
-ones. The eight annotation blocks are given distinct weights on purpose: each
-has one job, and if they all look alike the reader stops seeing any of them.
+`==peach==` becomes `<Peach>`. Components live in `src/components/learn/mdx.tsx`,
+registered globally beside the thread ones.
 
-Marks inside fenced or inline code are left alone, because code is full of `==`,
-`!!` and `++`.
+Two things about the marks that were wrong for a while and are now tested:
 
-`--check` fails on drift, and the script deletes files orphaned by a renamed or
-removed section.
+- **Marks are applied to the whole section body, not line by line.** The books
+  are set at about 80 columns, so a marked phrase regularly wraps. Applying per
+  line meant such a mark could never close, and a third of the library's 1,120
+  marks were silently dropped.
+- **Code is masked, not split around.** A mark often wraps a code span
+  (``==`LEFT JOIN`==``). Splitting on code put the two `==` in different pieces
+  so the mark never matched. Masking keeps `==` and `++` inside code safe while
+  letting a mark spanning code still close.
 
 ### The gate
 
-Splitting happens at **generation** time, which is what makes it honest: the
-gated half is a separate file, imported only inside the entitled branch, so for
-anyone else it is not in the page at all. There is nothing hidden to reveal.
+Per book, not per section. A signed-out reader gets whole sections in order until
+about 15% of the book's prose, minimum two, always stopping before the last.
+Sections past the cut are **never imported**, so they are not in the page: there
+is nothing hidden to reveal. Verified by fetching readers signed out and grepping
+for text from beyond the cut.
 
-The cut is a share of the prose (35%), not a fixed number of blocks, with a
-second cap at 50% of raw characters so a section made mostly of figures and
-annotation blocks is not handed over whole. Median preview across the library is
-about 22%.
+### Typography
 
-Three things the splitter must not do, each of which broke it once and each of
-which now has a test:
+The reader uses the notebooks' own type system, taken from
+`learnings/notebooks/engine/theme.css` and scoped to `.notebook` so it cannot
+reach `/threads`: a serif body in the same stack the PDF uses (no extra webfont),
+Caveat section titles, navy ink, blue-ruled `h3`.
 
-- cut inside a fenced block (ASCII figures contain blank lines),
-- cut between a component's open and close tag (`<Term name="...">` did not match
-  a naive "tag alone on a line" check),
-- flatten a fence or table into a paragraph.
+A deliberate departure from `docs/brand.md`, on the same footing as the resume
+product using Figtree: a product with its own established identity keeps it.
 
-Under the gate sits a teaser: the first plain **paragraph** of the gated half,
-stripped of markup and truncated to 180 characters at generation time. A table,
-list or figure is skipped, because none of them survive being flattened to one
-line.
-
-Verified by fetching gated sections signed out and checking that no line of the
-`.rest.mdx` appears in the HTML except the teaser.
+An ASCII figure (a `text` fence) renders as a quiet panel rather than a code
+block, in a system mono stack that carries the box-drawing range in one face.
+Our JetBrains Mono is subset to latin and does not include it.
 
 ## Reading progress
 

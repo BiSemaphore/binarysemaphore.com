@@ -6,3 +6,37 @@ partTitle: "Designing the schema"
 ---
 When the parent row goes, what happens to the children? Four answers, and
 choosing is a product decision.
+
+| Clause | Behaviour | Use for |
+|---|---|---|
+| `ON DELETE RESTRICT` | <Peach>Refuses the delete</Peach> while children exist | Parents whose loss would be catastrophic |
+| `ON DELETE CASCADE` | Deletes the children too | Children that are meaningless alone |
+| `ON DELETE SET NULL` | Nulls the child's FK | Optional links: an unassigned task |
+| `ON DELETE SET DEFAULT` | Sets it to the column default | Rare. Needs a sensible default row |
+
+Applied to the running schema, every choice says something:
+
+```text
+  projects.owner_id   → users     ON DELETE RESTRICT
+        "you cannot delete a user who still owns projects.
+         somebody has to reassign them first."
+
+  tasks.project_id    → projects  ON DELETE CASCADE
+        "a task without its project is meaningless. take it with."
+
+  tasks.assigned_to   → users     ON DELETE SET NULL
+        "the task survives. it just becomes unassigned."
+
+  project_members     → both      ON DELETE CASCADE
+        "the membership is only a link. it dies with either end."
+```
+
+<Signal>
+
+"`CASCADE` and `SET NULL` are conveniences with teeth. <Peach>A cascade can delete far
+more than the person clicking expected</Peach>, and it does so with no confirmation
+step. On anything a human can trigger I prefer `RESTRICT` plus an explicit
+application flow that says what will be removed, and I reserve `CASCADE` for
+rows that are genuinely part of their parent."
+
+</Signal>

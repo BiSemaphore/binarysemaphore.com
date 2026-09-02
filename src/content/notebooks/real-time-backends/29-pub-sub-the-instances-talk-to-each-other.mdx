@@ -34,3 +34,47 @@ travel between instances. That is the entire architecture, and it is one idea:
 ```
 
 Three properties make this work.
+
+**The producer and the consumer are decoupled.** Instance 1 does not know that
+instance 2 exists, how many instances there are, or where browser B is. It knows
+the topic name. <Peach>Adding instances requires no change to the publish path.</Peach>
+
+**The topic is the unit of routing, and choosing it is a design decision.** Topic
+per board is right here: it is the granularity at which people care, and an
+instance subscribes only to boards it actually holds connections for. <Mint>Topic per
+user is right for notifications. Topic per document is right for an editor.</Mint>
+<Rose>One global topic is right for nothing</Rose>, because it makes every instance receive
+every event in the system.
+
+**The last hop is local.** Once the event reaches an instance, delivery is a map
+lookup and a write to sockets in the same process. No network, no coordination.
+
+<Term name="Pub/sub">
+
+Publish and subscribe. Senders write messages to a named topic without knowing
+who reads them; readers subscribe to topics without knowing who wrote them. The
+broker in the middle is what makes the two sides independent.
+
+</Term>
+
+<Ask>
+
+Redis Cluster broadcasts pub/sub messages to every node. Does that matter?
+
+Yes, and it is a real scaling wall. Classic Redis pub/sub in cluster mode
+propagates every published message to every node so that a subscriber on any node
+receives it, which means your bus does `messages × nodes` of work regardless of
+where subscribers actually are. <Peach>Redis 7 added sharded pub/sub, `SSUBSCRIBE` and
+`SPUBLISH`, which confines a channel to the shard owning its key slot.</Peach> If you
+are running clustered Redis for this, use the sharded commands, or you have
+rebuilt the fan-out problem inside the thing that was supposed to solve it.
+
+</Ask>
+
+<KeyIdea>
+
+The connection stays put; the event travels. Pub/sub is how instances reach each
+other's clients, and <Peach>topic granularity is the design decision</Peach>, because it
+decides how much traffic each instance receives that it does not need.
+
+</KeyIdea>

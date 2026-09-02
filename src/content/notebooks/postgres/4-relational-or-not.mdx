@@ -12,3 +12,22 @@ partTitle: "Why a database at all"
 | Integrity | The engine's job | <Peach>Your code's job</Peach> |
 | Good at | Data with shape and relationships | Data whose shape you do not know yet |
 | Examples | Postgres, MySQL, SQL Server | MongoDB, DynamoDB |
+
+The lecture's two examples are well chosen:
+
+- A **CRM** holds customers, contacts, opportunities, and the relationships
+  between them are the product. Accuracy matters. Relational.
+- A **CMS** holds articles whose bodies contain images, code blocks, embeds, in
+  combinations nobody enumerated in advance. Flexible. Document-shaped.
+
+<Trap>
+
+"Document databases are schemaless, so there is less work"
+
+There is the same amount of schema. The only question is <Peach>where it is
+enforced</Peach>. In a document store it moves into application code, which changes
+daily, is written by several people, and cannot retroactively fix documents
+written by last year's version of itself. You did not remove the schema; you
+made it implicit and unenforced.
+
+</Trap>

@@ -14,3 +14,47 @@ The request is forged. The session is genuine. The browser attached it for you.
 <!-- on evil.example, which you visit while logged into your bank -->
 <img src="https://bank.example/transfer?to=attacker&amount=5000">
 ```
+
+The browser sees an image tag, issues the GET, and <Peach>attaches your bank cookies
+because they belong to that domain</Peach>. Your bank sees a fully authenticated
+request from a real session. No XSS is needed anywhere.
+
+<DoThis>
+
+Three layers, and one of them is free
+
+- <Mint>`SameSite=Lax`</Mint> on session cookies, which is the modern browser default
+  and stops the great majority of this. `Strict` is stronger and breaks
+  inbound links.
+- <Mint>A CSRF token</Mint> for cookie-authenticated state-changing requests:
+  unpredictable, per-session, submitted in a header or body, and verified
+  server-side. An attacker's page cannot read it, because that would be a
+  cross-origin read.
+- <Mint>Never change state on GET.</Mint> `GET /transfer?...` is the bug that makes an
+  `<img>` tag sufficient. Safe methods must be safe.
+
+</DoThis>
+
+<Trap>
+
+"CORS protects us from CSRF"
+
+<Peach>CORS is not a security mechanism for your server.</Peach> It is a browser policy
+about who may <Peach>read a response</Peach>. The request in the example above is still
+sent, and your server still executes it; the browser merely refuses to show the
+attacker the reply, which they did not need. A permissive CORS policy is a real
+problem for a different reason, and a restrictive one is not a CSRF defence.
+
+</Trap>
+
+<Ask>
+
+What is actually dangerous in a CORS config?
+
+`Access-Control-Allow-Origin: *` combined with credentials (browsers refuse
+this pairing, which is the point), and worse, <Peach>reflecting the `Origin` header
+back</Peach> with `Allow-Credentials: true`. That reflection makes every origin a
+trusted origin, so any site can read authenticated responses from your API.
+Allowlist explicit origins, never reflect, and never trust a `null` origin.
+
+</Ask>

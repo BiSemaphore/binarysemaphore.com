@@ -6,3 +6,89 @@ partTitle: "The queue"
 ---
 Never say "we could use Kafka or RabbitMQ". Say which, and why, in terms of this
 workload.
+
+| | SQS | RabbitMQ | Kafka |
+|---|---|---|---|
+| Model | Managed queue | Broker with routing | Distributed log |
+| Unit of work | Message, deleted on ack | Message, acked | Offset in a partition |
+| Redelivery | Visibility timeout | Ack timeout / nack | Consumer re-reads offset |
+| Max in-flight time | 12 hours | Configurable, heartbeat-based | `max.poll.interval.ms` |
+| Per-message retry | Native, with DLQ | Native, with DLX | Manual, you build it |
+| Replay history | No | No | Yes, that is the point |
+| Fan-out to N systems | Needs SNS in front | Exchange bindings | Native, independent groups |
+| Ordering | FIFO queues only | Per-queue | Per-partition |
+| Ops burden | None | Moderate | High |
+
+#### Why the log model is awkward here
+
+Kafka's strength, an ordered immutable log consumed by offset, is a poor fit for
+long heterogeneous tasks:
+
+```text
+  partition 0:  [job A: 2 min] [job B: 4 HOURS] [job C: 2 min] [job D: 2 min]
+                                     ▲
+                                     └── C and D wait behind B
+
+  Kafka commits offsets in order within a partition. One slow job at the head
+  blocks every job behind it in that partition. A queue with per-message acks
+  does not have this problem: A, C and D are delivered to other consumers
+  while B is still being worked.
+```
+
+<Signal>
+
+Head-of-line blocking is the answer that wins this comparison. Long, variable
+duration tasks want <Peach>per-message acknowledgement</Peach>, not ordered offsets. Say
+that sentence and the Kafka-versus-RabbitMQ question is settled on technical
+grounds instead of taste.
+
+</Signal>
+
+#### The recommendation
+
+<DoThis>
+
+Choose by what the workload actually needs
+
+- **Default: SQS** (or RabbitMQ if you are not on AWS). Per-message ack,
+  built-in visibility timeout, native DLQ, no cluster to run. This is a job
+  queue, and these are job queue tools.
+- **Kafka when** the upload event genuinely needs multiple independent
+  consumers (processing, analytics, audit, billing), or you need replay of the
+  event history, or Kafka is already the backbone of the company.
+- **Both is legitimate**: Kafka as the event bus for `DataUploaded`, with a
+  bridge that turns it into work items on a job queue. Say this only if you can
+  justify the extra hop.
+
+</DoThis>
+
+```text
+  If the event has many audiences:          If it is one unit of work:
+
+     DataUploaded                              job.ready
+          │                                        │
+       ┌──┴───┬────────┐                           ▼
+       ▼      ▼        ▼                       ┌────────┐
+   process analytics audit                     │  SQS   │
+    (Kafka: everyone reads                     └───┬────┘
+     the same log)                       ┌─────────┼─────────┐
+                                         ▼         ▼         ▼
+                                       w1        w2        w3
+```
+
+<Trap>
+
+"Kafka scales better, so use Kafka"
+
+Kafka scales <Peach>throughput of messages</Peach>. Your bottleneck is hours of CPU per
+message. Ten thousand messages per second is irrelevant when you process one
+message every forty minutes. Choosing the tool by its headline metric rather
+than your actual constraint is precisely the mistake being tested.
+
+</Trap>
+
+<Recall>
+
+Why is Kafka a poor default for long-running jobs? One sentence. | 3
+
+</Recall>

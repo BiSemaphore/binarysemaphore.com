@@ -4,4 +4,74 @@ title: "The job state machine"
 part: "VI"
 partTitle: "State and visibility"
 ---
-Draw this in the interview.
+Draw this in the interview. It compresses a great deal of reasoning into one
+picture, and it makes every failure path something you can point at.
+
+```text
+                          ┌─────────┐
+                          │ CREATED │  row exists, upload session issued
+                          └────┬────┘
+                               ▼
+                        ┌─────────────┐
+              ┌─────────│  UPLOADING  │─────────┐
+              │         └──────┬──────┘         │
+     upload failed             │            expired / abandoned
+              ▼                ▼                ▼
+     ┌────────────────┐  ┌──────────┐  ┌─────────────────┐
+     │ UPLOAD_FAILED  │  │ UPLOADED │  │ UPLOAD_EXPIRED  │
+     └────────────────┘  └────┬─────┘  └─────────────────┘
+                              │ verified: exists, size, checksum
+                              ▼
+                        ┌──────────┐
+                        │  QUEUED  │  outbox published
+                        └────┬─────┘
+                             ▼
+                     ┌──────────────┐
+          ┌──────────│  PROCESSING  │◄─────────┐
+          │          └──────┬───────┘          │ lease reclaimed
+          │                 │                  │ or transient failure
+          │                 │                  │
+   cancel requested         │            ┌───────────┐
+          │                 │            │ RETRYING  │
+          ▼                 │            └─────┬─────┘
+   ┌────────────┐           │                  │ attempts exhausted
+   │ CANCELLED  │           │                  ▼
+   └────────────┘           │            ┌───────────┐
+                            │            │  FAILED   │
+        ┌───────────────────┴──────┐     └───────────┘
+        ▼                          ▼
+  ┌───────────┐        ┌────────────────────────┐
+  │ COMPLETED │        │ COMPLETED_WITH_ERRORS  │
+  └───────────┘        └────────────────────────┘
+```
+
+<DoThis>
+
+Enforce the machine, do not merely document it
+
+- Terminal states are terminal: `COMPLETED`, `FAILED` and `CANCELLED` never
+  transition again. This is what makes redelivered messages harmless.
+- Guard every write with the state it expects, so concurrent workers cannot
+  fight:
+```sql
+UPDATE jobs SET status='PROCESSING', attempt=attempt+1, started_at=now()
+ WHERE id=$1 AND status IN ('QUEUED','RETRYING');
+-- zero rows updated means someone else claimed it; drop the message
+```
+- Record `error_code` (machine-readable, for metrics and retries) separately
+  from `error_detail` (human-readable, for support).
+
+</DoThis>
+
+<Ask>
+
+How do you cancel a running job?
+
+Set `CANCELLED` in the database, and have the worker check a cancellation flag
+at each chunk boundary and stop cleanly. You cannot reach into a running worker,
+so cancellation is cooperative, and the checkpoint boundary is the natural place
+to observe it. Then clean up: delete partial output, abort any multipart upload,
+and decide explicitly whether already-written rows are rolled back or left with
+the job marked cancelled.
+
+</Ask>

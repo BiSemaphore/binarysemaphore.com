@@ -134,7 +134,7 @@ export default async function NotebookPage({
           </div>
 
           <Link
-            href={`${base}/${notebook.slug}/${resume}`}
+            href={`${base}/${notebook.slug}/read#${resume}`}
             className="inline-flex shrink-0 items-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
           >
             {done.count > 0 ? "Continue reading" : "Start reading"}
@@ -156,7 +156,7 @@ export default async function NotebookPage({
           {sections.map((section) => (
             <li key={section.slug} className="border-b border-border/60">
               <Link
-                href={`${base}/${notebook.slug}/${section.slug}`}
+                href={`${base}/${notebook.slug}/read#${section.slug}`}
                 className="group flex items-baseline gap-3 py-2.5 text-sm leading-6 text-foreground/85 transition-colors hover:text-foreground"
               >
                 <span

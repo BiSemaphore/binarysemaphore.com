@@ -17,3 +17,65 @@ prohibition buys a property.
 | 6 | Code on demand | (optional) | Client behaviour shipped from the server |
 
 Three of them deserve more than a table row.
+
+**Stateless is the one your architecture rests on.** Each request must carry
+everything needed to understand it. The server keeps nothing between calls. This
+sounds like an inconvenience until you put a load balancer in front of four
+instances: because no instance remembers anything, <Peach>any of them can serve any
+request, and adding a fifth requires no coordination at all.</Peach> Every horizontal
+scaling story you have ever heard is downstream of this constraint. Notebook 06
+section 12 covers what it costs and where sessions actually go; Notebook 07 is
+the book about what happens when you break it deliberately.
+
+**Layered system is why you can put things in front of your API.** A component
+may only see the layer immediately next to it. Your service does not know
+whether it is talking to a browser, a CDN, an API gateway or a load balancer, and
+it must not care. This is what lets you add a cache in front of a running system
+without changing a line of application code. It is also, unglamorously, why the
+proxy in the middle can break your streaming response without either end
+noticing.
+
+**Uniform interface is the constraint this whole book is about.** It has four
+sub-constraints, and it is the reason a standard exists to follow:
+
+```text
+  a. resources are identified                  a URL names a thing
+  b. resources are manipulated                 you send a representation,
+     through representations                   not a database command
+  c. messages are self-descriptive             the method, the content type
+                                               and the status code say what
+                                               is happening, to anyone
+  d. hypermedia as the engine                  the response tells you what
+     of application state                      you can do next
+```
+
+Sub-constraint (c) is the one to hold on to. <Peach>A message is self-descriptive when
+an intermediary that knows nothing about your application can still act on it
+correctly.</Peach> A cache can store a `GET` without knowing what a project is. A retry
+library can safely repeat a `PUT` without understanding your business. That
+property is not a nicety; it is what allows infrastructure to exist at all.
+
+Sub-constraint (d) is the one nobody implements, and it gets section 5 to itself.
+
+<Ask>
+
+"Which REST constraint does a JWT in an `Authorization` header serve, and which
+one does a server-side session table break?"
+
+The token serves statelessness: it travels with every request, so any instance
+can validate it without shared memory. A session table breaks statelessness,
+because the server now remembers something between calls, and the fix people
+reach for first, sticky sessions, actually breaks the layered-system constraint
+too by making the load balancer care which instance you spoke to last. Notebook
+05 section 22 covers the token side properly.
+
+</Ask>
+
+<KeyIdea>
+
+Constraints are subtractive. Each one removes something you were allowed to do,
+and the property you wanted appears in the space left behind. <Peach>Statelessness is
+not a feature of your servers, it is a promise you make to a load balancer that
+has not been bought yet.</Peach>
+
+</KeyIdea>

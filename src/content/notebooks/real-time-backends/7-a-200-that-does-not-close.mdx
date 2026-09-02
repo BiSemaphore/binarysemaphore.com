@@ -32,5 +32,35 @@ more lines into the body it never closed.
 ```
 
 The connection lives as long as the tab does. Close the tab, lose the network,
-navigate away, and it ends; while the page is open, ==there is always a channel
-from your server into that browser==.
+navigate away, and it ends; while the page is open, <Peach>there is always a channel
+from your server into that browser</Peach>.
+
+The important property is what SSE is *not*. It is not a different protocol. It
+is HTTP, with HTTP headers, an HTTP status code, HTTP authentication, and an HTTP
+response body. Every proxy, load balancer, CDN and firewall in the path already
+understands it, because from the outside it is indistinguishable from a large
+file being downloaded slowly.
+
+That is also why it is far more widely deployed than its reputation suggests.
+Uber's push platform, which tells a driver about a trip, was built on SSE.
+LinkedIn's instant messaging, including typing indicators and read receipts, was
+built on SSE. And <Peach>every large language model API that streams tokens to your
+CLI or your browser is streaming `text/event-stream`</Peach>: the text appearing one
+word at a time is a sequence of `data:` lines.
+
+<Trap>
+
+"SSE is the toy version of WebSockets." It is not a subset and it is not a
+fallback. It is a different trade: you give up client-to-server messages on the
+same channel, and in exchange you keep HTTP end to end, get reconnection and
+resumption implemented by the browser, and never negotiate anything. Companies
+that could trivially afford WebSockets chose SSE on purpose.
+
+</Trap>
+
+<KeyIdea>
+
+SSE is one HTTP response that never finishes. Nothing in the network path needs
+to know anything new, which is the whole reason to prefer it.
+
+</KeyIdea>

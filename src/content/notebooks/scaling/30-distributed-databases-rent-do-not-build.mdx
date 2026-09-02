@@ -15,3 +15,43 @@ Examples: CockroachDB, Vitess and PlanetScale for MySQL, Neon and Aurora and
 Yugabyte for Postgres, Spanner on Google Cloud.
 
 </Term>
+
+The pitch is that sharding, replication, rebalancing and failover become
+configuration rather than architecture. You get a connection string. Behind it
+the system splits ranges, moves them between nodes, keeps replicas current and
+promotes one when a node dies.
+
+<DoThis>
+
+The realistic position for a backend engineer
+
+<Mint>Do not build your own database infrastructure.</Mint> Not the replication, not the
+sharding logic, not the failover, not the backups. Use a managed provider and
+spend the saved time on your own product. <Peach>But know every term in this part
+anyway</Peach>, because you still have to decide how many replicas, in which regions,
+with what backup schedule, sharded on which key. The concepts are not optional;
+the implementation is.
+
+</DoThis>
+
+<Signal>
+
+"I would not run my own Postgres." said plainly, without embarrassment, is a
+sign of experience rather than a gap in it. Follow it with what you *would*
+still own: the schema, the shard key, the index strategy, the region layout, and
+a tested restore. <Peach>Managed does not mean unowned</Peach>, and the fastest way to
+prove that is to ask when the team last practised a restore.
+
+</Signal>
+
+<Recall>
+
+What does a read replica scale, what does it not scale, and what is the bug it introduces? | 6
+
+</Recall>
+
+<Recall>
+
+Why is order_date a poor shard key for an orders table, and what would you use instead? | 5
+
+</Recall>
