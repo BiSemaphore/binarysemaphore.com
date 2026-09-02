@@ -1,0 +1,28 @@
+| Language | Avoid | Use |
+|---|---|---|
+| Node | `exec`, `execSync` with a template string | `execFile`, `spawn` with an array |
+| Python | `os.system`, `subprocess.run(..., shell=True)` | `subprocess.run([...])` |
+| Go | `exec.Command("sh", "-c", s)` | `exec.Command("ffmpeg", args...)` |
+| Java | `Runtime.exec(String)` | `ProcessBuilder(List<String>)` |
+
+<DoThis>
+
+And still validate, because the array is not the whole job
+
+An argument array stops command <Peach>chaining</Peach>. It does not stop an argument
+being hostile in its own right: a filename beginning with `-` can be read as a
+flag, and `../../etc/passwd` is a perfectly valid single path.
+- <Mint>Generate filenames server-side</Mint>, never from user input. Notebook 02
+  section 15 makes the same argument for object keys.
+- ++Prefix user paths with `./`++ or pass `--` before positional arguments so
+  a leading dash cannot become an option.
+- <Mint>Prefer a library over a subprocess</Mint> where one exists. `sharp` beats
+  shelling out to ImageMagick, and removes the whole category.
+
+</DoThis>
+
+<Recall>
+
+Three injection contexts, the character that breaks each, and the one structural fix they share. | 6
+
+</Recall>

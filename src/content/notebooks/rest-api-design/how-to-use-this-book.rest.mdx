@@ -1,0 +1,77 @@
+| Part | What they get for free, if you get it right |
+|---|---|
+| I | Why any of this is standardised at all |
+| II | What the thing is, and what contains it |
+| III | Whether it is safe to send twice |
+| IV | What just happened, and whose fault it was |
+| V | What comes back when they send nothing |
+| VI | The one operation your nouns cannot express |
+| VII | Every endpoint after the first |
+
+If you can say, for any design decision, *what it tells the consumer and what it
+leaves them guessing*, you can answer almost any API design question in an
+interview, including the ones about standards this book does not cover.
+
+#### What this book is not
+
+It is not about HTTP. Notebook 10 covers the protocol: what a header is, how a
+connection is established, what actually travels on the wire. This book assumes
+all of that and asks a different question about the same machinery: ==given that
+`PATCH` exists, when is choosing it the right design decision, and what does
+choosing it promise?== Where the two touch, this book points across rather than
+repeating badly.
+
+It is also not about your framework. There is no routing code here, no ORM, no
+controller. The lecture is emphatic about this and it is right: ==an API is
+designed before it is programmed==, and the design outlives the language you
+first wrote it in.
+
+#### The five block types
+
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or the number. |
+| Key idea | The one thing to carry out of that section. |
+
+#### The four highlighters
+
+Colour is never decorative here. Each one means one thing, so a marked phrase is
+already half-read before you reach the words.
+
+| Mark | Means |
+|---|---|
+| <Peach>peach</Peach> | The sentence to carry away |
+| <Rose>rose</Rose> | The wrong answer, the thing that bites |
+| <Mint>mint</Mint> | The correct practice |
+| <Pink>pink</Pink> | A definition, at the point it is first defined |
+
+#### What is in the lecture and what is not
+
+Parts I, II, III, VI and VII are the lecture, expanded, with the specification
+put back where it hand-waves. Part IV is roughly a quarter lecture: it covers
+four status codes, and the other seven in that part are the ones interviews
+actually ask about. Part V corrects the lecture directly, because the pagination
+it teaches has a bug that appears the moment two people use the system at once.
+
+Where a claim in the lecture is wrong, this book says so, in a trap block, with
+the specification reference. There are four of them.
+
+#### A suggested route
+
+1. Read Part I once and do not memorise it. It exists so that section 41 lands.
+2. Parts II and III are reference. Read them with an API you have shipped open
+   in another window, and mark every rule you broke.
+3. Part IV is the highest interview yield in the book. Drill the codes until you
+   can place any of the eleven without thinking.
+4. Part V is the one to work with a pen.
+
+<KeyIdea>
+
+An API is a promise made to a stranger, in public, that you cannot take back.
+Every rule in this book is a way of making that promise ==say more, so that you
+have to say less.==
+
+</KeyIdea>

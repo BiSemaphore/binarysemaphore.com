@@ -1,0 +1,18 @@
+---
+number: "23"
+title: "Ceiling 2: the client's ports, not the server's"
+part: "IV"
+partTitle: "How many connections fit on one machine"
+---
+Descriptors lifted to a million, run the load again. It stops at <Peach>28,190</Peach>, with
+an entirely different error: `cannot assign requested address`.
+
+Ask the kernel which ports it may use for outgoing connections:
+
+```text
+  $ sysctl net.ipv4.ip_local_port_range
+  32768    60999
+
+  60999 - 32768 + 1  =  28,232 ports available
+  28,232 - 28,190    =  42     ← in use by other things on this shared box
+```

@@ -1,0 +1,31 @@
+---
+number: "14"
+title: "The worker loop"
+part: "V"
+partTitle: "Processing"
+---
+```text
+  ┌───────────────────────────────────────────────────────────┐
+  │  loop:                                                    │
+  │    msg = queue.receive(waitSeconds=20)   long poll        │
+  │    if none: continue                                      │
+  │                                                           │
+  │    job = db.load(msg.jobId)                               │
+  │    if job.status is terminal: queue.delete(msg); continue │
+  │                                                           │
+  │    claim(job)          PROCESSING, attempt += 1           │
+  │    start heartbeat     extends the lease, section 18      │
+  │                                                           │
+  │    try:                                                   │
+  │      stream S3 -> parse -> transform -> batch -> write    │
+  │      checkpoint after every chunk                         │
+  │      finish(job)     COMPLETED                            │
+  │      queue.delete(msg)                                    │
+  │    except Retryable:                                      │
+  │      release(msg)    back to the queue, backoff           │
+  │    except Fatal:                                          │
+  │      fail(job); queue.delete(msg)                         │
+  │    finally:                                               │
+  │      stop heartbeat                                       │
+  └───────────────────────────────────────────────────────────┘
+```

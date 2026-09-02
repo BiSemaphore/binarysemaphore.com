@@ -1,0 +1,15 @@
+---
+number: "46"
+title: "Lifecycle, storage classes and versioning"
+part: "VIII"
+partTitle: "Production concerns"
+---
+Objects should not all live forever in the most expensive tier.
+
+```text
+  day 0    Standard              ~$0.023/GB    hot
+  day 30   Standard-IA           ~$0.0125/GB   occasional, retrieval fee
+  day 90   Glacier Instant       ~$0.004/GB    rare, still milliseconds
+  day 180  Glacier Deep Archive  ~$0.00099/GB  compliance, hours to restore
+  day 365  expire
+```

@@ -1,0 +1,28 @@
+| Concern | Control |
+|---|---|
+| Anyone can upload anywhere | Presigned URL scoped to one method, one key, short expiry |
+| Client-supplied object keys | Derive the key server-side from the job ID, always |
+| Oversized uploads | `content-length-range` in the POST policy |
+| Cross-tenant reads | Bucket policy plus `tenant_id` checks on every job lookup |
+| Data at rest | SSE-KMS, per-tenant keys if the compliance story demands it |
+| Data in transit | TLS everywhere, and reject unencrypted transport in the bucket policy |
+| Malicious content | Scan before processing if the file is user-generated and will be served back |
+| Zip bombs and huge decompression | Cap the decompressed byte count and abort past the limit |
+| PII in logs | Log row numbers and error codes, never row contents |
+
+<Trap>
+
+Logging the failing row to help debugging
+
+It is the most natural thing to write, and it puts customer data into your log
+aggregator, where it is retained, indexed, and readable by everyone with log
+access. Log the row number and the error code. Put the row itself in the
+tenant-scoped error file in their own bucket prefix.
+
+</Trap>
+
+<Recall>
+
+Name three cost items and their mitigations, without looking. | 5
+
+</Recall>

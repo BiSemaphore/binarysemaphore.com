@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getNotebook } from "@/lib/learn";
-import { getSection, splitAtGate, teaser } from "@/lib/learn/book";
+import { getSection } from "@/lib/learn/book";
 import { canRead, getAccess, TRIAL_DAYS } from "@/lib/learn/access";
 import { learnBase } from "@/lib/learn/paths";
-import { NotebookBlocks } from "@/components/learn/notebook-blocks";
 import { startTrialAction } from "@/app/learn/actions";
 import { ArrowRightIcon, LockIcon } from "@/components/icons";
 
@@ -46,8 +45,17 @@ export default async function SectionPage({
 
   const [access, base] = await Promise.all([getAccess(slug), learnBase()]);
   const entitled = canRead(access);
-  const { preview, gated } = splitAtGate(ctx.section);
-  const nextLines = entitled ? null : teaser(gated);
+
+  // Imported the way a thread imports its own MDX. The gated half is a separate
+  // file and is only imported for an entitled reader, so for anyone else it is
+  // not in the page at all: there is nothing hidden to reveal.
+  const { default: Preview } = await import(
+    `@/content/notebooks/${slug}/${section}.mdx`
+  );
+  const Rest =
+    entitled && ctx.section.gated
+      ? (await import(`@/content/notebooks/${slug}/${section}.rest.mdx`)).default
+      : null;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 pb-24">
@@ -58,10 +66,10 @@ export default async function SectionPage({
         >
           {notebook.title}
         </Link>
-        {ctx.part ? (
+        {ctx.section.part ? (
           <>
             <span aria-hidden>/</span>
-            <span>Part {ctx.part.number}</span>
+            <span>Part {ctx.section.part}</span>
           </>
         ) : null}
         <span aria-hidden className="ml-auto">
@@ -70,9 +78,9 @@ export default async function SectionPage({
       </nav>
 
       <header className="pt-7">
-        {ctx.part ? (
+        {ctx.section.partTitle ? (
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-accent-strong">
-            {ctx.part.title}
+            {ctx.section.partTitle}
           </p>
         ) : null}
         <h1 className="mt-3 flex gap-4 font-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl">
@@ -85,11 +93,11 @@ export default async function SectionPage({
         </h1>
       </header>
 
-      <article className="mt-9">
-        <NotebookBlocks blocks={preview} />
+      <article className="thread mt-9">
+        <Preview />
 
-        {gated.length === 0 ? null : entitled ? (
-          <NotebookBlocks blocks={gated} />
+        {!ctx.section.gated ? null : Rest ? (
+          <Rest />
         ) : (
           <section
             aria-labelledby="gate-heading"
@@ -98,15 +106,13 @@ export default async function SectionPage({
             {/* A snippet of what comes next, already truncated on the server.
                 Nothing beyond this is in the page at all, so view-source shows
                 the same thing the reader does. */}
-            {nextLines ? (
-              <div
+            {ctx.section.teaser ? (
+              <p
                 aria-hidden
-                className="pointer-events-none select-none [mask-image:linear-gradient(to_bottom,black,transparent)]"
+                className="pointer-events-none my-4 select-none text-[15px] leading-7 text-muted [mask-image:linear-gradient(to_bottom,black,transparent)]"
               >
-                <NotebookBlocks
-                  blocks={[{ kind: "prose", markdown: nextLines }]}
-                />
-              </div>
+                {ctx.section.teaser}
+              </p>
             ) : null}
 
             <div className="mt-6 rounded-panel border border-border bg-card p-6 shadow-soft sm:p-7">

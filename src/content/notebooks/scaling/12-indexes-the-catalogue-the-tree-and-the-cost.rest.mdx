@@ -1,0 +1,70 @@
+That walk is a <Pink>sequential scan</Pink>, also called a full table scan: read every
+row, test each one, keep the matches. For a large table it is the difference
+between a query taking 4 seconds and taking 40 milliseconds.
+
+An <Pink>index</Pink> is the catalogue. Concretely it is usually a B-tree holding a
+sorted copy of one column's values, each with a pointer to the row it came from.
+
+```text
+  posts table (unsorted, on disk)     index on author_id (sorted)
+  ───────────────────────────────     ───────────────────────────
+  row 1   author_id = 7                1 → row 4, row 812
+  row 2   author_id = 3                3 → row 2, row 55
+  row 3   author_id = 9                7 → row 1
+  row 4   author_id = 1                9 → row 3, row 6, row 91
+  ...     a million more               ...
+
+  WHERE author_id = 9
+    without index: read 1,000,000 rows, keep 3
+    with index:    walk the tree, read 3 rows
+```
+
+Sorted order is the whole trick. It is what lets the database discard almost
+everything without looking at it, and it is also why a B-tree index helps range
+queries (`>`, `<`, `BETWEEN`) and `ORDER BY`, not just equality.
+
+#### Indexes are not free
+
+This is the part that gets skipped, and the part interviewers probe.
+
+```text
+  cost 1   space          the index is a second copy of that column,
+                          plus pointers. large tables, large indexes.
+
+  cost 2   write latency  every INSERT, UPDATE and DELETE must also
+                          update every index on that table, in sync.
+```
+
+The second one is what bites. ==Indexes make reads faster and writes slower,
+always.== A table with twelve indexes pays twelve tree updates on every insert.
+Teams that respond to a slow read by indexing every column end up with a table
+that reads beautifully and cannot be written to.
+
+<DoThis>
+
+How to decide what to index
+
+- <Mint>Index at design time only when it is obvious.</Mint> Foreign keys you will
+  filter or join on, columns with a uniqueness constraint, the column you sort
+  every listing by. Postgres indexes the primary key for you; it does __not__
+  index foreign keys for you, which surprises people.
+- <Mint>Index everything else from evidence.</Mint> Wait for the trace that shows the
+  slow query, then the `EXPLAIN ANALYZE` that shows the sequential scan, then
+  index that column. Section 14.
+- <Mint>Periodically look for unused indexes and drop them.</Mint> They are pure write
+  cost. In Postgres, `pg_stat_user_indexes` tells you which ones have never been
+  scanned.
+
+</DoThis>
+
+<Signal>
+
+"Indexes trade write throughput for read latency" is the sentence. Candidates who
+only know that indexes make things faster get caught by the follow-up: *so why
+not index every column?* Having the trade ready means the follow-up is not a
+trap, it is your next sentence.
+
+</Signal>
+
+Notebook 04, Postgres, sections 25 to 31 go considerably deeper on index types,
+partial indexes, and building them without locking a live table.

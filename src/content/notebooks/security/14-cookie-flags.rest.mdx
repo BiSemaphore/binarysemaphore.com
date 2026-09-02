@@ -1,0 +1,30 @@
+| Flag | Stops |
+|---|---|
+| `HttpOnly` | An XSS payload reading `document.cookie`. Section 23 |
+| `Secure` | The cookie travelling over plain HTTP and being read at any hop |
+| `SameSite=Lax` | Most CSRF. Section 25 |
+| `SameSite=Strict` | More CSRF, at the cost of breaking inbound links |
+| `Path` / `Domain` | Sending the cookie further than it needs to go |
+
+<Signal>
+
+"==Storing a session token in `localStorage` is a decision to lose it to any
+XSS you ever ship==, because JavaScript can read it by definition. An
+`HttpOnly` cookie cannot be read by script at all. People choose localStorage
+to avoid CSRF, which trades a defence you get from one header for a
+vulnerability you cannot mitigate."
+
+</Signal>
+
+<Ask>
+
+What is the argument for binding a session to the IP or user agent?
+
+It raises the cost of using a stolen cookie, and it costs you real users:
+mobile clients change IP constantly, corporate networks share them, and user
+agents change on browser update. The usual compromise is ==not to reject, but
+to record==: store the IP and user agent, and use a change as a signal to
+re-authenticate for sensitive actions or to notify the user, rather than to
+kill the session outright.
+
+</Ask>

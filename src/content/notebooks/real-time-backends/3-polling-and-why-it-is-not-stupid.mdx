@@ -1,0 +1,27 @@
+---
+number: "3"
+title: "Polling, and why it is not stupid"
+part: "I"
+partTitle: "The client always spoke first"
+---
+Strip away everything you know and the intuitive solution is the correct place
+to start: if the server cannot tell you, ask it.
+
+```text
+  browser                                server
+    │ GET /boards/412/changes?since=...   │
+    ├────────────────────────────────────▶│  SELECT ... WHERE updated_at > ?
+    │◀────────────────────────────────────┤  200 {"changed": false}
+    │  wait 3s                            │
+    ├────────────────────────────────────▶│
+    │◀────────────────────────────────────┤  200 {"changed": false}
+    │  wait 3s                            │
+    ├────────────────────────────────────▶│
+    │◀────────────────────────────────────┤  200 {"changed": true, ...}
+```
+
+<Pink>Polling</Pink> is a loop on the client that issues an ordinary request on a fixed
+interval and applies whatever came back. It uses nothing you do not already have:
+your existing routes, your existing auth middleware, your existing handlers. It
+survives every proxy, every corporate firewall and every ancient browser, because
+it is not a special case of anything.

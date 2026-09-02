@@ -1,0 +1,17 @@
+---
+number: "25"
+title: "Multi-tenancy and fairness"
+part: "VII"
+partTitle: "Senior concerns"
+---
+One queue and one big tenant is a denial of service you built yourself.
+
+```text
+  single FIFO queue
+
+  [ acme: 400 chunks ][ acme: ... ][ bob: 1 chunk ]
+                                          ▲
+                                          └── waits behind all of acme
+
+  Bob uploaded a 5 MB file and waits two hours. Bob churns.
+```

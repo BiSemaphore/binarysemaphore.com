@@ -1,0 +1,22 @@
+---
+number: "6"
+title: "Headroom, and why traffic arrives in bursts"
+part: "I"
+partTitle: "What \"fast\" means"
+---
+If latency goes vertical near 100% utilization, then the practical rule follows
+immediately: ==you cannot run a system at 100% utilization and also expect it to
+work==. You need slack.
+
+Production systems typically target 60% to 80% of capacity, reserving the rest
+as <Pink>headroom</Pink>. That reserve is not waste. It is the thing absorbing the
+difference between average load and actual load.
+
+Because traffic does not arrive evenly.
+
+```text
+  what capacity planning assumes        what actually arrives
+  ──────────────────────────────        ─────────────────────
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄              ▁▁▇█▁▁▁▁▁▁▅█▇▁▁▁▁▁▁▁▁█▇
+  a steady 400 rps                      the same 400 rps on average
+```

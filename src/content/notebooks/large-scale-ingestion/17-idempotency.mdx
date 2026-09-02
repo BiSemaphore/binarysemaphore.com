@@ -1,0 +1,22 @@
+---
+number: "17"
+title: "Idempotency"
+part: "V"
+partTitle: "Processing"
+---
+Checkpointing alone is not enough, and this is the sharpest part of the whole
+design.
+
+```text
+  worker writes 10,000 rows for chunk 7    ✓ committed
+  ─────────────── crash before ack ───────────────
+  checkpoint says chunk 7 = DONE, but the queue never got the delete
+
+  the message is redelivered
+        │
+        ▼
+  a new worker processes chunk 7 again
+        │
+        ▼
+  20,000 rows, if writes are not idempotent
+```

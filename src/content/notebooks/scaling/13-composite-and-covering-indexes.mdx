@@ -1,0 +1,26 @@
+---
+number: "13"
+title: "Composite and covering indexes"
+part: "III"
+partTitle: "The database"
+---
+Two refinements that come up constantly, and one rule that people get wrong.
+
+#### Composite: one index over several columns
+
+If you frequently query by `user_id` and sort by `created_at`, one index over
+both beats two separate indexes.
+
+```sql
+CREATE INDEX idx_posts_user_created ON posts (user_id, created_at DESC);
+```
+
+<Peach>Order matters, and it is not symmetric.</Peach> The index is sorted by `user_id`
+first, then by `created_at` within each user. So:
+
+```text
+  WHERE user_id = 7 AND created_at > '2026-01-01'    ✓ uses the index fully
+  WHERE user_id = 7                                  ✓ uses the leading column
+  WHERE user_id = 7 ORDER BY created_at DESC         ✓ index provides the sort
+  WHERE created_at > '2026-01-01'                    ✗ cannot use it at all
+```

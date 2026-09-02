@@ -1,0 +1,41 @@
+```text
+  CREDENTIAL ATTACK          slow, targeted, looks like normal traffic
+                             a few attempts per account, thousands of
+                             accounts, from thousands of addresses
+
+  VOLUMETRIC                 fast, loud, indiscriminate
+                             the point is that you fall over
+```
+
+<Trap>
+
+"We rate limit by IP, so brute force is handled"
+
+IP is nearly free for an attacker. Residential proxy pools rent millions of
+addresses; a botnet has them already; mobile carriers NAT thousands of real
+users behind one address, so a strict IP limit blocks a whole city while the
+attacker rotates. <Peach>IP is a useful signal and a terrible identity.</Peach>
+
+</Trap>
+
+<DoThis>
+
+Limit on several keys at once
+
+- <Mint>Per account</Mint>: five failed logins for `alice@example.com` is suspicious no
+  matter where they came from. This is the one that stops credential stuffing.
+- <Mint>Per IP</Mint> and <Mint>per subnet</Mint>, as a coarse backstop.
+- <Mint>Global, per endpoint</Mint>, so `/login` cannot consume the whole service.
+- <Mint>Escalate rather than block</Mint>: delay, then CAPTCHA, then require a second
+  factor, then lock with an email. A hard lock on failed attempts is itself a
+  denial-of-service against the real user.
+- <Mint>Constant-time responses</Mint> so failures do not leak whether the account
+  exists, and identical wording for "wrong password" and "no such user".
+
+</DoThis>
+
+<Recall>
+
+Password stored, session issued, cookie set: name every property and flag, and what each one prevents. | 8
+
+</Recall>

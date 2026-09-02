@@ -1,0 +1,34 @@
+---
+number: "39"
+title: "Cold starts, limits, and statelessness"
+part: "VIII"
+partTitle: "Architecture decisions"
+---
+Three constraints. All three follow from the same fact: there is no machine
+sitting there waiting for you.
+
+#### Cold starts
+
+<Term name="Cold start">
+
+The delay when a request arrives and no warm instance exists, so the platform
+must allocate one, start the runtime, and load your code before it can run. A
+warm start reuses an instance from a recent request and skips all of it.
+
+</Term>
+
+Two things dominate the delay, and the industry has attacked both:
+
+```text
+  the machine     a traditional VM boots an OS: hundreds of ms to seconds.
+                  → Firecracker microVMs (AWS Lambda): ~125 ms
+                  → V8 isolates (Cloudflare Workers): under 5 ms
+
+  the runtime     interpreted languages start fast; JVM and .NET pay for
+                  class loading and JIT warm-up.
+                  → JS and Python: tens of ms
+                  → JVM: hundreds of ms to seconds
+```
+
+Cloudflare Workers are fast at this precisely because they attacked both at once:
+V8 isolates instead of VMs, and JavaScript instead of a compiled runtime.

@@ -1,0 +1,19 @@
+---
+number: "3"
+title: "Fielding's six constraints"
+part: "I"
+partTitle: "The standard exists so you do not have to negotiate"
+---
+Five constraints, plus one optional. Each one forbids something, and each
+prohibition buys a property.
+
+| # | Constraint | What it forbids | What it buys |
+|---|---|---|---|
+| 1 | Client-server | The UI knowing how storage works | Either side can be rewritten alone |
+| 2 | Uniform interface | Per-service calling conventions | One integration skill, every service |
+| 3 | Layered system | A component seeing past its neighbour | Proxies, caches, gateways, load balancers |
+| 4 | Cacheable | Responses that cannot be labelled | Work that does not reach your server |
+| 5 | Stateless | The server remembering the last call | Any instance can answer any request |
+| 6 | Code on demand | (optional) | Client behaviour shipped from the server |
+
+Three of them deserve more than a table row.

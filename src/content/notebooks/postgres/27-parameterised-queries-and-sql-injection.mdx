@@ -1,0 +1,21 @@
+---
+number: "27"
+title: "Parameterised queries, and SQL injection"
+part: "V"
+partTitle: "Querying for an API"
+---
+```text
+  ✗ CONCATENATION
+    query = "SELECT * FROM users WHERE id = '" + userId + "'"
+
+    userId = "' OR '1'='1"
+        ──▶ SELECT * FROM users WHERE id = '' OR '1'='1'
+            every user in the table, returned to the caller
+
+    userId = "'; DROP TABLE users; --"
+        ──▶ exactly what it looks like
+
+  ✓ PARAMETERS
+    query = "SELECT * FROM users WHERE id = $1"
+    execute(query, [userId])
+```

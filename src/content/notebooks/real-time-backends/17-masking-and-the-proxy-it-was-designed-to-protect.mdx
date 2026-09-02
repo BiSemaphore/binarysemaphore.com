@@ -1,0 +1,20 @@
+---
+number: "17"
+title: "Masking, and the proxy it was designed to protect"
+part: "III"
+partTitle: "WebSocket: leaving HTTP behind"
+---
+Every frame a browser sends is <Pink>masked</Pink>: each byte of the payload is XORed with
+one byte of a four-byte key that cycles, and ==the key is sent in cleartext, in
+the frame, immediately before the payload==.
+
+```text
+  masked_byte[i]  =  payload_byte[i]  XOR  key[i % 4]
+
+  frame:  [header][ 4-byte key ][ masked payload ]
+                    ─────────── sent in the clear.
+                    anyone on the path can unmask it in one line.
+```
+
+This looks like broken encryption and is not encryption at all. The obvious
+question is why it exists.

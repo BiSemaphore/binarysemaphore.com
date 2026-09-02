@@ -1,0 +1,44 @@
+`RETURNING` is the detail worth keeping: the row comes back, with its
+database-generated `id` and `created_at`, <Peach>in the same round trip</Peach>. Without it
+you insert and then select, which is two trips and a race.
+
+Updates are conditional, because a `PATCH` sends only the fields the user
+changed:
+
+```js
+const sets = [], args = [];
+for (const [col, val] of Object.entries(patch)) {
+  if (!ALLOWED.has(col)) continue;              // ← whitelist again
+  args.push(val);
+  sets.push(`${col} = $${args.length}`);
+}
+if (!sets.length) return current;               // nothing to do, do not UPDATE
+args.push(userId);
+
+await db.query(
+  `UPDATE user_profiles SET ${sets.join(", ")}
+   WHERE user_id = $${args.length} RETURNING *`, args);
+```
+
+<Trap>
+
+"Update every column with whatever the client sent"
+
+That is how a `PATCH` that omits a field nulls it, and how a client that sends
+`{"role": "admin"}` to a profile endpoint promotes itself. ==Build the `SET`
+list from a whitelist of columns the caller is allowed to change==, never from
+the keys of the request body.
+
+</Trap>
+
+<Ask>
+
+Where should `updated_at` be set?
+
+Not in application code, because then every writer has to remember and one of
+them will not. Set it with a <Peach>trigger</Peach> (section 42) so it is maintained by the
+database for every writer including manual fixes and backfills. The lecture
+builds exactly this, and it is one of the few places a trigger clearly earns its
+keep.
+
+</Ask>

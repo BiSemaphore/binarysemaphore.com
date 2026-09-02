@@ -1,0 +1,33 @@
+Ask who owns each one. If the first is the marketing team's promotional discount
+and the second is the finance team's contractual discount, ==the identical code is
+a coincidence, not a duplication.== They are the same today because both happen
+to be ten percent. They will diverge the first time marketing runs a campaign,
+and at that point the shared function grows a boolean parameter, then a second,
+and you have built control coupling between two departments.
+
+```text
+   shared:   discount(amount, isPromo, isContract, region, tier)
+                       ← every flag is one department's edit
+                         landing in the other's code path
+```
+
+<Mint>The test is not "is this code the same". It is "will these change together".</Mint>
+Same code, different actors, is duplication you keep. Different code, same actor,
+is often a missing abstraction.
+
+<Term name="Coincidental duplication">
+
+Two pieces of code that are currently identical but are governed by different
+requirements. Merging them creates coupling between the requirements, which
+surfaces later as boolean parameters and branching inside the shared function.
+
+</Term>
+
+<KeyIdea>
+
+<Peach>DRY is about knowledge, not text.</Peach> Martin Fowler's phrasing of the same idea:
+every piece of knowledge should have a single authoritative representation. Two
+copies of the same knowledge is duplication. Two identical strings governed by
+different people is not.
+
+</KeyIdea>

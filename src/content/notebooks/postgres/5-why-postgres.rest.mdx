@@ -1,0 +1,49 @@
+1. **Open source and free.** No licence, and you can self-host it anywhere.
+2. **Sticks to the SQL standard**, so what you learn transfers and a migration
+   to another engine is mostly mechanical.
+3. **Extensible.** PostGIS, pg_trgm, pgvector, and a documented extension API.
+4. **Reliable and it scales** far past where most products ever get.
+5. <Peach>**JSONB.**</Peach> A first-class binary JSON type with real indexing.
+
+That last point removes the usual reason to reach for a document store:
+
+```text
+  "we need flexible schema for this one column"
+        │
+        ├── the old answer:  add MongoDB.
+        │                    now you run two databases, two backup
+        │                    strategies, two failure modes, and you
+        │                    have no transactions across them.
+        │
+        └── the Postgres answer:  make it a jsonb column.
+                                  index it with GIN. query into it.
+                                  keep one database.
+```
+
+<Signal>
+
+"I would start with Postgres for essentially any product, and I would need a
+specific, measured reason to add a second database. ==One database you
+understand deeply beats two you understand partly==, and jsonb removes the most
+common reason to reach for the second one."
+
+</Signal>
+
+<Ask>
+
+When would you genuinely not choose Postgres?
+
+When the access pattern is the product and it is not relational: a
+single-digit-millisecond key-value lookup at enormous scale (DynamoDB,
+Cassandra), a time-series firehose (Timescale, ClickHouse), a full-text search
+product where relevance tuning is the feature (Elasticsearch, and see Notebook
+16), or a graph traversal that is the core query (Neo4j). Note that the first
+three of those are often <Peach>added alongside</Peach> Postgres rather than instead of it.
+
+</Ask>
+
+<Recall>
+
+Name the three things a text file cannot do, and the one that causes silent data loss. | 5
+
+</Recall>

@@ -1,0 +1,30 @@
+---
+number: "8"
+title: "The argument array"
+part: "II"
+partTitle: "Injection"
+---
+The fix is not escaping. It is <Peach>not invoking a shell at all</Peach>.
+
+```js
+// ✗ builds one string, hands it to /bin/sh to parse
+exec(`ffmpeg -i ${input} -o ${output}`);
+
+// ✓ hands the kernel a program and a list of arguments
+execFile("ffmpeg", ["-i", input, "-o", output]);
+```
+
+```text
+  WITH A SHELL              your string ──▶ /bin/sh ──▶ parses ──▶ execve
+                                              ▲
+                                     the attacker's semicolon
+                                     is meaningful HERE
+
+  WITH AN ARGUMENT ARRAY    ["ffmpeg", "-i", "a.jpg", "-o", "x; rm -rf /"]
+                                              ──▶ execve, directly
+                            "x; rm -rf /" is one filename. weird, but one.
+                            nothing parses it. there is no shell.
+```
+
+Every language has both forms, and the safe one is always the one that takes a
+list:

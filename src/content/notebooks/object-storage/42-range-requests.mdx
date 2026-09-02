@@ -1,0 +1,19 @@
+---
+number: "42"
+title: "Range requests"
+part: "VII"
+partTitle: "Getting the bytes out"
+---
+A client can ask for part of an object.
+
+```text
+  GET /video.mp4
+  Range: bytes=1048576-3145727
+
+  206 Partial Content
+  Content-Range: bytes 1048576-3145727/734003200
+  Accept-Ranges: bytes
+
+  and if the range is nonsense:
+  416 Range Not Satisfiable
+```

@@ -1,0 +1,29 @@
+---
+number: "19"
+title: "Parallelising one big file"
+part: "V"
+partTitle: "Processing"
+---
+Everything so far scales across <Peach>jobs</Peach>. This scales within <Peach>one job</Peach>, and it
+is the difference between a 44-minute job and a 6-minute one.
+
+```text
+                    ┌──────────────┐
+                    │ COORDINATOR  │  reads size, computes N chunks,
+                    └──────┬───────┘  writes job_chunks, emits N messages
+                           │
+        ┌──────────┬───────┼───────┬──────────┐
+        ▼          ▼       ▼       ▼          ▼
+     chunk 0    chunk 1  chunk 2  ...      chunk N-1     (queue messages)
+        │          │       │       │          │
+        ▼          ▼       ▼       ▼          ▼
+     worker     worker  worker   worker    worker        (any worker, any chunk)
+        │          │       │       │          │
+        └──────────┴───────┼───────┴──────────┘
+                           ▼
+                    ┌──────────────┐
+                    │  FAN-IN      │  last chunk to finish flips the job
+                    └──────────────┘  to COMPLETED and runs finalisation
+```
+
+#### Detecting completion without a race

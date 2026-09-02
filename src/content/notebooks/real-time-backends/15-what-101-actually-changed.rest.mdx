@@ -1,0 +1,30 @@
+**Everything HTTP-shaped in your stack stops working.** Your CDN cannot cache a
+stream. Your API gateway's per-route rate limiting sees one request, not ten
+thousand messages. Your access logs record one line at connect time and nothing
+after. ==Your observability goes blind at exactly the moment your traffic moves
+onto the socket==, and you have to rebuild it: messages per connection, bytes per
+connection, frames by opcode, connection lifetime.
+
+**Authentication happens once.** The cookie or token was validated during the
+handshake. The connection then lives for hours. ==A token that expires in fifteen
+minutes does not close a socket that opened fourteen minutes ago==, and a user
+whose access you revoked keeps receiving events until something closes the
+connection. Section 37 is the fix.
+
+<Signal>
+
+"After the upgrade I have a raw bidirectional stream, so I lose caching, per-request
+auth, per-route rate limits and request logging. I plan for rebuilding those as
+part of adopting WebSockets, not after." Naming the collateral damage before you
+are asked is the difference between having used WebSockets and having operated
+them.
+
+</Signal>
+
+<KeyIdea>
+
+101 does not add a feature to HTTP. It <Peach>ends HTTP on that connection</Peach> and leaves
+you a TCP stream with framing. Everything HTTP was doing for you is now yours to
+rebuild.
+
+</KeyIdea>

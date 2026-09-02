@@ -1,0 +1,22 @@
+---
+number: "15"
+title: "JWT: what you gain and what you give up"
+part: "III"
+partTitle: "Authentication"
+---
+```text
+  STATEFUL SESSION                    STATELESS JWT
+
+  cookie: sid=a3f9…                   cookie: eyJhbGciOi…
+             │                                   │
+             ▼                                   ▼
+  server looks it up                  server VERIFIES THE SIGNATURE
+  in Redis or Postgres                and reads the claims inside
+             │                                   │
+  one round trip, and full           no round trip, and no way to
+    control: delete the row              revoke: the token is valid
+    and the session is gone            until it expires
+```
+
+A JWT is three base64 segments: header, payload, signature. Two facts follow
+immediately, and both are asked about:

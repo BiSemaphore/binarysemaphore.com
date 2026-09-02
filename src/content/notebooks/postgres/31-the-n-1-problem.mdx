@@ -1,0 +1,24 @@
+---
+number: "31"
+title: "The N+1 problem"
+part: "V"
+partTitle: "Querying for an API"
+---
+Not in the lecture, and the single most common database performance bug in
+application code.
+
+```text
+  GET /projects  with each project's task count
+
+  ✗ N+1
+    SELECT * FROM projects;                       ← 1 query, 50 rows
+    for each project:
+        SELECT count(*) FROM tasks WHERE …        ← 50 more queries
+                                                  ── 51 round trips
+
+  ✓ ONE QUERY
+    SELECT p.*, count(t.id) AS task_count
+    FROM projects p
+    LEFT JOIN tasks t ON t.project_id = p.id
+    GROUP BY p.id;                                ── 1 round trip
+```

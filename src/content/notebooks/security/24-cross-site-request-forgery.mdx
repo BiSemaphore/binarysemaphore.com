@@ -1,0 +1,16 @@
+---
+number: "24"
+title: "Cross-site request forgery"
+part: "V"
+partTitle: "The browser is a boundary too"
+---
+<Figure>
+
+The request is forged. The session is genuine. The browser attached it for you.
+
+</Figure>
+
+```html
+<!-- on evil.example, which you visit while logged into your bank -->
+<img src="https://bank.example/transfer?to=attacker&amount=5000">
+```

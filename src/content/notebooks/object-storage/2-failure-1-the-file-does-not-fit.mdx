@@ -1,0 +1,24 @@
+---
+number: "2"
+title: "Failure 1: the file does not fit"
+part: "I"
+partTitle: "The naive design, and the seven ways it dies"
+---
+The pattern survives profile pictures. A phone photo is 300 KB to 10 MB, a
+mirrorless camera file might be 20 MB, and all of that fits comfortably in a
+server sized for JSON.
+
+Then a feature lands that needs video, and someone uploads 4 GB.
+
+```text
+  container memory limit: 4 GB
+
+  request arrives ──▶ framework helpfully parses the whole body
+                      into memory before handing it to your handler
+
+     0 GB  ▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏  ▏
+     1 GB  ████████▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏  ▏
+     2 GB  ████████████████▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏▏  ▏
+     3 GB  ████████████████████████▏▏▏▏▏▏▏▏▏▏▏▏▏  ▏
+     4 GB  ████████████████████████████████ OOMKilled
+```

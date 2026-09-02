@@ -1,0 +1,32 @@
+| Conflict | The tension |
+|---|---|
+| SRP vs DRY | Splitting by actor duplicates code that looks identical |
+| OCP vs YAGNI | Openness costs an abstraction you may never need |
+| ISP vs simplicity | Narrow interfaces multiply the number of types |
+| DIP vs directness | An interface with one implementation is a hop with no branch |
+| LSP vs reuse | The convenient superclass is often not a true supertype |
+
+The resolution is always the same shape, and it is worth being able to state:
+<Peach>ask which change is more likely.</Peach> If a new payment method is likely and a new
+parameter is not, be open on payment methods. If the identical code in two
+services is likely to diverge because two teams own it, keep it duplicated. The
+principles do not rank themselves; ++your prediction about the next twelve months
+ranks them++, and being explicit about that prediction in code review is the
+whole skill.
+
+<Signal>
+
+"These conflict routinely, so I treat them as arguments rather than rules. The
+question I ask is which change is more likely to arrive first, and I make that
+one cheap. I try to write the prediction in the pull request, so that when it is
+wrong we can find out why."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>They are not axioms and they do not compose.</Peach> A senior engineer is someone who
+can name the conflict, state the bet, and say what it would take to change their
+mind.
+
+</KeyIdea>

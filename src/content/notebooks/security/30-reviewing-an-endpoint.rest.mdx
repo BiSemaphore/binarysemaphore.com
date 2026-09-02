@@ -1,0 +1,25 @@
+Run it out loud, in this order, and you will find things.
+
+```text
+  1. WHAT CROSSES A BOUNDARY?
+     every parameter, body field, header, cookie, uploaded file,
+     and anything read back out of the database that was once input
+
+  2. WHAT PARSES IT DOWNSTREAM?
+     SQL? a shell? HTML in a browser? a template? a path? a log?
+
+  3. WHO IS THE CALLER, AND HOW DO I KNOW?
+     session or token, verified how, and can it be replayed?
+
+  4. WHAT MAY THIS CALLER TOUCH?
+     is the ownership check in the query, or upstream of it?
+
+  5. WHAT DOES THE RESPONSE REVEAL?
+     status codes, timing, error text, fields nobody asked for
+
+  6. WHAT HAPPENS ON THE THOUSANDTH ATTEMPT?
+     rate limits, lockouts, and what they cost a real user
+
+  7. WHAT DOES IT WRITE DOWN?
+     logs, audit trail, error reporter
+```

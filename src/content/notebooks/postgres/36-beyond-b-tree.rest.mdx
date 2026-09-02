@@ -1,0 +1,50 @@
+| Type | For |
+|---|---|
+| <Peach>B-tree</Peach> | The default. Equality, ranges, sorts, prefixes |
+| <Peach>GIN</Peach> | `jsonb` containment, arrays, full-text search |
+| <Peach>GiST</Peach> | Geometry, ranges, nearest-neighbour |
+| <Peach>BRIN</Peach> | Huge tables with naturally ordered data, tiny index |
+| <Peach>Hash</Peach> | Equality only. Rarely worth it over B-tree |
+
+#### The `ILIKE` gap
+
+```text
+  CREATE INDEX users_email ON users (email);          -- B-tree
+
+  WHERE email LIKE  'jo%'    ✓ uses the index (a prefix is a range)
+  WHERE email ILIKE 'jo%'    ✗ does NOT. case-insensitive matching
+                               is not the collation the index was built in
+  WHERE email LIKE '%jo%'    ✗ no leading anchor, no range to walk
+```
+
+This matters because the lecture indexes `email` and then filters with `ILIKE`,
+and those two do not meet. Three ways to close it:
+
+```sql
+-- 1. index the expression you actually query
+CREATE INDEX users_email_lower ON users (lower(email));
+--    then query:  WHERE lower(email) LIKE 'jo%'
+
+-- 2. or make the column case-insensitive once, and stop thinking about it
+CREATE EXTENSION citext;
+ALTER TABLE users ALTER COLUMN email TYPE citext;
+
+-- 3. for infix search ('%jo%'), trigrams
+CREATE EXTENSION pg_trgm;
+CREATE INDEX users_name_trgm ON users USING gin (full_name gin_trgm_ops);
+```
+
+<Signal>
+
+"Adding an index and adding a query that can use it are two different tasks.
+==Any function applied to the column in the `WHERE` clause disables a plain
+index==, whether that is `lower()`, a cast, or `ILIKE`. Either index the
+expression, or change the column so the query is a plain comparison."
+
+</Signal>
+
+<Recall>
+
+Which of these are indexed automatically: primary key, unique, foreign key, the column in an ORDER BY? | 5
+
+</Recall>

@@ -1,0 +1,26 @@
+```text
+  users                user_profiles
+  ┌────────────┐       ┌──────────────────┐
+  │ u1 Alice   │◀──────│ user_id = u1     │
+  │ u2 Bob     │       └──────────────────┘
+  │ u3 Carol   │        Bob and Carol never
+  └────────────┘        edited their profile
+
+  INNER JOIN  ──▶  1 row.   ✗ Bob and Carol vanish from /users
+  LEFT  JOIN  ──▶  3 rows.  ✓ profile is NULL for two of them
+```
+
+An `INNER JOIN` here silently deletes users from your API response. Nobody gets
+an error; the list is just short, and the bug is reported months later as "some
+users do not appear".
+
+<DoThis>
+
+Ask "is the right side optional?" before every join
+
+If the related row may legitimately not exist, ==`LEFT JOIN`==. If its absence
+means the left row should not be returned at all, `INNER JOIN`, and say so in a
+comment because the next reader will wonder. The default in application queries
+is `LEFT`, because most relationships in a product are optional.
+
+</DoThis>

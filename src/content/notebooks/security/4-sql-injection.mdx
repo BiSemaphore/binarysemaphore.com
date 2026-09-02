@@ -1,0 +1,19 @@
+---
+number: "4"
+title: "SQL injection"
+part: "II"
+partTitle: "Injection"
+---
+The canonical case, and still one of the most damaging, because the database
+usually holds everything.
+
+```text
+  login form                         what it becomes
+
+  email:  ' OR '1'='1' --            WHERE email = '' OR '1'='1' --'
+  password: anything                 ──▶ returns the first user in the table
+                                     ──▶ your code compares nothing, or
+                                         logs them in as whoever that is
+```
+
+The same technique escalates well past reading rows:

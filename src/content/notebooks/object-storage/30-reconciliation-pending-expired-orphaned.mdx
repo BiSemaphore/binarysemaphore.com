@@ -1,0 +1,21 @@
+---
+number: "30"
+title: "Reconciliation: pending, expired, orphaned"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+Some percentage of uploads will never complete. The tab closed, the network
+dropped, the phone went into a tunnel, the process was killed, the completion
+call was lost after a successful upload. This is not an edge case, it is a
+steady-state rate.
+
+```text
+  DB says              bucket says          what it is         what to do
+  ───────────────────────────────────────────────────────────────────────
+  pending, recent      absent               in flight          wait
+  pending, > 24 h      absent               abandoned          mark expired
+  pending, > 24 h      present              lost completion    HEAD, then
+                                                               promote to ready
+  ready                absent               CORRUPTION         alert, investigate
+  (no row)             present              orphan             lifecycle delete
+```

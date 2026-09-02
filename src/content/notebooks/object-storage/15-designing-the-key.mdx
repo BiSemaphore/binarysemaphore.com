@@ -1,0 +1,20 @@
+---
+number: "15"
+title: "Designing the key"
+part: "III"
+partTitle: "Anatomy of an object"
+---
+This is the one place where object storage genuinely demands a design decision
+from you, and it is a favourite interview probe because the wrong answer is a
+security bug.
+
+#### Rule 1: never use the filename the user gave you
+
+Non-negotiable. Three separate reasons, and you should be able to give all
+three:
+
+**Collisions, and silent destruction.** Two users upload `resume.pdf`. The
+second write silently destroys the first. It is called PUT for a reason: in
+HTTP, PUT replaces the entity at a URI. It succeeds, returns 200, and warns you
+about nothing. (POST, by contrast, promises creation, which is why the API does
+not use it for this.)

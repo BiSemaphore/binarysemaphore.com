@@ -1,0 +1,37 @@
+Here is what "the app is slow" can mean, all of which have different fixes:
+
+```text
+  "the app is slow"
+        │
+        ├── every request takes 800ms          ← a systemic problem
+        ├── one endpoint takes 8s              ← one bad query or call
+        ├── it is fine until 6pm               ← a capacity problem
+        ├── it is fine for me, slow for them   ← a geography problem
+        ├── the first click is slow            ← a cold start or cold cache
+        └── it hangs, then works               ← queueing, or a retry storm
+```
+
+Six different systems. Six different fixes. One sentence.
+
+<Signal>
+
+The first thing a senior engineer does with "it is slow" is __turn it into a
+measurable claim__. Which endpoint, at which percentile, measured where, at what
+throughput, compared to what it was. Until you have those five, you do not have
+a problem statement, you have a mood.
+
+</Signal>
+
+The whole of Part I exists to give you those five words. Latency, percentile,
+throughput, utilization, headroom. They are not jargon for its own sake. Each
+one is a different question you can ask about the same slow endpoint, and
+together they narrow "slow" down to something with a fix.
+
+<Trap>
+
+Skipping this part because you already know what latency means. Most engineers
+who know what latency means still quote it as a single number, still measure it
+on the server rather than at the client, and still cannot say what happens to it
+at 90% CPU. The words are common. The precision is not.
+
+</Trap>

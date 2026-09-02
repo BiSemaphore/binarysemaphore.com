@@ -1,0 +1,16 @@
+Calendar day: `date` |
+| Surrogate key | `uuid` (v7 if available), or `bigint GENERATED ALWAYS AS IDENTITY` |
+| Flexible column | `jsonb` + GIN, never `json` |
+| Nullability | `NOT NULL` unless optional is a real domain fact |
+| One to one | FK is also the PK |
+| One to many | FK on the many side |
+| Many to many | Linking table, composite PK |
+| Indexed automatically | PK, `UNIQUE`. <Peach>Not foreign keys</Peach> |
+| Composite index rule | Leftmost prefix; equality column first |
+| Index on a large table | `CREATE INDEX CONCURRENTLY` |
+| Default isolation | `READ COMMITTED` (no dirty reads at any level in PG) |
+| Read-modify-write fix | One statement: `SET x = x + $1` |
+| Queue pattern | `FOR UPDATE SKIP LOCKED` |
+| Pool size per instance | ~`(cores × 2) + 1`, roughly 10 to 20 |
+| Abort-incomplete lifecycle | Short transactions, or vacuum stalls |
+| Pagination | `OFFSET` for numbered pages, keyset for feeds |

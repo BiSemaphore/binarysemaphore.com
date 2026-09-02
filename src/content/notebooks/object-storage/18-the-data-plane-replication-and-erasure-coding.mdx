@@ -1,0 +1,20 @@
+---
+number: "18"
+title: "The data plane: replication and erasure coding"
+part: "IV"
+partTitle: "Inside the system"
+---
+#### The naive answer: three copies
+
+```text
+  object ──▶ copy A  (rack 1, power domain 1)
+             copy B  (rack 7, power domain 2)
+             copy C  (rack 12, power domain 3)
+
+  survives 2 simultaneous failures.   storage overhead: 200%
+```
+
+Simple, and it works. The problem is cost: to hold 1 PB of customer data you buy
+3 PB of drives. At provider scale that is billions of dollars of pure overhead.
+
+#### The real answer: erasure coding

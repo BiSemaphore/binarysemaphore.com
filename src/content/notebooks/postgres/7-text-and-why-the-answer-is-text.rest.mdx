@@ -1,0 +1,37 @@
+| Type | Behaviour |
+|---|---|
+| `char(n)` | <Peach>Blank-pads to n.</Peach> Storing `'AB'` in `char(10)` stores eight spaces too |
+| `varchar(n)` | Up to n characters, errors past it. No padding |
+| `text` | Any length. No declared limit |
+
+In Postgres, <Peach>all three perform identically</Peach>. There is no speed advantage to
+declaring a limit, and `text` indexes exactly as well as `varchar`. The
+documentation itself recommends `text`.
+
+```text
+  varchar(255)
+        │
+        └── comes from MySQL, where 255 was the largest length storable
+            with a ONE-byte length prefix. It was a real optimisation.
+
+            In Postgres it means NOTHING. It is a number people copy
+            because they have always seen it, and the next engineer
+            reads it as a considered decision and tries to work out why.
+```
+
+There is also a practical cost. Widening `varchar(255)` to `varchar(500)` is a
+migration on a live table. `text` never needs that migration, and the actual
+limit, which is a product rule and not a storage rule, belongs in application
+validation where changing it is a code review rather than a schema change.
+
+<DoThis>
+
+Use `text`, and enforce length in validation
+
+Reach for `varchar(n)` only when the length is a genuine external constraint (an
+ISO country code, a fixed-format reference). Reach for `char(n)` essentially
+never. And if a limit really must hold at the database level, express it as a
+`CHECK (length(col) <= 500)`, which says what it means and can be changed
+without rewriting the column.
+
+</DoThis>

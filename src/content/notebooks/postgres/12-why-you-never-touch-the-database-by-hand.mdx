@@ -1,0 +1,18 @@
+---
+number: "12"
+title: "Why you never touch the database by hand"
+part: "III"
+partTitle: "Migrations"
+---
+Open a GUI, run `ALTER TABLE`, done. It works, and it is how schemas rot.
+
+```text
+  BY HAND                              MIGRATIONS
+
+  what changed?      nobody knows      db/migrations/
+  when?              nobody knows        20260814093000_create_users.sql
+  who?               nobody knows        20260819141200_add_projects.sql
+  is staging the     find out the        20260829102200_add_indexes.sql
+  same as prod?      hard way
+  can we roll back?  no                 in git, reviewed, ordered, replayable
+```

@@ -1,0 +1,24 @@
+---
+number: "7"
+title: "Multipart and resumable upload"
+part: "II"
+partTitle: "Ingestion, getting the bytes in"
+---
+A single 10 GB `PUT` is one failure away from zero progress. Multipart makes the
+unit of failure a part, not the file.
+
+```text
+  10 GB, 64 MiB parts  ->  160 parts
+
+  part 001  ████ ok
+  part 002  ████ ok
+  part 003  ████ ok
+  part 004  ░░░░ FAILED  (connection reset)
+  part 005  ████ ok
+  ...
+  part 160  ████ ok
+
+  retry only part 004  ->  ok
+  CompleteMultipartUpload(uploadId, [{part,etag}, ...])
+  S3 assembles the object server-side. No re-upload of the other 159.
+```

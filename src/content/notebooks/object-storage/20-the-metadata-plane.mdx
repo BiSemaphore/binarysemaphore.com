@@ -1,0 +1,21 @@
+---
+number: "20"
+title: "The metadata plane"
+part: "IV"
+partTitle: "Inside the system"
+---
+Conceptually, one enormous sorted key-value index.
+
+```text
+  a distributed B-tree (balanced tree), partitioned by KEY RANGE
+
+  ┌───────────────────────┬───────────────────────┬─────────────────┐
+  │ partition 1           │ partition 2           │ partition 3     │
+  │ keys  "a…" → "f…"     │ keys  "f…" → "p…"     │ "p…" → "z…"     │
+  └───────────────────────┴───────────────────────┴─────────────────┘
+
+  entry:  (bucket, key) ──▶ { shard locations, size, ETag,
+                              content-type, version, storage class }
+```
+
+Everything in this book that seemed arbitrary is a property of this structure:

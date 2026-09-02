@@ -1,0 +1,43 @@
+Every lookup becomes: open the file, read every line, split every line, compare
+every field. That is <Peach>O(n) in application code</Peach> for a question the database
+answers in O(log n), and it is error-prone in the way string handling is always
+error-prone.
+
+#### No structure
+
+A text file will accept anything. There is no way to say "this field is a
+number", so nothing stops `amount = "banana"` from being written, and every
+reader must defend against every previous writer's mistakes.
+
+#### No concurrency control
+
+This is the one that actually matters, and it is worth walking through slowly
+because <Peach>the same bug reappears in section 40 with a real database</Peach>.
+
+```text
+  amount = 40
+
+  request A                          request B
+  ─────────────────────────          ─────────────────────────
+  read amount        ──▶ 40
+                                     read amount        ──▶ 40
+  compute 40 + 20    ──▶ 60
+                                     compute 40 - 20    ──▶ 20
+  write 60
+                                     write 20
+
+  final value: 20.   A's write is gone, silently.
+  had the order flipped: 60, and B's write is gone, silently.
+```
+
+That is the <Pink>lost update</Pink>. Nothing errored. Both requests succeeded. The
+result depends on scheduling, which means it is not reproducible and will be
+reported as "the numbers are sometimes wrong".
+
+<KeyIdea>
+
+A file gives you storage. A database gives you storage ==plus a concurrency
+model==, and the concurrency model is the expensive part to build and the part
+you will get wrong.
+
+</KeyIdea>

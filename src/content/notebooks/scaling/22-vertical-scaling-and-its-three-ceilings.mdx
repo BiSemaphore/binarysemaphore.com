@@ -1,0 +1,26 @@
+---
+number: "22"
+title: "Vertical scaling, and its three ceilings"
+part: "V"
+partTitle: "More machines"
+---
+Your traffic grows and the server runs out of room. There are exactly two
+answers to that, and this is the simpler one.
+
+<Term name="Vertical scaling">
+
+Making one machine bigger. Also called scaling up. You replace a server with a
+more powerful server: more CPU cores, more RAM, faster disks, a better network
+card. Your code does not change and your architecture does not change; only the
+size of the box does.
+
+</Term>
+
+```text
+  before                 after
+  ──────                 ─────
+  4 cores                16 cores
+  8 GB RAM               64 GB RAM
+  SSD                    NVMe SSD
+  1 Gbps                 10 Gbps
+```

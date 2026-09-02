@@ -1,0 +1,56 @@
+| Class | Examples | Action |
+|---|---|---|
+| Transient | Network blip, DB deadlock, 5xx, throttling | Retry with backoff and jitter |
+| Poison | Malformed file, wrong schema, unsupported encoding | Fail fast, do not retry |
+| Capacity | Out of memory, disk full, connection pool exhausted | Retry, but on a different worker, and alert |
+| Bug | NullPointerException in your transform | Retry once, then DLQ, then fix the code |
+
+<Trap>
+
+Retrying everything the same number of times
+
+Retrying a malformed-file error five times with exponential backoff wastes about
+half an hour and tells the user nothing useful. Retrying a deadlock once and
+giving up throws away work that would have succeeded on the next attempt. The
+classification is the design; the retry count is a detail.
+
+</Trap>
+
+<DoThis>
+
+Make the DLQ operationally real
+
+- Alert on `DLQ depth > 0`. A dead letter queue nobody watches is a data loss
+  mechanism with extra steps.
+- Keep the original message, the error, the stack trace and the attempt count,
+  so triage does not require reproducing the failure.
+- Build a replay path from day one: fix the bug, redrive the DLQ. AWS has
+  `StartMessageMoveTask` for exactly this.
+- Cap `maxReceiveCount` at 3 to 5. Higher just delays the alert.
+
+</DoThis>
+
+<Ask>
+
+One row in ten million is malformed. Does the whole job fail?
+
+Almost certainly not, and this should be a product decision you surface rather
+than a default you pick silently. Collect bad rows into
+`processed/job-8f21/errors.csv` with row numbers and reasons, complete the job as
+`COMPLETED_WITH_ERRORS`, and report `9,999,999 ok / 1 rejected`. Add a threshold:
+if more than some percentage of rows fail, the file is probably wrong (bad
+schema, wrong encoding) and failing the whole job is the correct response.
+
+</Ask>
+
+<Recall>
+
+List the four failure classes and what you do for each. | 6
+
+</Recall>
+
+<Redraw>
+
+Redraw the processing path from memory | Queue, lease, heartbeat, stream, chunk, checkpoint, idempotent write, fan-in. Then compare with sections 14 to 20.
+
+</Redraw>

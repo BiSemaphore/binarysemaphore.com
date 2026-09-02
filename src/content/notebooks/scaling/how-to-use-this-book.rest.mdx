@@ -1,0 +1,36 @@
+Performance means something different in a browser, in a compiler, in a game
+engine. This book stays where the lecture stays, in ==the backend you write and
+the infrastructure directly around it==: your handlers, your queries, your
+cache, the machines your code runs on, and the network between them.
+
+#### What this book adds
+
+The lecture is strong on intuition and light on numbers. Where a piece of folk
+wisdom has an actual formula behind it, this book gives you the formula, because
+a number is what turns an opinion into an answer. It also fills four gaps the
+lecture leaves open: backpressure, retry storms, cache stampede, and tail
+latency amplification. Each is marked where it appears.
+
+#### The five block types
+
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A plausible answer that is wrong, or right for the wrong reason. |
+| Do this | The concrete practice, in the form you would actually apply it. |
+| Key idea | The one thing to carry away from the section. |
+
+Recall rules and full-page redraw plates appear at the end of each part. Use
+them. Every prompt in this book also appears in Notebook 00, the Question Bank,
+where you can work them cold.
+
+#### Related notebooks
+
+This book deliberately does not repeat what other notebooks cover in depth.
+
+- Indexes, `EXPLAIN ANALYZE`, isolation levels: Notebook 04, Postgres.
+- Queues, workers, leases, idempotency, dead letters: Notebook 01, Large-Scale
+  Data Ingestion, Parts IV and V.
+- Object storage, presigned URLs, CDN origins: Notebook 02, Object Storage.
+- Rate limiting and the abuse side of load: Notebook 05, Backend Security.

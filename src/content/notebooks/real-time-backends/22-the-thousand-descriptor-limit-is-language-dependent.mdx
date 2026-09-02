@@ -1,0 +1,19 @@
+---
+number: "22"
+title: "The thousand-descriptor limit is language-dependent"
+part: "IV"
+partTitle: "How many connections fit on one machine"
+---
+Same shell, same machine, same moment. Ask two runtimes what their limit is:
+
+```text
+  $ ulimit -n
+  1024
+
+  Go program:      1,048,575         ← ?
+  Python program:      1,024
+```
+
+The Go runtime <Peach>raises its own soft limit at startup</Peach>. `ulimit -n` reports the
+*soft* limit, which is an advisory ceiling a process may lift up to the *hard*
+limit on its own, without privileges. Go does exactly that.

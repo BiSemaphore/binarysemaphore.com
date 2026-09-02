@@ -1,0 +1,19 @@
+A migration is an ordinary SQL file in an ordered folder, applied by a tool
+(`dbmate`, `golang-migrate`, `Flyway`, `Alembic`, or whatever your framework
+ships). The tool keeps a `schema_migrations` table in the database recording
+which versions have run, so applying twice is a no-op and a fresh database can
+be built from empty by replaying the folder.
+
+```bash
+dbmate new create_users_table     # writes a timestamped file
+dbmate up                         # applies everything not yet applied
+dbmate down                       # reverts the most recent
+```
+
+<KeyIdea>
+
+<Peach>A migration folder is the schema's git history.</Peach> A production database with no
+migration history is a database nobody can safely change, because nobody can
+reproduce it.
+
+</KeyIdea>

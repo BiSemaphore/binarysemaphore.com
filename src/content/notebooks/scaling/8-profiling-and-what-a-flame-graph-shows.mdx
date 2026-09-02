@@ -1,0 +1,29 @@
+---
+number: "8"
+title: "Profiling, and what a flame graph shows"
+part: "II"
+partTitle: "Finding the bottleneck"
+---
+<Pink>Profiling</Pink> is measuring where your process actually spends time. A profiler
+attaches to the running application, samples the call stack many times a second,
+and aggregates what it saw.
+
+The raw output is thousands of functions with fractional percentages, which is
+unusable. The <Pink>flame graph</Pink> makes it readable:
+
+```text
+  ┌──────────────────────────────────────────────────────────┐
+  │                      handleRequest                       │  100%
+  ├───────────────────────────┬──────────────────────────────┤
+  │      serializeJSON        │        queryProducts         │
+  │           58%             │             31%              │
+  ├───────────────────────────┼──────────────┬───────────────┤
+  │       stringify           │  buildQuery  │   execute     │
+  └───────────────────────────┴──────────────┴───────────────┘
+
+  width  = share of total time
+  stacked = called by the frame below
+```
+
+Width is time. Stacking is the call relationship. You read it by scanning for
+the widest block near the top and asking why that is wide.

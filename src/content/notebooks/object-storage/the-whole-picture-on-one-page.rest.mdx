@@ -1,0 +1,13 @@
+Two rules are encoded in that picture, and they are the whole architecture:
+
+- <Peach>The bytes never touch your server.</Peach> Your server authorises, names, signs
+  and records. It does not carry payload.
+- <Peach>The database is the index; the bucket is the storage.</Peach> The bucket knows how
+  to hold bytes. It does not know which user owns them, what the file was
+  called, or whether the upload finished.
+
+<Redraw>
+
+The upload path, from the browser's first request to a ready row. | Six arrows. Label which ones carry file bytes.
+
+</Redraw>

@@ -1,0 +1,55 @@
+Because SSE is in the HTML specification, the client is the browser. `EventSource`
+handles the reconnect for you: if the connection drops, the browser waits, opens
+a new request to the same URL, and carries on. ==You write no reconnection
+logic.== You do not write backoff, you do not write a retry loop, you do not
+handle the transport error.
+
+More than that, it resumes at the right place:
+
+```text
+  server ──▶  id: 1841   data: ...
+  server ──▶  id: 1842   data: ...
+              connection drops. laptop lid, wifi to LTE, proxy timeout.
+
+  browser ──▶ GET /events
+              Last-Event-ID: 1842        ← the browser adds this itself
+
+  server  ──▶ id: 1843   data: ...       ← you resume from 1843
+```
+
+Every `id:` you send is remembered by the client. On reconnect the browser sends
+it back in a `Last-Event-ID` request header, without being asked to. ==Your
+handler reads that header, looks up everything after it, and writes the backlog
+before resuming the live stream.== The user sees a board that is correct, not a
+board that is missing the ninety seconds they spent in a lift.
+
+The `retry:` field is the other half: the server dictates the reconnect delay, so
+you can widen it from your side during an incident without shipping client code.
+
+```js
+const es = new EventSource('/events');
+es.addEventListener('task.moved', (e) => apply(JSON.parse(e.data)));
+// there is no reconnect handler here because there does not need to be
+```
+
+Hold on to the shape of this, because ==section 32 rebuilds it by hand for
+WebSockets==, where nothing is free.
+
+<Ask>
+
+What happens to events published while the client was disconnected?
+
+Nothing, unless you built the backlog. `Last-Event-ID` gives you the client's
+position; it does not give you the events. You still need somewhere to read
+"everything after 1842" from, which means a durable, ordered log per topic with
+a retention window. The browser hands you the question. Answering it is your
+design problem, and it is the same problem in section 32.
+
+</Ask>
+
+<KeyIdea>
+
+The browser implements reconnection and hands you the client's last position in
+a header. <Peach>The resume protocol is free; the backlog it resumes from is not.</Peach>
+
+</KeyIdea>

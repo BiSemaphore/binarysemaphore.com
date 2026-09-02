@@ -1,0 +1,27 @@
+<DoThis>
+
+Treat the bucket as hostile input
+
+- <Mint>Never serve user content from your application's origin.</Mint> A stored HTML or
+  SVG file becomes stored XSS with access to your session cookies. Serve from a
+  <Peach>separate domain</Peach> so the same-origin policy contains it.
+- Set `Content-Disposition: attachment` and `X-Content-Type-Options: nosniff`
+  for anything not deliberately rendered inline.
+- Derive the content type <Peach>server-side from magic bytes</Peach> after upload, never
+  from the extension or the client's declared type. Section 42's eight-byte
+  range read is how you do it cheaply.
+- Re-encode images rather than serving originals: it strips EXIF (which carries
+  GPS coordinates), removes polyglot payloads and normalises the format.
+- Scan asynchronously after the HEAD verification, before flipping status to
+  `ready`. Quarantine under a prefix with no read policy.
+
+</DoThis>
+
+| Watch | Because |
+|---|---|
+| `pending` rows older than the window | Section 30. Uploads are failing |
+| Incomplete multipart uploads | Section 36. Invisible in a listing, and billed |
+| <Peach>503 SlowDown</Peach> | Hot partition. Section 15 |
+| 4xx rate on the bucket | Policy violations, expired signatures, CORS |
+| <Peach>CDN cache hit ratio</Peach> | The single biggest lever on the bill. Section 41 |
+| Bucket size and object count by prefix | Lifecycle rules not firing |

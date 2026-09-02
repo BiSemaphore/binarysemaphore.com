@@ -1,0 +1,497 @@
+[
+  {
+    "slug": "how-to-use-this-book",
+    "number": "",
+    "title": "How to use this book",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "Colour in this book is never decorative. Each one means one thing, so a marked phrase is already half-read before you get to the words."
+  },
+  {
+    "slug": "the-whole-picture-on-one-page",
+    "number": "",
+    "title": "The whole picture on one page",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "Two rules are encoded in that picture, and they are the whole architecture:"
+  },
+  {
+    "slug": "1-the-requirement-and-the-intuitive-answer",
+    "number": "1",
+    "title": "The requirement, and the intuitive answer",
+    "part": "I",
+    "partTitle": "The naive design, and the seven ways it dies",
+    "gated": true,
+    "teaser": "The browser sends the file as multipart/form-data, you pull it out of the request, you save it to the local file system, because it is a file and files live in file systems, and"
+  },
+  {
+    "slug": "2-failure-1-the-file-does-not-fit",
+    "number": "2",
+    "title": "Failure 1: the file does not fit",
+    "part": "I",
+    "partTitle": "The naive design, and the seven ways it dies",
+    "gated": true,
+    "teaser": "ParseMultipartForm in Go, the default body parser in an Express app, the same helper in every framework: the convenient call is the one that buffers. The container hits its memory"
+  },
+  {
+    "slug": "3-failure-2-the-disk-is-ephemeral",
+    "number": "3",
+    "title": "Failure 2: the disk is ephemeral",
+    "part": "I",
+    "partTitle": "The naive design, and the seven ways it dies",
+    "gated": true,
+    "teaser": "If you deploy on Kubernetes, ECS, Railway, Render, Fly, or any serverless platform, this applies to you. On serverless it is worse: the writable area is usually a small /tmp that"
+  },
+  {
+    "slug": "4-failure-3-horizontal-scaling-and-the-1-in-n-404",
+    "number": "4",
+    "title": "Failure 3: horizontal scaling, and the 1-in-N 404",
+    "part": "I",
+    "partTitle": "The naive design, and the seven ways it dies",
+    "gated": true,
+    "teaser": "Three instances behind a load balancer, round robin:"
+  },
+  {
+    "slug": "5-failure-4-the-disk-grows-the-wrong-way",
+    "number": "5",
+    "title": "Failure 4: the disk grows the wrong way",
+    "part": "I",
+    "partTitle": "The naive design, and the seven ways it dies",
+    "gated": true,
+    "teaser": "Growing a disk means a resize: detach, expand, reattach, sometimes copy, usually with downtime or at least a maintenance window. And every provider has a ceiling, so \"just make it"
+  },
+  {
+    "slug": "6-failure-5-durability-is-not-availability",
+    "number": "6",
+    "title": "Failure 5: durability is not availability",
+    "part": "I",
+    "partTitle": "The naive design, and the seven ways it dies",
+    "gated": true,
+    "teaser": "The only known cure for a durability problem is redundancy: more than one copy, in more than one failure domain. And the moment you have copies you have signed up for the rest of"
+  },
+  {
+    "slug": "7-failure-6-your-server-is-an-expensive-cdn",
+    "number": "7",
+    "title": "Failure 6: your server is an expensive CDN",
+    "part": "I",
+    "partTitle": "The naive design, and the seven ways it dies",
+    "gated": true,
+    "teaser": "Whatever your concurrency primitive is, a goroutine, an event loop slot, a thread, a worker process, it is now pinned to copying bytes very slowly to a device thousands of miles"
+  },
+  {
+    "slug": "8-failure-7-no-transaction-across-two-systems",
+    "number": "8",
+    "title": "Failure 7: no transaction across two systems",
+    "part": "I",
+    "partTitle": "The naive design, and the seven ways it dies",
+    "gated": true,
+    "teaser": "There is no ordering that fixes this, because the failure is between the two operations, not inside either."
+  },
+  {
+    "slug": "9-block-storage",
+    "number": "9",
+    "title": "Block storage",
+    "part": "II",
+    "partTitle": "Three kinds of storage",
+    "gated": true,
+    "teaser": "Two facts matter for interviews."
+  },
+  {
+    "slug": "10-file-storage-and-what-posix-costs",
+    "number": "10",
+    "title": "File storage, and what POSIX costs",
+    "part": "II",
+    "partTitle": "Three kinds of storage",
+    "gated": true,
+    "teaser": "Any other process reading file.ts at any instant sees either the whole old version or the whole new version, never half a file. That guarantee is the reason the dance exists."
+  },
+  {
+    "slug": "11-object-storage-the-minimum-interface",
+    "number": "11",
+    "title": "Object storage: the minimum interface",
+    "part": "II",
+    "partTitle": "Three kinds of storage",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "12-the-trade-you-are-actually-making",
+    "number": "12",
+    "title": "The trade you are actually making",
+    "part": "II",
+    "partTitle": "Three kinds of storage",
+    "gated": true,
+    "teaser": "Each row is the same bargain: ==give up in-place mutation, receive unbounded horizontal scale==, because mutation is what forces coordination and coordination is what does not"
+  },
+  {
+    "slug": "13-key-value-metadata-bucket",
+    "number": "13",
+    "title": "Key, value, metadata, bucket",
+    "part": "III",
+    "partTitle": "Anatomy of an object",
+    "gated": true,
+    "teaser": "The key is the identity. Not a name, not a path, not a pointer: the string is the object's identity, which is why section 15 is about designing it."
+  },
+  {
+    "slug": "14-there-are-no-folders",
+    "number": "14",
+    "title": "There are no folders",
+    "part": "III",
+    "partTitle": "Anatomy of an object",
+    "gated": true,
+    "teaser": "The console calls LIST with a prefix and a delimiter, and the response contains a field the whole illusion is built on:"
+  },
+  {
+    "slug": "15-designing-the-key",
+    "number": "15",
+    "title": "Designing the key",
+    "part": "III",
+    "partTitle": "Anatomy of an object",
+    "gated": true,
+    "teaser": "Path traversal. A filename can contain .., absolute-looking paths, encoded separators. Depending on what you do downstream, the key can escape the prefix you thought you were"
+  },
+  {
+    "slug": "16-why-list-is-not-a-lookup",
+    "number": "16",
+    "title": "Why LIST is not a lookup",
+    "part": "III",
+    "partTitle": "Anatomy of an object",
+    "gated": true,
+    "teaser": "A bucket with 10 million objects under one prefix needs 10,000 paginated calls to enumerate, each a network round trip, and you pay per request."
+  },
+  {
+    "slug": "17-what-happens-when-you-put",
+    "number": "17",
+    "title": "What happens when you PUT",
+    "part": "IV",
+    "partTitle": "Inside the system",
+    "gated": true,
+    "teaser": "That split is the core architectural idea of every object store, and it is worth saying out loud in an interview, because it explains almost every behaviour that follows."
+  },
+  {
+    "slug": "18-the-data-plane-replication-and-erasure-coding",
+    "number": "18",
+    "title": "The data plane: replication and erasure coding",
+    "part": "IV",
+    "partTitle": "Inside the system",
+    "gated": true,
+    "teaser": "Split the object into 14 data shards, run a Reed-Solomon transform to compute 6 parity shards, and scatter all 20 across 20 drives in different racks, different power domains,"
+  },
+  {
+    "slug": "19-eleven-nines-read-carefully",
+    "number": "19",
+    "title": "Eleven nines, read carefully",
+    "part": "IV",
+    "partTitle": "Inside the system",
+    "gated": true,
+    "teaser": "The number falls out of the shard arithmetic in section 18: the probability that enough shards in enough independent failure domains die inside the repair window to make"
+  },
+  {
+    "slug": "20-the-metadata-plane",
+    "number": "20",
+    "title": "The metadata plane",
+    "part": "IV",
+    "partTitle": "Inside the system",
+    "gated": true,
+    "teaser": "And it must be strongly consistent, which is the genuinely hard requirement: trillions of keys, globally distributed, millisecond lookups, and a write must be visible to the next"
+  },
+  {
+    "slug": "21-consistency-eventual-then-strong",
+    "number": "21",
+    "title": "Consistency: eventual, then strong",
+    "part": "IV",
+    "partTitle": "Inside the system",
+    "gated": true,
+    "teaser": "Since December 2020, S3 provides strong read-after-write consistency for all operations, at no cost and with no opt-in. If you find a Stack Overflow answer recommending a retry"
+  },
+  {
+    "slug": "22-conditional-writes-the-primitive-that-changed-things",
+    "number": "22",
+    "title": "Conditional writes, the primitive that changed things",
+    "part": "IV",
+    "partTitle": "Inside the system",
+    "gated": true,
+    "teaser": "Without If-Match, A's write would silently destroy B's. This is optimistic concurrency control, the same pattern as a version column in a relational table, now available on an"
+  },
+  {
+    "slug": "23-architecture-a-through-your-server",
+    "number": "23",
+    "title": "Architecture A: through your server",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "For profile pictures, CSVs, documents under a few megabytes, this is a defensible choice and plenty of production systems use it. It is not categorically wrong."
+  },
+  {
+    "slug": "24-buffering-versus-streaming",
+    "number": "24",
+    "title": "Buffering versus streaming",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "The default helper in every framework buffers: ParseMultipartForm, the default body parser, the convenient decorator. You have to opt in to streaming."
+  },
+  {
+    "slug": "25-the-limits-streaming-does-not-remove",
+    "number": "25",
+    "title": "The limits streaming does not remove",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "That API Gateway row is the one that ends the argument. Some of these you can tune. That one you cannot, at any price."
+  },
+  {
+    "slug": "26-architecture-b-presigned-urls",
+    "number": "26",
+    "title": "Architecture B: presigned URLs",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "So the problem is precise: give an untrusted client the ability to perform ==exactly one operation, on exactly one key, for exactly the next five minutes==, without handing over a"
+  },
+  {
+    "slug": "27-the-hole-in-a-presigned-put",
+    "number": "27",
+    "title": "The hole in a presigned PUT",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "A demonstration from the lecture, and it is worth running yourself: sign a URL for an avatar, then PUT a 300 MB file to it. The bucket returns 200. The object is stored. You are"
+  },
+  {
+    "slug": "28-presigned-post-policies",
+    "number": "28",
+    "title": "Presigned POST policies",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "If the client violates any of them the object store rejects the request and nothing is stored. Your server is not involved, is not billed, and does not have to be correct for this"
+  },
+  {
+    "slug": "29-the-two-phase-upload",
+    "number": "29",
+    "title": "The two-phase upload",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "Three details carry the design."
+  },
+  {
+    "slug": "30-reconciliation-pending-expired-orphaned",
+    "number": "30",
+    "title": "Reconciliation: pending, expired, orphaned",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "Two mechanisms cover the whole table, and you want both:"
+  },
+  {
+    "slug": "31-cors-the-last-mile",
+    "number": "31",
+    "title": "CORS, the last mile",
+    "part": "V",
+    "partTitle": "Getting the bytes in",
+    "gated": true,
+    "teaser": "ExposeHeaders: [\"ETag\"] is the line people miss. Without it the browser receives the response but JavaScript cannot read the ETag, and multipart uploads (section 37) need the"
+  },
+  {
+    "slug": "32-why-a-single-put-stops-working",
+    "number": "32",
+    "title": "Why a single PUT stops working",
+    "part": "VI",
+    "partTitle": "Large files",
+    "gated": true,
+    "teaser": "There is no resume button on a PUT. On a real consumer connection a multi-gigabyte transfer takes twenty to thirty minutes, and a network that glitches once in thirty minutes is"
+  },
+  {
+    "slug": "33-the-multipart-protocol",
+    "number": "33",
+    "title": "The multipart protocol",
+    "part": "VI",
+    "partTitle": "Large files",
+    "gated": true,
+    "teaser": "The property worth stating out loud in an interview:"
+  },
+  {
+    "slug": "34-choosing-the-part-size",
+    "number": "34",
+    "title": "Choosing the part size",
+    "part": "VI",
+    "partTitle": "Large files",
+    "gated": true,
+    "teaser": "Failing at part 10,001 is the worst possible failure: it happens at the end, after everything expensive has already been paid for."
+  },
+  {
+    "slug": "35-the-etag-trap",
+    "number": "35",
+    "title": "The ETag trap",
+    "part": "VI",
+    "partTitle": "Large files",
+    "gated": true,
+    "teaser": "That works for a single PUT, where the ETag is the MD5 of the body. It breaks silently the moment you switch to multipart."
+  },
+  {
+    "slug": "36-abandoned-uploads-the-invisible-bill",
+    "number": "36",
+    "title": "Abandoned uploads: the invisible bill",
+    "part": "VI",
+    "partTitle": "Large files",
+    "gated": true,
+    "teaser": "And you cannot see it. The object does not exist, so it appears in no bucket listing and nowhere in the console."
+  },
+  {
+    "slug": "37-the-full-large-file-architecture",
+    "number": "37",
+    "title": "The full large-file architecture",
+    "part": "VI",
+    "partTitle": "Large files",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "38-resuming",
+    "number": "38",
+    "title": "Resuming",
+    "part": "VI",
+    "partTitle": "Large files",
+    "gated": true,
+    "teaser": "The bucket, not your database, is the authority on which parts exist. Your row holds the uploadId; ListParts holds the truth."
+  },
+  {
+    "slug": "39-never-relay-a-download",
+    "number": "39",
+    "title": "Never relay a download",
+    "part": "VII",
+    "partTitle": "Getting the bytes out",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "40-three-delivery-patterns",
+    "number": "40",
+    "title": "Three delivery patterns",
+    "part": "VII",
+    "partTitle": "Getting the bytes out",
+    "gated": true,
+    "teaser": "Do not make the bucket public. Put a CDN in front, let only the CDN read it, and then:"
+  },
+  {
+    "slug": "41-why-a-presigned-get-destroys-your-cache",
+    "number": "41",
+    "title": "Why a presigned GET destroys your cache",
+    "part": "VII",
+    "partTitle": "Getting the bytes out",
+    "gated": true,
+    "teaser": "You installed a CDN specifically to cut egress, and it is doing nothing at all."
+  },
+  {
+    "slug": "42-range-requests",
+    "number": "42",
+    "title": "Range requests",
+    "part": "VII",
+    "partTitle": "Getting the bytes out",
+    "gated": true,
+    "teaser": "Note what this is: an HTTP semantic, not an object storage invention. Object storage supports it because object storage is HTTP, which is the same property from section 11 that"
+  },
+  {
+    "slug": "43-segmented-streaming-and-where-object-storage-stops",
+    "number": "43",
+    "title": "Segmented streaming, and where object storage stops",
+    "part": "VII",
+    "partTitle": "Getting the bytes out",
+    "gated": true,
+    "teaser": "No streaming platform does that. They serve a different file to every viewer, chosen continuously."
+  },
+  {
+    "slug": "44-the-bill",
+    "number": "44",
+    "title": "The bill",
+    "part": "VII",
+    "partTitle": "Getting the bytes out",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "45-the-security-surface",
+    "number": "45",
+    "title": "The security surface",
+    "part": "VIII",
+    "partTitle": "Production concerns",
+    "gated": true,
+    "teaser": "Access is granted only if nothing denies it and something allows it. An explicit Deny always wins, which makes a deny-based guardrail (deny any request without TLS, or without"
+  },
+  {
+    "slug": "46-lifecycle-storage-classes-and-versioning",
+    "number": "46",
+    "title": "Lifecycle, storage classes and versioning",
+    "part": "VIII",
+    "partTitle": "Production concerns",
+    "gated": true,
+    "teaser": "The trap is the minimums: 30 days minimum billable duration on IA, 90 on Glacier Flexible, 180 on Deep Archive, plus per-object overhead and a transition request per object."
+  },
+  {
+    "slug": "47-untrusted-content-and-what-to-watch",
+    "number": "47",
+    "title": "Untrusted content, and what to watch",
+    "part": "VIII",
+    "partTitle": "Production concerns",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "48-the-delivery-script",
+    "number": "48",
+    "title": "The delivery script",
+    "part": "IX",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "Then name what you left out: \"I have not covered transcoding; that is a queue and a worker pool reading from the same bucket.\" Naming the boundary reads as judgement, not as a gap."
+  },
+  {
+    "slug": "49-whiteboard-drawing-order",
+    "number": "49",
+    "title": "Whiteboard drawing order",
+    "part": "IX",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "Draw the thick arrow deliberately and say \"this is the only line carrying file bytes, and it does not touch my service\". That one gesture communicates the whole design."
+  },
+  {
+    "slug": "50-follow-up-question-bank",
+    "number": "50",
+    "title": "Follow-up question bank",
+    "part": "IX",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "appendix-a-numbers-to-memorise",
+    "number": "",
+    "title": "Appendix A. Numbers to memorise",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": false,
+    "teaser": ""
+  },
+  {
+    "slug": "appendix-b-glossary",
+    "number": "",
+    "title": "Appendix B. Glossary",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "What \"folders\" are made of | | Delimiter | The character LIST groups on to fake folders | | CommonPrefixes | The LIST response field the folder illusion is built from | | Object |"
+  },
+  {
+    "slug": "appendix-c-self-test",
+    "number": "",
+    "title": "Appendix C. Self-test",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": ""
+  }
+]

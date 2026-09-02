@@ -1,0 +1,34 @@
+---
+number: "20"
+title: "Retries, poison pills and the DLQ"
+part: "V"
+partTitle: "Processing"
+---
+```text
+                    ┌───────────┐
+                    │   QUEUE   │
+                    └─────┬─────┘
+                          │ receive
+                          ▼
+                    ┌───────────┐   success   ┌───────────┐
+                    │  WORKER   │────────────►│ COMPLETED │
+                    └─────┬─────┘             └───────────┘
+                          │ failure
+                          ▼
+                  ┌───────────────┐
+                  │ classify      │
+                  └───┬───────┬───┘
+        retryable     │       │   permanent
+                      ▼       ▼
+             ┌──────────────┐ └──────────────► FAILED (no retry, tell the user)
+             │ backoff and  │
+             │ redeliver    │
+             └──────┬───────┘
+                    │ attempt > maxReceiveCount
+                    ▼
+             ┌──────────────┐
+             │     DLQ      │  alert, inspect, fix, replay
+             └──────────────┘
+```
+
+#### Classify before you retry

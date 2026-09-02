@@ -1,0 +1,25 @@
+---
+number: "14"
+title: "There are no folders"
+part: "III"
+partTitle: "Anatomy of an object"
+---
+Open the S3 console. You see `uploads/`, you double-click, you see `2026/`,
+inside there is `cat.png`. That hierarchy does not exist.
+
+What exists is one object whose key is the string:
+
+```text
+  uploads/2026/cat.png
+  ^^^^^^^^^^^^^^^^^^^^  one key. one object.
+
+  the "/" characters are ordinary characters in a string.
+  they carry no structural meaning to the store.
+  you could use "-" or "@" or "#" and nothing about the
+  storage system would behave differently.
+```
+
+There is no parent object, no directory entry, no nesting. A bucket is a flat
+namespace holding millions or trillions of string keys.
+
+#### Where the illusion comes from

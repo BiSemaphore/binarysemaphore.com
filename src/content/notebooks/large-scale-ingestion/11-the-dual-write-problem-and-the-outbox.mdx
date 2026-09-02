@@ -1,0 +1,30 @@
+---
+number: "11"
+title: "The dual-write problem and the outbox"
+part: "III"
+partTitle: "The handoff"
+---
+Here is a bug most candidates walk straight into.
+
+```text
+  BROKEN
+
+  db.update(job, status = UPLOADED)     ✓ committed
+  ──────────── process dies here ────────────
+  queue.publish({jobId})                ✗ never happened
+
+  Result: a job marked ready that no worker will ever pick up.
+  It is invisible, because nothing failed loudly.
+```
+
+Reversing the order does not help, it changes which way you break:
+
+```text
+  ALSO BROKEN
+
+  queue.publish({jobId})                ✓ published
+  ──────────── process dies here ────────────
+  db.update(job, status = UPLOADED)     ✗ never happened
+
+  Result: a worker picks up a job whose row still says UPLOADING.
+```

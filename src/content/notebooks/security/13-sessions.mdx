@@ -1,0 +1,22 @@
+---
+number: "13"
+title: "Sessions"
+part: "III"
+partTitle: "Authentication"
+---
+Once the password is verified, the user should not send it again. They carry a
+<Pink>session identifier</Pink> instead.
+
+```text
+  LOGIN                                  SERVER
+  email + password  ─────────────▶  verify hash
+                                    generate 128+ bits of CSPRNG randomness
+                                    store: session_id ──▶ { user_id, expires,
+                                                            ip, user_agent }
+                    ◀─────────────  Set-Cookie: sid=…
+
+  EVERY REQUEST AFTER
+  Cookie: sid=…     ─────────────▶  look up sid ──▶ user_id
+                                    the id is a bearer token: whoever
+                                    holds it IS the user, until it expires
+```

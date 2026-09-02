@@ -1,0 +1,30 @@
+---
+number: "5"
+title: "Long polling, and the gap"
+part: "I"
+partTitle: "The client always spoke first"
+---
+The first idea anyone has after measuring polling is to keep the shape but remove
+the empty answers. The client is allowed to ask. Nothing says the server has to
+answer promptly.
+
+<Pink>Long polling</Pink> is exactly that: the client sends a request, and the server
+simply does not respond. It holds the request open, sometimes for a minute, and
+only writes a response when something actually happens. The client receives it,
+processes it, and immediately opens a new request.
+
+```text
+  browser                                 server
+    ├──── GET /changes ─────────────────▶ │  (held open, no response)
+    │                                     │
+    │              ... 47 seconds ...     │  task moves
+    │◀──── 200 {"event": "task.moved"} ───┤
+    │                                     │
+    │  parse, render                      │  ← nothing can reach this
+    │  open a new request                 │     browser during this gap
+    ├──── GET /changes ─────────────────▶ │
+```
+
+This works, and it carried real-time features on the web for the better part of a
+decade. The cost is now attached to `E` rather than `U`, which was the whole
+point. Empty polls are gone.

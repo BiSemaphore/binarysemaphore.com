@@ -1,0 +1,52 @@
+**For most products this is completely fine**, and saying so is the mature
+position. The write path and the read path are asymmetric in almost every
+application: writes are infrequent, individually meaningful, need their own
+authorisation and validation, and benefit from being ordinary HTTP requests you
+can log, rate-limit, retry and cache-bust like everything else. ++Splitting reads
+onto a stream and writes onto normal POSTs is a legitimate architecture, not a
+compromise.++
+
+You need the second direction when:
+
+| You need two-way when | Why |
+|---|---|
+| Messages are frequent and small | Per-message HTTP overhead dominates. Cursor positions, keystrokes, game input |
+| Latency on the write path matters | A new request means a round trip you already paid for |
+| The client must send while offline-ish | The socket's liveness *is* the signal |
+| The protocol is conversational | Request and response are interleaved, not independent |
+
+Live cursors in a document are the clean example: thirty small messages a second
+per user, each one meaningless on its own. Thirty POSTs a second per user is
+absurd. Thirty WebSocket frames a second, at six bytes of framing each, is
+nothing.
+
+Our board feature does not obviously need it. But the requirement was to
+understand the ceiling, so the next part is what happens when you leave HTTP
+behind entirely.
+
+<Signal>
+
+"I would default to SSE and reach for WebSockets when the client needs to send on
+the same channel at a rate that makes separate requests silly." That is a
+decision rule, and it lands better than a feature comparison.
+
+</Signal>
+
+<KeyIdea>
+
+SSE is one-way. Client writes go over ordinary POSTs, which is fine until the
+write rate makes per-request overhead the dominant cost.
+
+</KeyIdea>
+
+<Recall>
+
+Write a valid two-event SSE body from memory, including a heartbeat and the field that makes it resumable. | 8
+
+</Recall>
+
+<Recall>
+
+Name the two ways a proxy silently breaks a stream, and the fix for each. | 6
+
+</Recall>

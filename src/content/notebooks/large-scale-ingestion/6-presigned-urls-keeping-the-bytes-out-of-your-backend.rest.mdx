@@ -1,0 +1,52 @@
+The backend keeps the job it is good at, <Peach>authorisation and orchestration</Peach>,
+and hands the job it is bad at, <Peach>moving bytes</Peach>, to infrastructure designed for
+it. Your API tier stays small and stateless, and its cost stops scaling with
+payload size.
+
+#### What a presigned URL actually is
+
+A URL with a signature computed from your credentials, the HTTP method, the
+exact object key, and an expiry. S3 validates the signature itself. No call
+reaches your servers. Because the signature covers the key and method, a URL
+signed for `PUT uploads/job-8f21/part-3` cannot be used to write anywhere else,
+or to read anything.
+
+<DoThis>
+
+Constrain the signature, do not just sign
+
+- Short expiry: minutes for a single small `PUT`, up to a few hours for a
+  multipart session, never days.
+- Bind the key to the job, and derive it server-side. Never accept a
+  client-supplied key, or a client can overwrite another tenant's object.
+- For browser `POST` policies, set `content-length-range` so a client cannot
+  upload a 5 TB file when you authorised 5 GB.
+- Require a checksum header (`x-amz-checksum-sha256`) so a corrupted part is
+  rejected by S3 rather than discovered by your parser an hour later.
+- Set a bucket CORS rule that exposes `ETag`, otherwise the browser cannot read
+  the part ETags it needs to complete the upload.
+
+</DoThis>
+
+<Trap>
+
+"Presigned URLs are insecure because anyone with the link can upload"
+
+Anyone with the link can perform ==exactly the one operation you signed, on the
+one key you named, until it expires==. That is a capability, not a hole. The
+actual risks are over-broad scope and over-long expiry, both of which are yours
+to set.
+
+</Trap>
+
+<Ask>
+
+The data comes from another backend service, not a browser. Does this change?
+
+The principle holds, the mechanism may simplify. Service to service, you can
+grant a scoped IAM role instead of presigning, or have the producer write to a
+bucket you read. If the producer is a third party you cannot change, you may
+have to pull instead: then your ingestion worker streams from their endpoint
+into S3, using ranged requests so it too can resume.
+
+</Ask>

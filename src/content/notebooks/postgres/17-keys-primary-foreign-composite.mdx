@@ -1,0 +1,19 @@
+---
+number: "17"
+title: "Keys: primary, foreign, composite"
+part: "IV"
+partTitle: "Designing the schema"
+---
+```text
+  PRIMARY KEY   implies  NOT NULL  +  UNIQUE  +  an index, created for you
+                one per table, identifies exactly one row
+
+  FOREIGN KEY   the value must exist as a key in the referenced table
+                enforced on INSERT, UPDATE, and on DELETE of the parent
+                NOT indexed automatically. see section 33
+
+  COMPOSITE PK  PRIMARY KEY (project_id, user_id)
+                the pair is unique and neither may be null
+```
+
+The foreign key does real work:

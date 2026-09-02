@@ -1,0 +1,15 @@
+---
+number: "9"
+title: "L: the four rules, and the square"
+part: "II"
+partTitle: "The five"
+---
+Liskov and Wing's formalisation gives four conditions. They are precise, and they
+are what to say when asked how to actually check for a violation.
+
+| Rule | In the subtype |
+|---|---|
+| Preconditions | May not be strengthened. It cannot demand more than the parent |
+| Postconditions | May not be weakened. It must deliver at least as much |
+| Invariants | Must be preserved. What was always true stays always true |
+| History | It must not permit state changes the parent forbade |

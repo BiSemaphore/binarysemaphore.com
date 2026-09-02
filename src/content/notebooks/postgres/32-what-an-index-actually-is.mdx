@@ -1,0 +1,31 @@
+---
+number: "32"
+title: "What an index actually is"
+part: "VI"
+partTitle: "Making it fast"
+---
+The lecture's analogy is the right one. A book's index maps "chapter 4" to
+"page 54", so you jump instead of scanning.
+
+```text
+  WITHOUT AN INDEX: sequential scan
+
+    SELECT * FROM tasks WHERE id = 't7'
+
+    row 1 ─ no    row 2 ─ no    row 3 ─ no  …  row 4,000,000 ─ yes
+    every row read from disk and compared. O(n).
+
+  WITH AN INDEX: index scan
+
+    a B-tree, sorted by the indexed value
+
+              ┌──────────┐
+              │  t4      │
+         ┌────┴───┐  ┌───┴────┐
+         │ t2     │  │ t7 ──▶ heap location (page 91, offset 3)
+      ┌──┴─┐   ┌──┴─┐└────────┘
+      │ t1 │   │ t3 │
+      └────┘   └────┘
+
+    three comparisons, then one read. O(log n).
+```

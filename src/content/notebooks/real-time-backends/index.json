@@ -1,0 +1,452 @@
+[
+  {
+    "slug": "how-to-use-this-book",
+    "number": "",
+    "title": "How to use this book",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "If you can say what each design bought and what it charged, you can answer almost any real-time question asked in an interview, including the ones about technologies this book"
+  },
+  {
+    "slug": "the-whole-picture-on-one-page",
+    "number": "",
+    "title": "The whole picture on one page",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "Four rules are encoded in that picture, and they are the whole architecture."
+  },
+  {
+    "slug": "1-the-requirement-two-people-one-board",
+    "number": "1",
+    "title": "The requirement: two people, one board",
+    "part": "I",
+    "partTitle": "The client always spoke first",
+    "gated": true,
+    "teaser": "Two users have board 412 open. Aas drags task 9 from To Do to In Progress. Leo, in another country, should see the card move."
+  },
+  {
+    "slug": "2-the-shape-of-every-request-you-have-written-so-far",
+    "number": "2",
+    "title": "The shape of every request you have written so far",
+    "part": "I",
+    "partTitle": "The client always spoke first",
+    "gated": true,
+    "teaser": "An HTTP exchange has a fixed order. The client opens a connection, writes a request line and headers, and only then may the server write anything at all. The server can be slow,"
+  },
+  {
+    "slug": "3-polling-and-why-it-is-not-stupid",
+    "number": "3",
+    "title": "Polling, and why it is not stupid",
+    "part": "I",
+    "partTitle": "The client always spoke first",
+    "gated": true,
+    "teaser": "++For internal tooling with a few dozen users, polling every few seconds is a correct engineering decision and you should not apologise for it.++ It is the design with the fewest"
+  },
+  {
+    "slug": "4-the-arithmetic-of-polling",
+    "number": "4",
+    "title": "The arithmetic of polling",
+    "part": "I",
+    "partTitle": "The client always spoke first",
+    "gated": true,
+    "teaser": "Now multiply the two together:"
+  },
+  {
+    "slug": "5-long-polling-and-the-gap",
+    "number": "5",
+    "title": "Long polling, and the gap",
+    "part": "I",
+    "partTitle": "The client always spoke first",
+    "gated": true,
+    "teaser": "The problem is the gap. Between the server writing the response and the client's next request arriving, there is no channel. If two events happen in quick succession, the second"
+  },
+  {
+    "slug": "6-the-two-inversions",
+    "number": "6",
+    "title": "The two inversions",
+    "part": "I",
+    "partTitle": "The client always spoke first",
+    "gated": true,
+    "teaser": "Polling gives you neither. Long polling gives you the second one and half of the first. Server-sent events and WebSockets give you both. Everything after this page is about what"
+  },
+  {
+    "slug": "7-a-200-that-does-not-close",
+    "number": "7",
+    "title": "A 200 that does not close",
+    "part": "II",
+    "partTitle": "Server-sent events: the response that never ends",
+    "gated": true,
+    "teaser": "The important property is what SSE is not. It is not a different protocol. It is HTTP, with HTTP headers, an HTTP status code, HTTP authentication, and an HTTP response body."
+  },
+  {
+    "slug": "8-the-wire-format-four-fields-and-a-blank-line",
+    "number": "8",
+    "title": "The wire format: four fields and a blank line",
+    "part": "II",
+    "partTitle": "Server-sent events: the response that never ends",
+    "gated": true,
+    "teaser": "The blank line is not cosmetic. An event is dispatched when the parser sees an empty line. ++Write \\n\\n after every event, and flush.++ If your framework buffers the response, the"
+  },
+  {
+    "slug": "9-reconnection-you-did-not-write",
+    "number": "9",
+    "title": "Reconnection you did not write",
+    "part": "II",
+    "partTitle": "Server-sent events: the response that never ends",
+    "gated": true,
+    "teaser": "Because SSE is in the HTML specification, the client is the browser. EventSource handles the reconnect for you: if the connection drops, the browser waits, opens a new request to"
+  },
+  {
+    "slug": "10-why-nobody-streams-an-llm-with-eventsource",
+    "number": "10",
+    "title": "Why nobody streams an LLM with EventSource",
+    "part": "II",
+    "partTitle": "Server-sent events: the response that never ends",
+    "gated": true,
+    "teaser": "EventSource issues a GET and gives you no way to attach headers. An LLM request is a POST carrying messages, tools and parameters, authenticated with a bearer token. ==Neither of"
+  },
+  {
+    "slug": "11-the-proxy-that-eats-your-stream",
+    "number": "11",
+    "title": "The proxy that eats your stream",
+    "part": "II",
+    "partTitle": "Server-sent events: the response that never ends",
+    "gated": true,
+    "teaser": "Buffering. A reverse proxy is built to read a response and forward it efficiently, which for a normal response means accumulating it. Nginx has proxybuffering on by default. Your"
+  },
+  {
+    "slug": "12-six-connections-per-origin",
+    "number": "12",
+    "title": "Six connections per origin",
+    "part": "II",
+    "partTitle": "Server-sent events: the response that never ends",
+    "gated": true,
+    "teaser": "Under HTTP/1.1, browsers cap concurrent connections to a single origin at roughly six. An EventSource holds one of those open for the entire life of the tab. Six tabs, six"
+  },
+  {
+    "slug": "13-what-sse-cannot-do",
+    "number": "13",
+    "title": "What SSE cannot do",
+    "part": "II",
+    "partTitle": "Server-sent events: the response that never ends",
+    "gated": true,
+    "teaser": "For most products this is completely fine, and saying so is the mature position. The write path and the read path are asymmetric in almost every application: writes are"
+  },
+  {
+    "slug": "14-the-handshake-byte-by-byte",
+    "number": "14",
+    "title": "The handshake, byte by byte",
+    "part": "III",
+    "partTitle": "WebSocket: leaving HTTP behind",
+    "gated": true,
+    "teaser": "That single choice is why WebSockets deploy anywhere. Every router, proxy, firewall, corporate middlebox and cloud load balancer in the world already speaks HTTP, and the"
+  },
+  {
+    "slug": "15-what-101-actually-changed",
+    "number": "15",
+    "title": "What 101 actually changed",
+    "part": "III",
+    "partTitle": "WebSocket: leaving HTTP behind",
+    "gated": true,
+    "teaser": "Everything HTTP-shaped in your stack stops working. Your CDN cannot cache a stream. Your API gateway's per-route rate limiting sees one request, not ten thousand messages. Your"
+  },
+  {
+    "slug": "16-the-frame",
+    "number": "16",
+    "title": "The frame",
+    "part": "III",
+    "partTitle": "WebSocket: leaving HTTP behind",
+    "gated": true,
+    "teaser": "The length encoding is where the efficiency lives. Seven bits hold the length directly for anything under 126 bytes. Write 126 and the real length follows in two more bytes; write"
+  },
+  {
+    "slug": "17-masking-and-the-proxy-it-was-designed-to-protect",
+    "number": "17",
+    "title": "Masking, and the proxy it was designed to protect",
+    "part": "III",
+    "partTitle": "WebSocket: leaving HTTP behind",
+    "gated": true,
+    "teaser": "It exists because someone poisoned a cache with it. While the protocol was being specified, researchers ran the attack against real caching proxies deployed on the internet, and"
+  },
+  {
+    "slug": "18-ping-pong-and-the-connection-that-is-already-dead",
+    "number": "18",
+    "title": "Ping, pong, and the connection that is already dead",
+    "part": "III",
+    "partTitle": "WebSocket: leaving HTTP behind",
+    "gated": true,
+    "teaser": "Nothing arrives when a connection dies. There is no error, no RST, no close frame, no event of any kind. A user walks into a lift, a phone hands off from wifi to LTE, a NAT table"
+  },
+  {
+    "slug": "19-close-codes-and-the-one-you-cannot-send",
+    "number": "19",
+    "title": "Close codes, and the one you cannot send",
+    "part": "III",
+    "partTitle": "WebSocket: leaving HTTP behind",
+    "gated": true,
+    "teaser": "1006 is the one to understand, because it is the code you will see most and the one that is most misread. It is never sent on the wire. It cannot be: it means \"the connection"
+  },
+  {
+    "slug": "20-choosing-polling-long-polling-sse-websocket",
+    "number": "20",
+    "title": "Choosing: polling, long polling, SSE, WebSocket",
+    "part": "III",
+    "partTitle": "WebSocket: leaving HTTP behind",
+    "gated": true,
+    "teaser": "Read down the columns and a decision procedure falls out:"
+  },
+  {
+    "slug": "21-ceiling-1-file-descriptors",
+    "number": "21",
+    "title": "Ceiling 1: file descriptors",
+    "part": "IV",
+    "partTitle": "How many connections fit on one machine",
+    "gated": true,
+    "teaser": "In Unix, everything is a file. A network socket is a file, and to touch it you need a file descriptor: a small integer indexing the kernel's table of open files for your process."
+  },
+  {
+    "slug": "22-the-thousand-descriptor-limit-is-language-dependent",
+    "number": "22",
+    "title": "The thousand-descriptor limit is language-dependent",
+    "part": "IV",
+    "partTitle": "How many connections fit on one machine",
+    "gated": true,
+    "teaser": "The reason is in Go's own standard library comment: some systems set an artificially low soft limit for compatibility with code using select(), which has a hard-coded maximum"
+  },
+  {
+    "slug": "23-ceiling-2-the-client-s-ports-not-the-server-s",
+    "number": "23",
+    "title": "Ceiling 2: the client's ports, not the server's",
+    "part": "IV",
+    "partTitle": "How many connections fit on one machine",
+    "gated": true,
+    "teaser": "The number was calculable before the error appeared. ==This is not a memory limit, a descriptor limit or a server limit. It is the load generator running out of source ports.=="
+  },
+  {
+    "slug": "24-ceiling-3-memory-and-where-10-kb-goes",
+    "number": "24",
+    "title": "Ceiling 3: memory, and where 10 KB goes",
+    "part": "IV",
+    "partTitle": "How many connections fit on one machine",
+    "gated": true,
+    "teaser": "It is process heap, not total cost. The kernel keeps its own structures per socket: the socket itself, and the send and receive buffers, which do not appear in your process's"
+  },
+  {
+    "slug": "25-the-ceiling-the-benchmark-did-not-measure",
+    "number": "25",
+    "title": "The ceiling the benchmark did not measure",
+    "part": "IV",
+    "partTitle": "How many connections fit on one machine",
+    "gated": true,
+    "teaser": "The mechanism. You write a frame. It goes into the kernel's send buffer. If the peer is not reading, the buffer fills, TCP flow control closes the window, and your write blocks or"
+  },
+  {
+    "slug": "26-compression-and-the-budget-it-destroys",
+    "number": "26",
+    "title": "Compression, and the budget it destroys",
+    "part": "IV",
+    "partTitle": "How many connections fit on one machine",
+    "gated": true,
+    "teaser": "permessage-deflate is the WebSocket compression extension, negotiated at the handshake and signalled per message by the RSV1 bit from section 16. It is attractive: JSON compresses"
+  },
+  {
+    "slug": "27-what-you-just-broke",
+    "number": "27",
+    "title": "What you just broke",
+    "part": "V",
+    "partTitle": "The connection is state",
+    "gated": true,
+    "teaser": "Instance 1 has, in its own memory, a socket, a goroutine, and a note that this socket cares about board 412. Instance 2 has no way to learn any of that. They are separate"
+  },
+  {
+    "slug": "28-sticky-sessions-are-not-the-answer-and-not-for-the-reason-you-think",
+    "number": "28",
+    "title": "Sticky sessions are not the answer, and not for the reason you think",
+    "part": "V",
+    "partTitle": "The connection is state",
+    "gated": true,
+    "teaser": "The sharper objection, which is the one to say out loud. For a WebSocket, stickiness is close to a no-op, because there is nothing to be sticky about."
+  },
+  {
+    "slug": "29-pub-sub-the-instances-talk-to-each-other",
+    "number": "29",
+    "title": "Pub/sub: the instances talk to each other",
+    "part": "V",
+    "partTitle": "The connection is state",
+    "gated": true,
+    "teaser": "The producer and the consumer are decoupled. Instance 1 does not know that instance 2 exists, how many instances there are, or where browser B is. It knows the topic name. Adding"
+  },
+  {
+    "slug": "30-redis-pub-sub-is-at-most-once-and-deploys-are-when-it-bites",
+    "number": "30",
+    "title": "Redis pub/sub is at-most-once, and deploys are when it bites",
+    "part": "V",
+    "partTitle": "The connection is state",
+    "gated": true,
+    "teaser": "When you PUBLISH, Redis writes the message to whichever subscribers are connected at that instant and then forgets it. There is no queue, no acknowledgement, no retry, no replay."
+  },
+  {
+    "slug": "31-ordering-and-why-sequence-numbers-come-first",
+    "number": "31",
+    "title": "Ordering, and why sequence numbers come first",
+    "part": "V",
+    "partTitle": "The connection is state",
+    "gated": true,
+    "teaser": "1. Order per topic at the bus. A partitioned log gives you total order within a partition. Partition by the entity, board id here, and every event for one board is ordered, while"
+  },
+  {
+    "slug": "32-the-catch-up-protocol",
+    "number": "32",
+    "title": "The catch-up protocol",
+    "part": "VI",
+    "partTitle": "Delivery: gaps, storms and fan-out",
+    "gated": true,
+    "teaser": "The fix has one shape, and you saw it in section 9. ==Name every message, and let the client tell you where it got to.=="
+  },
+  {
+    "slug": "33-fan-out-events-times-subscribers",
+    "number": "33",
+    "title": "Fan-out: events times subscribers",
+    "part": "VI",
+    "partTitle": "Delivery: gaps, storms and fan-out",
+    "gated": true,
+    "teaser": "Discord documented this. With communities of 30,000 people online at once, publishing a single event took between 900 milliseconds and 2.1 seconds, for one message, on a platform"
+  },
+  {
+    "slug": "34-coalescing-the-other-lever",
+    "number": "34",
+    "title": "Coalescing: the other lever",
+    "part": "VI",
+    "partTitle": "Delivery: gaps, storms and fan-out",
+    "gated": true,
+    "teaser": "Most real-time payloads are state, not history. If a task moves three times in two hundred milliseconds, the client does not need three frames. It needs the final position."
+  },
+  {
+    "slug": "35-the-reconnect-storm",
+    "number": "35",
+    "title": "The reconnect storm",
+    "part": "VI",
+    "partTitle": "Delivery: gaps, storms and fan-out",
+    "gated": true,
+    "teaser": "1. Jittered backoff on the client. ++Never reconnect immediately, and never reconnect on a fixed delay.++ A fixed delay just moves the spike; every client still arrives together."
+  },
+  {
+    "slug": "36-deploys-draining-a-connection-that-never-ends",
+    "number": "36",
+    "title": "Deploys: draining a connection that never ends",
+    "part": "VI",
+    "partTitle": "Delivery: gaps, storms and fan-out",
+    "gated": true,
+    "teaser": "Standard connection draining does not resolve this. A load balancer stops sending new connections to a draining target and waits for existing ones to close, up to a deregistration"
+  },
+  {
+    "slug": "37-authenticating-a-socket",
+    "number": "37",
+    "title": "Authenticating a socket",
+    "part": "VII",
+    "partTitle": "The parts the lecture left out",
+    "gated": true,
+    "teaser": "The constraint: the browser cannot set headers. new WebSocket(url) takes a URL and an optional subprotocol list, and no headers. ==You cannot send Authorization: Bearer==, exactly"
+  },
+  {
+    "slug": "38-the-token-that-never-expires",
+    "number": "38",
+    "title": "The token that never expires",
+    "part": "VII",
+    "partTitle": "The parts the lecture left out",
+    "gated": true,
+    "teaser": "Notebook 05 on authorisation applies unchanged; ==what is new is that the check has no natural moment to re-run==, so you have to create one."
+  },
+  {
+    "slug": "39-cross-site-websocket-hijacking",
+    "number": "39",
+    "title": "Cross-site WebSocket hijacking",
+    "part": "VII",
+    "partTitle": "The parts the lecture left out",
+    "gated": true,
+    "teaser": "This is CSRF with a persistent channel and a readable response, which is worse than CSRF: the attacker not only acts as the user, they ==receive everything you push to that user,"
+  },
+  {
+    "slug": "40-presence-who-is-online",
+    "number": "40",
+    "title": "Presence: who is online",
+    "part": "VII",
+    "partTitle": "The parts the lecture left out",
+    "gated": true,
+    "teaser": "Per device, not per user. A user on a laptop and a phone has two connections on two instances. Online means \"any device key exists\", which a key pattern or a Redis set with"
+  },
+  {
+    "slug": "41-collaborative-editing-in-one-page",
+    "number": "41",
+    "title": "Collaborative editing, in one page",
+    "part": "VII",
+    "partTitle": "The parts the lecture left out",
+    "gated": true,
+    "teaser": "What to say. ++\"I would use an existing CRDT library rather than implement either.\"++ That is not a dodge; it is the correct engineering answer, and both families are famous for"
+  },
+  {
+    "slug": "42-where-this-goes-next-webtransport",
+    "number": "42",
+    "title": "Where this goes next: WebTransport",
+    "part": "VII",
+    "partTitle": "The parts the lecture left out",
+    "gated": true,
+    "teaser": "WebSockets sit on TCP, and TCP has one property that hurts real-time work: head-of-line blocking. One lost packet stalls everything behind it, because TCP guarantees ordered"
+  },
+  {
+    "slug": "43-the-delivery-script",
+    "number": "43",
+    "title": "The delivery script",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "Then name what you left out: \"I have not covered collaborative editing, which needs a CRDT on top of this transport, or presence, which is a TTL heartbeat with quadratic fan-out.\""
+  },
+  {
+    "slug": "44-whiteboard-drawing-order",
+    "number": "44",
+    "title": "Whiteboard drawing order",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "Step 6 is the moment the whiteboard does the work for you. ==Draw the arrow, then cross it out, and say \"a socket is a file descriptor in one process, so this arrow cannot"
+  },
+  {
+    "slug": "45-follow-up-question-bank",
+    "number": "45",
+    "title": "Follow-up question bank",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "appendix-a-numbers-to-memorise",
+    "number": "",
+    "title": "Appendix A. Numbers to memorise",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "HTTP/2 multiplexes instead | | WebSocket RFC | 6455 | | WebSocket handshake status | 101 Switching Protocols | | Sec-WebSocket-Key | 16 random bytes, base64 | | Handshake constant"
+  },
+  {
+    "slug": "appendix-b-glossary",
+    "number": "",
+    "title": "Appendix B. Glossary",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "Each entry links back to the page where it first appeared."
+  },
+  {
+    "slug": "appendix-c-self-test",
+    "number": "",
+    "title": "Appendix C. Self-test",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "Anything you cannot answer in two sentences goes back to the section beside it."
+  }
+]

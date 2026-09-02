@@ -1,0 +1,32 @@
+```text
+  page refresh, or the app reopens
+        │
+  browser  "do I have an upload in progress for this file?"
+        ▼
+   server  SELECT … WHERE status='pending' AND fingerprint = ?
+           ListParts(uploadId)        ← which parts does the bucket already hold?
+           presign ONLY the missing parts
+        ▼
+  browser  resumes at part 341 of 500, not at part 1
+```
+
+The bucket, not your database, is the authority on which parts exist. Your row
+holds the `uploadId`; `ListParts` holds the truth.
+
+<Ask>
+
+How does the client know it is the same file after a reload?
+
+It cannot rely on the filename. Fingerprint it: size plus last-modified plus a
+hash of the first and last part is usually enough, and is cheap because slicing
+is lazy. Store that fingerprint on the pending row. Getting this wrong means
+resuming one file into another file's upload, which produces a corrupt object
+that passes every existence check.
+
+</Ask>
+
+<Recall>
+
+Write the part-size formula, the part cap, and the concurrency, from memory. | 5
+
+</Recall>

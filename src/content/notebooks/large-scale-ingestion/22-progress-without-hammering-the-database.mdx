@@ -1,0 +1,19 @@
+---
+number: "22"
+title: "Progress without hammering the database"
+part: "VI"
+partTitle: "State and visibility"
+---
+Naive progress reporting creates a second scaling problem inside the first one.
+
+```text
+  BAD:  UPDATE jobs SET progress = ... after every row
+        53 million rows  ->  53 million UPDATEs on one hot row
+        the progress bar becomes the bottleneck
+```
+
+```text
+  GOOD: update on chunk boundaries only
+        100 chunks  ->  100 UPDATEs, once every ~25 seconds
+        progress is granular enough for a human, invisible to the database
+```

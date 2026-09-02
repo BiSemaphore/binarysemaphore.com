@@ -1,0 +1,236 @@
+[
+  {
+    "slug": "how-to-use-this-book",
+    "number": "",
+    "title": "How to use this book",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "That is what all five of SOLID are about, and none of the usual summaries say so. Each principle is a different answer to the same question, and the question is never \"is this"
+  },
+  {
+    "slug": "the-whole-picture-on-one-page",
+    "number": "",
+    "title": "The whole picture on one page",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "Read it in that direction, ==from the painful change backwards to the principle that would have prevented it.== Read in the other direction, from principle to code, it produces"
+  },
+  {
+    "slug": "1-the-requirement-a-change-that-should-have-been-small",
+    "number": "1",
+    "title": "The requirement: a change that should have been small",
+    "part": "I",
+    "partTitle": "The words that came before the acronym",
+    "gated": true,
+    "teaser": "You start work. The calculation lives in InvoiceService. You change it. Tests fail in the PDF renderer, because it recomputed the same total itself. You fix that. The nightly"
+  },
+  {
+    "slug": "2-cohesion-and-coupling-the-older-better-words",
+    "number": "2",
+    "title": "Cohesion and coupling: the older, better words",
+    "part": "I",
+    "partTitle": "The words that came before the acronym",
+    "gated": true,
+    "teaser": "The reason both matter, and neither alone, is that ==either one is trivial to achieve by destroying the other.== Put the entire application in one file and coupling between"
+  },
+  {
+    "slug": "3-separation-of-concerns-and-where-these-principles-live",
+    "number": "3",
+    "title": "Separation of concerns, and where these principles live",
+    "part": "I",
+    "partTitle": "The words that came before the acronym",
+    "gated": true,
+    "teaser": "The video puts the principles in a specific place, and it is the right place. Three layers:"
+  },
+  {
+    "slug": "4-s-one-reason-to-change",
+    "number": "4",
+    "title": "S: one reason to change",
+    "part": "II",
+    "partTitle": "The five",
+    "gated": true,
+    "teaser": "The word doing the work is reason, and it is not \"responsibility\" in the loose English sense. A class that validates an order, prices it, and emails a receipt has three reasons to"
+  },
+  {
+    "slug": "5-s-refined-responsibility-means-an-actor",
+    "number": "5",
+    "title": "S, refined: responsibility means an actor",
+    "part": "II",
+    "partTitle": "The five",
+    "gated": true,
+    "teaser": "The reason this matters is that it makes the principle falsifiable in a conversation. His own example is an Employee class with three methods, calculatePay, reportHours, and save."
+  },
+  {
+    "slug": "6-o-change-by-adding-not-by-editing",
+    "number": "6",
+    "title": "O: change by adding, not by editing",
+    "part": "II",
+    "partTitle": "The five",
+    "gated": true,
+    "teaser": "The plain reading: ==you should be able to add behaviour without editing code that already works.== The reason is risk. Code that has been in production for a year and has never"
+  },
+  {
+    "slug": "7-o-meyer-s-version-and-martin-s-are-not-the-same",
+    "number": "7",
+    "title": "O: Meyer's version and Martin's are not the same",
+    "part": "II",
+    "partTitle": "The five",
+    "gated": true,
+    "teaser": "Meyer's OCP (1988) is about inheritance. A class, once published and in use, is closed: you do not modify it. You extend it by subclassing, and the subclass adds what you need."
+  },
+  {
+    "slug": "8-l-what-liskov-actually-said",
+    "number": "8",
+    "title": "L: what Liskov actually said",
+    "part": "II",
+    "partTitle": "The five",
+    "gated": true,
+    "teaser": "The plain reading: ==code that works with the parent must keep working, unchanged and unaware, when handed the child.== A subtype is a promise that substitution is safe."
+  },
+  {
+    "slug": "9-l-the-four-rules-and-the-square",
+    "number": "9",
+    "title": "L: the four rules, and the square",
+    "part": "II",
+    "partTitle": "The five",
+    "gated": true,
+    "teaser": "Preconditions may not be strengthened is the one that catches most real bugs. If Parent.save(user) accepts any user, and Child.save(user) throws unless the user has an email,"
+  },
+  {
+    "slug": "10-i-the-interface-that-carries-what-you-do-not-use",
+    "number": "10",
+    "title": "I: the interface that carries what you do not use",
+    "part": "II",
+    "partTitle": "The five",
+    "gated": true,
+    "teaser": "A single fat interface forces every implementer to supply everything and every caller to depend on everything. ==The cost is not the unused methods; it is that a change to one of"
+  },
+  {
+    "slug": "11-d-point-the-dependency-at-what-changes-least",
+    "number": "11",
+    "title": "D: point the dependency at what changes least",
+    "part": "II",
+    "partTitle": "The five",
+    "gated": true,
+    "teaser": "The arrow from the detail now points ==up, at the abstraction owned by the business layer.== That ownership is the part people miss: ++the interface belongs to the high-level"
+  },
+  {
+    "slug": "12-when-two-principles-disagree",
+    "number": "12",
+    "title": "When two principles disagree",
+    "part": "III",
+    "partTitle": "Using them without being used by them",
+    "gated": true,
+    "teaser": "The resolution is always the same shape, and it is worth being able to state: ask which change is more likely. If a new payment method is likely and a new parameter is not, be"
+  },
+  {
+    "slug": "13-ocp-against-yagni-the-abstraction-you-did-not-need",
+    "number": "13",
+    "title": "OCP against YAGNI: the abstraction you did not need",
+    "part": "III",
+    "partTitle": "Using them without being used by them",
+    "gated": true,
+    "teaser": "You anticipate variation. You build the interface, the factory, the registry and the configuration for it. Then the variation never arrives, or arrives on a different axis"
+  },
+  {
+    "slug": "14-srp-against-dry-the-duplication-you-should-keep",
+    "number": "14",
+    "title": "SRP against DRY: the duplication you should keep",
+    "part": "III",
+    "partTitle": "Using them without being used by them",
+    "gated": true,
+    "teaser": "Ask who owns each one. If the first is the marketing team's promotional discount and the second is the finance team's contractual discount, ==the identical code is a coincidence,"
+  },
+  {
+    "slug": "15-the-smell-catalogue-what-a-violation-looks-like-in-a-diff",
+    "number": "15",
+    "title": "The smell catalogue: what a violation looks like in a diff",
+    "part": "III",
+    "partTitle": "Using them without being used by them",
+    "gated": true,
+    "teaser": "The last row is the most useful in practice. ==Test setup pain is the most reliable design smell there is==, because it measures exactly the thing the principles are about: how"
+  },
+  {
+    "slug": "16-solid-outside-objects",
+    "number": "16",
+    "title": "SOLID outside objects",
+    "part": "III",
+    "partTitle": "Using them without being used by them",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "17-the-critique-is-solid-still-right",
+    "number": "17",
+    "title": "The critique: is SOLID still right?",
+    "part": "III",
+    "partTitle": "Using them without being used by them",
+    "gated": true,
+    "teaser": "Dan North's 2021 talk CUPID argues the acronym should be retired and proposes properties rather than principles: composable, Unix philosophy, predictable, idiomatic, domain-based."
+  },
+  {
+    "slug": "18-the-delivery-script",
+    "number": "18",
+    "title": "The delivery script",
+    "part": "IV",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "That answer does five things at once: it names the unifying idea, it uses the refined SRP, it generalises L past inheritance, it states D correctly as being about direction, and"
+  },
+  {
+    "slug": "19-whiteboard-refactoring-live",
+    "number": "19",
+    "title": "Whiteboard: refactoring live",
+    "part": "IV",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "Step 5 is the one candidates skip and the one interviewers are waiting for. Every refactor makes something cheaper and something else more expensive, and saying which is what"
+  },
+  {
+    "slug": "20-follow-up-question-bank",
+    "number": "20",
+    "title": "Follow-up question bank",
+    "part": "IV",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "appendix-a-the-sources-and-what-each-one-actually-says",
+    "number": "",
+    "title": "Appendix A. The sources, and what each one actually says",
+    "part": "V",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "One principle that is not in SOLID and is asked about anyway. The %%Law of Demeter%%, or \"principle of least knowledge\": a method should only call methods on itself, its own"
+  },
+  {
+    "slug": "appendix-b-the-one-page-summary",
+    "number": "",
+    "title": "Appendix B. The one-page summary",
+    "part": "V",
+    "partTitle": "Appendices",
+    "gated": false,
+    "teaser": ""
+  },
+  {
+    "slug": "appendix-c-glossary",
+    "number": "",
+    "title": "Appendix C. Glossary",
+    "part": "V",
+    "partTitle": "Appendices",
+    "gated": false,
+    "teaser": ""
+  },
+  {
+    "slug": "appendix-d-self-test",
+    "number": "",
+    "title": "Appendix D. Self-test",
+    "part": "V",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": ""
+  }
+]

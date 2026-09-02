@@ -1,0 +1,23 @@
+---
+number: "1"
+title: "The requirement, and the intuitive answer"
+part: "I"
+partTitle: "The naive design, and the seven ways it dies"
+---
+A user needs to upload a profile picture. You have a backend with handlers,
+services, repositories, a database and auth. Nothing exotic is being asked for.
+
+The intuitive implementation writes itself:
+
+```text
+  browser                 your server                     disk + db
+
+  <input type=file>  ──▶  parse multipart/form-data
+                          write bytes to /var/app/uploads/avatar.png
+                          INSERT INTO users(avatar_path) VALUES (...)
+                     ◀──  200 OK
+
+  <img src=/avatar>  ──▶  SELECT avatar_path
+                          read the file off disk
+                     ◀──  image bytes
+```

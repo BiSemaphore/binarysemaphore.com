@@ -1,0 +1,26 @@
+---
+number: "32"
+title: "CDNs: what goes on one"
+part: "VII"
+partTitle: "Moving work in space and time"
+---
+If the distance is the problem, put a copy of the answer near the user.
+
+<Term name="CDN">
+
+Content delivery network. A large fleet of servers spread across the world, each
+holding cached copies of your content, so a request is served from a machine
+near the user instead of from your origin server. The individual locations are
+called edge nodes or points of presence, PoPs.
+
+</Term>
+
+```text
+  without a CDN                    with a CDN
+  ─────────────                    ──────────
+  Tokyo user → Virginia            Tokyo user → Tokyo PoP
+  20,000 km, 100 ms                ~100 km, 2-3 ms
+```
+
+From 100ms to 3ms. In human terms both are instant; in scaling terms it is a
+thirtyfold reduction on the largest line item in the budget above.

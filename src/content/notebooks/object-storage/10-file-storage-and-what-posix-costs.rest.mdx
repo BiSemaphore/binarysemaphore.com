@@ -1,0 +1,39 @@
+Any other process reading `file.ts` at any instant sees either the whole old
+version or the whole new version, never half a file. That guarantee is the
+reason the dance exists.
+
+#### Writes are consistently visible, and locks exist
+
+Two processes appending to the same log file need `flock` or `O_APPEND`
+semantics so their lines do not interleave into garbage. Partial writes must not
+be visible. Readers and writers must agree on what the file currently is.
+
+#### And that is the problem
+
+Every one of those guarantees is a <Peach>coordination requirement</Peach>. Atomicity,
+ordering, locking and consistent visibility are cheap inside one kernel, which
+owns all the state. They get expensive across a network, and they get
+prohibitive across data centres and continents.
+
+Network file systems (NFS, SMB, AWS EFS, Azure Files) implement them anyway, and
+their trade-offs are exactly where the coordination shows up:
+
+| Property | Network file storage |
+|---|---|
+| Interface | POSIX, or most of it |
+| Shared by | Many machines, <Peach>unlike block</Peach> |
+| Latency | Sub-millisecond to milliseconds, plus metadata round trips |
+| Weak spot | Small-file and metadata-heavy workloads, locking, throughput ceilings |
+| Use when | Software you cannot change requires `open()` and `seek()` |
+
+<Trap>
+
+"EFS is basically S3 with folders"
+
+They are not comparable. EFS is a POSIX file system: it maintains a directory
+tree, supports in-place writes and locks, and prices and scales accordingly.
+S3 maintains a flat key index with no locking and no in-place writes. Choosing
+EFS for user uploads usually means paying several times per GB for semantics
+your web app never uses.
+
+</Trap>

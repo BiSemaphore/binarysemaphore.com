@@ -1,0 +1,32 @@
+---
+number: "11"
+title: "N+1: the shape, not the name"
+part: "III"
+partTitle: "The database"
+---
+You are rendering twenty blog posts and each needs its author's name. The list
+endpoint does not include authors. So:
+
+```js
+const posts = await db.select().from(postsTable).limit(20);
+
+for (const post of posts) {                       // and here it is
+  post.author = await db.select()
+    .from(users)
+    .where(eq(users.id, post.authorId));
+}
+```
+
+Twenty posts, twenty-one queries. A hundred posts, a hundred and one. The name
+<Pink>N+1</Pink> is literally the count: one query to get N things, then N queries to
+decorate them.
+
+```text
+  items shown     queries issued
+  ───────────     ──────────────
+      20                21
+     100               101
+    1000              1001         ← at 5ms each, that is 5 seconds
+```
+
+Two things are wrong here, and the second is the one that matters.

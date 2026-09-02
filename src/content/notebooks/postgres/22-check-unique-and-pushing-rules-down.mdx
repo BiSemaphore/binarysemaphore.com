@@ -1,0 +1,11 @@
+---
+number: "22"
+title: "`CHECK`, `UNIQUE`, and pushing rules down"
+part: "IV"
+partTitle: "Designing the schema"
+---
+```sql
+priority  int NOT NULL DEFAULT 1 CHECK (priority BETWEEN 1 AND 5),
+email     text NOT NULL UNIQUE,
+CONSTRAINT valid_dates CHECK (due_date IS NULL OR due_date >= created_at::date)
+```

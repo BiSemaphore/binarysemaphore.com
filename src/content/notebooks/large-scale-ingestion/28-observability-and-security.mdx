@@ -1,0 +1,31 @@
+---
+number: "28"
+title: "Observability and security"
+part: "VII"
+partTitle: "Senior concerns"
+---
+#### Observability
+
+<DoThis>
+
+Instrument the four things you will actually be paged about
+
+- **Correlation.** One `jobId` on every log line, span and metric, from the API
+  through the queue into the worker. Without it, debugging is archaeology.
+- **Metrics that map to user pain**, not to machines:
+```text
+  queue_depth                    is work piling up?
+  oldest_message_age_seconds     the real latency SLO
+  job_duration_seconds{p50,p99}  is it getting slower?
+  chunk_failure_rate             is something broken?
+  dlq_depth                      page immediately, always
+  upload_abort_rate              is the client-side path broken?
+```
+- **Structured logs**, one event per state transition, so a job's whole life can
+  be reconstructed from a single query.
+- **Tracing** across the async boundary: propagate the trace context in the
+  message headers, or the trace stops dead at the queue.
+
+</DoThis>
+
+#### Security

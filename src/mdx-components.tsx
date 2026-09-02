@@ -4,6 +4,7 @@ import type { AnchorHTMLAttributes } from "react";
 import { Underline, Circle, Box, Strike, Highlight } from "@/components/annotate";
 import { CronDiagram } from "@/components/cron-diagram";
 import { Pre } from "@/components/code-block";
+import { notebookComponents } from "@/components/learn/mdx";
 
 /**
  * Global MDX element styling for thread content. Required by @next/mdx in the
@@ -11,6 +12,9 @@ import { Pre } from "@/components/code-block";
  * globals.css so rehype-pretty-code's output is preserved.
  */
 const components: MDXComponents = {
+  // The study notebooks' own vocabulary. Registered here so a generated
+  // notebook section resolves them the same way a thread resolves its own.
+  ...notebookComponents,
   h2: (props) => (
     <h2
       className="mt-12 scroll-mt-24 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"

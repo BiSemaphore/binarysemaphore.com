@@ -1,0 +1,14 @@
+---
+number: "4"
+title: "Relational or not"
+part: "I"
+partTitle: "Why a database at all"
+---
+| | Relational | Document |
+|---|---|---|
+| Unit | Table, row, column | Collection, document |
+| Schema | <Peach>Declared up front</Peach>, enforced by the engine | Per document, enforced by you |
+| Relationships | Foreign keys, joins | Embedding, or application-side joins |
+| Integrity | The engine's job | <Peach>Your code's job</Peach> |
+| Good at | Data with shape and relationships | Data whose shape you do not know yet |
+| Examples | Postgres, MySQL, SQL Server | MongoDB, DynamoDB |

@@ -1,0 +1,20 @@
+---
+number: "34"
+title: "Asynchronous processing: the queue as a latency tool"
+part: "VII"
+partTitle: "Moving work in space and time"
+---
+The other way to move work is through time. If something does not have to
+finish before the user hears back, it should not.
+
+Take inviting a teammate:
+
+```text
+  synchronous                                        total 400 ms
+  ───────────                                        ───────────
+  validate the request                       20 ms
+  check the user is not already a member     30 ms
+  insert the invite row                      50 ms
+  call SendGrid to send the email           300 ms   ← the user is waiting
+  respond 201                                        ← for this
+```

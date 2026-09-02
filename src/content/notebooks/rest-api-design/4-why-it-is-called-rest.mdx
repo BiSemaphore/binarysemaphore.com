@@ -1,0 +1,20 @@
+---
+number: "4"
+title: "Why it is called REST"
+part: "I"
+partTitle: "The standard exists so you do not have to negotiate"
+---
+Three words, and the middle one is the one people get wrong.
+
+**Representational.** A resource is the *thing*. A representation is one *format
+of that thing on the wire*. The user with id 8f2a is a resource; the JSON
+document describing that user is a representation of it, and so is the HTML page,
+and so is the CSV row in an export.
+
+```text
+                        ┌──────── application/json  ──▶  another server
+   RESOURCE             │
+   user 8f2a  ──────────┼──────── text/html         ──▶  a browser
+   (the thing)          │
+                        └──────── text/csv          ──▶  an export job
+```

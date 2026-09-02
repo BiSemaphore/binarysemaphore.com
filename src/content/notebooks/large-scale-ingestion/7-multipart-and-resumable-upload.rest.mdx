@@ -1,0 +1,59 @@
+#### The three calls
+
+```bash
+# 1. begin a session; S3 returns an uploadId that identifies it
+aws s3api create-multipart-upload --bucket acme-ingest \
+    --key uploads/job-8f21/input.csv
+
+# 2. upload parts, in parallel, in any order; each returns an ETag
+aws s3api upload-part --bucket acme-ingest --key uploads/job-8f21/input.csv \
+    --upload-id "$UPLOAD_ID" --part-number 4 --body part-004.bin
+
+# 3. commit: the object does not exist until this succeeds
+aws s3api complete-multipart-upload --bucket acme-ingest \
+    --key uploads/job-8f21/input.csv --upload-id "$UPLOAD_ID" \
+    --multipart-upload file://parts.json
+```
+
+<KeyIdea>
+
+The upload is <Peach>atomic at the object level</Peach>. Until `CompleteMultipartUpload`
+returns, no reader can see a partial file. This is what makes "upload finished"
+a trustworthy event, and it is why the processing side can treat the object as
+immutable.
+
+</KeyIdea>
+
+#### Resumability
+
+Resuming needs only two things: the `uploadId` and the set of parts already
+accepted. Both survive a browser refresh if you persist the `uploadId` on the
+job row and keep part state client-side, and S3 will tell you the truth on
+request:
+
+```bash
+aws s3api list-parts --bucket acme-ingest \
+    --key uploads/job-8f21/input.csv --upload-id "$UPLOAD_ID"
+```
+
+<DoThis>
+
+Resume correctly after a client restart
+
+Call `ListParts` and trust S3, not the client's memory. Compare part numbers and
+checksums, upload only what is missing, then complete. This also survives the
+case where a part succeeded but the response was lost, which is exactly the
+ambiguity a naive client resolves by uploading everything again.
+
+</DoThis>
+
+<Ask>
+
+What if the user closes the laptop for two days mid-upload?
+
+The `uploadId` stays valid, S3 has no built-in expiry on it, so the upload can
+resume. That is also the problem: the accepted parts are billed as storage
+indefinitely. This is section 27's abandoned-upload cost bug, and the fix is a
+lifecycle rule.
+
+</Ask>

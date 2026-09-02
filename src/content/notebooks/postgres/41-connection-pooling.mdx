@@ -1,0 +1,22 @@
+---
+number: "41"
+title: "Connection pooling"
+part: "VIII"
+partTitle: "Living with it in production"
+---
+A Postgres connection is a <Peach>process</Peach>, not a thread. Each one costs memory
+before it does any work, and the server has a hard `max_connections`.
+
+```text
+  ✗ WITHOUT POOLING
+    3 app instances × 200 request workers = 600 connections attempted
+    max_connections = 100
+         ──▶ FATAL: sorry, too many clients already
+             and the ones that do connect thrash the scheduler
+
+  ✓ WITH POOLING
+    each app keeps a small pool and reuses connections
+    3 instances × 20 = 60 connections, held open, handed round
+```
+
+Two layers, and they solve different problems:

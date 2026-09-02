@@ -1,0 +1,26 @@
+---
+number: "8"
+title: "The wire format: four fields and a blank line"
+part: "II"
+partTitle: "Server-sent events: the response that never ends"
+---
+The entire specification of the body format is four field names, a comment
+syntax, and a rule about blank lines. It is worth memorising because it takes
+sixty seconds and it lets you write a compliant stream by hand.
+
+```text
+  field    what it does
+  -----    ------------
+  data:    the payload. repeat the line for multiline; they join with \n
+  event:   the event name. the client listens for it by name.
+           omitted means the default name, "message"
+  id:      sets the stream position. the client remembers the last one seen
+  retry:   milliseconds the client should wait before reconnecting
+
+  :        a line starting with a colon is a comment. ignored.
+           this is the standard keepalive.
+
+  a BLANK LINE dispatches the event. without it, nothing fires.
+```
+
+Two details cause most first-time bugs.

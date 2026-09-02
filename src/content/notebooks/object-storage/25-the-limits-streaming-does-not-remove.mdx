@@ -1,0 +1,19 @@
+---
+number: "25"
+title: "The limits streaming does not remove"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+Streaming fixes memory. Everything else in the data path is still in the data
+path.
+
+```text
+  browser ──▶ CDN/LB ──▶ reverse proxy ──▶ your app ──▶ bucket
+               │            │                  │
+               │            │                  └── worker pinned for
+               │            │                      the whole transfer
+               │            └── nginx client_max_body_size
+               │                default 1 MB ──▶ 413 Entity Too Large
+               └── idle timeout, commonly 60 s
+                   ──▶ 504 on a slow mobile upload
+```

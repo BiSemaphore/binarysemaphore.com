@@ -1,0 +1,31 @@
+---
+number: "35"
+title: "The reconnect storm"
+part: "VI"
+partTitle: "Delivery: gaps, storms and fan-out"
+---
+An instance holding 50,000 connections dies. What happens next is the failure
+that turns one dead instance into an outage.
+
+All 50,000 clients notice within a second or two, and they all reconnect ==at the
+same moment==. That alone is survivable: the remaining instances accept
+connections. What is not survivable is what each client does next.
+
+```text
+  t=0.0   instance dies
+  t=0.5   50,000 clients see the socket close
+  t=0.6   50,000 reconnect attempts
+  t=0.7   50,000 clients ask "what is my initial state?"
+              ↓
+          which boards, which tasks, who is online,
+          what did I miss
+              ↓
+          50,000 EXPENSIVE requests in one second,
+          all of them hitting the database
+```
+
+<Peach>The reconnection is cheap. The initial state is not.</Peach> And it arrives as a
+perfectly synchronised spike, which is the worst possible shape for a database.
+Slack documented exactly this failure.
+
+Two defences, and you want both.

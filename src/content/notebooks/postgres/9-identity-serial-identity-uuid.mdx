@@ -1,0 +1,14 @@
+---
+number: "9"
+title: "Identity: serial, identity, uuid"
+part: "II"
+partTitle: "Types are the first constraint"
+---
+```text
+  id serial PRIMARY KEY          -- legacy. an integer + a sequence + a default
+  id bigserial PRIMARY KEY       -- same, 8 bytes
+
+  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY    -- ✓ SQL standard
+
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid()         -- ✓ distributed
+```

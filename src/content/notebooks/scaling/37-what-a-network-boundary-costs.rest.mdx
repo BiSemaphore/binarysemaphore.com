@@ -1,0 +1,53 @@
+A function call does not time out. A network call does, and now every call site
+needs a decision about timeouts, retries and what to do when the answer never
+comes.
+
+<DoThis>
+
+The three settings every remote call needs
+
+- <Mint>A timeout, always, and shorter than you think.</Mint> An unbounded call holds a
+  thread, a connection and a request slot until something else breaks. Default
+  timeouts of 30 or 60 seconds are effectively unbounded under load.
+- <Mint>Retries with exponential backoff and jitter, on idempotent calls only.</Mint>
+  Retrying a payment is not the same as retrying a read.
+- <Mint>A circuit breaker.</Mint> After N consecutive failures, stop calling for a while
+  and fail immediately. It gives the struggling service room to recover and stops
+  you burning capacity on calls you know will fail.
+
+</DoThis>
+
+<Trap>
+
+<Rose>Naive retries during an overload.</Rose> The downstream service is slow because it
+is overloaded. Every caller times out and retries, tripling the traffic arriving
+at the thing that could not keep up with the original amount. This is a %%retry
+storm%%, and it turns a brownout into an outage in about ninety seconds. ==Retry
+budgets, backoff, jitter, and a circuit breaker are not optional decorations;
+they are what stops your own clients from finishing off your service.==
+
+</Trap>
+
+#### Debugging
+
+One request now spans four services and four log streams. Reconstructing it by
+hand across four dashboards is not viable, which is why distributed tracing
+stops being a nice-to-have and becomes a prerequisite. ==If you cannot trace a
+request end to end, you are not ready to split the service.==
+
+#### Data consistency
+
+Each service owning its own database means no cross-service transaction. An
+order that must create a payment record and decrement inventory is now two
+writes on two machines with no way to make them atomic. The answers are sagas
+with compensating actions, or the outbox pattern, and both are considerably more
+work than `BEGIN` and `COMMIT`.
+
+<Signal>
+
+"The moment you split a service you have converted a function call into a network
+call, and you now owe it a timeout, a retry policy, a circuit breaker, a trace
+and a consistency story." Listing the bill precisely is what separates someone
+who has run microservices from someone who has read about them.
+
+</Signal>

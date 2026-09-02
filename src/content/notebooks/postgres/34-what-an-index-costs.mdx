@@ -1,0 +1,19 @@
+---
+number: "34"
+title: "What an index costs"
+part: "VI"
+partTitle: "Making it fast"
+---
+Indexes are not free, and the cost is paid on <Peach>every write</Peach>.
+
+```text
+  INSERT INTO tasks (…)
+        │
+        ├──▶ write the row to the heap
+        ├──▶ update tasks_project_id
+        ├──▶ update tasks_assigned_to
+        ├──▶ update tasks_status
+        └──▶ update tasks_created_at
+             four extra writes per insert, plus disk space,
+             plus more to keep in memory, plus more for vacuum
+```

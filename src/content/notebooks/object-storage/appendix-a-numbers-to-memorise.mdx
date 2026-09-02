@@ -1,0 +1,29 @@
+---
+number: ""
+title: "Appendix A. Numbers to memorise"
+part: "X"
+partTitle: "Appendices"
+---
+| Quantity | Value |
+|---|---|
+| Block size | 512 B or 4 KB |
+| Block storage latency | Microseconds |
+| Object storage latency | Milliseconds to tens of milliseconds (an HTTP round trip) |
+| Maximum single PUT | <Peach>5 GiB</Peach> |
+| Maximum object size | 5 TiB |
+| Multipart minimum part | 5 MiB (except the last) |
+| Multipart maximum parts | <Peach>10,000</Peach> |
+| Part size formula | `max(16 MiB, ceil(fileSize / 10000))` |
+| Upload concurrency | 4 to 6 parallel parts |
+| Browser peak memory | `partSize × concurrency` |
+| Abort-incomplete lifecycle | 7 days |
+| LIST page size | 1,000 keys |
+| Erasure coding shape | 14 data + 6 parity, any 14 reconstruct |
+| Erasure coding overhead | 1.43x, versus 3x for replication |
+| S3 durability | 11 nines: 1 object lost per 10 million per 10,000 years |
+| Request rate per prefix | ~3,500 write/s, ~5,500 read/s |
+| Storage | ~$0.023 per GB-month |
+| Egress | ~$0.09 per GB, roughly 4x storage |
+| Write requests cost | ~10x read requests |
+| Strong consistency since | December 2020 |
+| Conditional writes since | 2024 |

@@ -1,0 +1,50 @@
+---
+number: "71"
+title: "Answers, Notebook 02"
+part: "10"
+partTitle: "Answers"
+---
+**Q29** How much memory does a streaming upload actually use?  *Notebook 02, section 2.*
+
+One buffer, typically tens of kilobytes, regardless of whether the object is
+1 MB or 1 GB. You read a chunk off the request body and write it to the storage
+client, then reuse the buffer. Section 24 has the measured comparison: same
+wall-clock time, flat memory line instead of a 500 MB climb.
+
+**Q30** Could you fix this with sticky sessions?  *Notebook 02, section 4.*
+
+You can make it appear fixed, and you should say why that is a bad trade.
+Session affinity pins a user to one node, so a redeploy, a crash or a scale-in
+loses their files anyway, load distribution degrades, and you have converted a
+stateless tier into a stateful one to avoid a storage decision. It also does
+nothing when two different users need the same object, which is the normal case
+for shared or public content.
+
+**Q31** What about a shared network file system, NFS or EFS?  *Notebook 02, section 4.*
+
+Legitimate, and it is what many older systems did. It gives every node the same
+namespace, so the 404 goes away. What you inherit is POSIX coordination over a
+network: locking, metadata round trips, small-file latency, a throughput ceiling
+you now have to provision, and an operational surface. See section 10. It is the
+right answer when you genuinely need file semantics, for example a legacy binary
+that calls `open()` and `seek()`. It is the wrong answer when all you needed was
+put and get.
+
+**Q32** Is capacity really infinite in object storage?  *Notebook 02, section 5.*
+
+Practically, yes, and precisely, no. There is no volume you size, no resize
+operation and no ceiling you will reach, but there are per-object limits (S3
+caps a single object at 5 TiB and a single PUT at 5 GiB, hence multipart), and
+account-level request rate limits per prefix. "Infinite capacity, finite request
+rate per partition" is the accurate sentence.
+
+**Q33** This sounds like the dual-write problem. Is it?  *Notebook 02, section 8.*
+
+It is exactly the dual-write problem, and the transactional outbox is the
+general solution: commit the intent in the same transaction as your business
+data, then let a relay perform the second effect with retries. Notebook 01
+section 11 works this through in full. For upload specifically, two-phase plus
+a sweeper is usually enough, because the object store gives you a cheap,
+authoritative existence check (`HEAD`) that a message broker cannot.
+
+**Q35** So when would you not use object storage?  *Notebook 02, section 12.*

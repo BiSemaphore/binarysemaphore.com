@@ -1,0 +1,26 @@
+Write that at the top of your notes in the interview. It reframes the question
+from a throughput problem into a <Peach>reliability and state-management problem</Peach>,
+which is what the interviewer is actually testing.
+
+#### The requirements, restated as constraints
+
+| Requirement | The constraint it creates |
+|---|---|
+| Files are gigabytes to terabytes | Cannot fit in memory, cannot fit in one HTTP request |
+| Processing takes minutes to hours | Cannot happen inside a request/response cycle |
+| Networks fail mid-upload | Transfer must be resumable at sub-file granularity |
+| Workers crash mid-job | Processing must be resumable and repeatable safely |
+| Many users submit at once | Load must be buffered, not applied directly to workers |
+| Users want progress | Job state must be externally observable, not in worker memory |
+
+Every architectural decision in this book falls out of the right-hand column.
+
+<Trap>
+
+Designing for the happy path
+
+The happy path here is trivial: download the file, parse it, write results. If
+you spend your time on that, you have answered a junior question. The interview
+lives entirely in the failure paths, so get to them fast and deliberately.
+
+</Trap>

@@ -1,0 +1,24 @@
+See below |
+
+<Trap>
+
+"We have a replica, so we have a backup"
+
+A replica replays everything, including your mistake, in seconds. `DROP TABLE
+users` on the primary is `DROP TABLE users` on the replica. ==A replica is for
+availability; a backup is for recovery from your own actions==, which is the
+identical distinction Notebook 02 section 19 makes about durability not being
+backup.
+
+</Trap>
+
+<DoThis>
+
+The only backup rule that matters
+
+<Mint>Restore it.</Mint> On a schedule, into a scratch environment, and time it. A backup
+you have never restored is a hypothesis, and the number you actually need in an
+incident is not "do we have a backup" but "how long until we are back", which
+you can only know by having done it.
+
+</DoThis>

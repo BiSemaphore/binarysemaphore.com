@@ -1,0 +1,35 @@
+---
+number: "4"
+title: "The arithmetic of polling"
+part: "I"
+partTitle: "The client always spoke first"
+---
+This is the section to work with a pen, because the two formulas here are the
+argument for the entire rest of the book.
+
+**The delay.** A change that happens immediately after a poll waits the full
+interval. One that happens immediately before waits nothing. Uniformly
+distributed, the average wait is half the interval:
+
+```text
+  average delay  =  T / 2          worst case  =  T
+
+  T = 3s   ──▶   1.5s average, 3s worst
+  T = 1s   ──▶   0.5s average, 1s worst
+```
+
+**The cost.** Every browser with the board open issues one request per interval,
+independent of whether anything happened:
+
+```text
+  requests per second  =  U / T          U = concurrent users
+                                         T = poll interval, seconds
+
+  10,000 users, T = 3s   ──▶   3,333 rps
+  10,000 users, T = 1s   ──▶  10,000 rps
+```
+
+And each one of those is a real request. It crosses the load balancer, runs your
+authentication middleware and validates a token, writes a log line, enters a
+service, queries the database, and serialises a response. ==Ten thousand database
+queries per second, and almost all of them return "nothing changed".==

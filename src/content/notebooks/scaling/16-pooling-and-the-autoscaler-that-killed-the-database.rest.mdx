@@ -1,0 +1,89 @@
+That solves both problems at once. But *where* the pool lives turns out to
+matter enormously, and this is the failure that catches people.
+
+#### Internal pooling, and how it fails
+
+Modern drivers pool for you, inside your process. That is fine with one server.
+Now horizontally scale, and each instance brings its own pool.
+
+```text
+  instance A   pool max 150  ┐
+  instance B   pool max 150  ├── 450 possible connections
+  instance C   pool max 150  ┘
+
+  database     max_connections = 300
+```
+
+Nothing is misconfigured from any single instance's point of view. Each one is
+politely capped at 150. But the cap is per process, and ==the autoscaler adds
+processes==. Traffic spikes, Kubernetes helpfully adds a third replica, the
+three pools together ask for more than 300, and the database starts refusing
+connections. The scaling event caused the outage.
+
+<Figure>
+
+Three application instances, each correctly capped, summing past a limit none of
+them can see. The fix is not a smaller per-instance cap, which just wastes
+capacity when you have fewer replicas; it is a pool that knows the real total.
+
+</Figure>
+
+#### External pooling
+
+Put one pooler between all the instances and the database. For Postgres that is
+usually PgBouncer.
+
+```text
+  A ─┐
+  B ─┼──→  PgBouncer  ──→  Postgres
+  C ─┘     (250 conns)     (max 300)
+
+  every instance shares one budget. adding a replica does not add connections.
+```
+
+<DoThis>
+
+Configuring this without surprises
+
+- <Mint>Use an external pooler once you autoscale.</Mint> The moment instance count is
+  dynamic, per-instance caps cannot add up to a safe number.
+- <Mint>Understand transaction mode.</Mint> PgBouncer in transaction pooling mode gives
+  you the best reuse, and <Rose>breaks anything that assumes session state</Rose>:
+  session-level `SET`, advisory locks, prepared statements, `LISTEN/NOTIFY`.
+  Know which your code relies on before you switch.
+- <Mint>Size it from Little's Law</Mint>, not from optimism. At 500 rps with 20ms of
+  in-database time you need 10 concurrent connections, not 300. Oversized pools
+  make the database slower, because the contention moves inside it.
+
+</DoThis>
+
+<Trap>
+
+<Rose>"More connections means more throughput."</Rose> Past the point where the database
+can keep its cores busy, additional connections add lock contention and context
+switching and make everything slower. A pool of 20 frequently beats a pool of
+200 on the same hardware. This is the utilization knee from section 5, wearing a
+different hat.
+
+</Trap>
+
+<Signal>
+
+"Each instance had a 150-connection pool, we autoscaled to three, and 450 hit a
+300-connection limit" is a war story shape. If you have one of these, tell it.
+Interviewers remember the candidate who explained how their own scaling event
+caused their own outage, because it demonstrates you have operated something.
+
+</Signal>
+
+<Recall>
+
+The three database performance failures in this part, and the one measurement that identifies each. | 6
+
+</Recall>
+
+<Recall>
+
+Why does an index on (user_id, created_at) not help a query filtering only on created_at? | 4
+
+</Recall>

@@ -1,0 +1,31 @@
+| What you see in the diff | Likely principle | Why |
+|---|---|---|
+| A new `else if` in a long chain | O | The axis of variation is known; adding still edits |
+| `instanceof` or a type switch on a subtype | L | Callers must know the concrete type |
+| `throw new UnsupportedOperationException` | L, I | The type cannot honour the contract it claims |
+| A boolean parameter that selects behaviour | S | Two behaviours, two actors, one function |
+| A method with an unrelated third argument | S, I | The function serves more than one purpose |
+| A domain class importing the ORM or HTTP layer | D | The arrow points at the volatile detail |
+| An interface with one implementation, forever | (none) | Section 13, not a violation but a cost |
+| A test that needs six mocks to run | I, D | The dependency surface is too wide |
+
+The last row is the most useful in practice. ==Test setup pain is the most
+reliable design smell there is==, because it measures exactly the thing the
+principles are about: how much a piece of code must know about the rest of the
+world in order to work. Notebook 03 covers reading a diff for these properly.
+
+<DoThis>
+
+In review, do not write "this violates SRP". Write the change that will hurt:
+"if finance changes the tax rule, this same function is where HR's report is
+calculated, so we would be editing their behaviour too." ++A named future change
+is arguable; a named principle is just an assertion of authority.++
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Review for smells, not for letters.</Peach> The letters are for explaining a smell
+once you have found it, and for talking to people who already know them.
+
+</KeyIdea>

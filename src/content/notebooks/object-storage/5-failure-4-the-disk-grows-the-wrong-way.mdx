@@ -1,0 +1,12 @@
+---
+number: "5"
+title: "Failure 4: the disk grows the wrong way"
+part: "I"
+partTitle: "The naive design, and the seven ways it dies"
+---
+Servers scale horizontally. Disks do not.
+
+```text
+  more traffic     ──▶  add another instance        (horizontal, online)
+  more files       ──▶  make the one disk bigger    (vertical, disruptive)
+```

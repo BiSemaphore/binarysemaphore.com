@@ -1,0 +1,28 @@
+---
+number: "24"
+title: "Statelessness is the price of admission"
+part: "V"
+partTitle: "More machines"
+---
+Horizontal scaling works for exactly one reason: any instance can serve any
+request. The moment that stops being true, the whole scheme breaks in ways that
+look like haunted-house bugs.
+
+<Term name="Stateless">
+
+A server is stateless when it holds no data that only it has. Every request can
+be served by any instance, because everything needed to serve it comes with the
+request or from shared storage. Note that stateless does not mean there is no
+state; it means the state lives somewhere all instances can reach.
+
+</Term>
+
+Here is the failure, and it is the most common one in the industry:
+
+```text
+  1  user logs in → load balancer sends them to instance A
+  2  instance A creates a session, stores it in its own memory
+  3  next request → load balancer sends them to instance B
+  4  instance B has never heard of this session
+  5  401. the user is thrown back to the login screen.
+```

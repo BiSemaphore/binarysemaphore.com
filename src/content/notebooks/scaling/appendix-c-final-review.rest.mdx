@@ -1,0 +1,134 @@
+Work down the list. Anything you cannot answer in two sentences
+goes back to the section named beside it.
+
+<Recall>
+
+Latency, throughput, utilization, headroom: define each, and give the wait multiplier at 80% and 95%. | 7
+
+</Recall>
+
+<Recall>
+
+Write Little's Law and use it to size a connection pool for 600 rps at 30ms of database time. | 5
+
+</Recall>
+
+<Recall>
+
+Why is an average latency misleading, and what do you quote instead? | 4
+
+</Recall>
+
+<Recall>
+
+Explain tail latency amplification with the ten-service fan-out arithmetic. | 5
+
+</Recall>
+
+<Recall>
+
+Name the four measurement tools and the one question each answers. | 5
+
+</Recall>
+
+<Recall>
+
+Give Amdahl's bound: a fix on a segment worth 10% of the request buys you what, at most? | 3
+
+</Recall>
+
+<Recall>
+
+The three database failures in Part III, and the measurement that identifies each. | 6
+
+</Recall>
+
+<Recall>
+
+Why does an index on (a, b) not serve a query filtering only on b? | 4
+
+</Recall>
+
+<Recall>
+
+Two cache invalidation strategies, one failure of each, and three fixes for stampede. | 7
+
+</Recall>
+
+<Recall>
+
+Cache-aside, write-through, write-behind: which one can lose a write, and why would you ever accept that? | 5
+
+</Recall>
+
+<Recall>
+
+Three ceilings of vertical scaling, and the one property horizontal scaling requires of your code. | 6
+
+</Recall>
+
+<Recall>
+
+Round robin versus least connections: which handles mixed request cost, and by what mechanism? | 5
+
+</Recall>
+
+<Recall>
+
+Liveness versus readiness, and what breaks if you wire them together. | 5
+
+</Recall>
+
+<Recall>
+
+Trace the read-after-write bug through a write to Virginia and a read from Mumbai, then give two fixes. | 7
+
+</Recall>
+
+<Recall>
+
+Why is order_date a bad shard key, and what are the three costs of sharding nobody mentions? | 7
+
+</Recall>
+
+<Recall>
+
+A user in Tokyo, a server in Virginia: what is the floor on their latency, and why can no optimisation beat it? | 5
+
+</Recall>
+
+<Recall>
+
+Give three things safe to make asynchronous and three that must stay synchronous, and the rule that separates them. | 6
+
+</Recall>
+
+<Recall>
+
+What problem do microservices actually solve, and what are the four costs of a network boundary? | 7
+
+</Recall>
+
+<Recall>
+
+What is a retry storm, and what four settings prevent one? | 5
+
+</Recall>
+
+<Recall>
+
+Three limits of autoscaling, two causes of a cold start, and one workload serverless is wrong for. | 7
+
+</Recall>
+
+<Recall>
+
+The five rules from section 43, from memory. | 8
+
+</Recall>
+
+<Redraw>
+
+The whole system, from the browser to the disk, with every scaling component in this book placed on it. | Load balancer, instances, cache tiers, primary and replicas, queue and workers, CDN and edge. Then annotate each with the one problem it solves and the one problem it creates.
+
+</Redraw>

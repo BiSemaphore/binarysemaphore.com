@@ -1,0 +1,38 @@
+<DoThis>
+
+The five beats, in order
+
+1. <Mint>Ask what "scale" means here.</Mint> How many users now, how many expected, what
+   is the read-write ratio, what is slow today. <Peach>Numbers, before anything else.</Peach>
+   If they will not give you numbers, invent explicit ones and say you are
+   inventing them.
+2. <Mint>Say how you would find the bottleneck.</Mint> Traces and percentiles, the
+   segment table from section 7. Name the tool. Say you would not act until it
+   points somewhere.
+3. <Mint>Start with the cheapest fix that the measurement would justify.</Mint> An index,
+   an N+1, a synchronous call moved off the request path. These are hours of work
+   and they are frequently the whole answer.
+4. <Mint>Escalate only with a reason.</Mint> "If the database is still the bottleneck and
+   we are read-heavy, read replicas, and here is the consistency bug they
+   introduce." Each step names its own cost.
+5. <Mint>Say where you would stop.</Mint> "I would not shard. At this volume the operating
+   cost is larger than the benefit." Knowing when not to is the answer to the
+   real question.
+
+</DoThis>
+
+Worked, in about ninety seconds:
+
+> *"First I'd want the numbers: current RPS, P99, and where the time actually
+> goes. Say it comes back that checkout has a P99 of 4 seconds and a trace shows
+> 3.2 of that in one query. Then I'd `EXPLAIN ANALYZE` it, and if it is a
+> sequential scan I add an index and we are done for a few months. If the query
+> is already optimal and the database is simply saturated, I'd check the
+> read-write ratio. Read-heavy means read replicas, and then I need to handle
+> read-after-write, probably by returning the object from the write. If writes
+> are the problem, that is a harder conversation, and I would look at whether the
+> writes can be batched or made async before I would consider sharding, because
+> sharding is the least reversible thing on the table."*
+
+That answer names five techniques. Every one is attached to a measurement, a
+condition and a cost. <Peach>That is the entire difference.</Peach>

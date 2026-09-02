@@ -1,0 +1,23 @@
+---
+number: "27"
+title: "Error messages and debug output"
+part: "VI"
+partTitle: "The things that leak"
+---
+The same handler, two audiences.
+
+```text
+  ✗ WHAT THE ATTACKER RECEIVES
+    PostgresError: relation "users" does not exist
+      at Connection.parseE (/app/node_modules/pg/lib/connection.js:614)
+      query: SELECT * FROM users WHERE email = 'x' AND tenant = 4471
+      DATABASE_URL=postgres://app:hunter2@10.0.1.14:5432/prod
+
+    framework, version, file paths, schema, live data, credentials
+
+  ✓ WHAT THE ATTACKER RECEIVES
+    { "error": "Something went wrong", "request_id": "0f9a2c" }
+
+  ✓ WHAT YOU RECEIVE, IN YOUR LOGS
+    the entire stack trace, keyed by that same request_id
+```

@@ -1,0 +1,9 @@
+---
+number: "21"
+title: "Ceiling 1: file descriptors"
+part: "IV"
+partTitle: "How many connections fit on one machine"
+---
+The machine: 16 cores, 61 GB free. The server: a few lines of Go that accept
+connections and hold them, <Peach>with no application logic at all</Peach>, because the
+question is how many sockets fit, not how fast the app is.

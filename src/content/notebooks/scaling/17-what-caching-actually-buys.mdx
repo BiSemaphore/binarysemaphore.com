@@ -1,0 +1,14 @@
+---
+number: "17"
+title: "What caching actually buys"
+part: "IV"
+partTitle: "Caching"
+---
+The idea is almost too simple to state: store the result of an expensive
+operation so you do not have to perform it again.
+
+```text
+  without                              with
+  ───────                              ────
+  request → complex query → 800 ms     request → cache hit → 50 ms
+```

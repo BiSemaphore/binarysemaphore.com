@@ -1,0 +1,36 @@
+| # | The decision | What it tells them, for free |
+|---|---|---|
+| 1 | The method | Whether a retry is safe. Nothing else says this |
+| 2 | The version | That you will not break them without warning |
+| 3 | The collection, plural | That there are many of these, and this is one namespace |
+| 4 | The instance | Which one. Opaque, so its format is not a promise |
+| 5 | The action, last | That CRUD could not express this, and a verb was needed |
+| 6 | The content type | How to parse the body, and which patch dialect |
+| 7 | The idempotency key | That a timed-out retry will not act twice |
+| 8 | The precondition | That a concurrent edit will be refused, not silently lost |
+| 9 | The body | Only what the server cannot work out itself |
+| 10 | The status code | What happened, and whose fault it was |
+| 11 | The location | Where the thing that was made now lives |
+| 12 | The validator | What to send back on the next write |
+| 13 | The representation | The new state, so no follow-up read is needed |
+
+Four rules are encoded in that picture, and they are the whole book.
+
+- <Peach>The interface must carry the answer, or a human will carry the question.</Peach>
+  Every line above replaces a Slack message.
+- <Peach>Consistency beats correctness, and it is not close.</Peach> A consumer who has
+  integrated one of your endpoints has already guessed the rest. Being uniformly
+  unusual costs them one lookup. Being occasionally standard costs them all of
+  them.
+- <Peach>Defaults are part of the design.</Peach> Sending nothing must work, and what comes
+  back when they send nothing is a decision you make once for everybody.
+- ==The method and the status code are the only two things every intermediary
+  understands.== Proxies, caches, retry libraries and load balancers read those
+  and nothing else. Get them wrong and machinery you never wrote will do the
+  wrong thing on your behalf.
+
+<Redraw>
+
+The thirteen decisions on one request and its response, with the three headers most APIs omit. | Mark the two that every proxy on the path will read.
+
+</Redraw>

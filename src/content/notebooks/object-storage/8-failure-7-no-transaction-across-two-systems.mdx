@@ -1,0 +1,21 @@
+---
+number: "8"
+title: "Failure 7: no transaction across two systems"
+part: "I"
+partTitle: "The naive design, and the seven ways it dies"
+---
+The last failure is the subtle one, and unlike the other six ==it does not go
+away when you adopt object storage==. It only becomes easier to manage.
+
+You are writing to two systems that know nothing about each other, so there is
+no transaction spanning them. Both orderings are broken:
+
+```text
+  ORDER A: file first                  ORDER B: row first
+
+  write file to disk        ✓          INSERT row                ✓
+  INSERT row                ✗          write file to disk        ✗
+  ────────────────────────────         ────────────────────────────
+  orphan: bytes nobody can             dangling pointer: every read
+  reach, paid for forever              of that row 404s or 500s
+```

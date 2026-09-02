@@ -1,0 +1,16 @@
+---
+number: "6"
+title: "Numbers, and the money rule"
+part: "II"
+partTitle: "Types are the first constraint"
+---
+```text
+  smallint    2 bytes    ±32,767
+  integer     4 bytes    ±2.1 billion          the default choice
+  bigint      8 bytes    ±9.2 quintillion      ids, counters, bytes
+
+  numeric(10,2)   exact, arbitrary precision, slower
+                  └─ 10 total digits, 2 after the point: 12345678.90
+
+  real / double precision   binary floating point, fast, INEXACT
+```

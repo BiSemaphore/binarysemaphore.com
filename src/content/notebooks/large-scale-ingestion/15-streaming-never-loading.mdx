@@ -1,0 +1,41 @@
+---
+number: "15"
+title: "Streaming, never loading"
+part: "V"
+partTitle: "Processing"
+---
+```java
+// Wrong: 10 GB into a process with a 2 GB heap.
+byte[] data = s3.getObject(req).readAllBytes();
+```
+
+```java
+// Right: bounded memory, regardless of object size.
+try (var in = s3.getObject(req);                     // InputStream
+     var reader = new BufferedReader(new InputStreamReader(in, UTF_8))) {
+    var batch = new ArrayList<Row>(BATCH_SIZE);
+    String line;
+    while ((line = reader.readLine()) != null) {
+        batch.add(transform(parse(line)));
+        if (batch.size() == BATCH_SIZE) {
+            writeBatch(batch);                       // bulk insert
+            batch.clear();
+        }
+    }
+    if (!batch.isEmpty()) writeBatch(batch);
+}
+```
+
+```text
+   S3 object ──► network stream ──► decompress ──► parse ──► transform
+                                                                │
+                                                                ▼
+                                                      batch buffer (10k rows)
+                                                                │
+                                                     full ──────┘
+                                                                ▼
+                                                          bulk insert
+                                                                │
+                                                                ▼
+                                                          checkpoint
+```

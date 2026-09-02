@@ -1,0 +1,20 @@
+---
+number: "16"
+title: "Chunking and checkpointing"
+part: "V"
+partTitle: "Processing"
+---
+Without checkpoints, a crash at 90 percent costs you 90 percent.
+
+```text
+  10 GB file, 100 chunks of 100 MB
+
+  chunk  1..60  ████████████████████░░░░░░░░  processed
+  chunk  61     ▓ in flight
+                ✗ worker dies
+
+  no checkpoint:   restart at chunk 1     ~40 minutes wasted
+  checkpoint:      restart at chunk 61    ~24 seconds wasted
+```
+
+#### Defining a chunk

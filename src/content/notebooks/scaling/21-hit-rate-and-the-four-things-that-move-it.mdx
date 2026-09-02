@@ -1,0 +1,14 @@
+---
+number: "21"
+title: "Hit rate, and the four things that move it"
+part: "IV"
+partTitle: "Caching"
+---
+<Pink>Cache hit rate</Pink> is the fraction of lookups served from the cache. It is the
+one number that tells you whether the cache is working.
+
+```text
+  90%  hits → good. one request in ten reaches the database.
+  70%  hits → workable, worth tuning.
+  20%  hits → you have added a component and a bug surface for nothing.
+```

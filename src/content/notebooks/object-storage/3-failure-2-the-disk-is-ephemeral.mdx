@@ -1,0 +1,26 @@
+---
+number: "3"
+title: "Failure 2: the disk is ephemeral"
+part: "I"
+partTitle: "The naive design, and the seven ways it dies"
+---
+A container's file system lives exactly as long as the container.
+
+```text
+  deploy v1        ┌────────────┐
+                   │ container  │  /app/uploads/  a.png  b.png  c.mp4
+                   └────────────┘
+                          │
+  push new code, CI/CD builds a new image
+                          │
+                          ▼
+  deploy v2        ┌────────────┐
+                   │ container  │  /app/uploads/  (empty)
+                   └────────────┘
+```
+
+The image contains your code. It does not contain your users' files. So every
+deploy, every crash, every OOM kill, every node drain, every scale-in event
+wipes them. This is not a bug in Docker; it is the property that makes
+containers interchangeable, and it is the same property your deployment strategy
+depends on.

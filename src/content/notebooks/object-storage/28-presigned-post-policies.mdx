@@ -1,0 +1,22 @@
+---
+number: "28"
+title: "Presigned POST policies"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+The fix is to sign a <Peach>policy document</Peach> instead of a URL. The client gets a URL
+plus a set of form fields, and the object store enforces the conditions itself.
+
+```json
+{
+  "expiration": "2026-08-29T10:20:00Z",
+  "conditions": [
+    { "bucket": "acme-uploads" },
+    ["starts-with", "$key", "acme/42/"],
+    ["starts-with", "$Content-Type", "image/"],
+    ["content-length-range", 1024, 5242880]
+  ]
+}
+```
+
+Three constraints, each closing a specific attack:

@@ -1,0 +1,20 @@
+---
+number: "5"
+title: "Parameterised queries, and what they cannot do"
+part: "II"
+partTitle: "Injection"
+---
+<Figure>
+
+Two channels. The database parses the template once, before your value has
+been sent, so there is no parse step left for the value to influence.
+
+</Figure>
+
+```js
+// ✗ one channel: the value becomes part of the sentence
+db.query("SELECT * FROM users WHERE email = '" + email + "'");
+
+// ✓ two channels: the sentence is fixed, the value is only ever a value
+db.query("SELECT * FROM users WHERE email = $1", [email]);
+```

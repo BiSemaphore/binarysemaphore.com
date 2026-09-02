@@ -1,0 +1,18 @@
+---
+number: "43"
+title: "Vacuum, bloat and wraparound"
+part: "VIII"
+partTitle: "Living with it in production"
+---
+Postgres never updates a row in place. An `UPDATE` writes a <Peach>new version</Peach> and
+marks the old one dead. That is what gives readers a consistent snapshot without
+blocking writers, and it means dead rows accumulate.
+
+```text
+  UPDATE users SET bio = 'new' WHERE id = 'u1';
+
+  heap:  [u1 v1 dead] [u1 v2 live]
+                ▲
+                └── still on disk, still in every index,
+                    until VACUUM reclaims it
+```

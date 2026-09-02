@@ -1,0 +1,51 @@
+**The blank line is not cosmetic.** An event is dispatched when the parser sees an
+empty line. ++Write `\n\n` after every event, and flush.++ If your framework
+buffers the response, the client sees nothing at all, no matter how many lines
+you wrote.
+
+**Multiple `data:` lines concatenate.** They are joined with a newline and
+delivered as a single string, which is how you send a multi-line payload without
+escaping it. Sending JSON on one line is the common practice and is simpler.
+
+The full thing, with a heartbeat:
+
+```text
+  retry: 5000
+
+  : heartbeat                       ← a comment, every 15s, keeps proxies awake
+
+  id: 1841
+  event: task.moved
+  data: {"task":9,"to":"doing"}
+
+  : heartbeat
+
+  id: 1842
+  event: presence
+  data: {"user":"leo","status":"online"}
+```
+
+<DoThis>
+
+Send a `: heartbeat` comment every 15 seconds on every stream. It costs 12 bytes,
+it is discarded by the client, and it is the difference between a stream that
+survives an idle proxy and one that dies silently every 60 seconds. Section 11 is
+why.
+
+</DoThis>
+
+<Signal>
+
+"SSE has no RFC. It is part of the HTML Living Standard, which is why the browser
+implements the client, including reconnection." Knowing that it is a browser
+specification rather than a network one explains the whole shape of the next
+section.
+
+</Signal>
+
+<KeyIdea>
+
+Four fields, a comment prefix, and a blank line that dispatches. `id:` is the one
+that matters architecturally, because it is what makes the stream resumable.
+
+</KeyIdea>

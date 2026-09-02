@@ -1,0 +1,21 @@
+---
+number: "44"
+title: "The bill"
+part: "VII"
+partTitle: "Getting the bytes out"
+---
+Three lines, and knowing their relative sizes changes architectures. Rates move;
+<Peach>the ratios are the durable knowledge</Peach>.
+
+```text
+  1. STORAGE      per GB-month              ~$0.023   S3 Standard
+  2. OPERATIONS   per request               writes ~10x the cost of reads
+  3. EGRESS       per GB leaving the cloud  ~$0.09    ← usually the whole bill
+```
+
+```text
+  1 TB stored, each byte served once in the month:
+
+     storage   1,000 GB × $0.023  =  $23
+     egress    1,000 GB × $0.09   =  $90        ← four times the storage
+```

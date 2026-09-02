@@ -1,0 +1,23 @@
+---
+number: "15"
+title: "What 101 actually changed"
+part: "III"
+partTitle: "WebSocket: leaving HTTP behind"
+---
+After the 101, the TCP connection stays open and ==everything you know about HTTP
+stops applying==. This is the sentence to be able to say, because most of the
+architectural consequences in Parts IV and V fall straight out of it.
+
+```text
+  before the 101                    after the 101
+  --------------                    -------------
+  methods: GET, POST, ...           gone. there are no methods
+  status codes                      gone. there are close codes instead
+  headers per message               gone. two bytes of framing
+  request / response pairing        gone. either side writes any time
+  stateless: any instance serves    the connection lives in one process
+  caching, CDNs, retries            meaningless on a stream
+  cookies sent per request          sent once, at the handshake, and never again
+```
+
+The last two lines are the expensive ones.

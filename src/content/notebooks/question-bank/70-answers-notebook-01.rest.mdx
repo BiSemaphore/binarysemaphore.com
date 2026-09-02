@@ -1,0 +1,84 @@
+**Q13** The file is a 4 GB gzip. Does streaming still work?  *Notebook 01, section 15.*
+
+Yes, decompress in the stream (`GZIPInputStream`), memory stays bounded. But
+gzip is not splittable, so you cannot assign byte ranges to different workers
+and the fan-out in section 19 is unavailable. Formats matter: bzip2, zstd with
+frames, and Parquet are splittable, plain gzip is not. Knowing that distinction
+is a strong signal.
+
+**Q14** What if results go to S3, which has no transaction with your database?  *Notebook 01, section 16.*
+
+Write the chunk output to a deterministic key (`processed/job-8f21/chunk-007`),
+then commit the checkpoint. A crash between the two leaves an orphan object that
+the retry simply overwrites, because the key is derived from the chunk ID and
+not from a timestamp or a random ID. Deterministic naming is what makes the
+retry safe.
+
+**Q15** What about side effects you cannot deduplicate, like sending an email?  *Notebook 01, section 17.*
+
+Guard them with a dedicated idempotency record written in the same transaction
+as the effect's precondition, or move them behind a provider that accepts an
+idempotency key (Stripe and SendGrid both do). If neither is possible, make the
+effect the very last step and accept a rare duplicate, having said so explicitly
+rather than pretending the problem does not exist.
+
+**Q16** SQS caps message retention and in-flight time at a maximum. What if a job exceeds it?  *Notebook 01, section 18.*
+
+The 12-hour ceiling on in-flight time is a hard limit, so you cannot heartbeat
+past it. That is a design signal, not a workaround problem: split the job into
+chunk messages, each comfortably short, and track overall completion in the
+database. If a single indivisible unit of work takes longer than twelve hours,
+the queue is the wrong orchestrator and you want a workflow engine (Step
+Functions, Temporal, Airflow) that is built for durable long-running state.
+
+**Q17** How do you pick the number of chunks?  *Notebook 01, section 19.*
+
+Target a chunk duration, not a chunk size. Aim for something like two to five
+minutes of work: short enough that a lease never expires and a retry is cheap,
+long enough that per-chunk overhead (leasing, connecting, committing) stays
+negligible. Work backwards from measured throughput to a byte size, and cap the
+total chunk count so the queue does not receive a hundred thousand messages for
+one job.
+
+**Q18** One row in ten million is malformed. Does the whole job fail?  *Notebook 01, section 20.*
+
+Almost certainly not, and this should be a product decision you surface rather
+than a default you pick silently. Collect bad rows into
+`processed/job-8f21/errors.csv` with row numbers and reasons, complete the job as
+`COMPLETED_WITH_ERRORS`, and report `9,999,999 ok / 1 rejected`. Add a threshold:
+if more than some percentage of rows fail, the file is probably wrong (bad
+schema, wrong encoding) and failing the whole job is the correct response.
+
+**Q21** How do you cancel a running job?  *Notebook 01, section 21.*
+
+Set `CANCELLED` in the database, and have the worker check a cancellation flag
+at each chunk boundary and stop cleanly. You cannot reach into a running worker,
+so cancellation is cooperative, and the checkpoint boundary is the natural place
+to observe it. Then clean up: delete partial output, abort any multipart upload,
+and decide explicitly whether already-written rows are rolled back or left with
+the job marked cancelled.
+
+**Q22** A hundred thousand users each watching a job. Does polling hold up?  *Notebook 01, section 23.*
+
+Yes, if the status read is cheap. It is a single primary-key lookup, cacheable
+for a second or two, servable from a replica or Redis. A hundred thousand
+pollers at one request per five seconds is twenty thousand requests per second
+of trivially cacheable reads, which is far easier to run than a hundred thousand
+held WebSocket connections. Say the arithmetic, do not assert the conclusion.
+
+**Q23** How do you stop one tenant from consuming the whole worker fleet?  *Notebook 01, section 25.*
+
+Cap in-flight chunks per tenant. Before claiming a chunk, check that tenant's
+active count against its limit and skip the message if it is at the cap, letting
+it return to the queue. Combined with size lanes this bounds the blast radius of
+any one tenant without needing a full fair-queueing implementation.
+
+**Q24** If the job fails at 80 percent, do you roll back the 80 percent?  *Notebook 01, section 26.*
+
+State the trade-off rather than picking blindly. Rolling back gives clean
+all-or-nothing semantics but throws away hours of work and needs either a staging
+table or a delete keyed by `job_id`. Leaving it lets the retry resume from the
+checkpoint, which is far cheaper, and is safe precisely because the writes are
+idempotent. The usual production answer is: load into a staging table, and make
+the atomic swap into the live table the final step, so consumers only ever see a
+complete dataset.

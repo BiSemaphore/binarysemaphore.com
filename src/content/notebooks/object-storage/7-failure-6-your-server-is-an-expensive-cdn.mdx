@@ -1,0 +1,21 @@
+---
+number: "7"
+title: "Failure 6: your server is an expensive CDN"
+part: "I"
+partTitle: "The naive design, and the seven ways it dies"
+---
+Uploads get the attention. Downloads are quietly worse, because there are far
+more of them.
+
+A 50 MB file to a phone on 2 Mbps:
+
+```text
+  50 MB = 400 Mb;  400 Mb / 2 Mbps  =  200 seconds  ≈  3.5 minutes
+
+  for those 3.5 minutes, one worker is:
+     ┌──────────────────────────────────────────────┐
+     │  read 32 KB from disk ──▶ write 32 KB to a    │
+     │  socket that drains at dial-up speed  ──▶ …   │
+     └──────────────────────────────────────────────┘
+     CPU used: ~nothing.   Worker occupied: totally.
+```

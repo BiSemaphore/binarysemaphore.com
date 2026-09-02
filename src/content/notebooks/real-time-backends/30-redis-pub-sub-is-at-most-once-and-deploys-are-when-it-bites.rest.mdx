@@ -1,0 +1,67 @@
+When you `PUBLISH`, Redis writes the message to whichever subscribers are
+connected <Peach>at that instant</Peach> and then forgets it. There is no queue, no
+acknowledgement, no retry, no replay. A subscriber that was not connected does
+not get the message, and nothing anywhere records that it missed one.
+
+```text
+  at-most-once      delivered zero or one times. never duplicated,
+                    sometimes lost.        ← Redis pub/sub
+
+  at-least-once     delivered one or more times. never lost, sometimes
+                    duplicated.            ← Redis Streams, Kafka, SQS
+
+  exactly-once      not a delivery property. it is at-least-once plus
+                    idempotent handling at the consumer
+```
+
+**The scenario where this stops being theoretical is a deploy**, and deploys are
+routine.
+
+```text
+  t=0.0   instance 3 receives SIGTERM, begins shutdown
+  t=0.1   its Redis subscription drops
+  t=0.4   a task moves. published to board.412.
+          ← nobody on instance 3's former clients receives this. gone.
+  t=2.0   replacement container starts
+  t=3.5   it subscribes to board.412
+  t=3.5+  clients reconnect and resubscribe
+
+  a 3.4 second hole. every event in it is permanently lost.
+```
+
+Nothing errors. No metric moves. ==The only symptom is a user whose board is
+subtly wrong until they refresh==, and they will not report that as a bug, they
+will report the app as flaky.
+
+The decision, stated plainly:
+
+| If you need | Use |
+|---|---|
+| Cursor positions, typing indicators, presence | <Mint>Redis pub/sub. Loss is fine; the next update corrects it</Mint> |
+| Chat messages, task changes, anything with a permanent effect | <Peach>Something durable and ordered</Peach>: Redis Streams, Kafka, NATS JetStream |
+
+<Signal>
+
+"Redis pub/sub gives me at-most-once, so I use it for state that is self-correcting
+and a durable log for anything a user would notice missing. And in both cases the
+database is still the source of truth, so a refresh is always correct." The last
+clause is what separates a real answer from a memorised one.
+
+</Signal>
+
+<DoThis>
+
+<Peach>Whatever the bus guarantees, make the client able to recover.</Peach> Section 32 is
+the protocol. Building it means the difference between at-most-once and
+at-least-once becomes a question of how often a resync runs, rather than a
+question of whether the user ever sees the truth.
+
+</DoThis>
+
+<KeyIdea>
+
+Redis pub/sub loses messages by design, and a deploy is the most common time it
+does. Choose the bus by whether a lost message is self-correcting, and ==build the
+catch-up path either way==.
+
+</KeyIdea>

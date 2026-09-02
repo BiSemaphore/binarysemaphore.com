@@ -1,0 +1,17 @@
+---
+number: "14"
+title: "EXPLAIN ANALYZE: deciding instead of guessing"
+part: "III"
+partTitle: "The database"
+---
+You have a trace pointing at one slow query. Now you need to know why, and the
+database will simply tell you.
+
+```sql
+EXPLAIN ANALYZE
+SELECT p.id, p.title, u.name
+FROM posts p JOIN users u ON u.id = p.author_id
+WHERE p.published_at > now() - interval '7 days'
+ORDER BY p.published_at DESC
+LIMIT 20;
+```

@@ -1,0 +1,45 @@
+---
+number: "29"
+title: "The two-phase upload"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+The bytes now bypass your server entirely, which reintroduces the question that
+started section 8: ==if you never see the upload, how does your database learn
+about it?==
+
+```text
+  PHASE 1  ── intent ──────────────────────────────────────────────
+
+  browser  POST /uploads { filename, size, type }
+       │
+       ▼
+  server   authenticate and authorise
+           GENERATE THE KEY  (server-side, section 15)
+           INSERT INTO files (id, user_id, key, orig_name,
+                              expected_type, expected_size, status)
+                  VALUES (…, 'pending')          ← before any bytes move
+           sign a POST policy for that exact key
+       │
+       ▼
+  browser  { upload_id: 101, url, fields }
+
+  PHASE 2  ── transfer ────────────────────────────────────────────
+
+  browser  POST the file straight to the bucket, with the policy fields
+           (your server is not involved and learns nothing)
+
+  PHASE 3  ── confirm ─────────────────────────────────────────────
+
+  browser  POST /uploads/101/complete       ← the upload_id, NOT the key
+       │
+       ▼
+  server   look up row 101, confirm it belongs to the caller
+           HEAD  bucket/<key>               ← metadata only, no bytes
+                 exists?
+                 Content-Length within the expected range?
+                 Content-Type as expected?
+       │
+       ▼
+           UPDATE files SET status='ready', size=…, etag=… WHERE id=101
+```

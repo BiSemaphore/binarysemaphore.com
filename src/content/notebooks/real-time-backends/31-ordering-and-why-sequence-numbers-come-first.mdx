@@ -1,0 +1,22 @@
+---
+number: "31"
+title: "Ordering, and why sequence numbers come first"
+part: "V"
+partTitle: "The connection is state"
+---
+Two events on the same board, published half a millisecond apart. Which arrives
+first at browser B?
+
+With plain pub/sub, <Peach>you do not know</Peach>, and the answer can differ per subscriber.
+For a board that means a card can end in the wrong column and stay there, because
+the last write your client applied was not the last write that happened.
+
+```text
+  actual order            what a client may apply
+  ------------            -----------------------
+  task 9 ──▶ doing        task 9 ──▶ done
+  task 9 ──▶ done         task 9 ──▶ doing     ← final state is wrong,
+                                                  and it is wrong forever
+```
+
+Three mechanisms fix this, in increasing strength.

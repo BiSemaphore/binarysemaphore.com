@@ -1,0 +1,13 @@
+---
+number: "26"
+title: "Architecture B: presigned URLs"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+Let the browser talk to the bucket directly.
+
+Two constraints make that non-trivial:
+
+- The bucket is private, and must be. A public writable bucket is one of the
+  most reliably catastrophic misconfigurations in cloud computing.
+- You obviously cannot ship your storage credentials to a browser.

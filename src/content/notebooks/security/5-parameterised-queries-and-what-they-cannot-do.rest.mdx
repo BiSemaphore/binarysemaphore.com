@@ -1,0 +1,34 @@
+The mechanism is worth stating precisely, because "it escapes the string" is
+only half of it. The statement and the data <Peach>travel separately</Peach>. By the time
+your value arrives, the query's structure is already parsed and fixed. There is
+nothing left for a quote to close.
+
+<DoThis>
+
+What parameters cannot do
+
+Parameters bind <Peach>values</Peach>, never <Peach>identifiers</Peach>. You cannot parameterise a
+table name, a column name, or a sort direction:
+
+```text
+  ✗ ORDER BY $1      -- sorts by a constant, silently
+  ✓ ORDER BY <a column name looked up in a map you wrote>
+```
+So dynamic sorting and filtering must come from a <Mint>whitelist</Mint>. That gap is
+exactly where injection reappears in hand-rolled query builders. Notebook 04
+section 28 has the pattern in full.
+
+</DoThis>
+
+<Ask>
+
+Does an ORM make me safe?
+
+Mostly, for the queries it generates, and <Peach>not at all for the escape hatches</Peach>.
+Every ORM has `raw()`, `query()`, `literal()` or a `WHERE` fragment that takes a
+string, and that is where the injection will be. Prisma's `$queryRawUnsafe`,
+Sequelize's `literal`, Django's `extra`, ActiveRecord's string conditions: the
+names all warn you, and people use them under deadline anyway. Grep your
+codebase for them; that grep is a five-minute audit with a high hit rate.
+
+</Ask>

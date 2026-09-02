@@ -1,0 +1,22 @@
+---
+number: "29"
+title: "The seven-step delivery script"
+part: "VIII"
+partTitle: "The interview itself"
+---
+Do not open with a diagram of fifteen boxes. Interviewers score the <Peach>process</Peach>
+as much as the answer.
+
+```text
+  1. CLARIFY        2 min   size, source, processing shape, duration, scale
+  2. NAME THE       1 min   "this is a reliability problem, not a
+     REAL PROBLEM            throughput problem"
+  3. SIZE IT        2 min   transfer time, processing time, backlog
+  4. SPLIT IT       1 min   ingestion and processing are separate failure domains
+  5. DESIGN         8 min   ingestion first, then handoff, then processing
+     THE HAPPY PATH
+  6. BREAK IT      10 min   network fails, worker dies, message redelivered,
+                            lease expires, one row is bad
+  7. SCALE AND      5 min   more workers, fairness, cost, metrics, security
+     OPERATE
+```

@@ -1,0 +1,16 @@
+---
+number: "18"
+title: "One to one, and when to split a table"
+part: "IV"
+partTitle: "Designing the schema"
+---
+`users` and `user_profiles` hold facts about the same person. Why two tables?
+
+```sql
+CREATE TABLE user_profiles (
+  user_id    uuid PRIMARY KEY REFERENCES users ON DELETE CASCADE,
+  avatar_url text,
+  bio        text,
+  phone      text
+);
+```

@@ -1,0 +1,45 @@
+---
+number: ""
+title: "The schema on one page"
+part: ""
+partTitle: ""
+---
+```text
+  ┌──────────────────────┐
+  │ USERS                │
+  │ id            uuid PK│◀────────────┐
+  │ email         text U │             │
+  │ full_name     text   │             │
+  │ password_hash text   │             │
+  │ created_at    tstz   │             │
+  └──────────┬───────────┘             │
+             │ 1                       │
+             │                         │ owner_id
+             │ 1                       │ assigned_to
+  ┌──────────▼───────────┐             │
+  │ USER_PROFILES        │             │
+  │ user_id  uuid PK, FK │             │
+  │ avatar_url    text   │             │
+  │ bio           text   │             │
+  └──────────────────────┘             │
+                                       │
+  ┌──────────────────────┐             │
+  │ PROJECTS             │─────────────┤
+  │ id            uuid PK│◀──────┐     │
+  │ name          text   │       │     │
+  │ status  project_stat │       │     │
+  │ owner_id      uuid FK│───────┼─────┘
+  └──────────┬───────────┘       │
+             │ 1                 │ project_id
+             │                   │
+             │ many              │
+  ┌──────────▼───────────┐   ┌───┴──────────────────┐
+  │ TASKS                │   │ PROJECT_MEMBERS      │
+  │ id            uuid PK│   │ project_id  uuid FK ┐│
+  │ project_id    uuid FK│   │ user_id     uuid FK ┘│  composite PK
+  │ title         text   │   │ role      member_role│
+  │ priority   int 1..5  │   └──────────────────────┘
+  │ status  task_status  │      the linking table:
+  │ assigned_to   uuid FK│      users ←many-to-many→ projects
+  └──────────────────────┘
+```

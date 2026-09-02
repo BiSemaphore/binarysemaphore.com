@@ -1,0 +1,20 @@
+---
+number: "20"
+title: "Many to many, and the linking table"
+part: "IV"
+partTitle: "Designing the schema"
+---
+A user belongs to many projects; a project has many users. Neither side can hold
+the key, so the relationship gets its own table.
+
+```sql
+CREATE TABLE project_members (
+  project_id uuid NOT NULL REFERENCES projects ON DELETE CASCADE,
+  user_id    uuid NOT NULL REFERENCES users    ON DELETE CASCADE,
+  role       member_role NOT NULL DEFAULT 'member',
+  created_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (project_id, user_id)
+);
+```
+
+Two things make this correct rather than merely functional:

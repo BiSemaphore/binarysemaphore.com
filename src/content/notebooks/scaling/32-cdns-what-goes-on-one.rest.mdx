@@ -1,0 +1,60 @@
+Latency is the obvious win. Two more come with it:
+
+**Load.** Every request the CDN serves is a request your origin never sees. For
+a content-heavy site that can be most of the traffic, and it is why a CDN often
+delays the need for horizontal scaling entirely.
+
+**Absorption.** A large CDN has vastly more capacity than you do, so it absorbs
+traffic floods, whether those are a launch or an attack. Notebook 05 covers the
+security side.
+
+#### What is worth putting on one
+
+```text
+  always            JS bundles, CSS, images, video, fonts, anything with a
+                    content hash in its filename. these never change, so they
+                    can be cached effectively forever.
+
+  often             HTML for static or rarely-changing pages, product catalogue
+                    pages, public API responses that are the same for everyone.
+
+  carefully         personalised or authenticated responses. cache these only
+                    with a cache key that includes the user, or not at all.
+
+  never             anything where serving a stale answer is a correctness
+                    problem: balances, inventory counts at checkout, auth
+                    decisions.
+```
+
+<Term name="Purging">
+
+Explicitly removing content from a CDN's caches before its TTL expires, so the
+next request fetches a fresh copy from your origin. Also called invalidation.
+Most providers support purging by URL or by a tag you attached when the content
+was cached.
+
+</Term>
+
+<DoThis>
+
+The two patterns that make CDN caching safe
+
+- <Mint>Immutable filenames for assets.</Mint> `app.4f2a9c.js`. The content hash is in the
+  name, so a new deploy is a new URL and there is nothing to invalidate. Cache
+  it for a year. ==This eliminates CDN invalidation for static assets
+  completely==, and it is why every modern bundler does it.
+- <Mint>Tag-based purging for dynamic content.</Mint> Tag a cached page with the IDs it
+  depends on (`user:42`, `post:918`). When that data changes, purge the tag and
+  every page built from it goes at once, with no list to maintain.
+
+</DoThis>
+
+<Trap>
+
+<Rose>Caching a response that varies by user without varying the cache key.</Rose> The
+classic and genuinely dangerous CDN bug: one user's authenticated page gets
+cached and served to everyone who asks for that URL. ++If a response depends on
+a cookie or an `Authorization` header, either include it in the cache key or set
+`Cache-Control: private, no-store` and mean it.++
+
+</Trap>

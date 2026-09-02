@@ -1,0 +1,39 @@
+If you deploy on Kubernetes, ECS, Railway, Render, Fly, or any serverless
+platform, this applies to you. On serverless it is worse: the writable area is
+usually a small `/tmp` that disappears between invocations.
+
+#### The partial solution: a persistent volume
+
+If you know Kubernetes you already have an answer in mind: attach a
+PersistentVolume so the storage outlives the container.
+
+That does work, for this failure. It is worth being precise about what it buys
+and what it does not:
+
+| Failure | Persistent volume fixes it? |
+|---|---|
+| 1. File does not fit in memory | No, unrelated |
+| 2. Ephemeral storage | <Peach>Yes</Peach> |
+| 3. Horizontal scaling | No, and RWO volumes make it worse |
+| 4. Fixed size disk | No, still a vertical resize |
+| 5. Durability | Partly, depends on the storage class |
+| 6. Server as CDN | No |
+| 7. No cross-system transaction | No |
+
+<Trap>
+
+"A persistent volume solves the file storage problem"
+
+It solves <Rose>one</Rose> of seven. Worse, the common volume access mode
+(`ReadWriteOnce`) attaches to a single node, so adopting it can pin your pod to
+one node and quietly undo the horizontal scalability you were trying to keep.
+
+</Trap>
+
+<KeyIdea>
+
+Volumes are for state a single workload owns, like a database's data directory.
+User-uploaded content is <Peach>shared, unbounded and permanent</Peach>, which is a
+different problem.
+
+</KeyIdea>

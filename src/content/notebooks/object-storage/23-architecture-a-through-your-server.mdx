@@ -1,0 +1,15 @@
+---
+number: "23"
+title: "Architecture A: through your server"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+The obvious one. The browser posts to your API, your API forwards to the bucket.
+
+```text
+  browser ──── 100 MB ────▶ your server ──── 100 MB ────▶ bucket
+                             sees every byte
+```
+
+It has real advantages, and dismissing it outright is a worse answer than
+knowing when it applies:

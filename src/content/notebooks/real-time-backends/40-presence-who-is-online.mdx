@@ -1,0 +1,29 @@
+---
+number: "40"
+title: "Presence: who is online"
+part: "VII"
+partTitle: "The parts the lecture left out"
+---
+The lecture names presence as out of scope. It is asked about constantly, and it
+is a genuinely hard problem hiding behind a trivial-sounding feature.
+
+**Naive design.** Set a flag on connect, clear it on disconnect. It fails
+immediately, because <Peach>disconnects are frequently not observed</Peach>: that is section
+18. A crashed client, a dead network or a killed container leaves users online
+forever.
+
+**The correct primitive is a TTL that must be refreshed.**
+
+```text
+  on connect and every 15s:
+      SET presence:user:42:device:ab  1  EX 45
+
+  a user is online if ANY of their device keys exists
+
+  no refresh for 45 seconds ──▶ the key expires ──▶ offline,
+  without anyone having to notice the disconnect
+```
+
+<Mint>Presence is derived from a heartbeat, never from an event.</Mint> The TTL does the
+work, so the failure mode of a missed disconnect is a 45-second delay rather than
+permanent wrongness. Three details make it work in practice:

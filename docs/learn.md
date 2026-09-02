@@ -137,44 +137,61 @@ the window is deliberately short.
 Every section of every notebook is a page: `learn.binarysemaphore.com/<slug>/<section>`.
 The contents list on a notebook's page links straight into them.
 
-The books are not plain markdown. They carry a directive vocabulary the PDF
-typesetter understands, specified in `learnings/notebooks/AUTHORING.md`:
-`:::part`, `:::ask`, `:::signal`, `:::trap`, `:::do`, `:::key`, `:::recall`,
-`:::quiz`, `:::redraw`, `:::term`, `:::figure`, plus four inline highlighters
-(`==peach==`, `!!rose!!`, `++mint++`, `%%pink%%`) and `((circle))`.
+**Same pattern as `/threads`.** A section is MDX, compiled at build time and
+imported as a module, wrapped in `<article className="thread">`, styled by the
+same components in `src/mdx-components.tsx`. There is one prose standard here,
+not two.
 
-- `src/lib/learn/parse.ts` resolves that structure into parts, sections and
-  blocks. It is not a markdown parser: prose stays raw for the renderer.
-- `src/lib/learn/render.ts` turns prose into HTML with a unified pipeline, after
-  a pre-pass that rewrites the highlighters as spans. Marks inside fenced or
-  inline code are left alone, because code is full of `==`, `!!` and `++`.
-- `src/components/learn/notebook-blocks.tsx` draws each block type. The eight
-  annotation blocks get distinct weights on purpose: if they all look alike the
-  reader stops seeing any of them.
-- `.notebook` in `globals.css` mirrors `.thread`, so a section reads like a
-  thread, plus the four highlighter colours.
+### Generation
+
+The books are written next door in a directive syntax the PDF typesetter
+understands (`learnings/notebooks/AUTHORING.md`), so
+`scripts/sync-notebooks.mjs` converts rather than copies. Per section it writes:
+
+```
+src/content/notebooks/<slug>/<section>.mdx        the free preview
+src/content/notebooks/<slug>/<section>.rest.mdx   the rest, behind the gate
+src/content/notebooks/<slug>/index.json           the ordered section list
+```
+
+`:::signal` becomes `<Signal>`, `:::term Sharding` becomes `<Term name="...">`,
+`==peach==` becomes `<Peach>`, and so on. Those components live in
+`src/components/learn/mdx.tsx` and are registered globally beside the thread
+ones. The eight annotation blocks are given distinct weights on purpose: each
+has one job, and if they all look alike the reader stops seeing any of them.
+
+Marks inside fenced or inline code are left alone, because code is full of `==`,
+`!!` and `++`.
+
+`--check` fails on drift, and the script deletes files orphaned by a renamed or
+removed section.
 
 ### The gate
 
-`splitAtGate()` gives a signed-out reader a **share** of the section's prose
-(35%), not a fixed number of blocks: sections run from a few hundred to several
-thousand characters, and a fixed count opens a short section entirely.
+Splitting happens at **generation** time, which is what makes it honest: the
+gated half is a separate file, imported only inside the entitled branch, so for
+anyone else it is not in the page at all. There is nothing hidden to reveal.
 
-Under the preview sits a snippet of what comes next, faded out. That snippet is
-truncated to 180 characters **on the server** by `teaser()`. Rendering a whole
-block and hiding it with CSS would ship it to anyone who opens view-source,
-which is the paywall mistake worth avoiding. Verified by fetching section pages
-signed out and grepping for the back half of each section's source.
+The cut is a share of the prose (35%), not a fixed number of blocks, with a
+second cap at 50% of raw characters so a section made mostly of figures and
+annotation blocks is not handed over whole. Median preview across the library is
+about 22%.
 
-A section that is only one block long is split at a paragraph break instead, so
-it still holds something back.
+Three things the splitter must not do, each of which broke it once and each of
+which now has a test:
 
-### Content sync
+- cut inside a fenced block (ASCII figures contain blank lines),
+- cut between a component's open and close tag (`<Term name="...">` did not match
+  a naive "tag alone on a line" check),
+- flatten a fence or table into a paragraph.
 
-The markdown is committed here, in `src/content/notebooks/`, and copied from the
-`learnings` repo by `scripts/sync-notebooks.mjs`. Copying rather than importing
-keeps the site buildable on CI, where the other repo does not exist, and makes a
-change to a book show up as a reviewable diff. `--check` fails if they drift.
+Under the gate sits a teaser: the first plain **paragraph** of the gated half,
+stripped of markup and truncated to 180 characters at generation time. A table,
+list or figure is skipped, because none of them survive being flattened to one
+line.
+
+Verified by fetching gated sections signed out and checking that no line of the
+`.rest.mdx` appears in the HTML except the teaser.
 
 ## Routing
 

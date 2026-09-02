@@ -1,0 +1,38 @@
+| Operation | Cost on a large table |
+|---|---|
+| `ADD COLUMN` nullable, no default | Instant. Metadata only |
+| `ADD COLUMN ... DEFAULT` (PG 11+) | Instant. Older versions rewrote the table |
+| `ADD COLUMN NOT NULL` without default | <Peach>Rewrites the table</Peach> |
+| `ALTER COLUMN TYPE` | <Peach>Rewrites the table</Peach> |
+| `CREATE INDEX` | <Peach>Blocks writes</Peach> for the whole build |
+| `CREATE INDEX CONCURRENTLY` | Does not block. Slower, cannot be in a transaction |
+| `ADD FOREIGN KEY` | Blocks while it validates every existing row |
+
+<DoThis>
+
+The safe patterns
+
+- ++`CREATE INDEX CONCURRENTLY`++ on any table with real traffic. It cannot run
+  inside a transaction, so most tools need an explicit flag for that migration.
+- Adding a `NOT NULL` column: ++add it nullable, backfill in batches, then add
+  the constraint++ as `NOT VALID` and `VALIDATE CONSTRAINT` separately, which
+  takes a weaker lock.
+- Renaming a column: <Mint>never rename in place</Mint> while old code is running. Add
+  the new column, write to both, backfill, switch reads, drop the old one. Four
+  deploys, zero downtime.
+- Always set a ++`lock_timeout`++ on migrations. A migration that waits behind a
+  long-running query holds a lock queue that stalls every subsequent query on
+  that table, which turns a slow migration into an outage.
+
+</DoThis>
+
+<Trap>
+
+"The migration ran fine in staging"
+
+Staging has a thousand rows and no traffic. The operations above are all
+instant on a thousand rows and all catastrophic on fifty million with
+concurrent writers. ==The only staging signal that transfers is whether the SQL
+is valid==, not whether it is safe.
+
+</Trap>

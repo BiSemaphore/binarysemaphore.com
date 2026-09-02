@@ -1,0 +1,11 @@
+---
+number: "40"
+title: "Three delivery patterns"
+part: "VII"
+partTitle: "Getting the bytes out"
+---
+| Pattern | Bucket | Use when |
+|---|---|---|
+| 1. CDN in front, bucket private | Private, CDN-only read | Public assets: images, CSS, product photos |
+| 2. Presigned GET | Private | Private per-user content, moderate volume |
+| 3. CDN signed URLs or cookies | Private, CDN-only read | Private content at volume, and video |

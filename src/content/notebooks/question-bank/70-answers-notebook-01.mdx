@@ -1,0 +1,55 @@
+---
+number: "70"
+title: "Answers, Notebook 01"
+part: "10"
+partTitle: "Answers"
+---
+**Q2** Why do you need to know P99 file size, isn't the max enough?  *Notebook 01, section 2.*
+
+Because the max drives correctness and the P99 drives cost. If P99 is 80 MB and
+the max is 2 TB, you build the simple path for the common case and a split path
+for the tail, rather than paying multipart overhead on every 2 MB file.
+
+**Q3** Where does the bottleneck actually sit?  *Notebook 01, section 3.*
+
+Usually the destination database, not the parser. Bulk inserts into an indexed
+table are frequently slower than reading and transforming the rows. Say this
+early, because it leads naturally to batching, copy-style bulk loading, and
+dropping or deferring indexes during load.
+
+**Q5** Should the file ever go in the database?  *Notebook 01, section 5.*
+
+Yes, when it is small and transactional integrity with the row matters more than
+size: a 40 KB signed PDF that must appear and disappear atomically with its
+record is fine in the database. The rule is about size and access pattern, not
+dogma.
+
+**Q6** The data comes from another backend service, not a browser. Does this change?  *Notebook 01, section 6.*
+
+The principle holds, the mechanism may simplify. Service to service, you can
+grant a scoped IAM role instead of presigning, or have the producer write to a
+bucket you read. If the producer is a third party you cannot change, you may
+have to pull instead: then your ingestion worker streams from their endpoint
+into S3, using ranged requests so it too can resume.
+
+**Q7** What if the user closes the laptop for two days mid-upload?  *Notebook 01, section 7.*
+
+The `uploadId` stays valid, S3 has no built-in expiry on it, so the upload can
+resume. That is also the problem: the accepted parts are billed as storage
+indefinitely. This is section 27's abandoned-upload cost bug, and the fix is a
+lifecycle rule.
+
+**Q8** The connection drops for good and the user never comes back. What happens?  *Notebook 01, section 9.*
+
+The job sits in `UPLOADING` forever unless you handle it. Two mechanisms: a
+lifecycle rule that aborts incomplete multipart uploads after N days, and a
+sweeper that moves jobs stuck in `UPLOADING` past a deadline to `UPLOAD_EXPIRED`.
+Without the first, you pay storage on parts belonging to an object that will
+never exist.
+
+**Q11** Isn't polling the outbox table wasteful?  *Notebook 01, section 11.*
+
+At low volume, polling every 200 ms is fine and trivially correct. At high
+volume, read the write-ahead log instead with change data capture (Debezium on
+Postgres logical replication), which removes the polling entirely. Name both and
+say which you would start with, and why.

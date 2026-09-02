@@ -1,0 +1,35 @@
+---
+number: "37"
+title: "The full large-file architecture"
+part: "VI"
+partTitle: "Large files"
+---
+Everything from Part V, plus multipart.
+
+```text
+  1. browser  POST /uploads/init { filename, size, type }
+        │
+        ▼
+     server  authorise
+             partSize = max(FLOOR, ceil(size / 10000))
+             CreateMultipartUpload           ──▶ uploadId
+             INSERT files (…, status='pending', upload_id)
+             presign UploadPart for each part
+        │
+        ▼
+  2. browser  { uploadId, partSize, urls[] }
+
+  3. browser ──── N parallel PUTs, direct to the bucket ────▶ bucket
+             concurrency 4 to 6.   each returns an ETag.
+
+  4. browser  POST /uploads/complete { uploadId, parts:[{n, ETag}] }
+        │
+        ▼
+     server  CompleteMultipartUpload(uploadId, parts)
+             HEAD the key            ← size, type, existence   (section 29)
+             UPDATE files SET status='ready'
+             emit file.uploaded  ──▶ queue (transcode, scan, audit)
+                                 ──▶ websocket, so the UI confirms
+```
+
+Four notes that only show up once you build it:

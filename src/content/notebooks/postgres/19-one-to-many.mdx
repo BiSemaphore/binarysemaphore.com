@@ -1,0 +1,16 @@
+---
+number: "19"
+title: "One to many"
+part: "IV"
+partTitle: "Designing the schema"
+---
+```sql
+CREATE TABLE tasks (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id uuid NOT NULL REFERENCES projects ON DELETE CASCADE,
+  title      text NOT NULL,
+  ...
+);
+```
+
+The foreign key lives on the <Peach>many</Peach> side. One project, many tasks.

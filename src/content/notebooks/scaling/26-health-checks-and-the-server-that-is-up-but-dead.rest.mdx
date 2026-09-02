@@ -1,0 +1,66 @@
+The loop is self-healing in both directions, which is the important property:
+nobody has to notice the failure, and nobody has to remember to put the instance
+back.
+
+#### Liveness and readiness are different questions
+
+The distinction that actually matters in production, and it is missing from most
+introductions:
+
+```text
+  liveness    "is this process alive?"
+              failing → restart the container.
+
+  readiness   "should this instance receive traffic right now?"
+              failing → remove from the load balancer. do not restart.
+```
+
+They come apart constantly. An instance that has just started and is still
+warming its connection pool is alive but not ready. An instance whose database
+connection has dropped is alive but should not receive traffic. ==Wiring a
+readiness failure to a restart turns a recoverable blip into a crash loop==, and
+wiring a liveness check to a database query means one database hiccup restarts
+your entire fleet at once.
+
+<DoThis>
+
+Write the check properly
+
+- ++Make `/healthz` shallow and cheap.++ It runs every couple of seconds against
+  every instance, forever. It should not query the database.
+- ++Make readiness check dependencies, and only the ones you cannot serve
+  without.++ If your service can serve 80% of its endpoints without the
+  recommendations API, its readiness must not depend on it.
+- <Mint>Fail readiness during shutdown, before you stop accepting connections.</Mint> Stop
+  taking new traffic, drain in-flight requests, then exit. Otherwise every
+  deploy drops requests. Notebook 13 covers graceful shutdown in full.
+
+</DoThis>
+
+<Trap>
+
+<Rose>A health check that queries the database.</Rose> It looks thorough. Then the
+database has a two-second hiccup, every instance fails its check simultaneously,
+the load balancer removes all of them, and a transient database problem becomes
+a total outage. <Peach>Shared dependencies make health checks correlated</Peach>, and
+correlated health checks fail the whole fleet at once.
+
+</Trap>
+
+<Recall>
+
+Name the three ceilings of vertical scaling, and the four questions horizontal scaling forces you to answer. | 7
+
+</Recall>
+
+<Recall>
+
+Five load balancing algorithms. Which one handles mixed request costs without being told about them, and how? | 6
+
+</Recall>
+
+<Redraw>
+
+The horizontally scaled stack: clients, load balancer, three instances, and every piece of externalised state. | Mark which box each of session data, uploaded files, and cached values must live in, and why.
+
+</Redraw>

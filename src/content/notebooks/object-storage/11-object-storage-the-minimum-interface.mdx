@@ -1,0 +1,25 @@
+---
+number: "11"
+title: "Object storage: the minimum interface"
+part: "II"
+partTitle: "Three kinds of storage"
+---
+Object storage starts from the opposite question. Not "how rich can the
+interface be", but:
+
+> What is the <Peach>absolute minimum interface</Peach> we can get away with, so that the
+> system can scale without bound?
+
+The answer is four operations.
+
+```text
+  PUT     bucket + key + bytes   ──▶  store, replacing anything at that key
+  GET     bucket + key           ──▶  the bytes
+  DELETE  bucket + key           ──▶  gone
+  LIST    bucket + prefix        ──▶  keys under that prefix
+```
+
+That is essentially the whole API. Everything else in an SDK with 200 methods is
+either a variant of these four, an administrative operation, or metadata.
+
+#### What you give up

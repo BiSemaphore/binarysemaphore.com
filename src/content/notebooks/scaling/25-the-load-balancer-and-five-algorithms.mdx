@@ -1,0 +1,31 @@
+---
+number: "25"
+title: "The load balancer, and five algorithms"
+part: "V"
+partTitle: "More machines"
+---
+<Term name="Load balancer">
+
+A component that sits in front of your servers, receives every incoming request,
+and forwards it to one of them. It also returns the response to the client, so
+clients only ever see one address. Every horizontally scaled system has one.
+
+</Term>
+
+The interesting part is not the forwarding, it is the choice. Five algorithms,
+in rough order of how much they know.
+
+#### Round robin
+
+Requests go to instances in rotation: A, B, C, A, B, C.
+
+```text
+  R1 → A     R2 → B     R3 → C     R4 → A ...
+```
+
+Perfect when requests cost roughly the same and servers are roughly identical.
+The failure is skew. Suppose two request types: a 200ms read and a 2s write. A
+rotation is blind to the difference, so a run of expensive requests can land on
+one instance and take it down while the other two are idle.
+
+#### Weighted round robin

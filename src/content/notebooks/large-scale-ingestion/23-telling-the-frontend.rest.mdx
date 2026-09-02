@@ -1,0 +1,54 @@
+Simple, cache-friendly, survives reconnects |
+| Server-sent events | One held connection per viewer | Immediate | Server-to-client only, and you want live updates |
+| WebSocket | One held connection, both ways | Immediate | You already have one, or need client-to-server too |
+| Webhook to another service | One request per transition | Immediate | The consumer is a backend, not a browser |
+
+<DoThis>
+
+Poll well, and it beats a bad stream
+
+- Back off as the job ages: 2 s for the first minute, then 5 s, then 15 s.
+- Stop polling on a terminal status. Runaway polling of finished jobs is a
+  classic frontend bug that shows up as mysterious backend load.
+- Return `Cache-Control: no-store` and an `ETag`, so unchanged responses cost a
+  304 instead of a payload.
+- Poll a read replica or a cache. Status reads vastly outnumber writes, and they
+  do not need the primary.
+
+</DoThis>
+
+```json
+GET /jobs/8f21c0de-.../status
+
+{
+  "jobId": "8f21c0de-...",
+  "status": "PROCESSING",
+  "progress": { "percent": 61, "chunksDone": 61, "chunksTotal": 100 },
+  "rows": { "ok": 6400000, "rejected": 12 },
+  "startedAt": "2026-04-11T09:22:15Z",
+  "etaSeconds": 2330,
+  "output": null,
+  "error": null
+}
+```
+
+<Signal>
+
+One status endpoint whose shape does not change between states is worth calling
+out. The frontend renders from one contract: `status` decides the view, and the
+other fields are populated or null. Interviewers notice API design that will not
+need a rewrite in three months.
+
+</Signal>
+
+<Ask>
+
+A hundred thousand users each watching a job. Does polling hold up?
+
+Yes, if the status read is cheap. It is a single primary-key lookup, cacheable
+for a second or two, servable from a replica or Redis. A hundred thousand
+pollers at one request per five seconds is twenty thousand requests per second
+of trivially cacheable reads, which is far easier to run than a hundred thousand
+held WebSocket connections. Say the arithmetic, do not assert the conclusion.
+
+</Ask>

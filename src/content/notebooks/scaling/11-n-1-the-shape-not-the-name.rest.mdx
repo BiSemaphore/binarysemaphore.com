@@ -1,0 +1,65 @@
+The obvious one is the linear relationship. ==The number of round trips should
+not scale with the number of rows on the page.== Any engineer feels that.
+
+The less obvious one is what a round trip actually costs. It is not just the
+query. Each one pays for network transit both ways, possibly a connection
+acquisition, query parsing, planning, execution, and result serialization. A
+query that the database executes in 0.2ms can easily cost 5ms end to end. The
+overhead dominates, and you are paying it a thousand times.
+
+<DoThis>
+
+Fix it in one of two ways
+
+- <Mint>Join.</Mint> One query returns posts with their authors already attached. Best
+  when the relationship is simple and you want one round trip.
+- <Mint>Batch, then stitch.</Mint> Collect all the author IDs, issue one
+  `WHERE id = ANY($1)`, and map them back in application code. Two queries
+  total, regardless of N. Best when the join would multiply rows awkwardly or
+  the data comes from different stores.
+
+</DoThis>
+
+Every ORM has primitives for this and every ORM makes the bug easy to write,
+which is not a coincidence. The whole point of an ORM is that database access
+looks like ordinary object access, and ordinary object access inside a loop
+looks completely innocent.
+
+| ORM | The primitive |
+|---|---|
+| Django | `select_related` (FK), `prefetch_related` (M2M) |
+| Rails | `includes` |
+| Prisma | `include` |
+| Drizzle | `leftJoin`, or `with` |
+| SQLAlchemy | `joinedload`, `selectinload` |
+
+<KeyIdea>
+
+<Peach>An ORM hides the round trip, not the cost of it.</Peach> The fix is not to abandon
+the ORM, it is to turn on query logging in development so the loop you wrote
+shows up as twenty-one lines in your terminal while you are writing it, rather
+than as a P99 six months later.
+
+</KeyIdea>
+
+<Ask>
+
+Is N+1 always bad?
+
+No, and saying so is a useful nuance. For N of three, on a warm connection, the
+extra round trips cost microseconds and the batched version is harder to read.
+<Mint>The problem is unbounded N.</Mint> If N is the size of a page and pages are capped
+at 50, you have a small constant. If N is "however many line items this order
+has", you have a bug waiting for your largest customer. Ask what bounds N; that
+is the real question.
+
+</Ask>
+
+<Trap>
+
+<Rose>Fixing N+1 by fetching everything up front.</Rose> Replacing 100 small queries with
+one query that returns 100,000 rows and 40 columns you do not use is not a fix.
+You moved the cost from round trips to transfer and memory. Batch the specific
+rows you need, by ID.
+
+</Trap>

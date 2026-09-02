@@ -1,0 +1,20 @@
+---
+number: "12"
+title: "The trade you are actually making"
+part: "II"
+partTitle: "Three kinds of storage"
+---
+Step back from storage for a moment, because the interviewer's next question is
+often a level up.
+
+```text
+             richer interface                infinite scale
+             ◀───────────────────────────────────────────▶
+
+  block      file system      NFS/EFS          object storage
+  fastest    POSIX            POSIX over       4 verbs
+  1 machine  1 machine        the network      any machine, any client
+                                               immutable
+```
+
+The same trade recurs everywhere in distributed systems:

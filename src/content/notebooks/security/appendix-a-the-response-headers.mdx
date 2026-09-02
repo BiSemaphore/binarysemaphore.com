@@ -1,0 +1,15 @@
+---
+number: ""
+title: "Appendix A. The response headers"
+part: "VIII"
+partTitle: "Appendices"
+---
+| Header | Value | Stops |
+|---|---|---|
+| `Content-Security-Policy` | `default-src 'self'; object-src 'none'; frame-ancestors 'none'` | XSS execution, clickjacking |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` | Downgrade to HTTP |
+| `X-Content-Type-Options` | `nosniff` | MIME sniffing a text file into a script |
+| `X-Frame-Options` | `DENY` | Clickjacking, legacy clients |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Leaking ids and tokens in URLs |
+| `Set-Cookie` | `HttpOnly; Secure; SameSite=Lax` | Theft by XSS, plaintext, CSRF |
+| `Cache-Control` | `no-store` on authenticated responses | Private data in shared caches |

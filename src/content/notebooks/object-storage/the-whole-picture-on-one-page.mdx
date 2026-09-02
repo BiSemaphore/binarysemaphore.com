@@ -1,0 +1,34 @@
+---
+number: ""
+title: "The whole picture on one page"
+part: ""
+partTitle: ""
+---
+```text
+                    ┌──────────────────┐
+                    │     BROWSER      │
+                    └────┬─────────┬───┘
+       1. POST /uploads  │         │  3. POST file + policy fields
+          (intent only)  │         │     (bytes go direct, never to you)
+                         ▼         │
+                  ┌─────────────┐  │
+                  │ YOUR SERVER │  │      ┌────────────────────────┐
+                  │             │  │      │     OBJECT STORAGE     │
+                  │ authorise   │  │      │                        │
+                  │ pick key    │  └─────▶│  bucket + key = object │
+                  │ sign policy │         │                        │
+                  └──────┬──────┘         │  metadata plane        │
+       2. row: status    │                │    sorted index        │
+          = pending      │   5. HEAD key  │  data plane            │
+                         │  ◀───────────▶ │    14+6 shards         │
+                         ▼                └───────────┬────────────┘
+                  ┌─────────────┐                     │
+                  │  DATABASE   │  6. status=ready    │ 7. GET via
+                  │             │                     │    signed URL
+                  │ what exists │                     ▼
+                  │ who owns it │              ┌─────────────┐
+                  │ orig. name  │              │     CDN     │──▶ users
+                  └─────────────┘              └─────────────┘
+
+        4. client calls POST /uploads/:id/complete after the PUT
+```
