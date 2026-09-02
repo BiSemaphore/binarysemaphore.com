@@ -8,7 +8,7 @@ Senior backend and full-stack interview preparation. Read with a pen.
 ## How to use this book
 
 Every other notebook in this series is about making something work. This one is
-about making something _understandable_, which is harder, because the person who
+about making something *understandable*, which is harder, because the person who
 has to understand it is not in the room and never will be.
 
 You will design an API once and then answer questions about it for two years.
@@ -22,26 +22,26 @@ to find it out instead.==
 
 ==What can they work out without asking you?==
 
-The lecture behind this book is _Complete REST API Design_
+The lecture behind this book is *Complete REST API Design*
 (`youtube.com/watch?v=RG6q57DwV8Y`, 2h04), and it names the problem exactly once,
 at 48:30. If you do not follow a standard, the only two ways anyone can learn
-your API are to **read your source code** or to try things until something works.
+your API are to __read your source code__ or to try things until something works.
 Both are expensive. Both produce wrong assumptions that ship.
 
 Everything in this book is one more thing they no longer have to ask you:
 
 | Part | What they get for free, if you get it right |
-| ---- | ------------------------------------------- |
-| I    | Why any of this is standardised at all      |
-| II   | What the thing is, and what contains it     |
-| III  | Whether it is safe to send twice            |
-| IV   | What just happened, and whose fault it was  |
-| V    | What comes back when they send nothing      |
-| VI   | The one operation your nouns cannot express |
-| VII  | Every endpoint after the first              |
+|---|---|
+| I | Why any of this is standardised at all |
+| II | What the thing is, and what contains it |
+| III | Whether it is safe to send twice |
+| IV | What just happened, and whose fault it was |
+| V | What comes back when they send nothing |
+| VI | The one operation your nouns cannot express |
+| VII | Every endpoint after the first |
 
-If you can say, for any design decision, _what it tells the consumer and what it
-leaves them guessing_, you can answer almost any API design question in an
+If you can say, for any design decision, *what it tells the consumer and what it
+leaves them guessing*, you can answer almost any API design question in an
 interview, including the ones about standards this book does not cover.
 
 #### What this book is not
@@ -60,25 +60,25 @@ first wrote it in.
 
 #### The five block types
 
-| Block            | What it means                                                              |
-| ---------------- | -------------------------------------------------------------------------- |
-| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on.  |
-| Senior signal    | The specific sentence that separates a senior answer from a mid-level one. |
-| Trap             | A common answer that sounds right and is wrong.                            |
-| Do this          | The concrete practice, with the parameter or the number.                   |
-| Key idea         | The one thing to carry out of that section.                                |
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or the number. |
+| Key idea | The one thing to carry out of that section. |
 
 #### The four highlighters
 
 Colour is never decorative here. Each one means one thing, so a marked phrase is
 already half-read before you reach the words.
 
-| Mark      | Means                                          |
-| --------- | ---------------------------------------------- |
-| ==peach== | The sentence to carry away                     |
-| !!rose!!  | The wrong answer, the thing that bites         |
-| ++mint++  | The correct practice                           |
-| %%pink%%  | A definition, at the point it is first defined |
+| Mark | Means |
+|---|---|
+| ==peach== | The sentence to carry away |
+| !!rose!! | The wrong answer, the thing that bites |
+| ++mint++ | The correct practice |
+| %%pink%% | A definition, at the point it is first defined |
 
 #### What is in the lecture and what is not
 
@@ -139,21 +139,21 @@ One endpoint. Every decision in this book is visible in it.
 
 Thirteen decisions, and each one is a question the consumer does not have to ask:
 
-| #   | The decision           | What it tells them, for free                              |
-| --- | ---------------------- | --------------------------------------------------------- |
-| 1   | The method             | Whether a retry is safe. Nothing else says this           |
-| 2   | The version            | That you will not break them without warning              |
-| 3   | The collection, plural | That there are many of these, and this is one namespace   |
-| 4   | The instance           | Which one. Opaque, so its format is not a promise         |
-| 5   | The action, last       | That CRUD could not express this, and a verb was needed   |
-| 6   | The content type       | How to parse the body, and which patch dialect            |
-| 7   | The idempotency key    | That a timed-out retry will not act twice                 |
-| 8   | The precondition       | That a concurrent edit will be refused, not silently lost |
-| 9   | The body               | Only what the server cannot work out itself               |
-| 10  | The status code        | What happened, and whose fault it was                     |
-| 11  | The location           | Where the thing that was made now lives                   |
-| 12  | The validator          | What to send back on the next write                       |
-| 13  | The representation     | The new state, so no follow-up read is needed             |
+| # | The decision | What it tells them, for free |
+|---|---|---|
+| 1 | The method | Whether a retry is safe. Nothing else says this |
+| 2 | The version | That you will not break them without warning |
+| 3 | The collection, plural | That there are many of these, and this is one namespace |
+| 4 | The instance | Which one. Opaque, so its format is not a promise |
+| 5 | The action, last | That CRUD could not express this, and a verb was needed |
+| 6 | The content type | How to parse the body, and which patch dialect |
+| 7 | The idempotency key | That a timed-out retry will not act twice |
+| 8 | The precondition | That a concurrent edit will be refused, not silently lost |
+| 9 | The body | Only what the server cannot work out itself |
+| 10 | The status code | What happened, and whose fault it was |
+| 11 | The location | Where the thing that was made now lives |
+| 12 | The validator | What to send back on the next write |
+| 13 | The representation | The new state, so no follow-up read is needed |
 
 Four rules are encoded in that picture, and they are the whole book.
 
@@ -289,7 +289,7 @@ written by people who never coordinate, can be added without the whole thing
 falling over?
 
 His answer was a set of constraints. Not features, ++constraints++: rules about
-what components are _not_ allowed to do, chosen so that useful properties fall
+what components are *not* allowed to do, chosen so that useful properties fall
 out for free.
 
 **Two things came out of that work.** Fielding and Berners-Lee co-authored the
@@ -320,14 +320,14 @@ real load, not the ones that seemed elegant in advance.
 Five constraints, plus one optional. Each one forbids something, and each
 prohibition buys a property.
 
-| #   | Constraint        | What it forbids                       | What it buys                              |
-| --- | ----------------- | ------------------------------------- | ----------------------------------------- |
-| 1   | Client-server     | The UI knowing how storage works      | Either side can be rewritten alone        |
-| 2   | Uniform interface | Per-service calling conventions       | One integration skill, every service      |
-| 3   | Layered system    | A component seeing past its neighbour | Proxies, caches, gateways, load balancers |
-| 4   | Cacheable         | Responses that cannot be labelled     | Work that does not reach your server      |
-| 5   | Stateless         | The server remembering the last call  | Any instance can answer any request       |
-| 6   | Code on demand    | (optional)                            | Client behaviour shipped from the server  |
+| # | Constraint | What it forbids | What it buys |
+|---|---|---|---|
+| 1 | Client-server | The UI knowing how storage works | Either side can be rewritten alone |
+| 2 | Uniform interface | Per-service calling conventions | One integration skill, every service |
+| 3 | Layered system | A component seeing past its neighbour | Proxies, caches, gateways, load balancers |
+| 4 | Cacheable | Responses that cannot be labelled | Work that does not reach your server |
+| 5 | Stateless | The server remembering the last call | Any instance can answer any request |
+| 6 | Code on demand | (optional) | Client behaviour shipped from the server |
 
 Three of them deserve more than a table row.
 
@@ -393,8 +393,8 @@ has not been bought yet.==
 
 Three words, and the middle one is the one people get wrong.
 
-**Representational.** A resource is the _thing_. A representation is one _format
-of that thing on the wire_. The user with id 8f2a is a resource; the JSON
+**Representational.** A resource is the *thing*. A representation is one *format
+of that thing on the wire*. The user with id 8f2a is a resource; the JSON
 document describing that user is a representation of it, and so is the HTML page,
 and so is the CSV row in an export.
 
@@ -483,19 +483,19 @@ client-side business logic duplicated in three apps.==
 **Almost nobody does this.** The industry mostly stops one level short, and there
 is a standard vocabulary for how short, the Richardson Maturity Model:
 
-| Level | What it means                               | Who is here                         |
-| ----- | ------------------------------------------- | ----------------------------------- |
-| 0     | One URL, one method, everything in the body | SOAP, most internal RPC             |
-| 1     | Many URLs, still one method                 | Legacy APIs, `POST /getUser`        |
-| 2     | URLs plus HTTP methods and status codes     | ==Essentially the entire industry== |
-| 3     | Level 2 plus hypermedia                     | GitHub, PayPal, and few others      |
+| Level | What it means | Who is here |
+|---|---|---|
+| 0 | One URL, one method, everything in the body | SOAP, most internal RPC |
+| 1 | Many URLs, still one method | Legacy APIs, `POST /getUser` |
+| 2 | URLs plus HTTP methods and status codes | ==Essentially the entire industry== |
+| 3 | Level 2 plus hypermedia | GitHub, PayPal, and few others |
 
 ++This book teaches level 2 without apology, because level 2 is what your
 colleagues, your interviewer and your consumers all mean by REST.++ But you
 should know two things about the gap.
 
-**First, Fielding does not accept the compromise.** In a 2008 post titled _REST
-APIs must be hypertext-driven_, he wrote that an API which does not use
+**First, Fielding does not accept the compromise.** In a 2008 post titled *REST
+APIs must be hypertext-driven*, he wrote that an API which does not use
 hypermedia to drive state transitions is not REST. By the definition of the man
 who coined the word, ==almost nothing anyone calls a REST API is one.== Level 2
 is a useful, pragmatic, universal deviation, and it is still a deviation.

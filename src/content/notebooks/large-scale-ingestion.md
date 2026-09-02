@@ -20,13 +20,13 @@ under pressure, and you only get there by drawing it badly a few times first.
 
 #### The five block types
 
-| Block            | What it means                                                              |
-| ---------------- | -------------------------------------------------------------------------- |
-| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on.  |
-| Senior signal    | The specific sentence that separates a senior answer from a mid-level one. |
-| Trap             | A common answer that sounds right and is wrong.                            |
-| Do this          | The concrete practice, with the parameter or command.                      |
-| Key idea         | The one thing to carry out of that section.                                |
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or command. |
+| Key idea | The one thing to carry out of that section. |
 
 #### A suggested route
 
@@ -124,14 +124,14 @@ which is what the interviewer is actually testing.
 
 #### The requirements, restated as constraints
 
-| Requirement                       | The constraint it creates                                     |
-| --------------------------------- | ------------------------------------------------------------- |
-| Files are gigabytes to terabytes  | Cannot fit in memory, cannot fit in one HTTP request          |
-| Processing takes minutes to hours | Cannot happen inside a request/response cycle                 |
-| Networks fail mid-upload          | Transfer must be resumable at sub-file granularity            |
-| Workers crash mid-job             | Processing must be resumable and repeatable safely            |
-| Many users submit at once         | Load must be buffered, not applied directly to workers        |
-| Users want progress               | Job state must be externally observable, not in worker memory |
+| Requirement | The constraint it creates |
+|---|---|
+| Files are gigabytes to terabytes | Cannot fit in memory, cannot fit in one HTTP request |
+| Processing takes minutes to hours | Cannot happen inside a request/response cycle |
+| Networks fail mid-upload | Transfer must be resumable at sub-file granularity |
+| Workers crash mid-job | Processing must be resumable and repeatable safely |
+| Many users submit at once | Load must be buffered, not applied directly to workers |
+| Users want progress | Job state must be externally observable, not in worker memory |
 
 Every architectural decision in this book falls out of the right-hand column.
 
@@ -146,16 +146,16 @@ lives entirely in the failure paths, so get to them fast and deliberately.
 Ask these before drawing anything. Each one is not politeness, it changes the
 architecture, and saying why makes that visible.
 
-| Question                                                                  | Why it changes the design                                                                    |
-| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| How large, realistically? P50 and P99?                                    | 50 MB means a simple upload. 500 GB forces multipart and split processing.                   |
-| Who produces the data: a user's browser, or another service?              | Browser means presigned URLs and CORS. Service-to-service may mean pull, or a shared bucket. |
-| What does "processing" do? Row-wise, or does it need global state?        | Row-wise is embarrassingly parallel. Sorting or joining across the whole file is not.        |
-| How long may processing take, at the top end?                             | Minutes allows a simple queue. Hours forces lease renewal and checkpointing.                 |
-| How many concurrent jobs, and how bursty?                                 | Sets worker count, queue choice and whether you need fairness between tenants.               |
-| Is the output a file, rows in a database, or both?                        | Changes the write path and how you make it idempotent.                                       |
-| Must results be exact, or is best-effort with an error report acceptable? | Decides whether one bad row fails the job.                                                   |
-| Retention: how long do inputs and outputs live?                           | Drives lifecycle policy and cost.                                                            |
+| Question | Why it changes the design |
+|---|---|
+| How large, realistically? P50 and P99? | 50 MB means a simple upload. 500 GB forces multipart and split processing. |
+| Who produces the data: a user's browser, or another service? | Browser means presigned URLs and CORS. Service-to-service may mean pull, or a shared bucket. |
+| What does "processing" do? Row-wise, or does it need global state? | Row-wise is embarrassingly parallel. Sorting or joining across the whole file is not. |
+| How long may processing take, at the top end? | Minutes allows a simple queue. Hours forces lease renewal and checkpointing. |
+| How many concurrent jobs, and how bursty? | Sets worker count, queue choice and whether you need fairness between tenants. |
+| Is the output a file, rows in a database, or both? | Changes the write path and how you make it idempotent. |
+| Must results be exact, or is best-effort with an error report acceptable? | Decides whether one bad row fails the job. |
+| Retention: how long do inputs and outputs live? | Drives lifecycle policy and cost. |
 
 :::signal
 Ask "row-wise or global?" early. It is the question that decides whether you can
@@ -285,14 +285,14 @@ middle of it.
 
 The instinct to put the file in PostgreSQL should be killed explicitly.
 
-| Concern               | Object store (S3, GCS, Blob)     | Relational database                        |
-| --------------------- | -------------------------------- | ------------------------------------------ |
-| Cost per GB per month | ~$0.023                          | 10x to 20x more, on provisioned storage    |
-| Max object size       | 5 TiB                            | BYTEA and BLOB practical limits far lower  |
-| Effect on backups     | None, versioned separately       | Backup and restore time explodes           |
-| Streaming reads       | Native, with byte-range requests | Awkward, buffers through the DB connection |
-| Direct client upload  | Yes, presigned                   | No, must pass through your servers         |
-| Replication cost      | Cheap, built in                  | Every replica carries the blob             |
+| Concern | Object store (S3, GCS, Blob) | Relational database |
+|---|---|---|
+| Cost per GB per month | ~$0.023 | 10x to 20x more, on provisioned storage |
+| Max object size | 5 TiB | BYTEA and BLOB practical limits far lower |
+| Effect on backups | None, versioned separately | Backup and restore time explodes |
+| Streaming reads | Native, with byte-range requests | Awkward, buffers through the DB connection |
+| Direct client upload | Yes, presigned | No, must pass through your servers |
+| Replication cost | Cheap, built in | Every replica carries the blob |
 
 :::key
 The database stores ==metadata and results==. The object store holds ==bytes==.
@@ -394,7 +394,6 @@ signed for `PUT uploads/job-8f21/part-3` cannot be used to write anywhere else,
 or to read anything.
 
 :::do Constrain the signature, do not just sign
-
 - Short expiry: minutes for a single small `PUT`, up to a few hours for a
   multipart session, never days.
 - Bind the key to the job, and derive it server-side. Never accept a
@@ -405,7 +404,7 @@ or to read anything.
   rejected by S3 rather than discovered by your parser an hour later.
 - Set a bucket CORS rule that exposes `ETag`, otherwise the browser cannot read
   the part ETags it needs to complete the upload.
-  :::
+:::
 
 :::trap "Presigned URLs are insecure because anyone with the link can upload"
 Anyone with the link can perform ==exactly the one operation you signed, on the
@@ -500,13 +499,13 @@ have read about S3".
 
 #### The hard limits
 
-| Limit                    | Value                            |
-| ------------------------ | -------------------------------- |
-| Minimum part size        | 5 MiB (the final part is exempt) |
-| Maximum part size        | 5 GiB                            |
-| Maximum parts per upload | 10,000                           |
-| Maximum object size      | 5 TiB                            |
-| Maximum single `PUT`     | 5 GiB                            |
+| Limit | Value |
+|---|---|
+| Minimum part size | 5 MiB (the final part is exempt) |
+| Maximum part size | 5 GiB |
+| Maximum parts per upload | 10,000 |
+| Maximum object size | 5 TiB |
+| Maximum single `PUT` | 5 GiB |
 
 #### The consequence
 
@@ -523,12 +522,10 @@ have read about S3".
 ```
 
 :::do Compute the part size, do not hardcode it
-
 ```text
 part_size = max(8 MiB, ceil(file_size / 9500))
 part_size = round_up_to_power_of_two(part_size)
 ```
-
 Dividing by 9,500 rather than 10,000 leaves headroom for rounding. Small files
 get small parts and fast retries, huge files automatically get bigger parts and
 stay under the part ceiling.
@@ -590,7 +587,6 @@ thundering herd that recreates the outage you were recovering from.
 :::
 
 :::do The client-side upload loop
-
 1. Bound concurrency (4 to 8 parts in flight). Unbounded parallelism starves
    itself and hides failures behind timeouts.
 2. Retry per part, not per file. Cap at 5 attempts, then surface the part number.
@@ -600,7 +596,7 @@ thundering herd that recreates the outage you were recovering from.
    boundary, not after processing starts.
 5. Persist `{uploadId, completedParts}` to `localStorage` so a refresh resumes.
 6. On permanent failure, `AbortMultipartUpload` so the parts stop costing money.
-   :::
+:::
 
 :::ask The connection drops for good and the user never comes back. What happens?
 The job sits in `UPLOADING` forever unless you handle it. Two mechanisms: a
@@ -652,7 +648,6 @@ The client says the upload is done. Do not believe it.
 ```
 
 :::do Verify three things before accepting an upload
-
 1. **It exists.** `HeadObject`, not the client's word.
 2. **The size matches** what the client declared when the job was created.
 3. **The checksum matches**, if you asked for one. This is your only defence
@@ -665,12 +660,12 @@ Then, and only then, transition the job and emit the work.
 
 Two designs, and the choice is worth stating explicitly.
 
-|                                        | Client-driven                                 | S3 event-driven                                |
-| -------------------------------------- | --------------------------------------------- | ---------------------------------------------- |
-| Trigger                                | Client calls your API after the last part     | S3 emits `ObjectCreated` to SQS or EventBridge |
-| If the client dies after the last part | Job stuck in `UPLOADING` until a sweeper runs | Fires anyway, upload is not lost               |
-| Ordering guarantee                     | You control it                                | At-least-once, occasionally delayed            |
-| Complexity                             | Lower                                         | Needs event plumbing and key parsing           |
+| | Client-driven | S3 event-driven |
+|---|---|---|
+| Trigger | Client calls your API after the last part | S3 emits `ObjectCreated` to SQS or EventBridge |
+| If the client dies after the last part | Job stuck in `UPLOADING` until a sweeper runs | Fires anyway, upload is not lost |
+| Ordering guarantee | You control it | At-least-once, occasionally delayed |
+| Complexity | Lower | Needs event plumbing and key parsing |
 
 :::signal
 Use both. The client call gives a fast, responsive path, and the S3 event is the
@@ -778,12 +773,12 @@ Why the job goes on a queue, and how to choose the queue without hand-waving.
 The queue is not there because distributed systems are supposed to have one. It
 does four specific jobs, and you should be able to name them.
 
-| Job                                   | What breaks without it                             |
-| ------------------------------------- | -------------------------------------------------- |
-| **Decouple** the API from the workers | A worker outage becomes an API outage              |
-| **Buffer** bursts (load levelling)    | 500 simultaneous submissions overwhelm the workers |
-| **Distribute** work across consumers  | You hand-roll assignment, and get it wrong         |
-| **Retry** with visibility             | A crashed worker's job vanishes                    |
+| Job | What breaks without it |
+|---|---|
+| **Decouple** the API from the workers | A worker outage becomes an API outage |
+| **Buffer** bursts (load levelling) | 500 simultaneous submissions overwhelm the workers |
+| **Distribute** work across consumers | You hand-roll assignment, and get it wrong |
+| **Retry** with visibility | A crashed worker's job vanishes |
 
 The API becomes trivially fast, because it only writes a row and an outbox
 entry:
@@ -808,17 +803,17 @@ work, not to do it.
 Never say "we could use Kafka or RabbitMQ". Say which, and why, in terms of this
 workload.
 
-|                      | SQS                     | RabbitMQ                      | Kafka                      |
-| -------------------- | ----------------------- | ----------------------------- | -------------------------- |
-| Model                | Managed queue           | Broker with routing           | Distributed log            |
-| Unit of work         | Message, deleted on ack | Message, acked                | Offset in a partition      |
-| Redelivery           | Visibility timeout      | Ack timeout / nack            | Consumer re-reads offset   |
-| Max in-flight time   | 12 hours                | Configurable, heartbeat-based | `max.poll.interval.ms`     |
-| Per-message retry    | Native, with DLQ        | Native, with DLX              | Manual, you build it       |
-| Replay history       | No                      | No                            | Yes, that is the point     |
-| Fan-out to N systems | Needs SNS in front      | Exchange bindings             | Native, independent groups |
-| Ordering             | FIFO queues only        | Per-queue                     | Per-partition              |
-| Ops burden           | None                    | Moderate                      | High                       |
+| | SQS | RabbitMQ | Kafka |
+|---|---|---|---|
+| Model | Managed queue | Broker with routing | Distributed log |
+| Unit of work | Message, deleted on ack | Message, acked | Offset in a partition |
+| Redelivery | Visibility timeout | Ack timeout / nack | Consumer re-reads offset |
+| Max in-flight time | 12 hours | Configurable, heartbeat-based | `max.poll.interval.ms` |
+| Per-message retry | Native, with DLQ | Native, with DLX | Manual, you build it |
+| Replay history | No | No | Yes, that is the point |
+| Fan-out to N systems | Needs SNS in front | Exchange bindings | Native, independent groups |
+| Ordering | FIFO queues only | Per-queue | Per-partition |
+| Ops burden | None | Moderate | High |
 
 #### Why the log model is awkward here
 
@@ -846,7 +841,6 @@ grounds instead of taste.
 #### The recommendation
 
 :::do Choose by what the workload actually needs
-
 - **Default: SQS** (or RabbitMQ if you are not on AWS). Per-message ack,
   built-in visibility timeout, native DLQ, no cluster to run. This is a job
   queue, and these are job queue tools.
@@ -856,7 +850,7 @@ grounds instead of taste.
 - **Both is legitimate**: Kafka as the event bus for `DataUploaded`, with a
   bridge that turns it into work items on a job queue. Say this only if you can
   justify the extra hop.
-  :::
+:::
 
 ```text
   If the event has many audiences:          If it is one unit of work:
@@ -972,21 +966,20 @@ capacity planning stops depending on the largest file anyone might upload.
 
 #### Batch size is a real trade-off
 
-| Batch               | Effect                                                                     |
-| ------------------- | -------------------------------------------------------------------------- |
-| Too small (10 rows) | Round-trip overhead dominates, the database is idle waiting                |
-| Right (1k to 10k)   | Amortised round trips, memory stays in tens of megabytes                   |
+| Batch | Effect |
+|---|---|
+| Too small (10 rows) | Round-trip overhead dominates, the database is idle waiting |
+| Right (1k to 10k) | Amortised round trips, memory stays in tens of megabytes |
 | Too large (1M rows) | Memory spike, long transactions, lock contention, huge rollback on failure |
 
 :::do Practical write-path tuning
-
 - Use the bulk path, not row-by-row inserts: `COPY` on Postgres, `LOAD DATA` on
   MySQL, JDBC batch with `rewriteBatchedStatements=true`.
 - Bound the total number of worker connections. Fifty workers each holding a
   connection pool of twenty will exhaust the database long before CPU.
 - If the destination is analytical, write Parquet to S3 and load once, rather
   than pushing tens of millions of rows through the OLTP database.
-  :::
+:::
 
 :::ask The file is a 4 GB gzip. Does streaming still work?
 Yes, decompress in the stream (`GZIPInputStream`), memory stays bounded. But
@@ -1045,7 +1038,6 @@ CREATE TABLE job_chunks (
 ```
 
 :::do Commit the checkpoint with the data, not after it
-
 ```sql
 BEGIN;
   INSERT INTO results (...) VALUES (...);            -- the chunk's output
@@ -1053,7 +1045,6 @@ BEGIN;
    WHERE job_id=$1 AND chunk_id=$2;
 COMMIT;
 ```
-
 One transaction means the checkpoint can never disagree with the data. Writing
 results and then updating the checkpoint separately reintroduces the dual-write
 problem from section 11, in the hottest loop of the system.
@@ -1297,12 +1288,12 @@ one job.
 
 #### Classify before you retry
 
-| Class     | Examples                                            | Action                                      |
-| --------- | --------------------------------------------------- | ------------------------------------------- |
-| Transient | Network blip, DB deadlock, 5xx, throttling          | Retry with backoff and jitter               |
-| Poison    | Malformed file, wrong schema, unsupported encoding  | Fail fast, do not retry                     |
-| Capacity  | Out of memory, disk full, connection pool exhausted | Retry, but on a different worker, and alert |
-| Bug       | NullPointerException in your transform              | Retry once, then DLQ, then fix the code     |
+| Class | Examples | Action |
+|---|---|---|
+| Transient | Network blip, DB deadlock, 5xx, throttling | Retry with backoff and jitter |
+| Poison | Malformed file, wrong schema, unsupported encoding | Fail fast, do not retry |
+| Capacity | Out of memory, disk full, connection pool exhausted | Retry, but on a different worker, and alert |
+| Bug | NullPointerException in your transform | Retry once, then DLQ, then fix the code |
 
 :::trap Retrying everything the same number of times
 Retrying a malformed-file error five times with exponential backoff wastes about
@@ -1312,7 +1303,6 @@ classification is the design; the retry count is a detail.
 :::
 
 :::do Make the DLQ operationally real
-
 - Alert on `DLQ depth > 0`. A dead letter queue nobody watches is a data loss
   mechanism with extra steps.
 - Keep the original message, the error, the stack trace and the attempt count,
@@ -1320,7 +1310,7 @@ classification is the design; the retry count is a detail.
 - Build a replay path from day one: fix the bug, redrive the DLQ. AWS has
   `StartMessageMoveTask` for exactly this.
 - Cap `maxReceiveCount` at 3 to 5. Higher just delays the alert.
-  :::
+:::
 
 :::ask One row in ten million is malformed. Does the whole job fail?
 Almost certainly not, and this should be a product decision you surface rather
@@ -1385,21 +1375,18 @@ picture, and it makes every failure path something you can point at.
 ```
 
 :::do Enforce the machine, do not merely document it
-
 - Terminal states are terminal: `COMPLETED`, `FAILED` and `CANCELLED` never
   transition again. This is what makes redelivered messages harmless.
 - Guard every write with the state it expects, so concurrent workers cannot
   fight:
-
 ```sql
 UPDATE jobs SET status='PROCESSING', attempt=attempt+1, started_at=now()
  WHERE id=$1 AND status IN ('QUEUED','RETRYING');
 -- zero rows updated means someone else claimed it; drop the message
 ```
-
 - Record `error_code` (machine-readable, for metrics and retries) separately
   from `error_detail` (human-readable, for support).
-  :::
+:::
 
 :::ask How do you cancel a running job?
 Set `CANCELLED` in the database, and have the worker check a cancellation flag
@@ -1457,15 +1444,14 @@ generously. Users forgive an estimate that improves and remember one that slips.
 
 ## 23. Telling the frontend
 
-| Mechanism                    | Cost                           | Latency        | Use when                                             |
-| ---------------------------- | ------------------------------ | -------------- | ---------------------------------------------------- |
+| Mechanism | Cost | Latency | Use when |
+|---|---|---|---|
 | Client polls `GET /jobs/:id` | One cheap request per interval | Interval-bound | Default. Simple, cache-friendly, survives reconnects |
-| Server-sent events           | One held connection per viewer | Immediate      | Server-to-client only, and you want live updates     |
-| WebSocket                    | One held connection, both ways | Immediate      | You already have one, or need client-to-server too   |
-| Webhook to another service   | One request per transition     | Immediate      | The consumer is a backend, not a browser             |
+| Server-sent events | One held connection per viewer | Immediate | Server-to-client only, and you want live updates |
+| WebSocket | One held connection, both ways | Immediate | You already have one, or need client-to-server too |
+| Webhook to another service | One request per transition | Immediate | The consumer is a backend, not a browser |
 
 :::do Poll well, and it beats a bad stream
-
 - Back off as the job ages: 2 s for the first minute, then 5 s, then 15 s.
 - Stop polling on a terminal status. Runaway polling of finished jobs is a
   classic frontend bug that shows up as mysterious backend load.
@@ -1473,7 +1459,7 @@ generously. Users forgive an estimate that improves and remember one that slips.
   304 instead of a payload.
 - Poll a read replica or a cache. Status reads vastly outnumber writes, and they
   do not need the primary.
-  :::
+:::
 
 ```json
 GET /jobs/8f21c0de-.../status
@@ -1525,7 +1511,6 @@ these only after the core design is agreed.
 ```
 
 :::do Scale on the right signal
-
 - Scale on ==queue depth per worker== or ==oldest message age==, not on worker
   CPU. CPU is a lagging, misleading indicator when workers are IO-bound on S3
   and the database.
@@ -1536,7 +1521,7 @@ these only after the core design is agreed.
   and wasted work; being slow to add capacity costs latency on every queued job.
 - Drain on shutdown: stop receiving, finish the current chunk, checkpoint, exit.
   Handle `SIGTERM`, because your orchestrator will send it.
-  :::
+:::
 
 #### Backpressure
 
@@ -1574,12 +1559,12 @@ One queue and one big tenant is a denial of service you built yourself.
   Bob uploaded a 5 MB file and waits two hours. Bob churns.
 ```
 
-| Approach                   | How it works                                          | Cost                                      |
-| -------------------------- | ----------------------------------------------------- | ----------------------------------------- |
-| Per-tenant queues          | One queue each, workers round-robin                   | Does not scale past a few hundred tenants |
-| Weighted fair queueing     | Sample queues in proportion to weight                 | More logic, much better behaviour         |
-| Concurrency cap per tenant | A tenant may hold at most N leases                    | Simple, effective, easy to explain        |
-| Size-based lanes           | Small, medium and large queues with dedicated workers | Small jobs always stay fast               |
+| Approach | How it works | Cost |
+|---|---|---|
+| Per-tenant queues | One queue each, workers round-robin | Does not scale past a few hundred tenants |
+| Weighted fair queueing | Sample queues in proportion to weight | More logic, much better behaviour |
+| Concurrency cap per tenant | A tenant may hold at most N leases | Simple, effective, easy to explain |
+| Size-based lanes | Small, medium and large queues with dedicated workers | Small jobs always stay fast |
 
 :::signal
 Size-based lanes are the pragmatic answer and are easy to justify: a dedicated
@@ -1610,22 +1595,20 @@ There is no universally correct answer, which is exactly why you should raise
 it. What matters is that the behaviour is a decision, not an accident.
 
 :::do Give the caller the full picture, and a policy dial
-
 ```json
 {
   "status": "COMPLETED_WITH_ERRORS",
-  "rows": { "ok": 9999988, "rejected": 12 },
+  "rows":   { "ok": 9999988, "rejected": 12 },
   "errorReport": "s3://acme-ingest/processed/job-8f21/errors.csv",
   "policy": { "failThresholdPercent": 1.0 }
 }
 ```
-
 - Write every rejected row, with its row number and reason, to an error file.
 - Apply a threshold: above it, the file is probably wrong and the job should
   fail outright rather than half-load a bad dataset.
 - Let the tenant configure `strict` (any error fails) or `lenient` (report and
   continue). Different customers genuinely want different answers.
-  :::
+:::
 
 :::ask If the job fails at 80 percent, do you roll back the 80 percent?
 State the trade-off rather than picking blindly. Rolling back gives clean
@@ -1642,30 +1625,26 @@ complete dataset.
 Cost questions separate people who have run these systems from people who have
 read about them.
 
-| Line item                     | Where it comes from                                 | What to do                                                            |
-| ----------------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
-| Abandoned multipart parts     | Uploads that never completed, billed forever        | Lifecycle rule: abort incomplete uploads after 7 days                 |
-| Request costs                 | Millions of tiny parts or tiny objects              | Larger parts, fewer objects                                           |
-| Cross-AZ or egress transfer   | Workers in a different AZ or region from the bucket | Colocate workers with the bucket, use a VPC endpoint                  |
-| Idle workers                  | Fleet sized for peak, running at trough             | Scale on queue depth, use spot instances                              |
-| Storage of raw inputs forever | No retention policy                                 | Lifecycle: Infrequent Access at 30 days, Glacier at 90, delete at 365 |
-| Database write amplification  | Row-by-row inserts and index maintenance            | Bulk load, drop and rebuild indexes                                   |
+| Line item | Where it comes from | What to do |
+|---|---|---|
+| Abandoned multipart parts | Uploads that never completed, billed forever | Lifecycle rule: abort incomplete uploads after 7 days |
+| Request costs | Millions of tiny parts or tiny objects | Larger parts, fewer objects |
+| Cross-AZ or egress transfer | Workers in a different AZ or region from the bucket | Colocate workers with the bucket, use a VPC endpoint |
+| Idle workers | Fleet sized for peak, running at trough | Scale on queue depth, use spot instances |
+| Storage of raw inputs forever | No retention policy | Lifecycle: Infrequent Access at 30 days, Glacier at 90, delete at 365 |
+| Database write amplification | Row-by-row inserts and index maintenance | Bulk load, drop and rebuild indexes |
 
 :::do The lifecycle rule everyone forgets
-
 ```json
 {
-  "Rules": [
-    {
-      "ID": "abort-incomplete-multipart",
-      "Status": "Enabled",
-      "Filter": { "Prefix": "uploads/" },
-      "AbortIncompleteMultipartUpload": { "DaysAfterInitiation": 7 }
-    }
-  ]
+  "Rules": [{
+    "ID": "abort-incomplete-multipart",
+    "Status": "Enabled",
+    "Filter": { "Prefix": "uploads/" },
+    "AbortIncompleteMultipartUpload": { "DaysAfterInitiation": 7 }
+  }]
 }
 ```
-
 Without this, every abandoned upload's parts are stored and billed indefinitely,
 and they are invisible in the console because the object does not exist. It is a
 real and common production bill surprise, and mentioning it unprompted is one of
@@ -1677,11 +1656,9 @@ the strongest signals in this entire design.
 #### Observability
 
 :::do Instrument the four things you will actually be paged about
-
 - **Correlation.** One `jobId` on every log line, span and metric, from the API
   through the queue into the worker. Without it, debugging is archaeology.
 - **Metrics that map to user pain**, not to machines:
-
 ```text
   queue_depth                    is work piling up?
   oldest_message_age_seconds     the real latency SLO
@@ -1690,26 +1667,25 @@ the strongest signals in this entire design.
   dlq_depth                      page immediately, always
   upload_abort_rate              is the client-side path broken?
 ```
-
 - **Structured logs**, one event per state transition, so a job's whole life can
   be reconstructed from a single query.
 - **Tracing** across the async boundary: propagate the trace context in the
   message headers, or the trace stops dead at the queue.
-  :::
+:::
 
 #### Security
 
-| Concern                          | Control                                                                      |
-| -------------------------------- | ---------------------------------------------------------------------------- |
-| Anyone can upload anywhere       | Presigned URL scoped to one method, one key, short expiry                    |
-| Client-supplied object keys      | Derive the key server-side from the job ID, always                           |
-| Oversized uploads                | `content-length-range` in the POST policy                                    |
-| Cross-tenant reads               | Bucket policy plus `tenant_id` checks on every job lookup                    |
-| Data at rest                     | SSE-KMS, per-tenant keys if the compliance story demands it                  |
-| Data in transit                  | TLS everywhere, and reject unencrypted transport in the bucket policy        |
-| Malicious content                | Scan before processing if the file is user-generated and will be served back |
-| Zip bombs and huge decompression | Cap the decompressed byte count and abort past the limit                     |
-| PII in logs                      | Log row numbers and error codes, never row contents                          |
+| Concern | Control |
+|---|---|
+| Anyone can upload anywhere | Presigned URL scoped to one method, one key, short expiry |
+| Client-supplied object keys | Derive the key server-side from the job ID, always |
+| Oversized uploads | `content-length-range` in the POST policy |
+| Cross-tenant reads | Bucket policy plus `tenant_id` checks on every job lookup |
+| Data at rest | SSE-KMS, per-tenant keys if the compliance story demands it |
+| Data in transit | TLS everywhere, and reject unencrypted transport in the bucket policy |
+| Malicious content | Scan before processing if the file is user-generated and will be served back |
+| Zip bombs and huge decompression | Cap the decompressed byte count and abort past the limit |
+| PII in logs | Log row numbers and error codes, never row contents |
 
 :::trap Logging the failing row to help debugging
 It is the most natural thing to write, and it puts customer data into your log
@@ -1786,47 +1762,46 @@ Draw in this order, narrating as you go. Never draw everything and then explain.
 ```
 
 :::do Three whiteboard habits that read as senior
-
 1. Label arrows with the ==protocol and the failure mode==, not just a verb.
    "PUT part, retry with backoff" beats "upload".
 2. Write the state machine in a corner and point at it when discussing failures.
    It saves you re-explaining the same transition three times.
 3. Leave space. A cramped diagram you cannot extend forces you to erase, and
    erasing mid-answer breaks your narrative.
-   :::
+:::
 
 ## 31. Follow-up question bank
 
 Cover the answers and work through these out loud. If you can answer twenty of
 the twenty-five, you are ready.
 
-| #   | Question                                          | The one-line answer                                                                               |
-| --- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| 1   | Why not send the file through your API?           | Bandwidth, memory and timeouts on the tier least able to absorb them; presign instead             |
-| 2   | Why S3 over the database?                         | Cost, size ceiling, streaming reads, direct client upload, backup impact                          |
-| 3   | How do you resume a failed upload?                | Multipart: keep the `uploadId`, `ListParts`, re-upload only what is missing                       |
-| 4   | What part size, and why?                          | `max(8 MiB, size/9500)`; the 10,000-part cap and retry cost set both bounds                       |
-| 5   | An upload is abandoned. What happens?             | Lifecycle rule aborts incomplete uploads; a sweeper expires the job row                           |
-| 6   | Why is a 403 special during upload?               | An expired presigned URL, so re-sign and retry rather than failing permanently                    |
-| 7   | How do you know the upload finished?              | `CompleteMultipartUpload`, then `HeadObject` to verify size and checksum                          |
-| 8   | The client dies after the last part. Now what?    | The S3 `ObjectCreated` event is the safety net for the client-driven path                         |
-| 9   | Row is written, publish fails. What breaks?       | Dual write: the job is ready but nothing is queued; fix with a transactional outbox               |
-| 10  | Kafka or RabbitMQ, and why?                       | Per-message ack wins for long variable tasks; Kafka's ordered offsets cause head-of-line blocking |
-| 11  | When would you actually use Kafka?                | Many independent consumers of the same event, replay, or it is already the backbone               |
-| 12  | Worker dies at 60 percent. What is lost?          | One chunk, because checkpoints commit in the same transaction as the chunk's data                 |
-| 13  | Why must processing be idempotent?                | Delivery is at-least-once, so duplicate processing is certain, not hypothetical                   |
-| 14  | How do you make a write idempotent?               | Unique key with `ON CONFLICT DO NOTHING`, or deterministic object keys                            |
-| 15  | The queue redelivers a job that is finished.      | Terminal-state check at the top of the loop; delete the message and move on                       |
-| 16  | A 90-minute job on a 5-minute visibility timeout. | Heartbeat the lease, and preferably split the work so no lease is long                            |
-| 17  | Can you exceed the 12-hour in-flight cap?         | No; split into chunk messages, or use a workflow engine for the orchestration                     |
-| 18  | How do you process one file in parallel?          | Byte-range chunks snapped to delimiters, fan out, fan in with an atomic counter                   |
-| 19  | Who finalises the job when chunks finish?         | `UPDATE ... RETURNING` on a counter; exactly one caller sees done equal to total                  |
-| 20  | One bad row in ten million.                       | Error file plus `COMPLETED_WITH_ERRORS`, with a configurable failure threshold                    |
-| 21  | How does the frontend see progress?               | Poll a cheap cached status endpoint; chunk-boundary updates, Redis for fine counters              |
-| 22  | Why not update progress per row?                  | Fifty-three million writes to one hot row; the progress bar becomes the bottleneck                |
-| 23  | How do you autoscale workers?                     | On queue depth per worker or oldest message age; cap by database capacity                         |
-| 24  | One tenant floods the system.                     | Per-tenant concurrency caps and size-based lanes                                                  |
-| 25  | What is the cost bug nobody catches?              | Abandoned multipart parts billed forever with no visible object                                   |
+| # | Question | The one-line answer |
+|---|---|---|
+| 1 | Why not send the file through your API? | Bandwidth, memory and timeouts on the tier least able to absorb them; presign instead |
+| 2 | Why S3 over the database? | Cost, size ceiling, streaming reads, direct client upload, backup impact |
+| 3 | How do you resume a failed upload? | Multipart: keep the `uploadId`, `ListParts`, re-upload only what is missing |
+| 4 | What part size, and why? | `max(8 MiB, size/9500)`; the 10,000-part cap and retry cost set both bounds |
+| 5 | An upload is abandoned. What happens? | Lifecycle rule aborts incomplete uploads; a sweeper expires the job row |
+| 6 | Why is a 403 special during upload? | An expired presigned URL, so re-sign and retry rather than failing permanently |
+| 7 | How do you know the upload finished? | `CompleteMultipartUpload`, then `HeadObject` to verify size and checksum |
+| 8 | The client dies after the last part. Now what? | The S3 `ObjectCreated` event is the safety net for the client-driven path |
+| 9 | Row is written, publish fails. What breaks? | Dual write: the job is ready but nothing is queued; fix with a transactional outbox |
+| 10 | Kafka or RabbitMQ, and why? | Per-message ack wins for long variable tasks; Kafka's ordered offsets cause head-of-line blocking |
+| 11 | When would you actually use Kafka? | Many independent consumers of the same event, replay, or it is already the backbone |
+| 12 | Worker dies at 60 percent. What is lost? | One chunk, because checkpoints commit in the same transaction as the chunk's data |
+| 13 | Why must processing be idempotent? | Delivery is at-least-once, so duplicate processing is certain, not hypothetical |
+| 14 | How do you make a write idempotent? | Unique key with `ON CONFLICT DO NOTHING`, or deterministic object keys |
+| 15 | The queue redelivers a job that is finished. | Terminal-state check at the top of the loop; delete the message and move on |
+| 16 | A 90-minute job on a 5-minute visibility timeout. | Heartbeat the lease, and preferably split the work so no lease is long |
+| 17 | Can you exceed the 12-hour in-flight cap? | No; split into chunk messages, or use a workflow engine for the orchestration |
+| 18 | How do you process one file in parallel? | Byte-range chunks snapped to delimiters, fan out, fan in with an atomic counter |
+| 19 | Who finalises the job when chunks finish? | `UPDATE ... RETURNING` on a counter; exactly one caller sees done equal to total |
+| 20 | One bad row in ten million. | Error file plus `COMPLETED_WITH_ERRORS`, with a configurable failure threshold |
+| 21 | How does the frontend see progress? | Poll a cheap cached status endpoint; chunk-boundary updates, Redis for fine counters |
+| 22 | Why not update progress per row? | Fifty-three million writes to one hot row; the progress bar becomes the bottleneck |
+| 23 | How do you autoscale workers? | On queue depth per worker or oldest message age; cap by database capacity |
+| 24 | One tenant floods the system. | Per-tenant concurrency caps and size-based lanes |
+| 25 | What is the cost bug nobody catches? | Abandoned multipart parts billed forever with no visible object |
 
 :::redraw Draw the entire system from memory, then grade yourself | Eleven steps, four failure annotations, the state machine. Compare against page one.
 :::
@@ -1870,23 +1845,23 @@ Numbers, vocabulary and a self-test.
 
 ## Appendix B. Glossary
 
-| Term                       | Meaning                                                                     |
-| -------------------------- | --------------------------------------------------------------------------- |
-| Backpressure               | Letting work queue up instead of pushing it into an overloaded dependency   |
-| Checkpoint                 | Durable record of progress, so a restart resumes rather than repeats        |
-| DLQ                        | Dead letter queue: where messages go after exhausting retries               |
-| Dual write                 | Writing to two systems without a shared transaction, so they can disagree   |
-| Effectively once           | At-least-once delivery plus idempotent processing; the achievable goal      |
-| Fan-out / fan-in           | Splitting one job into parallel units, then detecting collective completion |
-| Head-of-line blocking      | One slow item at the front delaying everything behind it                    |
-| Idempotent                 | Repeating the operation produces the same result as doing it once           |
-| Lease / visibility timeout | The window in which a consumer must ack before redelivery                   |
-| Multipart upload           | Uploading one object as independently retryable parts                       |
-| Outbox                     | Events written in the same transaction as the state change, relayed after   |
-| Poison pill                | A message that will never succeed, no matter how often it is retried        |
-| Presigned URL              | A time-limited signed URL authorising one operation on one key              |
-| Splittable format          | A format that can be read from an arbitrary offset (not plain gzip)         |
-| Thundering herd            | Many clients retrying in lockstep and recreating the outage                 |
+| Term | Meaning |
+|---|---|
+| Backpressure | Letting work queue up instead of pushing it into an overloaded dependency |
+| Checkpoint | Durable record of progress, so a restart resumes rather than repeats |
+| DLQ | Dead letter queue: where messages go after exhausting retries |
+| Dual write | Writing to two systems without a shared transaction, so they can disagree |
+| Effectively once | At-least-once delivery plus idempotent processing; the achievable goal |
+| Fan-out / fan-in | Splitting one job into parallel units, then detecting collective completion |
+| Head-of-line blocking | One slow item at the front delaying everything behind it |
+| Idempotent | Repeating the operation produces the same result as doing it once |
+| Lease / visibility timeout | The window in which a consumer must ack before redelivery |
+| Multipart upload | Uploading one object as independently retryable parts |
+| Outbox | Events written in the same transaction as the state change, relayed after |
+| Poison pill | A message that will never succeed, no matter how often it is retried |
+| Presigned URL | A time-limited signed URL authorising one operation on one key |
+| Splittable format | A format that can be read from an arbitrary offset (not plain gzip) |
+| Thundering herd | Many clients retrying in lockstep and recreating the outage |
 
 ## Appendix C. Self-test
 

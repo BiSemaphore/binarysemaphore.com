@@ -8,7 +8,7 @@ Senior backend and full-stack interview preparation. Read with a pen.
 ## How to use this book
 
 This book follows one lecture end to end and then keeps going where the lecture
-stops. The lecture is _Object Storage, Everything You Need to Know_, parts 1 and
+stops. The lecture is *Object Storage, Everything You Need to Know*, parts 1 and
 2 (`youtube.com/watch?v=Ie0TjKI9cDI` and `?v=iWrVCxexUWY`), and its structure is
 worth copying: it does not start with S3. It starts with the most reasonable thing a competent developer
 would write on their first day, then kills it seven times, and only then
@@ -20,25 +20,25 @@ whether you know ==which failure you are avoiding at each step==.
 
 #### The five block types
 
-| Block            | What it means                                                              |
-| ---------------- | -------------------------------------------------------------------------- |
-| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on.  |
-| Senior signal    | The specific sentence that separates a senior answer from a mid-level one. |
-| Trap             | A common answer that sounds right and is wrong.                            |
-| Do this          | The concrete practice, with the parameter or command.                      |
-| Key idea         | The one thing to carry out of that section.                                |
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or command. |
+| Key idea | The one thing to carry out of that section. |
 
 #### The four highlighters
 
 Colour in this book is never decorative. Each one means one thing, so a marked
 phrase is already half-read before you get to the words.
 
-| Mark      | Means                                                         |
-| --------- | ------------------------------------------------------------- |
-| ==peach== | The sentence to carry away                                    |
-| !!rose!!  | The wrong answer, the thing that bites                        |
-| ++mint++  | The correct practice                                          |
-| %%pink%%  | A definition, a term of art, at the point it is first defined |
+| Mark | Means |
+|---|---|
+| ==peach== | The sentence to carry away |
+| !!rose!! | The wrong answer, the thing that bites |
+| ++mint++ | The correct practice |
+| %%pink%% | A definition, a term of art, at the point it is first defined |
 
 Figures follow the same discipline. Box drawing recedes to a pale wire so the
 shape reads first, NODE LABELS take full ink, and anything after a left arrow
@@ -51,7 +51,7 @@ are the production concerns that turn up in interviews immediately after the
 upload path is agreed, and are not in either lecture: the access-control
 mechanisms, encryption, lifecycle and untrusted content. Sections overlapping
 Notebook 01
-(_Large-Scale Data Ingestion_) say so and point at the section there that goes
+(*Large-Scale Data Ingestion*) say so and point at the section there that goes
 deeper, rather than repeating it.
 
 #### A suggested route
@@ -250,15 +250,15 @@ PersistentVolume so the storage outlives the container.
 That does work, for this failure. It is worth being precise about what it buys
 and what it does not:
 
-| Failure                        | Persistent volume fixes it?          |
-| ------------------------------ | ------------------------------------ |
-| 1. File does not fit in memory | No, unrelated                        |
-| 2. Ephemeral storage           | ==Yes==                              |
-| 3. Horizontal scaling          | No, and RWO volumes make it worse    |
-| 4. Fixed size disk             | No, still a vertical resize          |
-| 5. Durability                  | Partly, depends on the storage class |
-| 6. Server as CDN               | No                                   |
-| 7. No cross-system transaction | No                                   |
+| Failure | Persistent volume fixes it? |
+|---|---|
+| 1. File does not fit in memory | No, unrelated |
+| 2. Ephemeral storage | ==Yes== |
+| 3. Horizontal scaling | No, and RWO volumes make it worse |
+| 4. Fixed size disk | No, still a vertical resize |
+| 5. Durability | Partly, depends on the storage class |
+| 6. Server as CDN | No |
+| 7. No cross-system transaction | No |
 
 :::trap "A persistent volume solves the file storage problem"
 It solves !!one!! of seven. Worse, the common volume access mode
@@ -372,12 +372,12 @@ permanent data loss.
 
 Two words get used interchangeably in casual conversation and must not be:
 
-|                    | Availability                    | Durability                                    |
-| ------------------ | ------------------------------- | --------------------------------------------- |
-| Question           | Can I reach the data right now? | Does the data still exist?                    |
-| Failure looks like | 500s, timeouts, a slow endpoint | The bytes are gone                            |
-| Recovery           | ==Wait.== It comes back         | You cannot wait. There is nothing to wait for |
-| Measured as        | uptime %, e.g. 99.99%           | annual object loss probability, e.g. 11 nines |
+| | Availability | Durability |
+|---|---|---|
+| Question | Can I reach the data right now? | Does the data still exist? |
+| Failure looks like | 500s, timeouts, a slow endpoint | The bytes are gone |
+| Recovery | ==Wait.== It comes back | You cannot wait. There is nothing to wait for |
+| Measured as | uptime %, e.g. 99.99% | annual object loss probability, e.g. 11 nines |
 
 :::signal
 "An availability incident is a bad afternoon. ==A durability incident is a bad
@@ -427,11 +427,11 @@ your whole server.
 
 #### IO-bound versus CPU-bound, and why it matters here
 
-|             | CPU-bound                                     | IO-bound                                         |
-| ----------- | --------------------------------------------- | ------------------------------------------------ |
-| Doing what  | Hashing, encoding, JSON parse, business rules | Waiting on a socket, a disk, a database, an API  |
-| Bottleneck  | Cores                                         | Concurrency slots and bandwidth                  |
-| Scale it by | More cores, faster code                       | More concurrency, or ==getting out of the path== |
+| | CPU-bound | IO-bound |
+|---|---|---|
+| Doing what | Hashing, encoding, JSON parse, business rules | Waiting on a socket, a disk, a database, an API |
+| Bottleneck | Cores | Concurrency slots and bandwidth |
+| Scale it by | More cores, faster code | More concurrency, or ==getting out of the path== |
 
 Serving files is IO-bound work with none of the value: your server is acting as
 a content delivery network with one location, no caching layer, no anycast, no
@@ -521,13 +521,13 @@ Blocks are typically 512 bytes or 4 KB. There is no file, no name, no directory,
 no permission. Your SSD is a block device. AWS EBS is a block device delivered
 over a network.
 
-| Property    | Block storage                             |
-| ----------- | ----------------------------------------- |
-| Interface   | Read and write numbered fixed-size blocks |
-| Latency     | ==Microseconds==                          |
-| Examples    | SSD, NVMe, AWS EBS, GCP Persistent Disk   |
-| Attach to   | ==Exactly one machine at a time==         |
-| Typical use | Boot volumes, database data directories   |
+| Property | Block storage |
+|---|---|
+| Interface | Read and write numbered fixed-size blocks |
+| Latency | ==Microseconds== |
+| Examples | SSD, NVMe, AWS EBS, GCP Persistent Disk |
+| Attach to | ==Exactly one machine at a time== |
+| Typical use | Boot volumes, database data directories |
 
 Two facts matter for interviews.
 
@@ -596,13 +596,13 @@ prohibitive across data centres and continents.
 Network file systems (NFS, SMB, AWS EFS, Azure Files) implement them anyway, and
 their trade-offs are exactly where the coordination shows up:
 
-| Property  | Network file storage                                                  |
-| --------- | --------------------------------------------------------------------- |
-| Interface | POSIX, or most of it                                                  |
-| Shared by | Many machines, ==unlike block==                                       |
-| Latency   | Sub-millisecond to milliseconds, plus metadata round trips            |
+| Property | Network file storage |
+|---|---|
+| Interface | POSIX, or most of it |
+| Shared by | Many machines, ==unlike block== |
+| Latency | Sub-millisecond to milliseconds, plus metadata round trips |
 | Weak spot | Small-file and metadata-heavy workloads, locking, throughput ceilings |
-| Use when  | Software you cannot change requires `open()` and `seek()`             |
+| Use when | Software you cannot change requires `open()` and `seek()` |
 
 :::trap "EFS is basically S3 with folders"
 They are not comparable. EFS is a POSIX file system: it maintains a directory
@@ -634,14 +634,14 @@ either a variant of these four, an administrative operation, or metadata.
 
 #### What you give up
 
-| You cannot                                  | Because                                                                                     |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Modify an object in place                   | Objects are %%immutable%%; you replace the whole thing                                      |
-| `seek()` and overwrite bytes 4,000 to 4,004 | No partial write. Download, edit, re-upload the whole object                                |
-| Have real folders                           | Keys are flat strings; hierarchy is an illusion (section 14)                                |
-| Rename                                      | Copy to the new key, delete the old. Costs the ==full size== of the object                  |
-| Lock a file                                 | There is no lock. There is now a conditional write (section 22)                             |
-| Expect microseconds                         | Every operation is an ==HTTP request over a network==: milliseconds to tens of milliseconds |
+| You cannot | Because |
+|---|---|
+| Modify an object in place | Objects are %%immutable%%; you replace the whole thing |
+| `seek()` and overwrite bytes 4,000 to 4,004 | No partial write. Download, edit, re-upload the whole object |
+| Have real folders | Keys are flat strings; hierarchy is an illusion (section 14) |
+| Rename | Copy to the new key, delete the old. Costs the ==full size== of the object |
+| Lock a file | There is no lock. There is now a conditional write (section 22) |
+| Expect microseconds | Every operation is an ==HTTP request over a network==: milliseconds to tens of milliseconds |
 
 #### What you get
 
@@ -684,13 +684,13 @@ often a level up.
 
 The same trade recurs everywhere in distributed systems:
 
-| Domain     | Mutable version                     | Immutable version that scales           |
-| ---------- | ----------------------------------- | --------------------------------------- |
-| Storage    | File system                         | Object storage                          |
-| Servers    | Stateful server, sessions in memory | Stateless servers, state externalised   |
-| Deployment | SSH in and patch the box            | Immutable images, replace the container |
-| Caching    | Update the cached entry             | New key, or invalidate and re-fetch     |
-| Data       | UPDATE the row                      | Append-only log, event sourcing         |
+| Domain | Mutable version | Immutable version that scales |
+|---|---|---|
+| Storage | File system | Object storage |
+| Servers | Stateful server, sessions in memory | Stateless servers, state externalised |
+| Deployment | SSH in and patch the box | Immutable images, replace the container |
+| Caching | Update the cached entry | New key, or invalidate and re-fetch |
+| Data | UPDATE the row | Append-only log, event sourcing |
 
 Each row is the same bargain: ==give up in-place mutation, receive unbounded
 horizontal scale==, because mutation is what forces coordination and
@@ -885,7 +885,6 @@ parser.
 ```
 
 :::do Generate the key server-side, always
-
 - The client never chooses the key. Your server picks it and signs for exactly
   that one key.
 - Use a random identifier: UUIDv4, ULID, or a hash prefix.
@@ -894,7 +893,7 @@ parser.
 - Store the original filename in your database, and optionally in user
   metadata. Serve it back at download time with
   `Content-Disposition: attachment; filename="..."`.
-  :::
+:::
 
 #### Rule 2: put the entropy at the front, not the back
 
@@ -1072,14 +1071,14 @@ power domains, ideally different buildings.
 
 Run the numbers, because the comparison is the point:
 
-|                                 | 3x replication  | 14+6 erasure coding                    |
-| ------------------------------- | --------------- | -------------------------------------- |
-| Storage for 1 PB                | 3 PB            | ==1.43 PB==                            |
-| Overhead                        | 200%            | 43%                                    |
-| Simultaneous failures tolerated | 2               | ==6==                                  |
-| Cost of a read                  | Read one copy   | Read 14 shards, reassemble             |
-| Cost of a repair                | Copy one object | Read 14 shards, recompute the lost one |
-| Paid in                         | Drives          | ==CPU and internal network==           |
+| | 3x replication | 14+6 erasure coding |
+|---|---|---|
+| Storage for 1 PB | 3 PB | ==1.43 PB== |
+| Overhead | 200% | 43% |
+| Simultaneous failures tolerated | 2 | ==6== |
+| Cost of a read | Read one copy | Read 14 shards, reassemble |
+| Cost of a repair | Copy one object | Read 14 shards, recompute the lost one |
+| Paid in | Drives | ==CPU and internal network== |
 
 Cheaper **and** more failure-tolerant. What you pay is CPU for the coding maths
 and extra reads during recovery, and at provider scale drives cost far more than
@@ -1133,7 +1132,6 @@ There is no "please give it back" endpoint. Durability guarantees the storage
 system will not lose data. It does not guarantee ==you== will not.
 
 :::do What you actually turn on, in order of value
-
 - **Versioning.** An overwrite or delete creates a new version instead of
   destroying the old one; a delete writes a delete marker. This is the single
   highest-value setting on a bucket holding data you care about. Pair it with a
@@ -1146,7 +1144,7 @@ system will not lose data. It does not guarantee ==you== will not.
   you do not want the attacker holding account B as well.
 - **Object Lock / WORM** for compliance data that must not be deletable at all
   for a retention period, even by an administrator.
-  :::
+:::
 
 :::signal
 "Eleven nines protects against drives dying. It does not protect against me. My
@@ -1173,13 +1171,13 @@ Conceptually, one enormous sorted key-value index.
 
 Everything in this book that seemed arbitrary is a property of this structure:
 
-| Behaviour                                        | Because the index is…                                     |
-| ------------------------------------------------ | --------------------------------------------------------- |
-| Hot partitions from sequential keys (section 15) | partitioned by %%key range%%                              |
-| LIST is slow and paginated (section 16)          | a ==range scan==, not a lookup                            |
-| No atomic rename (section 16)                    | a key change ==moves partitions==                         |
-| `HEAD` is instant and touches no drive           | size and ETag ==live in the index==                       |
-| Folders are a group-by (section 14)              | a ==sorted== structure, so prefixes are contiguous ranges |
+| Behaviour | Because the index is… |
+|---|---|
+| Hot partitions from sequential keys (section 15) | partitioned by %%key range%% |
+| LIST is slow and paginated (section 16) | a ==range scan==, not a lookup |
+| No atomic rename (section 16) | a key change ==moves partitions== |
+| `HEAD` is instant and touches no drive | size and ETag ==live in the index== |
+| Folders are a group-by (section 14) | a ==sorted== structure, so prefixes are contiguous ranges |
 
 And it must be ==strongly consistent==, which is the genuinely hard requirement:
 trillions of keys, globally distributed, millisecond lookups, and a write must
@@ -1190,11 +1188,11 @@ be visible to the next read.
 Worth knowing as history, because half the advice on the internet predates the
 change and interviewers over a certain age remember it vividly.
 
-|                             | Eventually consistent                                   | Strongly consistent                         |
-| --------------------------- | ------------------------------------------------------- | ------------------------------------------- |
-| Write then immediately read | May 404 or return a stale version                       | ==Always returns the new object==           |
-| Why                         | The read hit an index replica that had not caught up    | The read observes the committed index entry |
-| Code you had to write       | Retry loops, `sleep(2)`, "eventual consistency helpers" | None                                        |
+| | Eventually consistent | Strongly consistent |
+|---|---|---|
+| Write then immediately read | May 404 or return a stale version | ==Always returns the new object== |
+| Why | The read hit an index replica that had not caught up | The read observes the committed index entry |
+| Code you had to write | Retry loops, `sleep(2)`, "eventual consistency helpers" | None |
 
 ```text
   before Dec 2020                      since Dec 2020
@@ -1308,13 +1306,13 @@ The obvious one. The browser posts to your API, your API forwards to the bucket.
 It has real advantages, and dismissing it outright is a worse answer than
 knowing when it applies:
 
-| You can                                       | Because you hold the bytes                       |
-| --------------------------------------------- | ------------------------------------------------ |
-| Validate content for real                     | Sniff magic bytes, not the declared content type |
-| Scan for malware inline                       | Before anything is stored                        |
-| Compute a hash, transcode, resize, strip EXIF | You have the data anyway                         |
-| Reject for any business reason                | Quota, plan limits, moderation                   |
-| Use your ordinary auth middleware             | Same session, same token, no CORS config         |
+| You can | Because you hold the bytes |
+|---|---|
+| Validate content for real | Sniff magic bytes, not the declared content type |
+| Scan for malware inline | Before anything is stored |
+| Compute a hash, transcode, resize, strip EXIF | You have the data anyway |
+| Reject for any business reason | Quota, plan limits, moderation |
+| Use your ordinary auth middleware | Same session, same token, no CORS config |
 
 For profile pictures, CSVs, documents under a few megabytes, this is a
 defensible choice and plenty of production systems use it. It is not
@@ -1369,7 +1367,6 @@ Measured, uploading the same 500 MB file twice:
 Same wall-clock time. The only difference is whether the bytes accumulate.
 
 :::do Two things, in every language, on every upload endpoint
-
 - Hand the storage SDK a ++reader++, never a byte array. In Go, the multipart
   `Part`; in Node, `req.pipe(...)` or `Upload({ Body: stream })`; in Python,
   `upload_fileobj`, not `upload_file` after a read.
@@ -1377,7 +1374,7 @@ Same wall-clock time. The only difference is whether the bytes accumulate.
   `http.MaxBytesReader` in Go, `limits` in your framework, `client_max_body_size`
   in nginx. A client sending 4 GB should be cut off at your limit, not allowed
   to try.
-  :::
+:::
 
 :::trap "It works on my machine, so the upload path is fine"
 This class of bug is invisible in development by construction: you test with a
@@ -1403,14 +1400,14 @@ path.
                    ──▶ 504 on a slow mobile upload
 ```
 
-| Limit                            | Typical default          | Symptom                             |
-| -------------------------------- | ------------------------ | ----------------------------------- |
-| Load balancer idle timeout       | 60 s (ALB)               | Upload dies mid-transfer, 504       |
-| nginx `client_max_body_size`     | 1 MB                     | ==413 Request Entity Too Large==    |
-| API Gateway payload cap          | 10 MB, ==not raisable==  | 413, and no configuration will help |
-| Lambda / serverless request size | 6 MB sync                | Hard wall                           |
-| Worker or connection slots       | 100s                     | Slow uploaders exhaust the pool     |
-| Egress and instance bandwidth    | Instance-class dependent | Everything gets slower at once      |
+| Limit | Typical default | Symptom |
+|---|---|---|
+| Load balancer idle timeout | 60 s (ALB) | Upload dies mid-transfer, 504 |
+| nginx `client_max_body_size` | 1 MB | ==413 Request Entity Too Large== |
+| API Gateway payload cap | 10 MB, ==not raisable== | 413, and no configuration will help |
+| Lambda / serverless request size | 6 MB sync | Hard wall |
+| Worker or connection slots | 100s | Slow uploaders exhaust the pool |
+| Egress and instance bandwidth | Instance-class dependent | Everything gets slower at once |
 
 That API Gateway row is the one that ends the argument. Some of these you can
 tune. That one you cannot, at any price.
@@ -1485,7 +1482,6 @@ those are your parameters. Sign narrowly, expire in minutes.
 :::
 
 :::do Signing hygiene
-
 - Expiry in minutes for a single PUT; hours only for a long multipart session.
 - Derive the key ++server-side++ from the authenticated session. Never sign a
   key the client supplied.
@@ -1495,7 +1491,7 @@ those are your parameters. Sign narrowly, expire in minutes.
 - Presigned GET URLs are ++bearer tokens++. They leak through referrer headers,
   logs, screenshots and shared links, so keep them short-lived and never treat
   one as an access control decision by itself.
-  :::
+:::
 
 ## 27. The hole in a presigned PUT
 
@@ -1542,11 +1538,11 @@ plus a set of form fields, and the object store enforces the conditions itself.
 
 Three constraints, each closing a specific attack:
 
-| Condition                   | Stops                                                            |
-| --------------------------- | ---------------------------------------------------------------- |
-| `content-length-range`      | The 5 GB upload from section 27. ==Enforced by the store==       |
-| `starts-with $Content-Type` | An executable arriving where an image was authorised             |
-| `starts-with $key`          | Writing outside the caller's prefix, into another tenant's space |
+| Condition | Stops |
+|---|---|
+| `content-length-range` | The 5 GB upload from section 27. ==Enforced by the store== |
+| `starts-with $Content-Type` | An executable arriving where an image was authorised |
+| `starts-with $key` | Writing outside the caller's prefix, into another tenant's space |
 
 If the client violates any of them the object store rejects the request and
 ==nothing is stored==. Your server is not involved, is not billed, and does not
@@ -1568,7 +1564,7 @@ have to be correct for this to hold.
 const form = new FormData();
 Object.entries(fields).forEach(([k, v]) => form.append(k, v));
 form.append("Content-Type", file.type);
-form.append("file", file); // ← the file field MUST be appended LAST
+form.append("file", file);          // ← the file field MUST be appended LAST
 
 await fetch(url, { method: "POST", body: form });
 // ← do NOT set the Content-Type header yourself.
@@ -1724,15 +1720,13 @@ The browser is now posting to a different origin than your site, so it is a
 cross-origin request and CORS applies to it.
 
 ```json
-[
-  {
-    "AllowedOrigins": ["https://app.acme.com"],
-    "AllowedMethods": ["PUT", "POST", "GET", "HEAD"],
-    "AllowedHeaders": ["*"],
-    "ExposeHeaders": ["ETag"],
-    "MaxAgeSeconds": 3000
-  }
-]
+[{
+  "AllowedOrigins": ["https://app.acme.com"],
+  "AllowedMethods": ["PUT", "POST", "GET", "HEAD"],
+  "AllowedHeaders": ["*"],
+  "ExposeHeaders": ["ETag"],
+  "MaxAgeSeconds": 3000
+}]
 ```
 
 `ExposeHeaders: ["ETag"]` is the line people miss. Without it the browser
@@ -1749,6 +1743,7 @@ preflight `OPTIONS` response in the network panel rather than the PUT.
 
 :::redraw The full two-phase upload: browser, server, bucket, database. Mark which arrow carries the file bytes. | Six numbered arrows, one HEAD, one status transition.
 :::
+
 
 :::part VI | Large files
 
@@ -1878,7 +1873,7 @@ after everything expensive has already been paid for.
 #### So compute it, do not hardcode it
 
 ```js
-const FLOOR = 16 * 1024 * 1024; // 16 MiB
+const FLOOR = 16 * 1024 * 1024;            // 16 MiB
 const partSize = Math.max(FLOOR, Math.ceil(fileSize / 10_000));
 const partCount = Math.ceil(fileSize / partSize);
 ```
@@ -1931,7 +1926,6 @@ Your check now fails for every large file, and the natural reaction, "the upload
 must be corrupting things", sends you debugging the wrong system.
 
 :::do Get real end-to-end integrity, three options
-
 - Use the SDK's checksum feature. Modern S3 SDKs compute CRC32C or SHA-256 per
   part and can give you a full-object checksum the service verifies for you.
 - Or compute SHA-256 of the file client-side, send it as ==user metadata==, and
@@ -1939,7 +1933,7 @@ must be corrupting things", sends you debugging the wrong system.
   deduplication for free: same hash, same object, skip the upload.
 - Either way, treat the ETag as ==an opaque version token for conditional
   requests== (sections 22 and 42), never as a content hash.
-  :::
+:::
 
 ## 36. Abandoned uploads: the invisible bill
 
@@ -2111,11 +2105,11 @@ records; it does not carry payload in either direction.
 
 ## 40. Three delivery patterns
 
-| Pattern                         | Bucket                 | Use when                                   |
-| ------------------------------- | ---------------------- | ------------------------------------------ |
+| Pattern | Bucket | Use when |
+|---|---|---|
 | 1. CDN in front, bucket private | Private, CDN-only read | Public assets: images, CSS, product photos |
-| 2. Presigned GET                | Private                | Private per-user content, moderate volume  |
-| 3. CDN signed URLs or cookies   | Private, CDN-only read | Private content at volume, and video       |
+| 2. Presigned GET | Private | Private per-user content, moderate volume |
+| 3. CDN signed URLs or cookies | Private, CDN-only read | Private content at volume, and video |
 
 #### Pattern 1: public content, private bucket
 
@@ -2160,7 +2154,6 @@ not obvious.
 You installed a CDN specifically to cut egress, and it is doing nothing at all.
 
 :::do Two fixes, cheap and proper
-
 - **Cheap: round the expiry.** Sign "valid until the top of the next hour"
   rather than "valid for 15 minutes from now". Every user requesting that object
   within the same hour gets the ==identical URL==, so the CDN can cache it. You
@@ -2168,7 +2161,7 @@ You installed a CDN specifically to cut egress, and it is doing nothing at all.
 - **Proper: sign at the edge.** Use the CDN's own signed URLs or signed cookies.
   Authorisation happens at the edge, the CDN keeps full control of caching, and
   your backend is out of the read path entirely.
-  :::
+:::
 
 :::signal
 "Signed cookies matter most for video. A single viewing session pulls hundreds
@@ -2300,16 +2293,16 @@ Three lines, and knowing their relative sizes changes architectures. Rates move;
      egress    1,000 GB × $0.09   =  $90        ← four times the storage
 ```
 
-| Driver     | The mistake                                   | The fix                                                          |
-| ---------- | --------------------------------------------- | ---------------------------------------------------------------- |
-| Egress     | Serving from the bucket                       | CDN in front, and ==measure the hit rate==                       |
-| Egress     | Presigned GETs behind a CDN                   | Section 41                                                       |
-| Egress     | Compute in a different region from the bucket | Co-locate                                                        |
-| Operations | LIST in the request path                      | Section 16                                                       |
-| Operations | Millions of tiny objects                      | Aggregate; mind the 128 KB minimum billable size on cold classes |
-| Storage    | Abandoned multipart uploads                   | Section 36                                                       |
-| Storage    | Every version kept forever                    | Expire non-current versions                                      |
-| Storage    | Nothing ever expires                          | Lifecycle rules, section 46                                      |
+| Driver | The mistake | The fix |
+|---|---|---|
+| Egress | Serving from the bucket | CDN in front, and ==measure the hit rate== |
+| Egress | Presigned GETs behind a CDN | Section 41 |
+| Egress | Compute in a different region from the bucket | Co-locate |
+| Operations | LIST in the request path | Section 16 |
+| Operations | Millions of tiny objects | Aggregate; mind the 128 KB minimum billable size on cold classes |
+| Storage | Abandoned multipart uploads | Section 36 |
+| Storage | Every version kept forever | Expire non-current versions |
+| Storage | Nothing ever expires | Lifecycle rules, section 46 |
 
 :::signal
 "Egress dominates, so the first architectural move is a CDN with a high cache
@@ -2332,19 +2325,18 @@ did not write. The second half of the interview, once the upload path is agreed.
 
 Four mechanisms control access, and knowing which is which is a common probe.
 
-| Mechanism                   | Attached to              | Answers                                                       |
-| --------------------------- | ------------------------ | ------------------------------------------------------------- |
-| IAM policy                  | A principal (role, user) | What may ==this identity== do?                                |
-| Bucket policy               | The bucket               | Who may touch ==this bucket==? Cross-account grants live here |
-| ACL                         | Bucket or object         | Legacy. ==Disable it== (bucket owner enforced)                |
-| Presigned URL / POST policy | A single request         | A capability: one operation, one key, one expiry              |
+| Mechanism | Attached to | Answers |
+|---|---|---|
+| IAM policy | A principal (role, user) | What may ==this identity== do? |
+| Bucket policy | The bucket | Who may touch ==this bucket==? Cross-account grants live here |
+| ACL | Bucket or object | Legacy. ==Disable it== (bucket owner enforced) |
+| Presigned URL / POST policy | A single request | A capability: one operation, one key, one expiry |
 
 Access is granted only if nothing denies it and something allows it. An explicit
 `Deny` always wins, which makes a deny-based guardrail (deny any request without
 TLS, or without server-side encryption) a reliable control.
 
 :::do Bucket defaults for anything holding user content
-
 - ==Block Public Access== on, at the account level as well as the bucket.
 - Bucket owner enforced, ACLs disabled.
 - Default encryption on, versioning on.
@@ -2353,15 +2345,15 @@ TLS, or without server-side encryption) a reliable control.
   15, never to the whole bucket.
 - Access logs or CloudTrail data events to a ==different bucket in a different
   account==.
-  :::
+:::
 
 #### Encryption
 
-| Mode        | Key held by  | Use when                                                                                   |
-| ----------- | ------------ | ------------------------------------------------------------------------------------------ |
-| SSE-S3      | The provider | Default. On by default now. Free                                                           |
-| SSE-KMS     | Your KMS key | You need an audit trail of key use, or per-tenant keys. Costs per request and can throttle |
-| Client-side | You          | The provider must never be able to read the bytes                                          |
+| Mode | Key held by | Use when |
+|---|---|---|
+| SSE-S3 | The provider | Default. On by default now. Free |
+| SSE-KMS | Your KMS key | You need an audit trail of key use, or per-tenant keys. Costs per request and can throttle |
+| Client-side | You | The provider must never be able to read the bytes |
 
 All three encrypt at rest. ==None of them stop a valid, authorised request==,
 which is the threat you are actually likely to face.
@@ -2384,20 +2376,18 @@ per object. Moving millions of small objects to a cold class ==can cost more
 than leaving them in Standard==. Check the size distribution first.
 
 :::do Lifecycle rules to write on day one
-
 - ++Abort incomplete multipart uploads after 7 days.++ (Section 36. Non-negotiable.)
 - ++Delete anything under `pending/` or `tmp/` after 24 hours.++ (Section 30.)
 - ++Expire non-current versions after 30 to 90 days++, so versioning stays a
   safety net rather than an unbounded cost.
 - Only then consider cold-tier transitions.
-  :::
+:::
 
 ## 47. Untrusted content, and what to watch
 
 Everything in a user-upload bucket was written by someone who is not you.
 
 :::do Treat the bucket as hostile input
-
 - ++Never serve user content from your application's origin.++ A stored HTML or
   SVG file becomes stored XSS with access to your session cookies. Serve from a
   ==separate domain== so the same-origin policy contains it.
@@ -2410,16 +2400,16 @@ Everything in a user-upload bucket was written by someone who is not you.
   GPS coordinates), removes polyglot payloads and normalises the format.
 - Scan asynchronously after the HEAD verification, before flipping status to
   `ready`. Quarantine under a prefix with no read policy.
-  :::
+:::
 
-| Watch                                  | Because                                          |
-| -------------------------------------- | ------------------------------------------------ |
-| `pending` rows older than the window   | Section 30. Uploads are failing                  |
-| Incomplete multipart uploads           | Section 36. Invisible in a listing, and billed   |
-| ==503 SlowDown==                       | Hot partition. Section 15                        |
-| 4xx rate on the bucket                 | Policy violations, expired signatures, CORS      |
-| ==CDN cache hit ratio==                | The single biggest lever on the bill. Section 41 |
-| Bucket size and object count by prefix | Lifecycle rules not firing                       |
+| Watch | Because |
+|---|---|
+| `pending` rows older than the window | Section 30. Uploads are failing |
+| Incomplete multipart uploads | Section 36. Invisible in a listing, and billed |
+| ==503 SlowDown== | Hot partition. Section 15 |
+| 4xx rate on the bucket | Policy violations, expired signatures, CORS |
+| ==CDN cache hit ratio== | The single biggest lever on the bill. Section 41 |
+| Bucket size and object count by prefix | Lifecycle rules not firing |
 
 :::part IX | The interview itself
 
@@ -2484,92 +2474,92 @@ whole design.
 
 Answer each out loud before checking the section.
 
-| Question                                                             | Section |
-| -------------------------------------------------------------------- | ------- |
-| Why not a bigger disk, or EFS?                                       | 5, 10   |
-| Difference between durability and availability?                      | 6       |
-| Streaming fixes memory, so why not proxy uploads?                    | 24, 25  |
-| What stops a client uploading 5 GB to an avatar URL?                 | 27, 28  |
-| How does the server know the upload finished?                        | 29      |
-| Why HEAD and not GET?                                                | 29      |
-| What happens when the client never calls complete?                   | 30, 36  |
-| Two clients write the same key at once. Who wins, and who knows?     | 22      |
-| Why is renaming a folder slow?                                       | 14      |
-| Why does key design affect throughput?                               | 15, 20  |
-| Why must you never LIST in a request path?                           | 16      |
-| Give four reasons a single PUT fails on a 6 GB file                  | 32      |
-| Why is CompleteMultipartUpload fast for a 50 GB object?              | 33      |
-| How do you choose the part size, and what breaks if you hardcode it? | 34      |
-| Your MD5 check fails on large files only. Why?                       | 35      |
-| What is in the bucket that you are billed for and cannot see?        | 36      |
-| How does resume work after a page refresh?                           | 38      |
-| You put a CDN in front and egress did not drop. Why?                 | 41      |
-| How does video seeking work?                                         | 42      |
-| How would you serve 4K and 240p from one bucket?                     | 43      |
-| Where does the money go?                                             | 44      |
-| A user uploads an HTML file. What is the risk?                       | 47      |
-| S3 promises eleven nines. Do you still need backups?                 | 19      |
+| Question | Section |
+|---|---|
+| Why not a bigger disk, or EFS? | 5, 10 |
+| Difference between durability and availability? | 6 |
+| Streaming fixes memory, so why not proxy uploads? | 24, 25 |
+| What stops a client uploading 5 GB to an avatar URL? | 27, 28 |
+| How does the server know the upload finished? | 29 |
+| Why HEAD and not GET? | 29 |
+| What happens when the client never calls complete? | 30, 36 |
+| Two clients write the same key at once. Who wins, and who knows? | 22 |
+| Why is renaming a folder slow? | 14 |
+| Why does key design affect throughput? | 15, 20 |
+| Why must you never LIST in a request path? | 16 |
+| Give four reasons a single PUT fails on a 6 GB file | 32 |
+| Why is CompleteMultipartUpload fast for a 50 GB object? | 33 |
+| How do you choose the part size, and what breaks if you hardcode it? | 34 |
+| Your MD5 check fails on large files only. Why? | 35 |
+| What is in the bucket that you are billed for and cannot see? | 36 |
+| How does resume work after a page refresh? | 38 |
+| You put a CDN in front and egress did not drop. Why? | 41 |
+| How does video seeking work? | 42 |
+| How would you serve 4K and 240p from one bucket? | 43 |
+| Where does the money go? | 44 |
+| A user uploads an HTML file. What is the risk? | 47 |
+| S3 promises eleven nines. Do you still need backups? | 19 |
 
 :::part X | Appendices
 :::
 
 ## Appendix A. Numbers to memorise
 
-| Quantity                   | Value                                                     |
-| -------------------------- | --------------------------------------------------------- |
-| Block size                 | 512 B or 4 KB                                             |
-| Block storage latency      | Microseconds                                              |
-| Object storage latency     | Milliseconds to tens of milliseconds (an HTTP round trip) |
-| Maximum single PUT         | ==5 GiB==                                                 |
-| Maximum object size        | 5 TiB                                                     |
-| Multipart minimum part     | 5 MiB (except the last)                                   |
-| Multipart maximum parts    | ==10,000==                                                |
-| Part size formula          | `max(16 MiB, ceil(fileSize / 10000))`                     |
-| Upload concurrency         | 4 to 6 parallel parts                                     |
-| Browser peak memory        | `partSize × concurrency`                                  |
-| Abort-incomplete lifecycle | 7 days                                                    |
-| LIST page size             | 1,000 keys                                                |
-| Erasure coding shape       | 14 data + 6 parity, any 14 reconstruct                    |
-| Erasure coding overhead    | 1.43x, versus 3x for replication                          |
-| S3 durability              | 11 nines: 1 object lost per 10 million per 10,000 years   |
-| Request rate per prefix    | ~3,500 write/s, ~5,500 read/s                             |
-| Storage                    | ~$0.023 per GB-month                                      |
-| Egress                     | ~$0.09 per GB, roughly 4x storage                         |
-| Write requests cost        | ~10x read requests                                        |
-| Strong consistency since   | December 2020                                             |
-| Conditional writes since   | 2024                                                      |
+| Quantity | Value |
+|---|---|
+| Block size | 512 B or 4 KB |
+| Block storage latency | Microseconds |
+| Object storage latency | Milliseconds to tens of milliseconds (an HTTP round trip) |
+| Maximum single PUT | ==5 GiB== |
+| Maximum object size | 5 TiB |
+| Multipart minimum part | 5 MiB (except the last) |
+| Multipart maximum parts | ==10,000== |
+| Part size formula | `max(16 MiB, ceil(fileSize / 10000))` |
+| Upload concurrency | 4 to 6 parallel parts |
+| Browser peak memory | `partSize × concurrency` |
+| Abort-incomplete lifecycle | 7 days |
+| LIST page size | 1,000 keys |
+| Erasure coding shape | 14 data + 6 parity, any 14 reconstruct |
+| Erasure coding overhead | 1.43x, versus 3x for replication |
+| S3 durability | 11 nines: 1 object lost per 10 million per 10,000 years |
+| Request rate per prefix | ~3,500 write/s, ~5,500 read/s |
+| Storage | ~$0.023 per GB-month |
+| Egress | ~$0.09 per GB, roughly 4x storage |
+| Write requests cost | ~10x read requests |
+| Strong consistency since | December 2020 |
+| Conditional writes since | 2024 |
 
 ## Appendix B. Glossary
 
-| Term                   | Meaning                                                              |
-| ---------------------- | -------------------------------------------------------------------- |
-| Bucket                 | Named container for objects. Globally unique name                    |
-| Key                    | The string that is an object's entire identity                       |
-| Prefix                 | A leading substring of keys. What "folders" are made of              |
-| Delimiter              | The character LIST groups on to fake folders                         |
-| CommonPrefixes         | The LIST response field the folder illusion is built from            |
-| Object                 | Key + bytes + system metadata + user metadata                        |
-| ETag                   | Opaque tag for current contents. ==Not a content hash on multipart== |
-| Data plane             | Stores and reconstructs the bytes                                    |
-| Metadata plane         | The strongly consistent sorted index of keys                         |
-| Erasure coding         | Reed-Solomon shards; any k of n reconstruct                          |
-| Durability             | Whether the data still exists                                        |
-| Availability           | Whether you can reach it right now                                   |
-| Presigned URL          | A signed capability: one method, one key, one expiry                 |
-| POST policy            | A signed JSON document of conditions the store enforces              |
-| `content-length-range` | The policy condition that caps upload size                           |
-| Conditional write      | `If-None-Match: *` or `If-Match: <etag>`; 412 on failure             |
-| Two-phase upload       | Intent row, direct upload, verified completion                       |
-| uploadId               | Handle for a multipart staging area. Not an object                   |
-| Part                   | One independently retried chunk of a multipart upload                |
-| Orphan                 | Bytes in the bucket with no database row                             |
-| Hot partition          | Too many keys sharing a prefix. Symptom: 503 SlowDown                |
-| Range request          | `Range: bytes=a-b`, answered with 206 Partial Content                |
-| Egress                 | Data leaving the cloud. Usually the largest line on the bill         |
-| Content-addressed      | Key derived from a hash of the bytes, so it is immutable             |
-| Adaptive bitrate       | Player picks a rendition per segment from measured speed             |
-| Manifest               | The HLS/DASH index object listing renditions and segments            |
-| S3-compatible          | Speaks the S3 protocol. ==Not== a promise of feature parity          |
+| Term | Meaning |
+|---|---|
+| Bucket | Named container for objects. Globally unique name |
+| Key | The string that is an object's entire identity |
+| Prefix | A leading substring of keys. What "folders" are made of |
+| Delimiter | The character LIST groups on to fake folders |
+| CommonPrefixes | The LIST response field the folder illusion is built from |
+| Object | Key + bytes + system metadata + user metadata |
+| ETag | Opaque tag for current contents. ==Not a content hash on multipart== |
+| Data plane | Stores and reconstructs the bytes |
+| Metadata plane | The strongly consistent sorted index of keys |
+| Erasure coding | Reed-Solomon shards; any k of n reconstruct |
+| Durability | Whether the data still exists |
+| Availability | Whether you can reach it right now |
+| Presigned URL | A signed capability: one method, one key, one expiry |
+| POST policy | A signed JSON document of conditions the store enforces |
+| `content-length-range` | The policy condition that caps upload size |
+| Conditional write | `If-None-Match: *` or `If-Match: <etag>`; 412 on failure |
+| Two-phase upload | Intent row, direct upload, verified completion |
+| uploadId | Handle for a multipart staging area. Not an object |
+| Part | One independently retried chunk of a multipart upload |
+| Orphan | Bytes in the bucket with no database row |
+| Hot partition | Too many keys sharing a prefix. Symptom: 503 SlowDown |
+| Range request | `Range: bytes=a-b`, answered with 206 Partial Content |
+| Egress | Data leaving the cloud. Usually the largest line on the bill |
+| Content-addressed | Key derived from a hash of the bytes, so it is immutable |
+| Adaptive bitrate | Player picks a rendition per segment from measured speed |
+| Manifest | The HLS/DASH index object listing renditions and segments |
+| S3-compatible | Speaks the S3 protocol. ==Not== a promise of feature parity |
 
 ## Appendix C. Self-test
 

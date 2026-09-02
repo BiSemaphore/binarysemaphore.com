@@ -11,14 +11,13 @@ This is not a book to read. Every prompt in it already appears inside a notebook
 
 Each prompt carries the notebook and section it came from, printed small beside its number, so a blank is never a dead end.
 
-Of the 253 prompts, 90 came from an **Interviewer asks** block and have a written answer in the last part, under the same number. The rest are self-graded: the section named beside the prompt is the answer.
+Of the 253 prompts, 90 came from an __Interviewer asks__ block and have a written answer in the last part, under the same number. The rest are self-graded: the section named beside the prompt is the answer.
 
 :::do Work it in three passes
-
 - ((Cold)). Cover nothing, look nothing up, write what you have. A wrong answer written down is worth more than a right answer read.
 - ((Check)). Compare against the key or the section. Mark each prompt as solid, shaky or blank.
 - ((Again, later)). Come back to the shaky and blank ones only, a few days later. This is the pass that does the work.
-  :::
+:::
 
 :::key
 Say the answer out loud before you write it. An interview is spoken, and !!an answer you can write but not say is not an answer you have!!.
@@ -1198,27 +1197,27 @@ The 90 interviewer questions, answered. Everything else is graded against the se
 
 ## 70. Answers, Notebook 01
 
-**Q2** Why do you need to know P99 file size, isn't the max enough? _Notebook 01, section 2._
+**Q2** Why do you need to know P99 file size, isn't the max enough?  *Notebook 01, section 2.*
 
 Because the max drives correctness and the P99 drives cost. If P99 is 80 MB and
 the max is 2 TB, you build the simple path for the common case and a split path
 for the tail, rather than paying multipart overhead on every 2 MB file.
 
-**Q3** Where does the bottleneck actually sit? _Notebook 01, section 3._
+**Q3** Where does the bottleneck actually sit?  *Notebook 01, section 3.*
 
 Usually the destination database, not the parser. Bulk inserts into an indexed
 table are frequently slower than reading and transforming the rows. Say this
 early, because it leads naturally to batching, copy-style bulk loading, and
 dropping or deferring indexes during load.
 
-**Q5** Should the file ever go in the database? _Notebook 01, section 5._
+**Q5** Should the file ever go in the database?  *Notebook 01, section 5.*
 
 Yes, when it is small and transactional integrity with the row matters more than
 size: a 40 KB signed PDF that must appear and disappear atomically with its
 record is fine in the database. The rule is about size and access pattern, not
 dogma.
 
-**Q6** The data comes from another backend service, not a browser. Does this change? _Notebook 01, section 6._
+**Q6** The data comes from another backend service, not a browser. Does this change?  *Notebook 01, section 6.*
 
 The principle holds, the mechanism may simplify. Service to service, you can
 grant a scoped IAM role instead of presigning, or have the producer write to a
@@ -1226,14 +1225,14 @@ bucket you read. If the producer is a third party you cannot change, you may
 have to pull instead: then your ingestion worker streams from their endpoint
 into S3, using ranged requests so it too can resume.
 
-**Q7** What if the user closes the laptop for two days mid-upload? _Notebook 01, section 7._
+**Q7** What if the user closes the laptop for two days mid-upload?  *Notebook 01, section 7.*
 
 The `uploadId` stays valid, S3 has no built-in expiry on it, so the upload can
 resume. That is also the problem: the accepted parts are billed as storage
 indefinitely. This is section 27's abandoned-upload cost bug, and the fix is a
 lifecycle rule.
 
-**Q8** The connection drops for good and the user never comes back. What happens? _Notebook 01, section 9._
+**Q8** The connection drops for good and the user never comes back. What happens?  *Notebook 01, section 9.*
 
 The job sits in `UPLOADING` forever unless you handle it. Two mechanisms: a
 lifecycle rule that aborts incomplete multipart uploads after N days, and a
@@ -1241,14 +1240,14 @@ sweeper that moves jobs stuck in `UPLOADING` past a deadline to `UPLOAD_EXPIRED`
 Without the first, you pay storage on parts belonging to an object that will
 never exist.
 
-**Q11** Isn't polling the outbox table wasteful? _Notebook 01, section 11._
+**Q11** Isn't polling the outbox table wasteful?  *Notebook 01, section 11.*
 
 At low volume, polling every 200 ms is fine and trivially correct. At high
 volume, read the write-ahead log instead with change data capture (Debezium on
 Postgres logical replication), which removes the polling entirely. Name both and
 say which you would start with, and why.
 
-**Q13** The file is a 4 GB gzip. Does streaming still work? _Notebook 01, section 15._
+**Q13** The file is a 4 GB gzip. Does streaming still work?  *Notebook 01, section 15.*
 
 Yes, decompress in the stream (`GZIPInputStream`), memory stays bounded. But
 gzip is not splittable, so you cannot assign byte ranges to different workers
@@ -1256,7 +1255,7 @@ and the fan-out in section 19 is unavailable. Formats matter: bzip2, zstd with
 frames, and Parquet are splittable, plain gzip is not. Knowing that distinction
 is a strong signal.
 
-**Q14** What if results go to S3, which has no transaction with your database? _Notebook 01, section 16._
+**Q14** What if results go to S3, which has no transaction with your database?  *Notebook 01, section 16.*
 
 Write the chunk output to a deterministic key (`processed/job-8f21/chunk-007`),
 then commit the checkpoint. A crash between the two leaves an orphan object that
@@ -1264,7 +1263,7 @@ the retry simply overwrites, because the key is derived from the chunk ID and
 not from a timestamp or a random ID. Deterministic naming is what makes the
 retry safe.
 
-**Q15** What about side effects you cannot deduplicate, like sending an email? _Notebook 01, section 17._
+**Q15** What about side effects you cannot deduplicate, like sending an email?  *Notebook 01, section 17.*
 
 Guard them with a dedicated idempotency record written in the same transaction
 as the effect's precondition, or move them behind a provider that accepts an
@@ -1272,7 +1271,7 @@ idempotency key (Stripe and SendGrid both do). If neither is possible, make the
 effect the very last step and accept a rare duplicate, having said so explicitly
 rather than pretending the problem does not exist.
 
-**Q16** SQS caps message retention and in-flight time at a maximum. What if a job exceeds it? _Notebook 01, section 18._
+**Q16** SQS caps message retention and in-flight time at a maximum. What if a job exceeds it?  *Notebook 01, section 18.*
 
 The 12-hour ceiling on in-flight time is a hard limit, so you cannot heartbeat
 past it. That is a design signal, not a workaround problem: split the job into
@@ -1281,7 +1280,7 @@ database. If a single indivisible unit of work takes longer than twelve hours,
 the queue is the wrong orchestrator and you want a workflow engine (Step
 Functions, Temporal, Airflow) that is built for durable long-running state.
 
-**Q17** How do you pick the number of chunks? _Notebook 01, section 19._
+**Q17** How do you pick the number of chunks?  *Notebook 01, section 19.*
 
 Target a chunk duration, not a chunk size. Aim for something like two to five
 minutes of work: short enough that a lease never expires and a retry is cheap,
@@ -1290,7 +1289,7 @@ negligible. Work backwards from measured throughput to a byte size, and cap the
 total chunk count so the queue does not receive a hundred thousand messages for
 one job.
 
-**Q18** One row in ten million is malformed. Does the whole job fail? _Notebook 01, section 20._
+**Q18** One row in ten million is malformed. Does the whole job fail?  *Notebook 01, section 20.*
 
 Almost certainly not, and this should be a product decision you surface rather
 than a default you pick silently. Collect bad rows into
@@ -1299,7 +1298,7 @@ than a default you pick silently. Collect bad rows into
 if more than some percentage of rows fail, the file is probably wrong (bad
 schema, wrong encoding) and failing the whole job is the correct response.
 
-**Q21** How do you cancel a running job? _Notebook 01, section 21._
+**Q21** How do you cancel a running job?  *Notebook 01, section 21.*
 
 Set `CANCELLED` in the database, and have the worker check a cancellation flag
 at each chunk boundary and stop cleanly. You cannot reach into a running worker,
@@ -1308,7 +1307,7 @@ to observe it. Then clean up: delete partial output, abort any multipart upload,
 and decide explicitly whether already-written rows are rolled back or left with
 the job marked cancelled.
 
-**Q22** A hundred thousand users each watching a job. Does polling hold up? _Notebook 01, section 23._
+**Q22** A hundred thousand users each watching a job. Does polling hold up?  *Notebook 01, section 23.*
 
 Yes, if the status read is cheap. It is a single primary-key lookup, cacheable
 for a second or two, servable from a replica or Redis. A hundred thousand
@@ -1316,14 +1315,14 @@ pollers at one request per five seconds is twenty thousand requests per second
 of trivially cacheable reads, which is far easier to run than a hundred thousand
 held WebSocket connections. Say the arithmetic, do not assert the conclusion.
 
-**Q23** How do you stop one tenant from consuming the whole worker fleet? _Notebook 01, section 25._
+**Q23** How do you stop one tenant from consuming the whole worker fleet?  *Notebook 01, section 25.*
 
 Cap in-flight chunks per tenant. Before claiming a chunk, check that tenant's
 active count against its limit and skip the message if it is at the cap, letting
 it return to the queue. Combined with size lanes this bounds the blast radius of
 any one tenant without needing a full fair-queueing implementation.
 
-**Q24** If the job fails at 80 percent, do you roll back the 80 percent? _Notebook 01, section 26._
+**Q24** If the job fails at 80 percent, do you roll back the 80 percent?  *Notebook 01, section 26.*
 
 State the trade-off rather than picking blindly. Rolling back gives clean
 all-or-nothing semantics but throws away hours of work and needs either a staging
@@ -1335,14 +1334,14 @@ complete dataset.
 
 ## 71. Answers, Notebook 02
 
-**Q29** How much memory does a streaming upload actually use? _Notebook 02, section 2._
+**Q29** How much memory does a streaming upload actually use?  *Notebook 02, section 2.*
 
 One buffer, typically tens of kilobytes, regardless of whether the object is
 1 MB or 1 GB. You read a chunk off the request body and write it to the storage
 client, then reuse the buffer. Section 24 has the measured comparison: same
 wall-clock time, flat memory line instead of a 500 MB climb.
 
-**Q30** Could you fix this with sticky sessions? _Notebook 02, section 4._
+**Q30** Could you fix this with sticky sessions?  *Notebook 02, section 4.*
 
 You can make it appear fixed, and you should say why that is a bad trade.
 Session affinity pins a user to one node, so a redeploy, a crash or a scale-in
@@ -1351,7 +1350,7 @@ stateless tier into a stateful one to avoid a storage decision. It also does
 nothing when two different users need the same object, which is the normal case
 for shared or public content.
 
-**Q31** What about a shared network file system, NFS or EFS? _Notebook 02, section 4._
+**Q31** What about a shared network file system, NFS or EFS?  *Notebook 02, section 4.*
 
 Legitimate, and it is what many older systems did. It gives every node the same
 namespace, so the 404 goes away. What you inherit is POSIX coordination over a
@@ -1361,7 +1360,7 @@ right answer when you genuinely need file semantics, for example a legacy binary
 that calls `open()` and `seek()`. It is the wrong answer when all you needed was
 put and get.
 
-**Q32** Is capacity really infinite in object storage? _Notebook 02, section 5._
+**Q32** Is capacity really infinite in object storage?  *Notebook 02, section 5.*
 
 Practically, yes, and precisely, no. There is no volume you size, no resize
 operation and no ceiling you will reach, but there are per-object limits (S3
@@ -1369,7 +1368,7 @@ caps a single object at 5 TiB and a single PUT at 5 GiB, hence multipart), and
 account-level request rate limits per prefix. "Infinite capacity, finite request
 rate per partition" is the accurate sentence.
 
-**Q33** This sounds like the dual-write problem. Is it? _Notebook 02, section 8._
+**Q33** This sounds like the dual-write problem. Is it?  *Notebook 02, section 8.*
 
 It is exactly the dual-write problem, and the transactional outbox is the
 general solution: commit the intent in the same transaction as your business
@@ -1378,7 +1377,7 @@ section 11 works this through in full. For upload specifically, two-phase plus
 a sweeper is usually enough, because the object store gives you a cheap,
 authoritative existence check (`HEAD`) that a message broker cannot.
 
-**Q35** So when would you not use object storage? _Notebook 02, section 12._
+**Q35** So when would you not use object storage?  *Notebook 02, section 12.*
 
 When you need what it gave up. Small mutable state with transactions belongs in
 a database. Microsecond latency and in-place writes belong on block storage,
@@ -1387,7 +1386,7 @@ a network file system. And very small blobs, a few KB, that must appear and
 disappear atomically with a row can reasonably live in the database itself:
 the per-object request overhead can exceed the benefit at that size.
 
-**Q37** What is an ETag, exactly? _Notebook 02, section 13._
+**Q37** What is an ETag, exactly?  *Notebook 02, section 13.*
 
 An opaque entity tag the store returns for the current contents of an object.
 For a single-part PUT it is usually the MD5 of the body, which makes it a handy
@@ -1398,7 +1397,7 @@ present it as a content checksum. Its real job is conditional requests:
 section 22. If you need a real content hash, ask for one explicitly with the
 checksum headers.
 
-**Q38** Why does a bucket name have to be globally unique? _Notebook 02, section 13._
+**Q38** Why does a bucket name have to be globally unique?  *Notebook 02, section 13.*
 
 Because objects are addressable over HTTP by hostname:
 `https://my-bucket.s3.amazonaws.com/key`. The bucket name is part of the DNS
@@ -1406,7 +1405,7 @@ name, so it shares a global namespace across every account on the platform.
 That also means bucket names are ==public information==: never encode a customer
 name or anything sensitive into one.
 
-**Q40** Why is there no atomic rename, if the bytes do not have to move? _Notebook 02, section 16._
+**Q40** Why is there no atomic rename, if the bytes do not have to move?  *Notebook 02, section 16.*
 
 Because the key determines the partition. Changing the key means removing an
 entry from one partition of a globally distributed sorted index and inserting it
@@ -1415,7 +1414,7 @@ distributed transaction, which is the exact thing this design refuses to have.
 The same structure explains a nicer property: the index holds size, ETag and
 content type, so `HEAD` answers instantly ==without touching a single drive==.
 
-**Q41** Why not use erasure coding for everything, including small objects? _Notebook 02, section 18._
+**Q41** Why not use erasure coding for everything, including small objects?  *Notebook 02, section 18.*
 
 Because the overhead is per object, not per byte. Splitting a 2 KB object into
 20 shards means 20 tiny IOs and 20 index entries to hold a fraction of a block,
@@ -1423,7 +1422,7 @@ and the fixed per-shard cost dominates. Real systems batch small objects into
 larger internal containers first, then erasure code the container. This is also
 why very small objects have a minimum billable size, often 128 KB.
 
-**Q42** Is everything strongly consistent, then? _Notebook 02, section 21._
+**Q42** Is everything strongly consistent, then?  *Notebook 02, section 21.*
 
 The object data path is: PUT, GET, HEAD, DELETE and LIST are strongly consistent
 in S3 today. Some ==bucket-level configuration== remains eventually consistent
@@ -1432,7 +1431,7 @@ replication is asynchronous by definition, so a replica bucket is a different
 question entirely. The precise sentence is "strong read-after-write for objects
 in a bucket; configuration and cross-region replication are eventual".
 
-**Q44** The upload comes from another backend service, not a browser. Does this change? _Notebook 02, section 28._
+**Q44** The upload comes from another backend service, not a browser. Does this change?  *Notebook 02, section 28.*
 
 The principle holds, the mechanism simplifies. Service to service you can grant
 a scoped IAM role, or let the producer write into a bucket you read, and skip
@@ -1441,7 +1440,7 @@ have to pull instead: your worker streams from their endpoint into the bucket
 using ranged requests so it can resume. Notebook 01 section 6 covers the
 service-to-service variant.
 
-**Q45** Could you use bucket event notifications instead of the client calling complete? _Notebook 02, section 30._
+**Q45** Could you use bucket event notifications instead of the client calling complete?  *Notebook 02, section 30.*
 
 Yes, and it is stronger. S3 can publish `s3:ObjectCreated:*` to SQS, SNS, Lambda
 or EventBridge, so completion is driven by the storage system rather than
@@ -1452,7 +1451,7 @@ in the path. The mature answer is ==both==: the client's call for the fast path
 so the UI updates immediately, the event as the authoritative backstop, and the
 sweeper for whatever both of them miss.
 
-**Q47** How does the client know it is the same file after a reload? _Notebook 02, section 38._
+**Q47** How does the client know it is the same file after a reload?  *Notebook 02, section 38.*
 
 It cannot rely on the filename. Fingerprint it: size plus last-modified plus a
 hash of the first and last part is usually enough, and is cheap because slicing
@@ -1460,7 +1459,7 @@ is lazy. Store that fingerprint on the pending row. Getting this wrong means
 resuming one file into another file's upload, which produces a corrupt object
 that passes every existence check.
 
-**Q49** Does a range request cost less than a full GET? _Notebook 02, section 42._
+**Q49** Does a range request cost less than a full GET?  *Notebook 02, section 42.*
 
 You pay one request either way, and egress only for the bytes returned. So a
 range read of 8 bytes costs one GET plus 8 bytes of egress. That is why
@@ -1469,7 +1468,7 @@ the same in egress as one sequential read of the same object.
 
 ## 72. Answers, Notebook 03
 
-**Q62** Would you block a pull request for this? _Notebook 03, section 1._
+**Q62** Would you block a pull request for this?  *Notebook 03, section 1.*
 
 A good answer distinguishes severity. "The missing `return` I would block on,
 because it is a correctness bug that produces a crash under load. The
@@ -1477,7 +1476,7 @@ because it is a correctness bug that produces a crash under load. The
 only bites on shutdown, and the naming I would leave alone." Interviewers are
 checking whether you can calibrate, not whether you can find everything.
 
-**Q64** Why not just make the wrapper synchronous with readFileSync? _Notebook 03, section 4._
+**Q64** Why not just make the wrapper synchronous with readFileSync?  *Notebook 03, section 4.*
 
 Because it blocks the event loop. Node runs your JavaScript on one thread, so a
 synchronous read stalls every other request in the process for the duration of
@@ -1485,23 +1484,23 @@ the disk IO. It is defensible exactly twice: at startup, when loading config
 before you begin serving, and in a CLI script that has no concurrency. Never in
 a request path.
 
-**Q65** What if the caller passes a callback that itself throws? _Notebook 03, section 4._
+**Q65** What if the caller passes a callback that itself throws?  *Notebook 03, section 4.*
 
 In Fix A the throw happens inside the fs callback, on the callback's own stack.
 Nothing above it can catch it, so it becomes an `uncaughtException` and kills
 the process by default. This is one more argument for promises, where a throw
 in `.then` becomes a rejection rather than a process-level event.
 
-**Q66** Order the output: setTimeout(f,0), setImmediate(g), process.nextTick(h), Promise.resolve().then(k) _Notebook 03, section 5._
+**Q66** Order the output: setTimeout(f,0), setImmediate(g), process.nextTick(h), Promise.resolve().then(k)  *Notebook 03, section 5.*
 
 `h` first (nextTick queue), then `k` (microtask queue), then `f` and `g`. The
-order of the last two is _not deterministic_ from the main module, because it
+order of the last two is *not deterministic* from the main module, because it
 depends on whether the loop has already spent 1ms getting to the timers phase.
 Inside an I/O callback it is deterministic: `setImmediate` always wins, because
 the check phase comes immediately after poll. Saying "it is non-deterministic
 at top level and deterministic inside I/O" is the answer that ends the topic.
 
-**Q68** How would you make this task safe to run on three replicas? _Notebook 03, section 7._
+**Q68** How would you make this task safe to run on three replicas?  *Notebook 03, section 7.*
 
 Take a lock with a TTL shorter than the period and only work if you win it. In
 Postgres, `SELECT pg_try_advisory_lock(key)` held for the transaction; in Redis,
@@ -1509,7 +1508,7 @@ Postgres, `SELECT pg_try_advisory_lock(key)` held for the transaction; in Redis,
 yours. Both need the work to be idempotent anyway, because a lock can expire
 mid-run while the holder is paused in a GC pause.
 
-**Q69** The task is "every day at 02:00". Any new problems? _Notebook 03, section 7._
+**Q69** The task is "every day at 02:00". Any new problems?  *Notebook 03, section 7.*
 
 Yes, three. `setInterval(fn, 86_400_000)` drifts and does not know about wall
 clock time at all; it silently misses the run if the process restarts at 01:59;
@@ -1517,7 +1516,7 @@ and it ignores daylight saving, so twice a year "02:00" is either skipped or run
 twice. Use a cron expression with an explicit timezone, and make the job
 idempotent per calendar day, keyed on the date.
 
-**Q71** The endpoint takes 40 optional filters. Query string or POST body? _Notebook 03, section 9._
+**Q71** The endpoint takes 40 optional filters. Query string or POST body?  *Notebook 03, section 9.*
 
 Query string, until you hit a real limit. GET keeps the request idempotent,
 cacheable and safe to retry, and the URL stays shareable and greppable in logs.
@@ -1525,7 +1524,7 @@ Move to POST when you exceed the ~8KB practical URL limit, or when the filter
 contains anything that must not be written to an access log. If you do, be
 explicit that you are trading away caching.
 
-**Q73** Where should the token go: response body or cookie? _Notebook 03, section 11._
+**Q73** Where should the token go: response body or cookie?  *Notebook 03, section 11.*
 
 Body means the client stores it, and `localStorage` is readable by any XSS. A
 `HttpOnly; Secure; SameSite=Lax` cookie is not reachable from JavaScript, which
@@ -1534,7 +1533,7 @@ with `SameSite` plus a CSRF token on state-changing requests. For a
 browser-first app, cookie. For a mobile or service client, body. Naming the
 trade rather than picking a side is the answer.
 
-**Q74** What is in the token, and how do you revoke it? _Notebook 03, section 11._
+**Q74** What is in the token, and how do you revoke it?  *Notebook 03, section 11.*
 
 Short-lived access token (5 to 15 minutes) carrying `sub`, `iat`, `exp`, `aud`,
 `iss` and a token version, signed asymmetrically so verifiers need no secret.
@@ -1543,7 +1542,7 @@ detection that revokes the whole family. Revocation is the honest hard part: you
 either accept the access token window, or you check a deny list on every
 request, which reintroduces the state JWTs were meant to avoid.
 
-**Q76** A createSelector-memoised selector is used by 50 list rows and still recomputes constantly. Why? _Notebook 03, section 14._
+**Q76** A createSelector-memoised selector is used by 50 list rows and still recomputes constantly. Why?  *Notebook 03, section 14.*
 
 Because `createSelector` memoises with a cache size of one, keyed on its inputs.
 If the selector takes a per-row argument (`selectTodoById(state, id)`), fifty
@@ -1552,7 +1551,7 @@ never hits. The fix is a per-instance selector, created with `useMemo` inside
 the component, or RTK's `createEntityAdapter` plus a lookup by id, which is O(1)
 and needs no memoisation at all.
 
-**Q77** When would you not use Redux at all in 2026? _Notebook 03, section 14._
+**Q77** When would you not use Redux at all in 2026?  *Notebook 03, section 14.*
 
 When the app has no cross-cutting client state. React Context plus `useState`
 covers theme and current user; RTK Query or React Query covers server data;
@@ -1560,20 +1559,19 @@ Zustand or Jotai covers a small shared store with far less ceremony. Redux earns
 its keep on large apps that want one predictable action log, strict debugging
 through time travel, and middleware that can see every state transition.
 
-**Q79** The column must be NOT NULL DEFAULT false on 40M rows, today. What do you actually run? _Notebook 03, section 17._
+**Q79** The column must be NOT NULL DEFAULT false on 40M rows, today. What do you actually run?  *Notebook 03, section 17.*
 
 ```sql
 SET lock_timeout = '3s';
 ALTER TABLE transactions ADD COLUMN processed boolean DEFAULT false;
 ```
-
 On v11+ that is one fast catalog change and every existing row reads as `false`
 via the missing-value mechanism, so no backfill is needed. Then, separately,
 `ADD CONSTRAINT ... CHECK (processed IS NOT NULL) NOT VALID`, `VALIDATE
 CONSTRAINT`, `SET NOT NULL`, `DROP CONSTRAINT`. Four short locks instead of one
 long one.
 
-**Q80** How do you do the same on MySQL? _Notebook 03, section 17._
+**Q80** How do you do the same on MySQL?  *Notebook 03, section 17.*
 
 The mechanism differs: InnoDB has `ALGORITHM=INSTANT` (8.0.12+) for adding a
 column at the end of a row, `INPLACE` for most index work, and `COPY` for the
@@ -1582,7 +1580,7 @@ queue and is equally sensitive to long transactions. For anything that copies,
 teams use `gh-ost` or `pt-online-schema-change`, which build a shadow table and
 swap it. Knowing the parallel and the difference reads very well.
 
-**Q82** Someone proposes storing authors as a text[] column on books. Argue it. _Notebook 03, section 19._
+**Q82** Someone proposes storing authors as a text[] column on books. Argue it.  *Notebook 03, section 19.*
 
 It is faster to read for the display case and needs no join, and Postgres can
 even index it with GIN. It fails everything else: no referential integrity, no
@@ -1591,7 +1589,7 @@ every book, and no way to attach an attribute to the authorship such as role or
 byline order. Use the array only for genuinely valueless tags, never for
 anything that is an entity elsewhere in the system.
 
-**Q83** Why not just enforce all of this in application code? _Notebook 03, section 19._
+**Q83** Why not just enforce all of this in application code?  *Notebook 03, section 19.*
 
 Because the database outlives the application and has more than one client:
 migrations, admin scripts, the analytics job, the next service, and the engineer
@@ -1599,7 +1597,7 @@ with `psql` open at 2am. Application checks also race: two concurrent requests
 both read "no active borrow" and both insert. A unique index is the only thing
 that resolves that, because it is evaluated at write time under the same lock.
 
-**Q85** Should purchases be embedded in the customer document at all? _Notebook 03, section 21._
+**Q85** Should purchases be embedded in the customer document at all?  *Notebook 03, section 21.*
 
 It depends on growth and access. Embed when the array is bounded, always read
 with the parent, and updated with it: an address list, the last ten logins. Use
@@ -1609,7 +1607,7 @@ with 50,000 purchases makes every profile read expensive. Purchases grow
 forever, so they belong in their own collection with an index on `customer_id`.
 This is the ==unbounded array anti-pattern==, and naming it is the answer.
 
-**Q86** How would you check whether this pipeline uses an index? _Notebook 03, section 21._
+**Q86** How would you check whether this pipeline uses an index?  *Notebook 03, section 21.*
 
 `db.customers.aggregate(pipeline, { explain: true })`, and look at the winning
 plan for the first stage. Only a leading `$match` or `$sort` can use an index;
@@ -1617,7 +1615,7 @@ once a `$group` or `$unwind` has run, everything after it works on computed
 documents in memory. If the explain shows `COLLSCAN` where you expected `IXSCAN`,
 either the index is missing or a `$expr` or type mismatch has made it unusable.
 
-**Q88** A consumer takes 6 minutes on one message. What happens? _Notebook 03, section 23._
+**Q88** A consumer takes 6 minutes on one message. What happens?  *Notebook 03, section 23.*
 
 It exceeds `max.poll.interval.ms` (default 5 minutes), so the broker decides the
 consumer is dead and ==rebalances the group==. The partition is reassigned, the
@@ -1627,7 +1625,7 @@ throughput goes to zero. Fix it by reducing `max_poll_records`, raising
 `max.poll.interval.ms`, or handing the slow work to a thread pool and pausing
 the partition while it runs.
 
-**Q89** Ten partitions, and you start the fifteenth consumer in the group. What happens? _Notebook 03, section 23._
+**Q89** Ten partitions, and you start the fifteenth consumer in the group. What happens?  *Notebook 03, section 23.*
 
 Five consumers sit idle with no assignment. Partitions are the unit of
 parallelism, so the consumer count is capped by the partition count. Adding
@@ -1637,7 +1635,7 @@ is why partition count is a capacity decision made at design time.
 
 ## 73. Answers, Notebook 04
 
-**Q95** If disk is the bottleneck, why is Postgres fast? _Notebook 04, section 1._
+**Q95** If disk is the bottleneck, why is Postgres fast?  *Notebook 04, section 1.*
 
 Because it does not read from disk most of the time. Postgres keeps hot pages in
 its shared buffer cache in RAM, and the operating system caches underneath that,
@@ -1647,7 +1645,7 @@ every read is served from. That distinction is worth making out loud, because it
 is the same reason adding a cache in front of a well-tuned Postgres sometimes
 buys nothing.
 
-**Q96** When would you genuinely not choose Postgres? _Notebook 04, section 5._
+**Q96** When would you genuinely not choose Postgres?  *Notebook 04, section 5.*
 
 When the access pattern is the product and it is not relational: a
 single-digit-millisecond key-value lookup at enormous scale (DynamoDB,
@@ -1656,7 +1654,7 @@ product where relevance tuning is the feature (Elasticsearch, and see Notebook
 16), or a graph traversal that is the core query (Neo4j). Note that the first
 three of those are often ==added alongside== Postgres rather than instead of it.
 
-**Q98** Why not store epoch integers and avoid the whole question? _Notebook 04, section 8._
+**Q98** Why not store epoch integers and avoid the whole question?  *Notebook 04, section 8.*
 
 You lose everything the type gives you: `now() - created_at`, `date_trunc`,
 range queries reading naturally, interval arithmetic, index-friendly comparisons
@@ -1664,7 +1662,7 @@ against a literal, and any human being reading the row in psql understanding it.
 The integer is not more portable, it is just less legible. Store `timestamptz`
 and let the API layer serialise to whatever the client wants.
 
-**Q99** What is the downside of a Postgres enum? _Notebook 04, section 11._
+**Q99** What is the downside of a Postgres enum?  *Notebook 04, section 11.*
 
 Changing it. `ALTER TYPE ... ADD VALUE` works and is cheap, but ==removing or
 renaming a value is genuinely awkward== and historically could not run inside a
@@ -1674,7 +1672,7 @@ names) prefer a ==lookup table with a foreign key==: you get the same integrity,
 the same documentation, plus the ability to add rows without a migration and to
 attach a label and sort order.
 
-**Q101** Empty string or NULL for an optional text field? _Notebook 04, section 16._
+**Q101** Empty string or NULL for an optional text field?  *Notebook 04, section 16.*
 
 Pick one and enforce it, because ==the failure is having both==: half the rows
 with `''` and half with `NULL`, and every query needing
@@ -1682,7 +1680,7 @@ with `''` and half with `NULL`, and every query needing
 it is what indexes, aggregates and `COALESCE` are designed for, plus a
 `CHECK (bio <> '')` to stop the empty string ever appearing.
 
-**Q102** Is this not premature optimisation? _Notebook 04, section 18._
+**Q102** Is this not premature optimisation?  *Notebook 04, section 18.*
 
 It is a modelling decision rather than an optimisation, and it is cheap now and
 expensive later, which is the correct time to make it. That said, do not split
@@ -1691,7 +1689,7 @@ lifetimes==, different access frequency, or different sensitivity. Two tables
 that are always read together, always written together and never grow should be
 one table.
 
-**Q104** Where should `updated_at` be set? _Notebook 04, section 30._
+**Q104** Where should `updated_at` be set?  *Notebook 04, section 30.*
 
 Not in application code, because then every writer has to remember and one of
 them will not. Set it with a ==trigger== (section 42) so it is maintained by the
@@ -1699,7 +1697,7 @@ database for every writer including manual fixes and backfills. The lecture
 builds exactly this, and it is one of the few places a trigger clearly earns its
 keep.
 
-**Q106** Do you need a `DESC` index to sort descending? _Notebook 04, section 32._
+**Q106** Do you need a `DESC` index to sort descending?  *Notebook 04, section 32.*
 
 No, and this is worth correcting. Postgres can walk a B-tree ==backwards==, so a
 plain ascending index serves `ORDER BY created_at DESC` perfectly well. Explicit
@@ -1709,7 +1707,7 @@ example `ORDER BY status ASC, created_at DESC`, where the index must be declared
 
 ## 74. Answers, Notebook 05
 
-**Q119** Does an ORM make me safe? _Notebook 05, section 5._
+**Q119** Does an ORM make me safe?  *Notebook 05, section 5.*
 
 Mostly, for the queries it generates, and ==not at all for the escape hatches==.
 Every ORM has `raw()`, `query()`, `literal()` or a `WHERE` fragment that takes a
@@ -1718,7 +1716,7 @@ Sequelize's `literal`, Django's `extra`, ActiveRecord's string conditions: the
 names all warn you, and people use them under deadline anyway. Grep your
 codebase for them; that grep is a five-minute audit with a high hit rate.
 
-**Q121** What is peppering, and do you need it? _Notebook 05, section 12._
+**Q121** What is peppering, and do you need it?  *Notebook 05, section 12.*
 
 A %%pepper%% is a secret value mixed into the hash that lives in your
 application config or an HSM rather than the database. It means a stolen
@@ -1727,7 +1725,7 @@ useful, and the cost is that rotating it requires rehashing on next login and
 that losing it locks everyone out. Reasonable to describe as "a defence-in-depth
 option I would consider, not a substitute for a slow salted hash".
 
-**Q122** What is the argument for binding a session to the IP or user agent? _Notebook 05, section 14._
+**Q122** What is the argument for binding a session to the IP or user agent?  *Notebook 05, section 14.*
 
 It raises the cost of using a stolen cookie, and it costs you real users:
 mobile clients change IP constantly, corporate networks share them, and user
@@ -1736,7 +1734,7 @@ to record==: store the IP and user agent, and use a change as a signal to
 re-authenticate for sensitive actions or to notify the user, rather than to
 kill the session outright.
 
-**Q125** What is actually dangerous in a CORS config? _Notebook 05, section 24._
+**Q125** What is actually dangerous in a CORS config?  *Notebook 05, section 24.*
 
 `Access-Control-Allow-Origin: *` combined with credentials (browsers refuse
 this pairing, which is the point), and worse, ==reflecting the `Origin` header
@@ -1746,7 +1744,7 @@ Allowlist explicit origins, never reflect, and never trust a `null` origin.
 
 ## 75. Answers, Notebook 06
 
-**Q134** Where should latency be measured? _Notebook 06, section 2._
+**Q134** Where should latency be measured?  *Notebook 06, section 2.*
 
 ==At the client, not in the handler.== A handler that reports 40ms tells you
 nothing about the 300ms the request spent queued in your load balancer, the
@@ -1755,7 +1753,7 @@ Server-side timings are for finding the bottleneck once you know there is one.
 Client-side or synthetic timings are for knowing whether there is one. Mature
 teams keep both and know they will not match.
 
-**Q135** Can I trade latency for throughput? _Notebook 06, section 4._
+**Q135** Can I trade latency for throughput?  *Notebook 06, section 4.*
 
 Yes, deliberately, and it is often the right call. Batching is the standard
 example: waiting 10ms to collect writes and flushing them in one round trip
@@ -1765,7 +1763,7 @@ group commit and the Nagle algorithm. ++State which one you are optimising for
 before you tune anything++, because a change that helps one usually hurts the
 other.
 
-**Q136** We have 20 worker threads and P99 is climbing. Where do I start? _Notebook 06, section 5._
+**Q136** We have 20 worker threads and P99 is climbing. Where do I start?  *Notebook 06, section 5.*
 
 Little's Law. At 500 rps and 200ms you need 100 concurrent slots to keep up, and
 you have 20. ==The threads are not slow, there are not enough of them==, and
@@ -1773,7 +1771,7 @@ every request beyond the twentieth is queueing before it starts. Either raise
 concurrency, cut W, or shed load. Adding CPU will not help, because the CPU is
 not what is scarce.
 
-**Q139** Is tracing every request too expensive? _Notebook 06, section 9._
+**Q139** Is tracing every request too expensive?  *Notebook 06, section 9.*
 
 Yes, at volume, which is why nobody does it. You sample: typically 1% of normal
 traffic plus 100% of anything that errored or exceeded a latency threshold, a
@@ -1782,7 +1780,7 @@ throw away the boring ones. The overhead of the instrumentation itself is
 usually a low single-digit percentage, which is cheap compared to a week spent
 guessing.
 
-**Q142** Is N+1 always bad? _Notebook 06, section 11._
+**Q142** Is N+1 always bad?  *Notebook 06, section 11.*
 
 No, and saying so is a useful nuance. For N of three, on a warm connection, the
 extra round trips cost microseconds and the batched version is harder to read.
@@ -1791,7 +1789,7 @@ at 50, you have a small constant. If N is "however many line items this order
 has", you have a bug waiting for your largest customer. Ask what bounds N; that
 is the real question.
 
-**Q143** Why did my index not get used? _Notebook 06, section 13._
+**Q143** Why did my index not get used?  *Notebook 06, section 13.*
 
 Four common reasons, and having them ready is a strong answer. ++The column is
 wrapped in a function++ (`WHERE lower(email) = ?` will not use an index on
@@ -1800,7 +1798,7 @@ prefix rule above. ++The planner thinks a scan is cheaper++, which is often
 correct on a small table or a low-selectivity predicate. ++Statistics are
 stale++, so run `ANALYZE`. Notebook 04 section 29 works through each.
 
-**Q146** What happens when Redis goes down? _Notebook 06, section 19._
+**Q146** What happens when Redis goes down?  *Notebook 06, section 19.*
 
 The honest answer is what separates candidates. ==A cache in front of a database
 that cannot survive a cache outage is not a cache, it is a load-bearing
@@ -1811,7 +1809,7 @@ shed load while it recovers, and know from a load test whether your database can
 take the cold-start traffic. Many teams discover the answer is no during the
 incident.
 
-**Q150** What about sticky sessions? _Notebook 06, section 24._
+**Q150** What about sticky sessions?  *Notebook 06, section 24.*
 
 They work and they are a trap. %%Session affinity%% pins a user to one instance
 so the local session keeps working, which lets you skip the refactor. The costs:
@@ -1821,7 +1819,7 @@ sessions==. Autoscaling makes all three worse, because instances come and go by
 design. It is a legitimate short-term bridge and a bad destination, and saying
 exactly that is the answer.
 
-**Q154** What read-write ratio should I assume? _Notebook 06, section 27._
+**Q154** What read-write ratio should I assume?  *Notebook 06, section 27.*
 
 Do not assume; measure it, and say so. The usual claim is 90/10 or 80/20, and it
 is true for content-heavy applications and false for plenty of others. An
@@ -1830,7 +1828,7 @@ analytics ingest pipeline can be 95% writes. An internal admin tool can be
 are==, and quoting a measured ratio for your own system is a much better answer
 than quoting the industry average.
 
-**Q157** The queue is backed up and jobs are two hours old. What now? _Notebook 06, section 35._
+**Q157** The queue is backed up and jobs are two hours old. What now?  *Notebook 06, section 35.*
 
 Answer in the order you would act, because the order is the answer. ==First,
 stop the bleeding==: is the arrival rate above the drain rate, or did workers
@@ -1841,7 +1839,7 @@ for the poison message that is failing and retrying forever, because one of
 those can consume a whole worker pool. And afterwards, ++alert on queue age
 rather than queue depth++, since depth without a drain rate tells you nothing.
 
-**Q163** The interviewer says "assume infinite budget". Does that change your answer? _Notebook 06, section 42._
+**Q163** The interviewer says "assume infinite budget". Does that change your answer?  *Notebook 06, section 42.*
 
 Barely, and saying so is the point. ==Money buys bigger machines and more of
 them; it does not buy consistency, it does not buy round trips back from the
@@ -1852,7 +1850,7 @@ where it was.
 
 ## 76. Answers, Notebook 07
 
-**Q187** Why can the server not just open a TCP connection back to the browser? _Notebook 07, section 2._
+**Q187** Why can the server not just open a TCP connection back to the browser?  *Notebook 07, section 2.*
 
 Because the browser has no reachable address. It sits behind at least one layer
 of NAT, usually several, and often a firewall that drops unsolicited inbound
@@ -1862,7 +1860,7 @@ entirely to work around this. For a backend, the practical consequence is that
 the client always initiates, forever, and the only question is what it gets to
 keep afterwards.
 
-**Q188** If long polling is worse, why does it still appear in production stacks? _Notebook 07, section 5._
+**Q188** If long polling is worse, why does it still appear in production stacks?  *Notebook 07, section 5.*
 
 Because it needs nothing from the network path. Every proxy, every corporate
 middlebox and every CDN understands a slow `GET`, and none of them need to
@@ -1870,7 +1868,7 @@ understand an upgrade or an event stream. It is still the correct fallback tier
 in libraries that negotiate a transport, and it is what those libraries drop to
 when the environment refuses anything better.
 
-**Q191** What happens to events published while the client was disconnected? _Notebook 07, section 9._
+**Q191** What happens to events published while the client was disconnected?  *Notebook 07, section 9.*
 
 Nothing, unless you built the backlog. `Last-Event-ID` gives you the client's
 position; it does not give you the events. You still need somewhere to read
@@ -1878,7 +1876,7 @@ position; it does not give you the events. You still need somewhere to read
 a retention window. The browser hands you the question. Answering it is your
 design problem, and it is the same problem in section 32.
 
-**Q192** The stream works locally and delivers nothing in staging. Where do you look? _Notebook 07, section 11._
+**Q192** The stream works locally and delivers nothing in staging. Where do you look?  *Notebook 07, section 11.*
 
 Buffering first, then timeouts. Curl the endpoint directly against the app,
 bypassing the proxy: if events arrive there and not through the proxy, it is
@@ -1886,14 +1884,14 @@ buffering. If both work but the connection dies at a suspiciously round number o
 seconds, it is an idle timeout, and the round number tells you which hop. ==A
 stream that dies at exactly 60 seconds is a configuration value, not a bug.==
 
-**Q195** Why are there separate text and binary opcodes if both carry bytes? _Notebook 07, section 16._
+**Q195** Why are there separate text and binary opcodes if both carry bytes?  *Notebook 07, section 16.*
 
 Because text frames are required to be valid UTF-8 and a conforming endpoint must
 fail the connection if they are not. That validation is not free at high message
 rates, and it is why protocols carrying binary payloads use `0x2` rather than
 base64 inside `0x1`, which would also inflate the payload by a third.
 
-**Q196** Why do servers not mask their frames? _Notebook 07, section 17._
+**Q196** Why do servers not mask their frames?  *Notebook 07, section 17.*
 
 Because the attack only works in one direction. The threat was a browser being
 used as a confused deputy to write attacker-chosen bytes into an intermediary
@@ -1902,7 +1900,7 @@ equivalent leverage, so the RFC requires masking from client to server and
 forbids it from server to client. A server that masks its frames is failing the
 protocol, and a client that does not mask must be rejected.
 
-**Q197** A client sees 1006 constantly. Where do you start? _Notebook 07, section 19._
+**Q197** A client sees 1006 constantly. Where do you start?  *Notebook 07, section 19.*
 
 Look at the timing distribution before the code. If closures cluster at a round
 number of seconds after connect, it is an idle timeout and the number names the
@@ -1910,7 +1908,7 @@ hop: 60 seconds says ALB or nginx defaults. If they are spread out and correlate
 with mobile clients, it is normal network churn and the answer is a good
 reconnect path, not a fix. If they spike at deploys, it is section 36.
 
-**Q201** Why not just set the limit to a million everywhere? _Notebook 07, section 22._
+**Q201** Why not just set the limit to a million everywhere?  *Notebook 07, section 22.*
 
 Because the descriptor limit is the only thing standing between a leak and the
 machine. It is a circuit breaker, not an obstacle. Raise it deliberately to a
@@ -1919,7 +1917,7 @@ approaching it. A million descriptors on a box that runs out of memory at 200,00
 connections has converted a clean, immediate `too many open files` into an OOM
 kill that takes every connection with it.
 
-**Q202** You said 10 KB. Why do people report 30 KB or 100 KB in production? _Notebook 07, section 24._
+**Q202** You said 10 KB. Why do people report 30 KB or 100 KB in production?  *Notebook 07, section 24.*
 
 Because a real connection is not the benchmark's connection. This server had no
 application logic. Add TLS session state, a per-connection outbound queue, the
@@ -1928,7 +1926,7 @@ application hangs off a session, and the figure moves by an order of magnitude.
 ==10 KB is a floor established by an empty program==, not a budget. Measure your
 own with a heap profile at a realistic connection count.
 
-**Q206** Redis Cluster broadcasts pub/sub messages to every node. Does that matter? _Notebook 07, section 29._
+**Q206** Redis Cluster broadcasts pub/sub messages to every node. Does that matter?  *Notebook 07, section 29.*
 
 Yes, and it is a real scaling wall. Classic Redis pub/sub in cluster mode
 propagates every published message to every node so that a subscriber on any node
@@ -1938,7 +1936,7 @@ where subscribers actually are. ==Redis 7 added sharded pub/sub, `SSUBSCRIBE` an
 are running clustered Redis for this, use the sharded commands, or you have
 rebuilt the fan-out problem inside the thing that was supposed to solve it.
 
-**Q210** 30,000 people are watching. Do they all need every event? _Notebook 07, section 33._
+**Q210** 30,000 people are watching. Do they all need every event?  *Notebook 07, section 33.*
 
 Usually not, and this is the question that removes the most work. Subscription
 should be scoped to what is actually rendered: the visible column, the open
@@ -1948,7 +1946,7 @@ optimising the fan-out==, and it is the first thing to look at.
 
 ## 77. Answers, Notebook 08
 
-**Q236** _Notebook 08, section 3._
+**Q236**   *Notebook 08, section 3.*
 
 "Which REST constraint does a JWT in an `Authorization` header serve, and which
 one does a server-side session table break?"
@@ -1960,7 +1958,7 @@ reach for first, sticky sessions, actually breaks the layered-system constraint
 too by making the load balancer care which instance you spoke to last. Notebook
 05 section 22 covers the token side properly.
 
-**Q237** _Notebook 08, section 5._
+**Q237**   *Notebook 08, section 5.*
 
 "So is your API RESTful?"
 
@@ -1972,19 +1970,19 @@ defend.
 
 ## 78. Answers, Notebook 09
 
-**Q242** _Notebook 09, section 3._
+**Q242**   *Notebook 09, section 3.*
 
 "Is separation of concerns the same as single responsibility?"
 
 No, and the distinction is worth having. Separation of concerns is about
-**categories of work**: HTTP handling is one concern, persistence another,
+__categories of work__: HTTP handling is one concern, persistence another,
 business rules a third, and they should not be interleaved in one function.
-Single responsibility, in Martin's refined form, is about **who asks for
-changes**: two different stakeholders should not be able to force edits to the
+Single responsibility, in Martin's refined form, is about __who asks for
+changes__: two different stakeholders should not be able to force edits to the
 same module. You can obey the first and break the second easily, by putting two
 different departments' rules in one perfectly layered service.
 
-**Q245** _Notebook 09, section 5._
+**Q245**   *Notebook 09, section 5.*
 
 "Does SRP conflict with DRY?"
 
@@ -1993,12 +1991,12 @@ that look identical but serve different actors are ==not duplication, they are
 coincidence.== Merging them couples two departments together, and you will find
 out when one of them asks for a change the other one does not want.
 
-**Q246** _Notebook 09, section 9._
+**Q246**   *Notebook 09, section 9.*
 
 "How would you fix the square and rectangle?"
 
 The good answer refuses the premise. Do not make `Square` a subtype of a
-**mutable** `Rectangle`; the mutability is what breaks it. Options, in order:
+__mutable__ `Rectangle`; the mutability is what breaks it. Options, in order:
 make both immutable, so `withWidth()` returns a new object and no invariant can
 be violated; or drop the inheritance and let both implement a `Shape` interface
 that only exposes `area()`. ++The general lesson is that inheritance hierarchies

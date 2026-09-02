@@ -10,7 +10,7 @@ Senior backend and full-stack interview preparation. Read with a pen.
 This is the shortest book in the series, and the only one not built from a
 lecture. It needs to say why up front.
 
-The _Backend from First Principles_ playlist names these principles exactly once.
+The *Backend from First Principles* playlist names these principles exactly once.
 In video 1, the roadmap, at 18:23:
 
 > "...we'll look at different design principles like separation of concerns,
@@ -36,15 +36,15 @@ the code that holds your actual rules.
 That is what all five of SOLID are about, and none of the usual summaries say so.
 Each principle is a different answer to the same question, and the question is
 never "is this code beautiful". It is: when a requirement changes next quarter,
-**how far does the edit spread?**
+__how far does the edit spread?__
 
-| Letter | The change it is trying to contain                       |
-| ------ | -------------------------------------------------------- |
-| S      | Two people asking for different things, editing one file |
-| O      | Adding a case means editing the code that already worked |
-| L      | A subtype that makes callers check which subtype it is   |
-| I      | A method you do not use, changing, and breaking you      |
-| D      | The stable rules depending on the volatile detail        |
+| Letter | The change it is trying to contain |
+|---|---|
+| S | Two people asking for different things, editing one file |
+| O | Adding a case means editing the code that already worked |
+| L | A subtype that makes callers check which subtype it is |
+| I | A method you do not use, changing, and breaking you |
+| D | The stable rules depending on the volatile detail |
 
 If a principle does not reduce how far a change spreads, ==you are applying it as
 decoration==, and this book will keep saying so.
@@ -66,22 +66,22 @@ Five things, and they are the reason this is a book and not a blog post.
 
 #### The five block types
 
-| Block            | What it means                                                              |
-| ---------------- | -------------------------------------------------------------------------- |
-| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on.  |
-| Senior signal    | The specific sentence that separates a senior answer from a mid-level one. |
-| Trap             | A common answer that sounds right and is wrong.                            |
-| Do this          | The concrete practice, with the parameter or the number.                   |
-| Key idea         | The one thing to carry out of that section.                                |
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or the number. |
+| Key idea | The one thing to carry out of that section. |
 
 #### The four highlighters
 
-| Mark      | Means                                          |
-| --------- | ---------------------------------------------- |
-| ==peach== | The sentence to carry away                     |
-| !!rose!!  | The wrong answer, the thing that bites         |
-| ++mint++  | The correct practice                           |
-| %%pink%%  | A definition, at the point it is first defined |
+| Mark | Means |
+|---|---|
+| ==peach== | The sentence to carry away |
+| !!rose!! | The wrong answer, the thing that bites |
+| ++mint++ | The correct practice |
+| %%pink%% | A definition, at the point it is first defined |
 
 #### A suggested route
 
@@ -236,13 +236,13 @@ understood. The craft is entirely in the trade.
 
 **Coupling comes in kinds, and they are not equally bad.** Roughly, worst first:
 
-| Kind    | What it means                                   | Example                                |
-| ------- | ----------------------------------------------- | -------------------------------------- |
-| Content | One module reaches into another's internals     | Mutating another object's private list |
-| Common  | Both share mutable global state                 | Two services writing one global config |
-| Control | One passes a flag that steers the other's logic | `save(user, sendEmail: true)`          |
-| Stamp   | Passing a whole record when one field is needed | Passing `User` to get `user.id`        |
-| Data    | Passing exactly the values needed               | `chargeCard(amount, token)`            |
+| Kind | What it means | Example |
+|---|---|---|
+| Content | One module reaches into another's internals | Mutating another object's private list |
+| Common | Both share mutable global state | Two services writing one global config |
+| Control | One passes a flag that steers the other's logic | `save(user, sendEmail: true)` |
+| Stamp | Passing a whole record when one field is needed | Passing `User` to get `user.id` |
+| Data | Passing exactly the values needed | `chargeCard(amount, token)` |
 
 ++Data coupling is the goal, not zero coupling.++ Zero coupling means the two
 modules never interact, which for most pairs is not an option.
@@ -266,8 +266,8 @@ you can derive the five letters live. The reverse is not true.
 
 ## 3. Separation of concerns, and where these principles live
 
-Dijkstra named %%separation of concerns%% in a 1974 essay, _On the role of
-scientific thought_. His point was narrower and sharper than the phrase became:
+Dijkstra named %%separation of concerns%% in a 1974 essay, *On the role of
+scientific thought*. His point was narrower and sharper than the phrase became:
 studying one aspect of a subject in isolation is legitimate ++not because the
 other aspects are unimportant, but because a mind can only hold one at a time.++
 It is a claim about human limits, not about architecture.
@@ -303,10 +303,10 @@ controller and what does not. This book only borrows the map.
 "Is separation of concerns the same as single responsibility?"
 
 No, and the distinction is worth having. Separation of concerns is about
-**categories of work**: HTTP handling is one concern, persistence another,
+__categories of work__: HTTP handling is one concern, persistence another,
 business rules a third, and they should not be interleaved in one function.
-Single responsibility, in Martin's refined form, is about **who asks for
-changes**: two different stakeholders should not be able to force edits to the
+Single responsibility, in Martin's refined form, is about __who asks for
+changes__: two different stakeholders should not be able to force edits to the
 same module. You can obey the first and break the second easily, by putting two
 different departments' rules in one perfectly layered service.
 :::
@@ -333,12 +333,12 @@ what a violation looks like in a diff.
 
 ## 4. S: one reason to change
 
-Robert Martin's original formulation, from the 1990s and set down in _Agile
-Software Development_ (2002):
+Robert Martin's original formulation, from the 1990s and set down in *Agile
+Software Development* (2002):
 
 > A class should have only one reason to change.
 
-The word doing the work is **reason**, and it is not "responsibility" in the
+The word doing the work is __reason__, and it is not "responsibility" in the
 loose English sense. A class that validates an order, prices it, and emails a
 receipt has three reasons to change, because ==three different forces in the
 world can independently require it to be edited.==
@@ -374,25 +374,25 @@ not lines, not concepts.
 
 ## 5. S, refined: responsibility means an actor
 
-In _Clean Architecture_ (2017) Martin restated the principle, and the restatement
+In *Clean Architecture* (2017) Martin restated the principle, and the restatement
 is much better than the original:
 
 > A module should be responsible to one, and only one, actor.
 
 %%Actor%% here means a group of people who ask for the same kind of change:
 finance, the compliance team, the operations team. Not a user of the software, a
-**source of requirements**.
+__source of requirements__.
 
 The reason this matters is that it makes the principle falsifiable in a
 conversation. His own example is an `Employee` class with three methods,
 `calculatePay`, `reportHours`, and `save`. Each is requested by a different part
 of the company:
 
-| Method         | Actor                | What goes wrong |
-| -------------- | -------------------- | --------------- |
-| `calculatePay` | Finance              |                 |
-| `reportHours`  | Human resources      |                 |
-| `save`         | The DBA / operations |                 |
+| Method | Actor | What goes wrong |
+|---|---|---|
+| `calculatePay` | Finance | |
+| `reportHours` | Human resources | |
+| `save` | The DBA / operations | |
 
 They share a class, so they share code. One day someone changes a shared helper
 used by `calculatePay` on finance's instruction, and ==HR's hours report silently
@@ -429,7 +429,7 @@ it turns a vague aesthetic into a question about your organisation chart.
 
 ## 6. O: change by adding, not by editing
 
-Bertrand Meyer, _Object-Oriented Software Construction_ (1988):
+Bertrand Meyer, *Object-Oriented Software Construction* (1988):
 
 > Software entities should be open for extension, but closed for modification.
 
@@ -529,7 +529,7 @@ meant inheritance.==
 ## 8. L: what Liskov actually said
 
 Barbara Liskov stated it in a 1987 conference keynote, and formalised it with
-Jeannette Wing in 1994 as _A Behavioral Notion of Subtyping_. The often-quoted
+Jeannette Wing in 1994 as *A Behavioral Notion of Subtyping*. The often-quoted
 form:
 
 > If S is a subtype of T, then objects of type T may be replaced with objects of
@@ -574,12 +574,12 @@ with extra steps.
 Liskov and Wing's formalisation gives four conditions. They are precise, and they
 are what to say when asked how to actually check for a violation.
 
-| Rule           | In the subtype                                                 |
-| -------------- | -------------------------------------------------------------- |
-| Preconditions  | May not be strengthened. It cannot demand more than the parent |
-| Postconditions | May not be weakened. It must deliver at least as much          |
-| Invariants     | Must be preserved. What was always true stays always true      |
-| History        | It must not permit state changes the parent forbade            |
+| Rule | In the subtype |
+|---|---|
+| Preconditions | May not be strengthened. It cannot demand more than the parent |
+| Postconditions | May not be weakened. It must deliver at least as much |
+| Invariants | Must be preserved. What was always true stays always true |
+| History | It must not permit state changes the parent forbade |
 
 **Preconditions may not be strengthened** is the one that catches most real bugs.
 If `Parent.save(user)` accepts any user, and `Child.save(user)` throws unless the
@@ -616,7 +616,7 @@ admission of an LSP violation.!!
 "How would you fix the square and rectangle?"
 
 The good answer refuses the premise. Do not make `Square` a subtype of a
-**mutable** `Rectangle`; the mutability is what breaks it. Options, in order:
+__mutable__ `Rectangle`; the mutability is what breaks it. Options, in order:
 make both immutable, so `withWidth()` returns a new object and no invariant can
 be violated; or drop the inheritance and let both implement a `Shape` interface
 that only exposes `area()`. ++The general lesson is that inheritance hierarchies
@@ -681,7 +681,7 @@ consumer that needs it, not to the class that happens to implement it.
 
 ## 11. D: point the dependency at what changes least
 
-Martin, _The Dependency Inversion Principle_ (1996), two clauses:
+Martin, *The Dependency Inversion Principle* (1996), two clauses:
 
 > High-level modules should not depend on low-level modules. Both should depend
 > on abstractions.
@@ -765,13 +765,13 @@ They are not a consistent system. They were written by different people, decades
 apart, to solve different problems, and collected under one acronym afterwards.
 Conflicts are normal, and knowing the common ones is what makes the set usable.
 
-| Conflict          | The tension                                                  |
-| ----------------- | ------------------------------------------------------------ |
-| SRP vs DRY        | Splitting by actor duplicates code that looks identical      |
-| OCP vs YAGNI      | Openness costs an abstraction you may never need             |
-| ISP vs simplicity | Narrow interfaces multiply the number of types               |
+| Conflict | The tension |
+|---|---|
+| SRP vs DRY | Splitting by actor duplicates code that looks identical |
+| OCP vs YAGNI | Openness costs an abstraction you may never need |
+| ISP vs simplicity | Narrow interfaces multiply the number of types |
 | DIP vs directness | An interface with one implementation is a hop with no branch |
-| LSP vs reuse      | The convenient superclass is often not a true supertype      |
+| LSP vs reuse | The convenient superclass is often not a true supertype |
 
 The resolution is always the same shape, and it is worth being able to state:
 ==ask which change is more likely.== If a new payment method is likely and a new
@@ -882,16 +882,16 @@ different people is not.
 Principles are hard to apply while reading code. Smells are not. This is the
 lookup table to use in review, and it is the practical output of the whole book.
 
-| What you see in the diff                       | Likely principle | Why                                                |
-| ---------------------------------------------- | ---------------- | -------------------------------------------------- |
-| A new `else if` in a long chain                | O                | The axis of variation is known; adding still edits |
-| `instanceof` or a type switch on a subtype     | L                | Callers must know the concrete type                |
-| `throw new UnsupportedOperationException`      | L, I             | The type cannot honour the contract it claims      |
-| A boolean parameter that selects behaviour     | S                | Two behaviours, two actors, one function           |
-| A method with an unrelated third argument      | S, I             | The function serves more than one purpose          |
-| A domain class importing the ORM or HTTP layer | D                | The arrow points at the volatile detail            |
-| An interface with one implementation, forever  | (none)           | Section 13, not a violation but a cost             |
-| A test that needs six mocks to run             | I, D             | The dependency surface is too wide                 |
+| What you see in the diff | Likely principle | Why |
+|---|---|---|
+| A new `else if` in a long chain | O | The axis of variation is known; adding still edits |
+| `instanceof` or a type switch on a subtype | L | Callers must know the concrete type |
+| `throw new UnsupportedOperationException` | L, I | The type cannot honour the contract it claims |
+| A boolean parameter that selects behaviour | S | Two behaviours, two actors, one function |
+| A method with an unrelated third argument | S, I | The function serves more than one purpose |
+| A domain class importing the ORM or HTTP layer | D | The arrow points at the volatile detail |
+| An interface with one implementation, forever | (none) | Section 13, not a violation but a cost |
+| A test that needs six mocks to run | I, D | The dependency surface is too wide |
 
 The last row is the most useful in practice. ==Test setup pain is the most
 reliable design smell there is==, because it measures exactly the thing the
@@ -916,13 +916,13 @@ Every one of these principles was written about class-based object-oriented code
 in the 1980s and 1990s. Most backend code written now is services, functions and
 data. Three of the five transfer cleanly; two need translation.
 
-| Letter | Outside objects                                                                |
-| ------ | ------------------------------------------------------------------------------ |
-| S      | Transfers exactly. A module, a service, a function: one actor                  |
-| O      | Transfers. Extension by adding a case to a dispatch table or a new handler     |
-| L      | Becomes contract compatibility. The API version, the message schema            |
-| I      | Becomes the narrow dependency. Ask for the two fields, not the whole record    |
-| D      | Transfers exactly, and matters more across service boundaries than inside them |
+| Letter | Outside objects |
+|---|---|
+| S | Transfers exactly. A module, a service, a function: one actor |
+| O | Transfers. Extension by adding a case to a dispatch table or a new handler |
+| L | Becomes contract compatibility. The API version, the message schema |
+| I | Becomes the narrow dependency. Ask for the two fields, not the whole record |
+| D | Transfers exactly, and matters more across service boundaries than inside them |
 
 ==L is the one that changes character most.== Between services there is no
 inheritance, so Liskov becomes a rule about schema evolution: a new version of a
@@ -963,7 +963,7 @@ find out whether you have thought about the subject or memorised it.
   data modelling, failure handling, and operability are absent, and those are
   where systems actually break.
 
-Dan North's 2021 talk _CUPID_ argues the acronym should be retired and proposes
+Dan North's 2021 talk *CUPID* argues the acronym should be retired and proposes
 properties rather than principles: composable, Unix philosophy, predictable,
 idiomatic, domain-based. Whether or not you find that convincing, ==the criticism
 that SOLID describes code structure and not code experience is a real one.==
@@ -1024,11 +1024,11 @@ about direction, and it pre-empts the follow-up about over-abstraction.
 
 **Then expect one of three follow-ups**, and have the concrete example ready:
 
-| Follow-up                                         | Go to                                       |
-| ------------------------------------------------- | ------------------------------------------- |
-| "Give me an example of a violation you fixed"     | A real one. Section 15's smells             |
-| "Aren't these just excuses for over-engineering?" | Section 13, rule of three                   |
-| "Which one is most important?"                    | D, and say why: it is the one that survives |
+| Follow-up | Go to |
+|---|---|
+| "Give me an example of a violation you fixed" | A real one. Section 15's smells |
+| "Aren't these just excuses for over-engineering?" | Section 13, rule of three |
+| "Which one is most important?" | D, and say why: it is the one that survives |
 
 For the last one, a defensible answer: ==dependency inversion, because it is the
 only one that determines what your code can outlive.== The others improve a
@@ -1081,28 +1081,28 @@ performance of syntax.
 Twenty questions, in rough order of how often they are asked. Answer each aloud
 before checking the section.
 
-| #   | Question                                                   | Section |
-| --- | ---------------------------------------------------------- | ------- |
-| 1   | What does SRP actually mean by "responsibility"?           | 5       |
-| 2   | Give a violation of LSP from a standard library            | 9       |
-| 3   | What is inverted in dependency inversion?                  | 11      |
-| 4   | Is DI the same as DIP?                                     | 11      |
-| 5   | Why is the square-rectangle problem a problem?             | 9       |
-| 6   | When should you not apply open-closed?                     | 13      |
-| 7   | Does SRP conflict with DRY?                                | 14      |
-| 8   | What is coincidental duplication?                          | 14      |
-| 9   | How do you spot an ISP violation in review?                | 15      |
-| 10  | What does an `UnsupportedOperationException` usually mean? | 9       |
-| 11  | Which SOLID principle matters most, and why?               | 18      |
-| 12  | How do these apply to services rather than classes?        | 16      |
-| 13  | What are the four Liskov conditions?                       | 9       |
-| 14  | Why is a boolean parameter a smell?                        | 15      |
-| 15  | What is the difference between cohesion and coupling?      | 2       |
-| 16  | Rank the kinds of coupling                                 | 2       |
-| 17  | What is wrong with SOLID?                                  | 17      |
-| 18  | Is separation of concerns the same as SRP?                 | 3       |
-| 19  | When is duplication the right answer?                      | 14      |
-| 20  | Whose principles are these, and when were they written?    | 4 to 11 |
+| # | Question | Section |
+|---|---|---|
+| 1 | What does SRP actually mean by "responsibility"? | 5 |
+| 2 | Give a violation of LSP from a standard library | 9 |
+| 3 | What is inverted in dependency inversion? | 11 |
+| 4 | Is DI the same as DIP? | 11 |
+| 5 | Why is the square-rectangle problem a problem? | 9 |
+| 6 | When should you not apply open-closed? | 13 |
+| 7 | Does SRP conflict with DRY? | 14 |
+| 8 | What is coincidental duplication? | 14 |
+| 9 | How do you spot an ISP violation in review? | 15 |
+| 10 | What does an `UnsupportedOperationException` usually mean? | 9 |
+| 11 | Which SOLID principle matters most, and why? | 18 |
+| 12 | How do these apply to services rather than classes? | 16 |
+| 13 | What are the four Liskov conditions? | 9 |
+| 14 | Why is a boolean parameter a smell? | 15 |
+| 15 | What is the difference between cohesion and coupling? | 2 |
+| 16 | Rank the kinds of coupling | 2 |
+| 17 | What is wrong with SOLID? | 17 |
+| 18 | Is separation of concerns the same as SRP? | 3 |
+| 19 | When is duplication the right answer? | 14 |
+| 20 | Whose principles are these, and when were they written? | 4 to 11 |
 
 :::recall Deliver the forty-second answer from section 18 from memory, out loud, without listing the letters first. | 8
 :::
@@ -1115,19 +1115,19 @@ before checking the section.
 Everything in this book traces to one of these. They are short, and reading two
 of them puts you ahead of almost everyone who discusses this subject.
 
-| Year         | Who                | What                                    | The idea                          |
-| ------------ | ------------------ | --------------------------------------- | --------------------------------- |
-| 1968 to 1974 | Larry Constantine  | Structured design                       | Cohesion and coupling             |
-| 1974         | Edsger Dijkstra    | _On the role of scientific thought_     | Separation of concerns            |
-| 1987         | Barbara Liskov     | OOPSLA keynote                          | Substitutability                  |
-| 1987         | Ian Holland et al. | Northeastern University                 | The Law of Demeter                |
-| 1988         | Bertrand Meyer     | _Object-Oriented Software Construction_ | Open-closed, by inheritance       |
-| 1994         | Liskov and Wing    | _A Behavioral Notion of Subtyping_      | The four conditions               |
-| 1996         | Robert Martin      | _The Dependency Inversion Principle_    | Inverting the arrow               |
-| 1996 onward  | Robert Martin      | `C++ Report` columns                    | OCP restated polymorphically; ISP |
-| c. 2004      | Michael Feathers   |                                         | Coined the acronym SOLID          |
-| 2017         | Robert Martin      | _Clean Architecture_                    | SRP refined to actors             |
-| 2021         | Dan North          | _CUPID_                                 | The case against the acronym      |
+| Year | Who | What | The idea |
+|---|---|---|---|
+| 1968 to 1974 | Larry Constantine | Structured design | Cohesion and coupling |
+| 1974 | Edsger Dijkstra | *On the role of scientific thought* | Separation of concerns |
+| 1987 | Barbara Liskov | OOPSLA keynote | Substitutability |
+| 1987 | Ian Holland et al. | Northeastern University | The Law of Demeter |
+| 1988 | Bertrand Meyer | *Object-Oriented Software Construction* | Open-closed, by inheritance |
+| 1994 | Liskov and Wing | *A Behavioral Notion of Subtyping* | The four conditions |
+| 1996 | Robert Martin | *The Dependency Inversion Principle* | Inverting the arrow |
+| 1996 onward | Robert Martin | `C++ Report` columns | OCP restated polymorphically; ISP |
+| c. 2004 | Michael Feathers | | Coined the acronym SOLID |
+| 2017 | Robert Martin | *Clean Architecture* | SRP refined to actors |
+| 2021 | Dan North | *CUPID* | The case against the acronym |
 
 ==Note the gap between 1996 and 2004.== The principles existed for nearly a decade
 before the acronym did, which is the clearest evidence that the acronym is a

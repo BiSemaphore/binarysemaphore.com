@@ -7,8 +7,8 @@ Senior backend and full-stack interview preparation. Read with a pen.
 
 ## How to use this book
 
-This book follows one lecture, _Mastering Databases with Postgres_
-(`youtube.com/watch?v=oKr4TCgvfaQ`, 2h45 of the _Backend from First Principles_
+This book follows one lecture, *Mastering Databases with Postgres*
+(`youtube.com/watch?v=oKr4TCgvfaQ`, 2h45 of the *Backend from First Principles*
 playlist), and then keeps going where it stops.
 
 The lecture is deliberately not a SQL course. It skips `SELECT`, `GROUP BY` and
@@ -25,22 +25,22 @@ requests hit the same row at the same time is the difference.
 
 #### The five block types
 
-| Block            | What it means                                                              |
-| ---------------- | -------------------------------------------------------------------------- |
-| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on.  |
-| Senior signal    | The specific sentence that separates a senior answer from a mid-level one. |
-| Trap             | A common answer that sounds right and is wrong.                            |
-| Do this          | The concrete practice, with the parameter or command.                      |
-| Key idea         | The one thing to carry out of that section.                                |
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or command. |
+| Key idea | The one thing to carry out of that section. |
 
 #### The four highlighters
 
-| Mark      | Means                                          |
-| --------- | ---------------------------------------------- |
-| ==peach== | The sentence to carry away                     |
-| !!rose!!  | The wrong answer, the thing that bites         |
-| ++mint++  | The correct practice                           |
-| %%pink%%  | A definition, at the point it is first defined |
+| Mark | Means |
+|---|---|
+| ==peach== | The sentence to carry away |
+| !!rose!! | The wrong answer, the thing that bites |
+| ++mint++ | The correct practice |
+| %%pink%% | A definition, at the point it is first defined |
 
 #### One running example
 
@@ -144,11 +144,11 @@ That single requirement forces a choice about ==where the bytes sit==.
 Two orders of magnitude of latency, two orders of magnitude of capacity, in
 opposite directions. That trade decides which tool goes where:
 
-|                 | Lives in RAM                        | Lives on disk                                  |
-| --------------- | ----------------------------------- | ---------------------------------------------- |
-| What            | Redis, Memcached, in-process caches | Postgres, MySQL, Mongo                         |
-| Optimised for   | ==Speed==, at a capacity limit      | ==Capacity and durability==, at a latency cost |
-| Losing it means | A slow request                      | An incident                                    |
+| | Lives in RAM | Lives on disk |
+|---|---|---|
+| What | Redis, Memcached, in-process caches | Postgres, MySQL, Mongo |
+| Optimised for | ==Speed==, at a capacity limit | ==Capacity and durability==, at a latency cost |
+| Losing it means | A slow request | An incident |
 
 :::key
 A database trades latency for capacity and durability, and a cache trades
@@ -219,12 +219,12 @@ you will get wrong.
 
 Four responsibilities, and it is worth being able to name them:
 
-| Promise       | Means                                                              |
-| ------------- | ------------------------------------------------------------------ |
-| Organisation  | Data laid out so reads and writes stay fast as it grows            |
-| Access        | A query language, so you say ==what== you want, not how to find it |
-| ==Integrity== | The data is valid and stays valid, enforced by the engine          |
-| Security      | Users, roles, and grants, so not everyone can read everything      |
+| Promise | Means |
+|---|---|
+| Organisation | Data laid out so reads and writes stay fast as it grows |
+| Access | A query language, so you say ==what== you want, not how to find it |
+| ==Integrity== | The data is valid and stays valid, enforced by the engine |
+| Security | Users, roles, and grants, so not everyone can read everything |
 
 Integrity is the one to dwell on, because it is the one people give away.
 
@@ -247,14 +247,14 @@ code is one writer among several== and it is the one that changes every day. A
 
 ## 4. Relational or not
 
-|               | Relational                                    | Document                             |
-| ------------- | --------------------------------------------- | ------------------------------------ |
-| Unit          | Table, row, column                            | Collection, document                 |
-| Schema        | ==Declared up front==, enforced by the engine | Per document, enforced by you        |
-| Relationships | Foreign keys, joins                           | Embedding, or application-side joins |
-| Integrity     | The engine's job                              | ==Your code's job==                  |
-| Good at       | Data with shape and relationships             | Data whose shape you do not know yet |
-| Examples      | Postgres, MySQL, SQL Server                   | MongoDB, DynamoDB                    |
+| | Relational | Document |
+|---|---|---|
+| Unit | Table, row, column | Collection, document |
+| Schema | ==Declared up front==, enforced by the engine | Per document, enforced by you |
+| Relationships | Foreign keys, joins | Embedding, or application-side joins |
+| Integrity | The engine's job | ==Your code's job== |
+| Good at | Data with shape and relationships | Data whose shape you do not know yet |
+| Examples | Postgres, MySQL, SQL Server | MongoDB, DynamoDB |
 
 The lecture's two examples are well chosen:
 
@@ -357,11 +357,11 @@ The migration to widen a primary key on a live table costs a weekend.
 
 Three types, and only one of them is the answer.
 
-| Type         | Behaviour                                                                 |
-| ------------ | ------------------------------------------------------------------------- |
-| `char(n)`    | ==Blank-pads to n.== Storing `'AB'` in `char(10)` stores eight spaces too |
-| `varchar(n)` | Up to n characters, errors past it. No padding                            |
-| `text`       | Any length. No declared limit                                             |
+| Type | Behaviour |
+|---|---|
+| `char(n)` | ==Blank-pads to n.== Storing `'AB'` in `char(10)` stores eight spaces too |
+| `varchar(n)` | Up to n characters, errors past it. No padding |
+| `text` | Any length. No declared limit |
 
 In Postgres, ==all three perform identically==. There is no speed advantage to
 declaring a limit, and `text` indexes exactly as well as `varchar`. The
@@ -443,13 +443,13 @@ schemas should use.
 
 #### Sequential integer, or UUID
 
-|                   | `bigint identity`                                         | `uuid`                                           |
-| ----------------- | --------------------------------------------------------- | ------------------------------------------------ |
-| Size              | 8 bytes                                                   | 16 bytes                                         |
-| Generated by      | ==The database==, on insert                               | Anyone, anywhere, before insert                  |
-| Index locality    | Excellent, appends to the right of the B-tree             | ==Poor for v4==, writes scatter across the index |
-| Leaks information | ==Yes.== `/users/1042` tells a competitor your user count | No                                               |
-| Merging data sets | Collides                                                  | Never collides                                   |
+| | `bigint identity` | `uuid` |
+|---|---|---|
+| Size | 8 bytes | 16 bytes |
+| Generated by | ==The database==, on insert | Anyone, anywhere, before insert |
+| Index locality | Excellent, appends to the right of the B-tree | ==Poor for v4==, writes scatter across the index |
+| Leaks information | ==Yes.== `/users/1042` tells a competitor your user count | No |
+| Merging data sets | Collides | Never collides |
 
 The scatter problem is real but often overstated, and it has a fix: UUIDv7 is
 time-ordered, so it keeps index locality while staying globally unique. If your
@@ -467,13 +467,13 @@ system. If UUID, then v7 rather than v4, so I keep index locality."
 
 Two types, and one is essentially always right.
 
-|                                    | `json`                                 | `jsonb`           |
-| ---------------------------------- | -------------------------------------- | ----------------- |
-| Stored as                          | ==Exact text==, reparsed on every read | Decomposed binary |
-| Preserves key order and whitespace | Yes                                    | No                |
-| Duplicate keys                     | Kept                                   | ==Last one wins== |
-| Reads                              | Slower, parses each time               | Fast              |
-| Indexable                          | No                                     | ==Yes, GIN==      |
+| | `json` | `jsonb` |
+|---|---|---|
+| Stored as | ==Exact text==, reparsed on every read | Decomposed binary |
+| Preserves key order and whitespace | Yes | No |
+| Duplicate keys | Kept | ==Last one wins== |
+| Reads | Slower, parses each time | Fast |
+| Indexable | No | ==Yes, GIN== |
 
 ```sql
 -- a settings column that has no fixed shape
@@ -624,18 +624,17 @@ Not in the lecture, and the thing that actually causes incidents. Most `ALTER
 TABLE` variants take an `ACCESS EXCLUSIVE` lock, which blocks ==every read and
 write== on that table for the duration.
 
-| Operation                             | Cost on a large table                              |
-| ------------------------------------- | -------------------------------------------------- |
-| `ADD COLUMN` nullable, no default     | Instant. Metadata only                             |
-| `ADD COLUMN ... DEFAULT` (PG 11+)     | Instant. Older versions rewrote the table          |
-| `ADD COLUMN NOT NULL` without default | ==Rewrites the table==                             |
-| `ALTER COLUMN TYPE`                   | ==Rewrites the table==                             |
-| `CREATE INDEX`                        | ==Blocks writes== for the whole build              |
-| `CREATE INDEX CONCURRENTLY`           | Does not block. Slower, cannot be in a transaction |
-| `ADD FOREIGN KEY`                     | Blocks while it validates every existing row       |
+| Operation | Cost on a large table |
+|---|---|
+| `ADD COLUMN` nullable, no default | Instant. Metadata only |
+| `ADD COLUMN ... DEFAULT` (PG 11+) | Instant. Older versions rewrote the table |
+| `ADD COLUMN NOT NULL` without default | ==Rewrites the table== |
+| `ALTER COLUMN TYPE` | ==Rewrites the table== |
+| `CREATE INDEX` | ==Blocks writes== for the whole build |
+| `CREATE INDEX CONCURRENTLY` | Does not block. Slower, cannot be in a transaction |
+| `ADD FOREIGN KEY` | Blocks while it validates every existing row |
 
 :::do The safe patterns
-
 - ++`CREATE INDEX CONCURRENTLY`++ on any table with real traffic. It cannot run
   inside a transaction, so most tools need an explicit flag for that migration.
 - Adding a `NOT NULL` column: ++add it nullable, backfill in batches, then add
@@ -647,7 +646,7 @@ write== on that table for the duration.
 - Always set a ++`lock_timeout`++ on migrations. A migration that waits behind a
   long-running query holds a lock queue that stalls every subsequent query on
   that table, which turns a slow migration into an outage.
-  :::
+:::
 
 :::trap "The migration ran fine in staging"
 Staging has a thousand rows and no traffic. The operations above are all
@@ -868,12 +867,12 @@ for example an invitation record pointing at a membership.
 When the parent row goes, what happens to the children? Four answers, and
 choosing is a product decision.
 
-| Clause                  | Behaviour                                   | Use for                                  |
-| ----------------------- | ------------------------------------------- | ---------------------------------------- |
-| `ON DELETE RESTRICT`    | ==Refuses the delete== while children exist | Parents whose loss would be catastrophic |
-| `ON DELETE CASCADE`     | Deletes the children too                    | Children that are meaningless alone      |
-| `ON DELETE SET NULL`    | Nulls the child's FK                        | Optional links: an unassigned task       |
-| `ON DELETE SET DEFAULT` | Sets it to the column default               | Rare. Needs a sensible default row       |
+| Clause | Behaviour | Use for |
+|---|---|---|
+| `ON DELETE RESTRICT` | ==Refuses the delete== while children exist | Parents whose loss would be catastrophic |
+| `ON DELETE CASCADE` | Deletes the children too | Children that are meaningless alone |
+| `ON DELETE SET NULL` | Nulls the child's FK | Optional links: an unassigned task |
+| `ON DELETE SET DEFAULT` | Sets it to the column default | Rare. Needs a sensible default row |
 
 Applied to the running schema, every choice says something:
 
@@ -912,13 +911,13 @@ Every rule you can express here is a rule that ==holds against every writer for
 the life of the table==, including the migration you run at 2am and the script a
 colleague writes next year.
 
-| Constraint    | Stops                                          |
-| ------------- | ---------------------------------------------- |
-| `NOT NULL`    | Unknown where a value is required              |
-| `UNIQUE`      | Two accounts with one email                    |
-| `CHECK`       | Values in range, and cross-column rules        |
-| `FOREIGN KEY` | Pointers to nothing                            |
-| `EXCLUDE`     | Overlaps. Two bookings on one room at one time |
+| Constraint | Stops |
+|---|---|
+| `NOT NULL` | Unknown where a value is required |
+| `UNIQUE` | Two accounts with one email |
+| `CHECK` | Values in range, and cross-column rules |
+| `FOREIGN KEY` | Pointers to nothing |
+| `EXCLUDE` | Overlaps. Two bookings on one room at one time |
 
 :::do Prefer a partial unique index for conditional uniqueness
 "Email must be unique among users who are not soft-deleted" is not expressible
@@ -928,7 +927,6 @@ as a plain `UNIQUE`. It is expressible exactly as:
 CREATE UNIQUE INDEX users_email_active
   ON users (email) WHERE deleted_at IS NULL;
 ```
-
 :::
 
 ## 23. Naming: plural, lower, snake
@@ -1109,7 +1107,6 @@ name, a column name, or a sort direction:
   ✗ ORDER BY $1              -- silently sorts by a constant, not a column
   ✓ ORDER BY  <whitelisted>  -- see section 28
 ```
-
 That gap is exactly where injection reappears in "dynamic" query builders.
 :::
 
@@ -1120,21 +1117,16 @@ Filters are values, so they parameterise. ==Sort columns are identifiers, so the
 do not.==
 
 ```js
-const SORTABLE = {
-  created_at: "u.created_at",
-  email: "u.email",
-  full_name: "u.full_name",
-}; // ← the whitelist
+const SORTABLE = { created_at: "u.created_at",
+                   email:      "u.email",
+                   full_name:  "u.full_name" };          // ← the whitelist
 
-const column = SORTABLE[q.sort_by] ?? "u.created_at"; // never the raw input
-const dir = q.sort_order === "asc" ? "ASC" : "DESC"; // never the raw input
+const column = SORTABLE[q.sort_by] ?? "u.created_at";     // never the raw input
+const dir    = q.sort_order === "asc" ? "ASC" : "DESC";   // never the raw input
 
 const where = [];
-const args = [];
-if (q.letter) {
-  args.push(q.letter + "%");
-  where.push(`u.full_name ILIKE $${args.length}`);
-}
+const args  = [];
+if (q.letter) { args.push(q.letter + "%"); where.push(`u.full_name ILIKE $${args.length}`); }
 
 const sql = `
   SELECT u.*, to_jsonb(up.*) AS profile
@@ -1206,21 +1198,18 @@ Updates are conditional, because a `PATCH` sends only the fields the user
 changed:
 
 ```js
-const sets = [],
-  args = [];
+const sets = [], args = [];
 for (const [col, val] of Object.entries(patch)) {
-  if (!ALLOWED.has(col)) continue; // ← whitelist again
+  if (!ALLOWED.has(col)) continue;              // ← whitelist again
   args.push(val);
   sets.push(`${col} = $${args.length}`);
 }
-if (!sets.length) return current; // nothing to do, do not UPDATE
+if (!sets.length) return current;               // nothing to do, do not UPDATE
 args.push(userId);
 
 await db.query(
   `UPDATE user_profiles SET ${sets.join(", ")}
-   WHERE user_id = $${args.length} RETURNING *`,
-  args,
-);
+   WHERE user_id = $${args.length} RETURNING *`, args);
 ```
 
 :::trap "Update every column with whatever the client sent"
@@ -1268,14 +1257,13 @@ ORMs cause this by default, since lazy-loading a relation inside a loop looks
 exactly like ordinary code.
 
 :::do Three fixes, in order of preference
-
 - ++One query with a join and an aggregate++, as above.
 - ++Eager loading++: `include` in Prisma, `joinedload` in SQLAlchemy,
   `Preload` in GORM, `includes` in ActiveRecord.
 - ++One extra query, not N++: fetch the parents, collect the ids, then
   `WHERE project_id = ANY($1)` and stitch in application code. Two queries
   regardless of list size, and often the most readable option.
-  :::
+:::
 
 :::signal
 "I watch the ==query count per request==, not just query latency. N+1 never shows
@@ -1412,15 +1400,14 @@ Indexes are not free, and the cost is paid on ==every write==.
              plus more to keep in memory, plus more for vacuum
 ```
 
-| Cost                | Detail                                                   |
-| ------------------- | -------------------------------------------------------- |
-| Write amplification | Every insert, update and delete maintains every index    |
-| Disk and memory     | An index on a large table can rival the table's own size |
-| Planning            | More indexes means more plans to consider                |
-| Maintenance         | More for `VACUUM` to clean, more bloat to watch          |
+| Cost | Detail |
+|---|---|
+| Write amplification | Every insert, update and delete maintains every index |
+| Disk and memory | An index on a large table can rival the table's own size |
+| Planning | More indexes means more plans to consider |
+| Maintenance | More for `VACUUM` to clean, more bloat to watch |
 
 :::do Index deliberately, then verify
-
 - Start from the ==query==, not the column. "This endpoint is called constantly
   and filters on these two columns" is a reason; "this looks like a column
   people search" is not.
@@ -1429,7 +1416,7 @@ Indexes are not free, and the cost is paid on ==every write==.
 - Find dead weight with `pg_stat_user_indexes`: an index with `idx_scan = 0`
   after a representative period is being paid for and never used.
 - Drop them `CONCURRENTLY`, like you created them.
-  :::
+:::
 
 :::trap "More indexes make the database faster"
 They make ==reads that use them== faster and ==every write== slower, and a write-
@@ -1460,14 +1447,14 @@ SELECT * FROM tasks WHERE project_id = '...' ORDER BY created_at DESC LIMIT 20;
 
 Read it bottom-up and inside-out. What to look for, in order:
 
-| Sign                                      | Means                                                  |
-| ----------------------------------------- | ------------------------------------------------------ |
-| `Seq Scan` on a large table               | ==No usable index==, or the planner chose not to       |
-| `rows=` estimate far from `actual rows`   | Stats are stale. `ANALYZE` the table                   |
-| `Nested Loop` with a big inner `loops=`   | The join is running N times. Section 31                |
-| `Sort` before a `Limit`                   | An index could have provided the order                 |
-| `Filter:` removing many rows              | The index found too much; the condition is not indexed |
-| `Heap Fetches` high on an index-only scan | Vacuum is behind                                       |
+| Sign | Means |
+|---|---|
+| `Seq Scan` on a large table | ==No usable index==, or the planner chose not to |
+| `rows=` estimate far from `actual rows` | Stats are stale. `ANALYZE` the table |
+| `Nested Loop` with a big inner `loops=` | The join is running N times. Section 31 |
+| `Sort` before a `Limit` | An index could have provided the order |
+| `Filter:` removing many rows | The index found too much; the condition is not indexed |
+| `Heap Fetches` high on an index-only scan | Vacuum is behind |
 
 :::do `EXPLAIN` versus `EXPLAIN ANALYZE`
 `EXPLAIN` shows the ==plan== and is free. `EXPLAIN ANALYZE` ==actually runs the
@@ -1481,13 +1468,13 @@ without wrapping it in a transaction you roll back.
 The default index type does not cover everything, and one of the gaps sits
 directly in the query from section 28.
 
-| Type       | For                                                 |
-| ---------- | --------------------------------------------------- |
-| ==B-tree== | The default. Equality, ranges, sorts, prefixes      |
-| ==GIN==    | `jsonb` containment, arrays, full-text search       |
-| ==GiST==   | Geometry, ranges, nearest-neighbour                 |
-| ==BRIN==   | Huge tables with naturally ordered data, tiny index |
-| ==Hash==   | Equality only. Rarely worth it over B-tree          |
+| Type | For |
+|---|---|
+| ==B-tree== | The default. Equality, ranges, sorts, prefixes |
+| ==GIN== | `jsonb` containment, arrays, full-text search |
+| ==GiST== | Geometry, ranges, nearest-neighbour |
+| ==BRIN== | Huge tables with naturally ordered data, tiny index |
+| ==Hash== | Equality only. Rarely worth it over B-tree |
 
 #### The `ILIKE` gap
 
@@ -1543,12 +1530,12 @@ BEGIN;
 COMMIT;                      -- both, or neither. never one.
 ```
 
-| Property        | Means                                             | Failure it prevents              |
-| --------------- | ------------------------------------------------- | -------------------------------- |
-| ==Atomicity==   | All statements or none                            | Money debited but never credited |
-| ==Consistency== | Constraints hold at commit                        | A row that violates a `CHECK`    |
-| ==Isolation==   | Concurrent transactions do not corrupt each other | Section 38                       |
-| ==Durability==  | Committed means survives a crash                  | "It said saved" and it was not   |
+| Property | Means | Failure it prevents |
+|---|---|---|
+| ==Atomicity== | All statements or none | Money debited but never credited |
+| ==Consistency== | Constraints hold at commit | A row that violates a `CHECK` |
+| ==Isolation== | Concurrent transactions do not corrupt each other | Section 38 |
+| ==Durability== | Committed means survives a crash | "It said saved" and it was not |
 
 The practical rule: ==a transaction should wrap one unit of business meaning==,
 and it should be as short as possible in wall-clock time, because everything it
@@ -1574,12 +1561,12 @@ able to list.
   LOST UPDATE       two read-modify-writes, one silently overwrites the other
 ```
 
-| Level                           | Dirty              | Non-repeatable | Phantom       |
-| ------------------------------- | ------------------ | -------------- | ------------- |
-| Read uncommitted                | Not possible in PG | Possible       | Possible      |
-| ==Read committed== (PG default) | No                 | Possible       | Possible      |
-| Repeatable read                 | No                 | No             | ==No, in PG== |
-| Serializable                    | No                 | No             | No            |
+| Level | Dirty | Non-repeatable | Phantom |
+|---|---|---|---|
+| Read uncommitted | Not possible in PG | Possible | Possible |
+| ==Read committed== (PG default) | No | Possible | Possible |
+| Repeatable read | No | No | ==No, in PG== |
+| Serializable | No | No | No |
 
 Two Postgres-specific facts worth knowing:
 
@@ -1608,13 +1595,13 @@ BEGIN;
 COMMIT;                                                     -- ← lock released
 ```
 
-| Clause                   | Behaviour                                        |
-| ------------------------ | ------------------------------------------------ |
-| `FOR UPDATE`             | Locks the rows. Other writers wait               |
-| `FOR NO KEY UPDATE`      | Weaker; allows concurrent foreign-key references |
-| `FOR SHARE`              | Others may read, none may write                  |
-| `FOR UPDATE NOWAIT`      | Error immediately instead of waiting             |
-| `FOR UPDATE SKIP LOCKED` | ==Skip locked rows.== The queue-worker pattern   |
+| Clause | Behaviour |
+|---|---|
+| `FOR UPDATE` | Locks the rows. Other writers wait |
+| `FOR NO KEY UPDATE` | Weaker; allows concurrent foreign-key references |
+| `FOR SHARE` | Others may read, none may write |
+| `FOR UPDATE NOWAIT` | Error immediately instead of waiting |
+| `FOR UPDATE SKIP LOCKED` | ==Skip locked rows.== The queue-worker pattern |
 
 `SKIP LOCKED` is the one worth remembering, because it turns a table into a work
 queue with no extra infrastructure:
@@ -1720,16 +1707,15 @@ before it does any work, and the server has a hard `max_connections`.
 
 Two layers, and they solve different problems:
 
-| Layer               | Example                         | Solves                                     |
-| ------------------- | ------------------------------- | ------------------------------------------ |
-| In-process pool     | `pg.Pool`, HikariCP, SQLAlchemy | Connection setup cost, per-instance cap    |
-| ==External pooler== | PgBouncer, pgcat, RDS Proxy     | Total connections across ==all== instances |
+| Layer | Example | Solves |
+|---|---|---|
+| In-process pool | `pg.Pool`, HikariCP, SQLAlchemy | Connection setup cost, per-instance cap |
+| ==External pooler== | PgBouncer, pgcat, RDS Proxy | Total connections across ==all== instances |
 
 An in-process pool cannot help you when the problem is that you have forty
 serverless instances, each with its own pool. That is what PgBouncer is for.
 
 :::do Size the pool small, and know the transaction-mode catch
-
 - A common starting point is `((core_count × 2) + effective_spindle_count)` per
   instance, which lands around 10 to 20. ==Bigger pools are usually slower==,
   because past the point where the database can execute in parallel, extra
@@ -1740,7 +1726,7 @@ serverless instances, each with its own pool. That is what PgBouncer is for.
   prepared statements unless the driver is configured for it.
 - Serverless, where instance count is unbounded, essentially requires an
   external pooler or a driver built for it.
-  :::
+:::
 
 ## 42. Triggers, and when not to
 
@@ -1789,12 +1775,12 @@ blocking writers, and it means dead rows accumulate.
                     until VACUUM reclaims it
 ```
 
-| Symptom                                 | Cause                                  |
-| --------------------------------------- | -------------------------------------- |
-| Table much larger than its data         | ==Bloat==. Dead tuples not reclaimed   |
-| Queries slowing with no schema change   | Scanning dead rows and bloated indexes |
-| Bad plans after a bulk load             | Stale statistics. `ANALYZE` not run    |
-| `Heap Fetches` high on index-only scans | Visibility map behind                  |
+| Symptom | Cause |
+|---|---|
+| Table much larger than its data | ==Bloat==. Dead tuples not reclaimed |
+| Queries slowing with no schema change | Scanning dead rows and bloated indexes |
+| Bad plans after a bulk load | Stale statistics. `ANALYZE` not run |
+| `Heap Fetches` high on index-only scans | Visibility map behind |
 
 Autovacuum handles this by default. It falls behind under heavy update or delete
 load, and ==a long-running transaction blocks it entirely==, because rows visible
@@ -1812,12 +1798,12 @@ full outage with a recovery measured in hours.
 
 ## 44. Backups, and the difference that matters
 
-| Kind                          | Tool                    | Restores to               |
-| ----------------------------- | ----------------------- | ------------------------- |
-| Logical dump                  | `pg_dump`, `pg_dumpall` | The moment the dump ran   |
-| Physical base backup          | `pg_basebackup`         | The moment the backup ran |
-| ==Base backup + WAL archive== | PITR                    | ==Any point in time==     |
-| Replica                       | Streaming replication   | Not a backup. See below   |
+| Kind | Tool | Restores to |
+|---|---|---|
+| Logical dump | `pg_dump`, `pg_dumpall` | The moment the dump ran |
+| Physical base backup | `pg_basebackup` | The moment the backup ran |
+| ==Base backup + WAL archive== | PITR | ==Any point in time== |
+| Replica | Streaming replication | Not a backup. See below |
 
 :::trap "We have a replica, so we have a backup"
 A replica replays everything, including your mistake, in seconds. `DROP TABLE
@@ -1872,90 +1858,90 @@ deletes, audit tables. ==Naming the boundary reads as judgement==, not as a gap.
 
 ## 46. Follow-up question bank
 
-| Question                                                          | Section |
-| ----------------------------------------------------------------- | ------- |
-| Why not store this in a text file, or in Mongo?                   | 2, 4    |
-| `varchar(255)` or `text`, and why?                                | 7       |
-| `timestamp` or `timestamptz`?                                     | 8       |
-| UUID or auto-increment for the primary key?                       | 9       |
-| When would you use `jsonb`, and what do you lose?                 | 10      |
-| Enum or lookup table?                                             | 11      |
-| How do you add a `NOT NULL` column to a 50 million row table?     | 14      |
-| What does `PRIMARY KEY` imply that you did not write?             | 17      |
-| Why is `user_profiles` a separate table?                          | 18      |
-| How do you model many to many, and where does `role` live?        | 20      |
-| `CASCADE` or `RESTRICT`, and who decides?                         | 21      |
-| `INNER JOIN` and users disappear from the list. Why?              | 25      |
-| How do you let the client choose the sort column safely?          | 27, 28  |
-| Why does page 5,000 time out?                                     | 29      |
-| The endpoint is slow but every query is fast. What is it?         | 31      |
-| Which columns does Postgres index for you, and which does it not? | 33      |
-| You added an index and the query did not get faster. Why?         | 35, 36  |
-| Two requests both add 20 to a balance. What happens?              | 40      |
-| Why is a bigger connection pool often slower?                     | 41      |
-| Where does `updated_at` get set, and why not in code?             | 42      |
-| The table is 40 GB and holds 4 GB of data. Why?                   | 43      |
-| You have a replica. Do you still need backups?                    | 44      |
+| Question | Section |
+|---|---|
+| Why not store this in a text file, or in Mongo? | 2, 4 |
+| `varchar(255)` or `text`, and why? | 7 |
+| `timestamp` or `timestamptz`? | 8 |
+| UUID or auto-increment for the primary key? | 9 |
+| When would you use `jsonb`, and what do you lose? | 10 |
+| Enum or lookup table? | 11 |
+| How do you add a `NOT NULL` column to a 50 million row table? | 14 |
+| What does `PRIMARY KEY` imply that you did not write? | 17 |
+| Why is `user_profiles` a separate table? | 18 |
+| How do you model many to many, and where does `role` live? | 20 |
+| `CASCADE` or `RESTRICT`, and who decides? | 21 |
+| `INNER JOIN` and users disappear from the list. Why? | 25 |
+| How do you let the client choose the sort column safely? | 27, 28 |
+| Why does page 5,000 time out? | 29 |
+| The endpoint is slow but every query is fast. What is it? | 31 |
+| Which columns does Postgres index for you, and which does it not? | 33 |
+| You added an index and the query did not get faster. Why? | 35, 36 |
+| Two requests both add 20 to a balance. What happens? | 40 |
+| Why is a bigger connection pool often slower? | 41 |
+| Where does `updated_at` get set, and why not in code? | 42 |
+| The table is 40 GB and holds 4 GB of data. Why? | 43 |
+| You have a replica. Do you still need backups? | 44 |
 
 :::part X | Appendices
 :::
 
 ## Appendix A. Defaults to memorise
 
-| Thing                      | Value                                                              |
-| -------------------------- | ------------------------------------------------------------------ |
-| Money                      | `numeric(12,2)`, never float                                       |
-| Text                       | `text`, never `varchar(255)`                                       |
-| Instant                    | `timestamptz`. Calendar day: `date`                                |
-| Surrogate key              | `uuid` (v7 if available), or `bigint GENERATED ALWAYS AS IDENTITY` |
-| Flexible column            | `jsonb` + GIN, never `json`                                        |
-| Nullability                | `NOT NULL` unless optional is a real domain fact                   |
-| One to one                 | FK is also the PK                                                  |
-| One to many                | FK on the many side                                                |
-| Many to many               | Linking table, composite PK                                        |
-| Indexed automatically      | PK, `UNIQUE`. ==Not foreign keys==                                 |
-| Composite index rule       | Leftmost prefix; equality column first                             |
-| Index on a large table     | `CREATE INDEX CONCURRENTLY`                                        |
-| Default isolation          | `READ COMMITTED` (no dirty reads at any level in PG)               |
-| Read-modify-write fix      | One statement: `SET x = x + $1`                                    |
-| Queue pattern              | `FOR UPDATE SKIP LOCKED`                                           |
-| Pool size per instance     | ~`(cores × 2) + 1`, roughly 10 to 20                               |
-| Abort-incomplete lifecycle | Short transactions, or vacuum stalls                               |
-| Pagination                 | `OFFSET` for numbered pages, keyset for feeds                      |
+| Thing | Value |
+|---|---|
+| Money | `numeric(12,2)`, never float |
+| Text | `text`, never `varchar(255)` |
+| Instant | `timestamptz`. Calendar day: `date` |
+| Surrogate key | `uuid` (v7 if available), or `bigint GENERATED ALWAYS AS IDENTITY` |
+| Flexible column | `jsonb` + GIN, never `json` |
+| Nullability | `NOT NULL` unless optional is a real domain fact |
+| One to one | FK is also the PK |
+| One to many | FK on the many side |
+| Many to many | Linking table, composite PK |
+| Indexed automatically | PK, `UNIQUE`. ==Not foreign keys== |
+| Composite index rule | Leftmost prefix; equality column first |
+| Index on a large table | `CREATE INDEX CONCURRENTLY` |
+| Default isolation | `READ COMMITTED` (no dirty reads at any level in PG) |
+| Read-modify-write fix | One statement: `SET x = x + $1` |
+| Queue pattern | `FOR UPDATE SKIP LOCKED` |
+| Pool size per instance | ~`(cores × 2) + 1`, roughly 10 to 20 |
+| Abort-incomplete lifecycle | Short transactions, or vacuum stalls |
+| Pagination | `OFFSET` for numbered pages, keyset for feeds |
 
 ## Appendix B. Glossary
 
-| Term                  | Meaning                                                     |
-| --------------------- | ----------------------------------------------------------- |
-| DBMS                  | The software: storage, access, integrity, security          |
-| Persistence           | Data outlives the process that wrote it                     |
-| Schema                | The declared shape, enforced by the engine                  |
-| Migration             | An ordered, version-controlled change to the schema         |
-| Primary key           | Unique, not null, indexed. Identifies one row               |
-| Foreign key           | Value must exist in the referenced table                    |
-| Composite key         | Two or more columns forming one key                         |
-| Referential integrity | The FK rules, including on-delete behaviour                 |
-| Constraint            | `NOT NULL`, `UNIQUE`, `CHECK`, `FOREIGN KEY`, `EXCLUDE`     |
-| Linking table         | Table implementing a many-to-many relationship              |
-| Index                 | Sorted structure mapping a value to row locations           |
-| B-tree                | The default index. Equality, ranges, sorts, prefixes        |
-| GIN                   | Index for `jsonb`, arrays, full text, trigrams              |
-| Leftmost prefix       | An index on (a,b,c) serves (a), (a,b), (a,b,c)              |
-| Sequential scan       | Reading every row. Fine on small tables, fatal on large     |
-| `EXPLAIN ANALYZE`     | Runs the query and reports the real plan and timings        |
-| Parameterised query   | Statement and values sent separately. Stops injection       |
-| N+1                   | One query for the list, then one per row                    |
-| Keyset pagination     | Paging on the last row's sort key, not an offset            |
-| Transaction           | All statements or none                                      |
-| Isolation level       | How much concurrent transactions can see of each other      |
-| Lost update           | Two read-modify-writes; one silently overwrites             |
-| `SKIP LOCKED`         | Skip rows another transaction holds. Queue pattern          |
-| Deadlock              | Two transactions each holding what the other wants          |
-| MVCC                  | Updates write a new row version; old ones are cleaned later |
-| Bloat                 | Dead tuples not yet reclaimed by vacuum                     |
-| Wraparound            | Vacuum falls so far behind that Postgres stops writes       |
-| PITR                  | Base backup plus WAL, restoring to any point in time        |
-| Connection pooler     | Reuses connections. PgBouncer, pgcat, RDS Proxy             |
+| Term | Meaning |
+|---|---|
+| DBMS | The software: storage, access, integrity, security |
+| Persistence | Data outlives the process that wrote it |
+| Schema | The declared shape, enforced by the engine |
+| Migration | An ordered, version-controlled change to the schema |
+| Primary key | Unique, not null, indexed. Identifies one row |
+| Foreign key | Value must exist in the referenced table |
+| Composite key | Two or more columns forming one key |
+| Referential integrity | The FK rules, including on-delete behaviour |
+| Constraint | `NOT NULL`, `UNIQUE`, `CHECK`, `FOREIGN KEY`, `EXCLUDE` |
+| Linking table | Table implementing a many-to-many relationship |
+| Index | Sorted structure mapping a value to row locations |
+| B-tree | The default index. Equality, ranges, sorts, prefixes |
+| GIN | Index for `jsonb`, arrays, full text, trigrams |
+| Leftmost prefix | An index on (a,b,c) serves (a), (a,b), (a,b,c) |
+| Sequential scan | Reading every row. Fine on small tables, fatal on large |
+| `EXPLAIN ANALYZE` | Runs the query and reports the real plan and timings |
+| Parameterised query | Statement and values sent separately. Stops injection |
+| N+1 | One query for the list, then one per row |
+| Keyset pagination | Paging on the last row's sort key, not an offset |
+| Transaction | All statements or none |
+| Isolation level | How much concurrent transactions can see of each other |
+| Lost update | Two read-modify-writes; one silently overwrites |
+| `SKIP LOCKED` | Skip rows another transaction holds. Queue pattern |
+| Deadlock | Two transactions each holding what the other wants |
+| MVCC | Updates write a new row version; old ones are cleaned later |
+| Bloat | Dead tuples not yet reclaimed by vacuum |
+| Wraparound | Vacuum falls so far behind that Postgres stops writes |
+| PITR | Base backup plus WAL, restoring to any point in time |
+| Connection pooler | Reuses connections. PgBouncer, pgcat, RDS Proxy |
 
 ## Appendix C. Self-test
 

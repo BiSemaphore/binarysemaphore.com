@@ -9,3 +9,10 @@ test-results/
 # Vendored agent skills (managed by the skills CLI; do not reformat)
 .agents/
 skills-lock.json
+
+# Study notebook sources are synced verbatim from the `learnings` repo by
+# scripts/sync-notebooks.mjs. Formatting them here makes every sync a noisy
+# diff, makes `sync-notebooks.mjs --check` impossible to satisfy, and risks
+# reflowing a line so a highlighter mark (==peach==, !!rose!!, ++mint++,
+# %%pink%%) spans a line break, which silently stops it rendering.
+src/content/notebooks/

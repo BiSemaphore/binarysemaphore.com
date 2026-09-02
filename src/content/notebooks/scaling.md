@@ -7,9 +7,9 @@ Senior backend and full-stack interview preparation. Read with a pen.
 
 ## How to use this book
 
-This book follows _Backend Scaling and Performance Engineering_, parts one and
+This book follows *Backend Scaling and Performance Engineering*, parts one and
 two (`youtube.com/watch?v=z7kt_p44rjs` and `watch?v=sOhAopEwjH4`, 4h05 across
-the two, the longest subject in the _Backend from First Principles_ playlist).
+the two, the longest subject in the *Backend from First Principles* playlist).
 
 Most scaling material is a catalogue: here is caching, here is sharding, here
 is a load balancer. A catalogue is useless in an interview, because the
@@ -27,7 +27,7 @@ one.
 :::
 
 The interview version of the same question is shorter and more brutal:
-**which number told you to do that?**
+__which number told you to do that?__
 
 #### Scope
 
@@ -46,13 +46,13 @@ latency amplification. Each is marked where it appears.
 
 #### The five block types
 
-| Block            | What it means                                                              |
-| ---------------- | -------------------------------------------------------------------------- |
-| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on.  |
-| Senior signal    | The specific sentence that separates a senior answer from a mid-level one. |
-| Trap             | A plausible answer that is wrong, or right for the wrong reason.           |
-| Do this          | The concrete practice, in the form you would actually apply it.            |
-| Key idea         | The one thing to carry away from the section.                              |
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A plausible answer that is wrong, or right for the wrong reason. |
+| Do this | The concrete practice, in the form you would actually apply it. |
+| Key idea | The one thing to carry away from the section. |
 
 Recall rules and full-page redraw plates appear at the end of each part. Use
 them. Every prompt in this book also appears in Notebook 00, the Question Bank,
@@ -99,8 +99,8 @@ Here is what "the app is slow" can mean, all of which have different fixes:
 Six different systems. Six different fixes. One sentence.
 
 :::signal
-The first thing a senior engineer does with "it is slow" is **turn it into a
-measurable claim**. Which endpoint, at which percentile, measured where, at what
+The first thing a senior engineer does with "it is slow" is __turn it into a
+measurable claim__. Which endpoint, at which percentile, measured where, at what
 throughput, compared to what it was. Until you have those five, you do not have
 a problem statement, you have a mood.
 :::
@@ -160,11 +160,11 @@ The fix is to stop summarising and start reporting the shape of the
 distribution. A %%percentile%% names a latency and tells you what fraction of
 requests came in under it.
 
-| Metric        | Reads as        | Means                                     |
-| ------------- | --------------- | ----------------------------------------- |
-| `P50 = 400ms` | median          | Half of requests were faster than 400ms   |
-| `P90 = 900ms` | 90th percentile | 10% of requests were slower than 900ms    |
-| `P99 = 2s`    | 99th percentile | 1% of requests were slower than 2 seconds |
+| Metric | Reads as | Means |
+|---|---|---|
+| `P50 = 400ms` | median | Half of requests were faster than 400ms |
+| `P90 = 900ms` | 90th percentile | 10% of requests were slower than 900ms |
+| `P99 = 2s` | 99th percentile | 1% of requests were slower than 2 seconds |
 
 The useful mental move is to subtract from 100. P99 means one in a hundred. P95
 means one in twenty. ==Say the fraction out loud and the number stops being
@@ -202,7 +202,7 @@ There is a second reason that is less obvious and more useful in an interview.
 
 ==The requests in your tail are not random.== They are slow for reasons, and the
 reasons correlate with value. The request that fans out to three services, hits
-a large join, calls the payment provider and waits on a webhook is slow _because_
+a large join, calls the payment provider and waits on a webhook is slow *because*
 it is doing something important. The request that returns a cached marketing
 page is fast because it is doing nothing.
 
@@ -215,8 +215,8 @@ page is fast because it is doing nothing.
   browsing                           paying
 ```
 
-So the population sitting at P99 skews towards **users doing the things you
-charge for**. Optimising the median makes your marketing pages faster.
+So the population sitting at P99 skews towards __users doing the things you
+charge for__. Optimising the median makes your marketing pages faster.
 Optimising the tail makes your checkout faster.
 
 :::signal
@@ -255,7 +255,6 @@ section 37.
 :::
 
 :::do Three fixes for an amplified tail
-
 - ++Hedged requests.++ After waiting P95 for a reply, send the same read to a
   second replica and take whichever answers first. Costs a few percent extra
   load, cuts the tail hard.
@@ -263,7 +262,7 @@ section 37.
   remove removes its whole distribution.
 - ++Aggressive per-call timeouts with a fallback.++ A degraded answer in 200ms
   usually beats a perfect answer in 3 seconds. Decide that in advance, per call.
-  :::
+:::
 
 ## 4. Throughput, and the curve that bends
 
@@ -436,7 +435,6 @@ ages until the client has already given up, and you spend your remaining
 capacity computing answers nobody is waiting for any more.
 
 :::do The two things you owe an overloaded system
-
 - ++Bounded queues.++ Every queue gets a maximum depth. When it is full, reject
   immediately with 503 and `Retry-After`. ==A fast rejection is a better answer
   than a slow success no one is waiting for.== This is %%load shedding%%.
@@ -444,7 +442,7 @@ capacity computing answers nobody is waiting for any more.
   endpoint, and a rate limit at the edge. The goal is that overload is felt at
   the boundary where you can decide what to drop, not in the middle where you
   cannot.
-  :::
+:::
 
 :::signal
 "Under overload we shed load rather than queue it, because queueing turns a
@@ -575,13 +573,12 @@ is mostly waiting, and most backend services are, a CPU profile will show you a
 nearly idle process and tell you nothing.
 
 :::do When to reach for a profiler
-
 - ++Use it when CPU is high++ and you need to know which code is burning it:
   serialization, compression, crypto, image work, a regex with catastrophic
   backtracking.
 - ++Do not reach for it first++ on a typical CRUD service. Your time is in
   waiting, and the next section has the right tool for that.
-  :::
+:::
 
 ## 9. Distributed tracing, and why waiting needs it
 
@@ -638,7 +635,6 @@ all its spans==.
 A method, so that "measure first" is an instruction rather than a slogan.
 
 :::do The order to work in
-
 1. ++Confirm it is real.++ Which endpoint, which percentile, since when, at what
    throughput. If you cannot draw the graph, you do not have a problem yet.
 2. ++Split the round trip.++ Client-observed total, minus server-observed total,
@@ -652,7 +648,7 @@ A method, so that "measure first" is an instruction rather than a slogan.
 5. ++Only now choose a technique.++ And check the arithmetic before you build:
    if the segment is 10% of the request, the best possible outcome of fixing it
    perfectly is a 10% improvement.
-   :::
+:::
 
 That last step has a name worth knowing, because it is the formal version of the
 week wasted in section 7.
@@ -701,10 +697,8 @@ endpoint does not include authors. So:
 ```js
 const posts = await db.select().from(postsTable).limit(20);
 
-for (const post of posts) {
-  // and here it is
-  post.author = await db
-    .select()
+for (const post of posts) {                       // and here it is
+  post.author = await db.select()
     .from(users)
     .where(eq(users.id, post.authorId));
 }
@@ -734,27 +728,26 @@ query that the database executes in 0.2ms can easily cost 5ms end to end. The
 overhead dominates, and you are paying it a thousand times.
 
 :::do Fix it in one of two ways
-
 - ++Join.++ One query returns posts with their authors already attached. Best
   when the relationship is simple and you want one round trip.
 - ++Batch, then stitch.++ Collect all the author IDs, issue one
   `WHERE id = ANY($1)`, and map them back in application code. Two queries
   total, regardless of N. Best when the join would multiply rows awkwardly or
   the data comes from different stores.
-  :::
+:::
 
 Every ORM has primitives for this and every ORM makes the bug easy to write,
 which is not a coincidence. The whole point of an ORM is that database access
 looks like ordinary object access, and ordinary object access inside a loop
 looks completely innocent.
 
-| ORM        | The primitive                                   |
-| ---------- | ----------------------------------------------- |
-| Django     | `select_related` (FK), `prefetch_related` (M2M) |
-| Rails      | `includes`                                      |
-| Prisma     | `include`                                       |
-| Drizzle    | `leftJoin`, or `with`                           |
-| SQLAlchemy | `joinedload`, `selectinload`                    |
+| ORM | The primitive |
+|---|---|
+| Django | `select_related` (FK), `prefetch_related` (M2M) |
+| Rails | `includes` |
+| Prisma | `include` |
+| Drizzle | `leftJoin`, or `with` |
+| SQLAlchemy | `joinedload`, `selectinload` |
 
 :::key
 ==An ORM hides the round trip, not the cost of it.== The fix is not to abandon
@@ -829,10 +822,9 @@ Teams that respond to a slow read by indexing every column end up with a table
 that reads beautifully and cannot be written to.
 
 :::do How to decide what to index
-
 - ++Index at design time only when it is obvious.++ Foreign keys you will
   filter or join on, columns with a uniqueness constraint, the column you sort
-  every listing by. Postgres indexes the primary key for you; it does **not**
+  every listing by. Postgres indexes the primary key for you; it does __not__
   index foreign keys for you, which surprises people.
 - ++Index everything else from evidence.++ Wait for the trace that shows the
   slow query, then the `EXPLAIN ANALYZE` that shows the sequential scan, then
@@ -840,12 +832,12 @@ that reads beautifully and cannot be written to.
 - ++Periodically look for unused indexes and drop them.++ They are pure write
   cost. In Postgres, `pg_stat_user_indexes` tells you which ones have never been
   scanned.
-  :::
+:::
 
 :::signal
 "Indexes trade write throughput for read latency" is the sentence. Candidates who
-only know that indexes make things faster get caught by the follow-up: _so why
-not index every column?_ Having the trade ready means the follow-up is not a
+only know that indexes make things faster get caught by the follow-up: *so why
+not index every column?* Having the trade ready means the follow-up is not a
 trap, it is your next sentence.
 :::
 
@@ -953,13 +945,12 @@ What you are scanning the output for:
 ```
 
 :::do The loop that ends the argument
-
 1. Run `EXPLAIN ANALYZE` on the slow query. Note the total and the scan type.
 2. Add the index the plan implies.
 3. Run it again. ==If the plan still says `Seq Scan`, the index is wrong, not the
    database.== Fix the index rather than adding a second one.
 4. Check the write path did not regress, because you just added write cost.
-   :::
+:::
 
 :::signal
 "I would `EXPLAIN ANALYZE` it before adding an index, because the planner will
@@ -1023,7 +1014,7 @@ many can exist.
   unbounded connections             a hard cap you chose
 ```
 
-That solves both problems at once. But _where_ the pool lives turns out to
+That solves both problems at once. But *where* the pool lives turns out to
 matter enormously, and this is the failure that catches people.
 
 #### Internal pooling, and how it fails
@@ -1065,7 +1056,6 @@ usually PgBouncer.
 ```
 
 :::do Configuring this without surprises
-
 - ++Use an external pooler once you autoscale.++ The moment instance count is
   dynamic, per-instance caps cannot add up to a safe number.
 - ++Understand transaction mode.++ PgBouncer in transaction pooling mode gives
@@ -1075,7 +1065,7 @@ usually PgBouncer.
 - ++Size it from Little's Law++, not from optimism. At 500 rps with 20ms of
   in-database time you need 10 concurrent connections, not 300. Oversized pools
   make the database slower, because the contention moves inside it.
-  :::
+:::
 
 :::trap
 !!"More connections means more throughput."!! Past the point where the database
@@ -1130,14 +1120,13 @@ longer true, in exchange for nothing.
 :::
 
 :::do Before adding a cache, answer three questions
-
 - ++What is the read-to-write ratio for this data?++ If it is 2:1, do not
   bother. If it is 10,000:1, cache it.
 - ++How stale is acceptable, in seconds?++ If the answer is "not at all", you are
   not looking for a cache, you are looking for a faster query.
 - ++What share of the request is this segment?++ Section 10. A cache on a 10ms
   segment of a 520ms request is a week of your life for 2%.
-  :::
+:::
 
 ## 18. Invalidation: the second hard problem
 
@@ -1168,7 +1157,7 @@ Delete the entry when the underlying data changes.
 
 ```js
 await db.update(users).set({ name }).where(eq(users.id, id));
-await cache.del(`user:${id}`); // must not be forgotten
+await cache.del(`user:${id}`);          // must not be forgotten
 ```
 
 Precise: no guessing at a TTL, no window of avoidable staleness. And the cost is
@@ -1204,7 +1193,6 @@ tends to happen at the least convenient moment, because entries cached together
 expire together.
 
 :::do Three fixes, cheapest first
-
 - ++Jitter the TTL.++ `300 + random(0..60)` seconds. One line, and it stops
   synchronised expiry, which is the most common form.
 - ++Single-flight.++ The first request to miss takes a short lock and recomputes;
@@ -1213,7 +1201,7 @@ expire together.
 - ++Stale-while-revalidate.++ Serve the expired value immediately and refresh in
   the background. Best perceived latency, and the right default for anything
   where a few seconds of staleness is harmless.
-  :::
+:::
 
 :::signal
 Bringing up stampede unprompted when asked about caching is a strong signal,
@@ -1252,13 +1240,13 @@ The cost is a network round trip on every read, so you are trading roughly 2ms
 of in-process lookup for maybe 1ms on a local network, and considerably more if
 the hop crosses an availability zone.
 
-|                   | Local                     | Distributed                   |
-| ----------------- | ------------------------- | ----------------------------- |
-| Read latency      | Sub-millisecond           | Network round trip            |
-| Consistency       | Per instance, diverges    | One copy                      |
-| Survives a deploy | No, memory is lost        | Yes                           |
-| Capacity          | Bounded by process memory | Bounded by the cluster        |
-| Failure mode      | Silent staleness          | A dependency that can be down |
+| | Local | Distributed |
+|---|---|---|
+| Read latency | Sub-millisecond | Network round trip |
+| Consistency | Per instance, diverges | One copy |
+| Survives a deploy | No, memory is lost | Yes |
+| Capacity | Bounded by process memory | Bounded by the cluster |
+| Failure mode | Silent staleness | A dependency that can be down |
 
 #### Tiered: the small hot set locally, everything else shared
 
@@ -1321,11 +1309,11 @@ cache. And the sharpest edge: !!there is a window where the cache holds data the
 database does not.!! If the process dies in that window, the write is gone, and
 you already told the user it succeeded.
 
-| Pattern       | Read                    | Write               | Use when                                      |
-| ------------- | ----------------------- | ------------------- | --------------------------------------------- |
-| Cache-aside   | Miss costs full latency | DB, then invalidate | Almost always. Start here                     |
-| Write-through | Near-always hit         | Slower, two writes  | Reads dominate and staleness is unacceptable  |
-| Write-behind  | Near-always hit         | Fastest             | Write-heavy, and losing a write is survivable |
+| Pattern | Read | Write | Use when |
+|---|---|---|---|
+| Cache-aside | Miss costs full latency | DB, then invalidate | Almost always. Start here |
+| Write-through | Near-always hit | Slower, two writes | Reads dominate and staleness is unacceptable |
+| Write-behind | Near-always hit | Fastest | Write-heavy, and losing a write is survivable |
 
 :::trap
 !!Reaching for write-behind because it is the fastest.!! It is fastest because it
@@ -1353,7 +1341,6 @@ read again.
 Four levers, in the order worth pulling them:
 
 :::do
-
 1. ++Understand the access pattern.++ The biggest lever by far and the one people
    skip. Caching works because access is skewed: a small set of keys gets most
    of the traffic. If your access is uniform, no cache size will save you, and
@@ -1365,12 +1352,12 @@ Four levers, in the order worth pulling them:
    away before they are read.
 4. ++Eviction policy.++ LRU is the sane default. LFU suits a stable hot set that
    would otherwise be flushed by a scan.
-   :::
+:::
 
 :::signal
 "Our hit rate is 94%, and the misses are almost entirely first-request-after-
 write, which is expected for cache-aside" says three things at once: you measure
-it, you know what number is good, and you know _why_ your misses happen. That
+it, you know what number is good, and you know *why* your misses happen. That
 last one is the rare part.
 :::
 
@@ -1423,7 +1410,6 @@ one thing to patch, one thing to monitor, one thing to back up.
 So why does anyone do anything else? Three ceilings.
 
 :::do The three limits of vertical scaling
-
 1. ++There is a biggest machine.++ Every cloud provider has a largest instance
    type. When you reach it, you are done; there is no next step, at any price.
 2. ++It is a single point of failure.++ One very powerful machine that is down is
@@ -1431,7 +1417,7 @@ So why does anyone do anything else? Three ceilings.
    remove it.
 3. ++It exists in one place.++ A server in Virginia serves users in Mumbai
    across 200ms of physics that no upgrade can buy back. Section 31.
-   :::
+:::
 
 :::signal
 ++Start vertical.++ It is genuinely the right first answer for most systems, and
@@ -1540,14 +1526,14 @@ which is the worst kind of bug to be handed.
 The fix is always the same shape: ==take the thing that lives in one instance
 and put it where every instance can reach it.==
 
-| Stored in the instance               | Move it to                                             |
-| ------------------------------------ | ------------------------------------------------------ |
-| Sessions in a local map              | Redis, or a signed token the client carries            |
-| Uploaded files on local disk         | S3 or another object store                             |
-| A local cache                        | A shared cache, or accept a short inconsistency window |
-| SQLite on the local filesystem       | Postgres, or any networked database                    |
-| In-memory rate limit counters        | Redis, with atomic increments                          |
-| Scheduled jobs on a timer in-process | A queue, or a leader-elected scheduler                 |
+| Stored in the instance | Move it to |
+|---|---|
+| Sessions in a local map | Redis, or a signed token the client carries |
+| Uploaded files on local disk | S3 or another object store |
+| A local cache | A shared cache, or accept a short inconsistency window |
+| SQLite on the local filesystem | Postgres, or any networked database |
+| In-memory rate limit counters | Redis, with atomic increments |
+| Scheduled jobs on a timer in-process | A queue, or a leader-elected scheduler |
 
 That last row catches people: three instances each running a cron loop means
 your nightly email goes out three times.
@@ -1697,7 +1683,6 @@ wiring a liveness check to a database query means one database hiccup restarts
 your entire fleet at once.
 
 :::do Write the check properly
-
 - ++Make `/healthz` shallow and cheap.++ It runs every couple of seconds against
   every instance, forever. It should not query the database.
 - ++Make readiness check dependencies, and only the ones you cannot serve
@@ -1706,7 +1691,7 @@ your entire fleet at once.
 - ++Fail readiness during shutdown, before you stop accepting connections.++ Stop
   taking new traffic, drain in-flight requests, then exit. Otherwise every
   deploy drops requests. Notebook 13 covers graceful shutdown in full.
-  :::
+:::
 
 :::trap
 !!A health check that queries the database.!! It looks thorough. Then the
@@ -1828,7 +1813,6 @@ This is the %%read-after-write%% problem, and it is the single most common way
 read replicas break an application.
 
 :::do Four fixes, in the order to try them
-
 1. ++Route reads to the primary for a short window after a write.++ Sticky for
    a few seconds, keyed on the user or session. Simplest, and it fixes the case
    that actually occurs.
@@ -1841,7 +1825,7 @@ read replicas break an application.
    consistency bug into a latency cost.
 4. ++Change the interface.++ Optimistic UI: show what the user typed, since you
    already know the write succeeded. Costs no backend work at all.
-   :::
+:::
 
 :::key
 ==Every distributed system trades consistency for something, and the trade
@@ -1907,15 +1891,14 @@ detail an interview probes.
 That is a %%hot shard%%. You paid for distribution and got none, because time
 only moves in one direction.
 
-| Strategy           | Spreads writes                     | Range queries                | Watch out for                   |
-| ------------------ | ---------------------------------- | ---------------------------- | ------------------------------- |
-| Hash of `user_id`  | Evenly                             | Lost, hashing destroys order | Resharding is painful           |
-| Range of `user_id` | Unevenly, early users cluster      | Preserved                    | Hot shard on new signups        |
-| Range of date      | Terribly, all writes on the newest | Excellent                    | The hot shard above             |
-| Geography          | By population                      | Within a region              | Regulatory upside, uneven sizes |
+| Strategy | Spreads writes | Range queries | Watch out for |
+|---|---|---|---|
+| Hash of `user_id` | Evenly | Lost, hashing destroys order | Resharding is painful |
+| Range of `user_id` | Unevenly, early users cluster | Preserved | Hot shard on new signups |
+| Range of date | Terribly, all writes on the newest | Excellent | The hot shard above |
+| Geography | By population | Within a region | Regulatory upside, uneven sizes |
 
 :::do How to actually choose
-
 - ++Shard by the thing you filter on most.++ If nearly every query says
   `WHERE user_id = ?`, shard on `user_id`. Queries then hit exactly one shard,
   which is the entire point.
@@ -1924,7 +1907,7 @@ only moves in one direction.
 - ++Make sure the key is on every hot query.++ A query that does not include the
   shard key must be sent to every shard and the results merged. That is a
   %%scatter-gather%%, and it is as slow as the slowest shard.
-  :::
+:::
 
 #### The three costs nobody mentions up front
 
@@ -1975,7 +1958,7 @@ the implementation is.
 
 :::signal
 "I would not run my own Postgres." said plainly, without embarrassment, is a
-sign of experience rather than a gap in it. Follow it with what you _would_
+sign of experience rather than a gap in it. Follow it with what you *would*
 still own: the schema, the shard key, the index strategy, the region layout, and
 a tested restore. ==Managed does not mean unowned==, and the fastest way to
 prove that is to ask when the team last practised a restore.
@@ -2106,7 +2089,6 @@ was cached.
 :::
 
 :::do The two patterns that make CDN caching safe
-
 - ++Immutable filenames for assets.++ `app.4f2a9c.js`. The content hash is in the
   name, so a new deploy is a new URL and there is nothing to invalidate. Cache
   it for a year. ==This eliminates CDN invalidation for static assets
@@ -2114,7 +2096,7 @@ was cached.
 - ++Tag-based purging for dynamic content.++ Tag a cached page with the IDs it
   depends on (`user:42`, `post:918`). When that data changes, purge the tag and
   every page built from it goes at once, with no list to maintain.
-  :::
+:::
 
 :::trap
 !!Caching a response that varies by user without varying the cache key.!! The
@@ -2252,7 +2234,6 @@ idempotency, retries, dead letter queues, and the failure modes of each. This
 section is only about the latency argument for reaching for it.
 
 :::do What this costs you, stated honestly
-
 - ++The client needs to handle "in progress".++ You returned 201 for something
   that has not happened. The UI must show pending state, and there must be a way
   to find out if it later failed.
@@ -2260,7 +2241,7 @@ section is only about the latency argument for reaching for it.
   is survivable; charging a card twice is not.
 - ++You now have a queue to operate.++ Depth, age of the oldest job, failure
   rate, a dead letter queue, and somebody looking at all four.
-  :::
+:::
 
 ## 35. What can be made async, and what cannot
 
@@ -2405,7 +2386,6 @@ needs a decision about timeouts, retries and what to do when the answer never
 comes.
 
 :::do The three settings every remote call needs
-
 - ++A timeout, always, and shorter than you think.++ An unbounded call holds a
   thread, a connection and a request slot until something else breaks. Default
   timeouts of 30 or 60 seconds are effectively unbounded under load.
@@ -2414,7 +2394,7 @@ comes.
 - ++A circuit breaker.++ After N consecutive failures, stop calling for a while
   and fail immediately. It gives the struggling service room to recover and stops
   you burning capacity on calls you know will fail.
-  :::
+:::
 
 :::trap
 !!Naive retries during an overload.!! The downstream service is slow because it
@@ -2541,7 +2521,6 @@ Cloudflare Workers are fast at this precisely because they attacked both at once
 V8 isolates instead of VMs, and JavaScript instead of a compiled runtime.
 
 :::do Living with cold starts
-
 - ++Provisioned concurrency, if the platform offers it.++ Keep N instances warm.
   Honest, supported, and it reintroduces an idle cost, which is the trade.
 - ++Keep the deployment package small.++ Load time is part of the cold start, and
@@ -2549,7 +2528,7 @@ V8 isolates instead of VMs, and JavaScript instead of a compiled runtime.
 - !!Do not use scheduled pings to keep things warm.!! It is the folk remedy and it
   is bad: it does not scale to real concurrency, and if it worked you would be
   paying for an always-on instance with extra steps.
-  :::
+:::
 
 #### Limits
 
@@ -2626,7 +2605,6 @@ The interviewer's next question will be "why?" and you will have nothing.
 :::
 
 :::do The five beats, in order
-
 1. ++Ask what "scale" means here.++ How many users now, how many expected, what
    is the read-write ratio, what is slow today. ==Numbers, before anything else.==
    If they will not give you numbers, invent explicit ones and say you are
@@ -2643,11 +2621,11 @@ The interviewer's next question will be "why?" and you will have nothing.
 5. ++Say where you would stop.++ "I would not shard. At this volume the operating
    cost is larger than the benefit." Knowing when not to is the answer to the
    real question.
-   :::
+:::
 
 Worked, in about ninety seconds:
 
-> _"First I'd want the numbers: current RPS, P99, and where the time actually
+> *"First I'd want the numbers: current RPS, P99, and where the time actually
 > goes. Say it comes back that checkout has a P99 of 4 seconds and a trace shows
 > 3.2 of that in one query. Then I'd `EXPLAIN ANALYZE` it, and if it is a
 > sequential scan I add an index and we are done for a few months. If the query
@@ -2656,7 +2634,7 @@ Worked, in about ninety seconds:
 > read-after-write, probably by returning the object from the write. If writes
 > are the problem, that is a harder conversation, and I would look at whether the
 > writes can be batched or made async before I would consider sharding, because
-> sharding is the least reversible thing on the table."_
+> sharding is the least reversible thing on the table."*
 
 That answer names five techniques. Every one is attached to a measurement, a
 condition and a cost. ==That is the entire difference.==

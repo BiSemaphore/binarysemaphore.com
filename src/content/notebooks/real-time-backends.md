@@ -13,10 +13,10 @@ repositories, caching, background jobs, object storage: all of it hangs off that
 one exchange, and none of it needs the server to ever start a conversation.
 
 This book is about the moment that stops being enough. Two people have the same
-board open. One drags a task from _To Do_ to _In Progress_. The other should see
+board open. One drags a task from *To Do* to *In Progress*. The other should see
 it move, live, without refreshing.
 
-The lecture behind this book is _Real-Time Backends_
+The lecture behind this book is *Real-Time Backends*
 (`youtube.com/watch?v=wUQryt697cs`, 52 minutes), and its running order is the
 right spine: it does not start with WebSockets. It starts with a loop that asks
 the server "anything new?" every three seconds, and then measures what that
@@ -29,15 +29,15 @@ costs until the cost forces the next design.
 That question generates every part of this book, because the inversion is not
 free and the bill arrives in six different currencies:
 
-| Part | The currency                                                       |
-| ---- | ------------------------------------------------------------------ |
-| I    | Requests and latency, traded against each other                    |
-| II   | One direction only, and the proxies in between                     |
-| III  | Everything HTTP gave you: headers, caching, methods, statelessness |
-| IV   | File descriptors, ports, and roughly 10 KB of RAM per connection   |
-| V    | The stateless architecture you spent the whole playlist building   |
-| VI   | Delivery guarantees, and work that scales with subscribers         |
-| VII  | A new authentication model and a new attack surface                |
+| Part | The currency |
+|---|---|
+| I | Requests and latency, traded against each other |
+| II | One direction only, and the proxies in between |
+| III | Everything HTTP gave you: headers, caching, methods, statelessness |
+| IV | File descriptors, ports, and roughly 10 KB of RAM per connection |
+| V | The stateless architecture you spent the whole playlist building |
+| VI | Delivery guarantees, and work that scales with subscribers |
+| VII | A new authentication model and a new attack surface |
 
 If you can say what each design bought and what it charged, you can answer
 almost any real-time question asked in an interview, including the ones about
@@ -45,25 +45,25 @@ technologies this book does not name.
 
 #### The five block types
 
-| Block            | What it means                                                              |
-| ---------------- | -------------------------------------------------------------------------- |
-| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on.  |
-| Senior signal    | The specific sentence that separates a senior answer from a mid-level one. |
-| Trap             | A common answer that sounds right and is wrong.                            |
-| Do this          | The concrete practice, with the parameter or the number.                   |
-| Key idea         | The one thing to carry out of that section.                                |
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or the number. |
+| Key idea | The one thing to carry out of that section. |
 
 #### The four highlighters
 
 Colour is never decorative here. Each one means one thing, so a marked phrase is
 already half-read before you reach the words.
 
-| Mark      | Means                                          |
-| --------- | ---------------------------------------------- |
-| ==peach== | The sentence to carry away                     |
-| !!rose!!  | The wrong answer, the thing that bites         |
-| ++mint++  | The correct practice                           |
-| %%pink%%  | A definition, at the point it is first defined |
+| Mark | Means |
+|---|---|
+| ==peach== | The sentence to carry away |
+| !!rose!! | The wrong answer, the thing that bites |
+| ++mint++ | The correct practice |
+| %%pink%% | A definition, at the point it is first defined |
 
 Figures follow the same discipline. Box drawing recedes to a pale wire so the
 shape reads first, NODE LABELS take full ink, and anything after a left arrow is
@@ -78,8 +78,8 @@ protect you from, presence, collaborative editing, and what replaces WebSockets
 next. The lecture names presence and collaborative editing as things it is not
 covering; they are asked about constantly, so they are here.
 
-Sections that overlap Notebook 06 (_Scaling and Performance_) on load balancing
-and statelessness, or Notebook 05 (_Backend Security_) on authorisation, say so
+Sections that overlap Notebook 06 (*Scaling and Performance*) on load balancing
+and statelessness, or Notebook 05 (*Backend Security*) on authorisation, say so
 and point at the section that goes deeper rather than repeating it badly.
 
 #### A suggested route
@@ -167,7 +167,7 @@ You have built a task management application. It has authentication, a database,
 services, repositories, caching, background jobs, and object storage for
 attachments. It is, by any reasonable measure, a complete backend.
 
-Two users have board 412 open. Aas drags task 9 from _To Do_ to _In Progress_.
+Two users have board 412 open. Aas drags task 9 from *To Do* to *In Progress*.
 Leo, in another country, should see the card move.
 
 Not on refresh. Not on navigation. ==Live.==
@@ -241,8 +241,8 @@ can only be established from the inside out. This is why your laptop has an
 address no server can dial.
 :::
 
-Everything in this book is therefore a variation on one move: **the client opens
-the channel, and the server uses it later**. The designs differ only in how long
+Everything in this book is therefore a variation on one move: __the client opens
+the channel, and the server uses it later__. The designs differ only in how long
 "later" is allowed to be, and how many times the server may use it.
 
 :::ask Why can the server not just open a TCP connection back to the browser?
@@ -416,15 +416,15 @@ This works, and it carried real-time features on the web for the better part of 
 decade. The cost is now attached to `E` rather than `U`, which was the whole
 point. Empty polls are gone.
 
-The problem is **the gap**. Between the server writing the response and the
+The problem is __the gap__. Between the server writing the response and the
 client's next request arriving, ==there is no channel==. If two events happen in
 quick succession, the second one lands while nobody is listening, and the server
 has to buffer it or lose it. And the client is not idle in that window: it has to
 parse the response, run its handler, re-render, then open a fresh connection,
 which means a new request and possibly a new TCP and TLS handshake.
 
-This is written down. RFC 6202 (_Known Issues and Best Practices for the Use of
-Long Polling and Streaming in Bidirectional HTTP_) is the document, and it does
+This is written down. RFC 6202 (*Known Issues and Best Practices for the Use of
+Long Polling and Streaming in Bidirectional HTTP*) is the document, and it does
 not oversell the technique: it puts the average latency at about one network
 transit, but ==the worst case at more than three==, because of the round trip
 spent re-establishing the channel after every single message.
@@ -542,7 +542,7 @@ The connection lives as long as the tab does. Close the tab, lose the network,
 navigate away, and it ends; while the page is open, ==there is always a channel
 from your server into that browser==.
 
-The important property is what SSE is _not_. It is not a different protocol. It
+The important property is what SSE is *not*. It is not a different protocol. It
 is HTTP, with HTTP headers, an HTTP status code, HTTP authentication, and an HTTP
 response body. Every proxy, load balancer, CDN and firewall in the path already
 understands it, because from the outside it is indistinguishable from a large
@@ -671,8 +671,8 @@ The `retry:` field is the other half: the server dictates the reconnect delay, s
 you can widen it from your side during an incident without shipping client code.
 
 ```js
-const es = new EventSource("/events");
-es.addEventListener("task.moved", (e) => apply(JSON.parse(e.data)));
+const es = new EventSource('/events');
+es.addEventListener('task.moved', (e) => apply(JSON.parse(e.data)));
 // there is no reconnect handler here because there does not need to be
 ```
 
@@ -713,12 +713,12 @@ token. ==Neither of those fits through `EventSource`, so clients use `fetch` and
 parse the `text/event-stream` body themselves.==
 
 ```js
-const res = await fetch("/v1/messages", {
-  method: "POST",
-  headers: { Authorization: `Bearer ${key}`, Accept: "text/event-stream" },
+const res = await fetch('/v1/messages', {
+  method: 'POST',
+  headers: { 'Authorization': `Bearer ${key}`, 'Accept': 'text/event-stream' },
   body: JSON.stringify({ messages, stream: true }),
 });
-const reader = res.body.getReader(); // parse `data:` lines by hand
+const reader = res.body.getReader();     // parse `data:` lines by hand
 ```
 
 This matters beyond trivia, because it is ==the same limitation you will hit
@@ -766,11 +766,11 @@ not broken. ==It is being helpfully collected on your behalf, forever.==
 
 **Idle timeouts.** Every hop has one, and they are shorter than you expect.
 
-| Hop                           | Default idle timeout |
-| ----------------------------- | -------------------- |
-| AWS Application Load Balancer | 60 seconds           |
-| Nginx `proxy_read_timeout`    | 60 seconds           |
-| Many corporate proxies        | 30 to 120 seconds    |
+| Hop | Default idle timeout |
+|---|---|
+| AWS Application Load Balancer | 60 seconds |
+| Nginx `proxy_read_timeout` | 60 seconds |
+| Many corporate proxies | 30 to 120 seconds |
 
 If nothing crosses the connection for that long, the hop closes it. A quiet board
 at 3am produces no events for ten minutes, so ==the connection is killed for being
@@ -885,12 +885,12 @@ compromise.++
 
 You need the second direction when:
 
-| You need two-way when                  | Why                                                                           |
-| -------------------------------------- | ----------------------------------------------------------------------------- |
-| Messages are frequent and small        | Per-message HTTP overhead dominates. Cursor positions, keystrokes, game input |
-| Latency on the write path matters      | A new request means a round trip you already paid for                         |
-| The client must send while offline-ish | The socket's liveness _is_ the signal                                         |
-| The protocol is conversational         | Request and response are interleaved, not independent                         |
+| You need two-way when | Why |
+|---|---|
+| Messages are frequent and small | Per-message HTTP overhead dominates. Cursor positions, keystrokes, game input |
+| Latency on the write path matters | A new request means a round trip you already paid for |
+| The client must send while offline-ish | The socket's liveness *is* the signal |
+| The protocol is conversational | Request and response are interleaved, not independent |
 
 Live cursors in a document are the clean example: thirty small messages a second
 per user, each one meaningless on its own. Thirty POSTs a second per user is
@@ -1061,14 +1061,14 @@ diagram worth being able to draw. It explains the cost model in one picture.
 
 The opcodes:
 
-| Opcode | Meaning                              |
-| ------ | ------------------------------------ |
-| `0x0`  | Continuation of the previous message |
-| `0x1`  | Text (UTF-8)                         |
-| `0x2`  | Binary                               |
-| `0x8`  | Close                                |
-| `0x9`  | Ping                                 |
-| `0xA`  | Pong                                 |
+| Opcode | Meaning |
+|---|---|
+| `0x0` | Continuation of the previous message |
+| `0x1` | Text (UTF-8) |
+| `0x2` | Binary |
+| `0x8` | Close |
+| `0x9` | Ping |
+| `0xA` | Pong |
 
 **The length encoding is where the efficiency lives.** Seven bits hold the length
 directly for anything under 126 bytes. Write 126 and the real length follows in
@@ -1158,7 +1158,7 @@ frame==. A predictable key restores the attack.
 
 :::trap
 !!"Masking protects the data from eavesdroppers, so `ws://` is safe enough."!!
-Masking protects the _network path_ from being tricked, not your data from being
+Masking protects the *network path* from being tricked, not your data from being
 read. The key is right there in the frame. ++Use `wss://` always.++ Masking and
 TLS solve unrelated problems.
 :::
@@ -1253,15 +1253,15 @@ path, and close on a missing pong.
 A clean shutdown is a close frame, opcode `0x8`, carrying a two-byte code and an
 optional reason. Both sides send one and then the TCP connection closes.
 
-| Code  | Meaning                                           | Who sends it              |
-| ----- | ------------------------------------------------- | ------------------------- |
-| 1000  | Normal closure                                    | Either side, deliberately |
-| 1001  | Going away: page navigating, server shutting down | Either                    |
-| 1006  | ==Abnormal closure. No close frame was received== | ++Nobody. Set locally++   |
-| 1008  | Policy violation                                  | Server                    |
-| 1009  | Message too big                                   | Either                    |
-| 1011  | Unexpected internal error                         | Server                    |
-| 4000+ | Yours. Application-defined                        | Whatever you decide       |
+| Code | Meaning | Who sends it |
+|---|---|---|
+| 1000 | Normal closure | Either side, deliberately |
+| 1001 | Going away: page navigating, server shutting down | Either |
+| 1006 | ==Abnormal closure. No close frame was received== | ++Nobody. Set locally++ |
+| 1008 | Policy violation | Server |
+| 1009 | Message too big | Either |
+| 1011 | Unexpected internal error | Server |
+| 4000+ | Yours. Application-defined | Whatever you decide |
 
 **1006 is the one to understand**, because it is the code you will see most and
 the one that is most misread. ==It is never sent on the wire.== It cannot be: it
@@ -1301,20 +1301,20 @@ without a close frame. Reserve 4000 and above for reasons the client can act on.
 Four designs, one table. This is the page to have in your head when someone says
 "how would you do real time".
 
-|                          | Polling       | Long polling             | SSE                  | WebSocket             |
-| ------------------------ | ------------- | ------------------------ | -------------------- | --------------------- |
-| Direction                | Client asks   | Client asks              | ==Server to client== | ==Both==              |
-| Protocol                 | HTTP          | HTTP                     | HTTP                 | HTTP, then not        |
-| Messages per connection  | One           | One                      | Unlimited            | Unlimited             |
-| Latency                  | `T/2` average | One transit, three worst | One transit          | One transit           |
-| Cost scales with         | !!Users!!     | Events                   | Events               | Events                |
-| Per-message overhead     | ~1 KB         | ~1 KB                    | ~20 bytes            | ==6 bytes==           |
-| Reconnect logic          | None needed   | Yours                    | ++Browser's++        | Yours                 |
-| Resume protocol          | Trivial       | Yours                    | ++`Last-Event-ID`++  | Yours                 |
-| Survives odd proxies     | Always        | Always                   | Usually              | Usually               |
-| Load balancer            | Anything      | Anything                 | Anything             | Needs upgrade support |
-| Auth header from browser | Yes           | Yes                      | !!No!!               | !!No!!                |
-| HTTP/1.1 origin cap      | No            | No                       | ==Yes, ~6==          | No                    |
+| | Polling | Long polling | SSE | WebSocket |
+|---|---|---|---|---|
+| Direction | Client asks | Client asks | ==Server to client== | ==Both== |
+| Protocol | HTTP | HTTP | HTTP | HTTP, then not |
+| Messages per connection | One | One | Unlimited | Unlimited |
+| Latency | `T/2` average | One transit, three worst | One transit | One transit |
+| Cost scales with | !!Users!! | Events | Events | Events |
+| Per-message overhead | ~1 KB | ~1 KB | ~20 bytes | ==6 bytes== |
+| Reconnect logic | None needed | Yours | ++Browser's++ | Yours |
+| Resume protocol | Trivial | Yours | ++`Last-Event-ID`++ | Yours |
+| Survives odd proxies | Always | Always | Usually | Usually |
+| Load balancer | Anything | Anything | Anything | Needs upgrade support |
+| Auth header from browser | Yes | Yes | !!No!! | !!No!! |
+| HTTP/1.1 origin cap | No | No | ==Yes, ~6== | No |
 
 Read down the columns and a decision procedure falls out:
 
@@ -1396,10 +1396,10 @@ enumerable==:
 **What the two sides see is completely different**, and this is the part worth
 carrying:
 
-| The client sees                    | The server sees                     |
-| ---------------------------------- | ----------------------------------- |
-| No connection refused              | `accept: too many open files`       |
-| No error at all                    | Repeated, with backoff              |
+| The client sees | The server sees |
+|---|---|
+| No connection refused | `accept: too many open files` |
+| No error at all | Repeated, with backoff |
 | A timeout, waiting for a handshake | ==Healthy. Health checks passing.== |
 
 ==The server is up, answering `/healthz`, reporting no errors to your uptime
@@ -1434,7 +1434,7 @@ Same shell, same machine, same moment. Ask two runtimes what their limit is:
 ```
 
 The Go runtime ==raises its own soft limit at startup==. `ulimit -n` reports the
-_soft_ limit, which is an advisory ceiling a process may lift up to the _hard_
+*soft* limit, which is an advisory ceiling a process may lift up to the *hard*
 limit on its own, without privileges. Go does exactly that.
 
 The reason is in Go's own standard library comment: some systems set an
@@ -1582,13 +1582,13 @@ machine is higher than what your runtime reports.
 goroutine and the buffers, and does not break it down. Here is arithmetic that
 fits, using the common Go WebSocket defaults:
 
-| Component                            | Bytes         |
-| ------------------------------------ | ------------- |
-| Read buffer                          | 4,096         |
-| Write buffer                         | 4,096         |
-| Goroutine stack, initial             | 2,048         |
+| Component | Bytes |
+|---|---|
+| Read buffer | 4,096 |
+| Write buffer | 4,096 |
+| Goroutine stack, initial | 2,048 |
 | Bookkeeping, subscription, map entry | a few hundred |
-| **Total**                            | **~10 KB**    |
+| **Total** | **~10 KB** |
 
 Which tells you exactly where to push. ==Two 4 KB buffers per connection are 80%
 of the bill==, and buffers only need to exist while a message is being handled.
@@ -1650,10 +1650,10 @@ on==.
 per-connection outbound queue is a bounded one, and bounded means you must decide
 what happens on overflow. There are exactly three useful answers:
 
-| Policy                   | Do this when                                                                                      |
-| ------------------------ | ------------------------------------------------------------------------------------------------- |
-| **Drop oldest**          | Messages are state updates; the newest is the truth                                               |
-| **Coalesce**             | You can collapse N updates into one current-state frame. ++Best for a board++                     |
+| Policy | Do this when |
+|---|---|
+| **Drop oldest** | Messages are state updates; the newest is the truth |
+| **Coalesce** | You can collapse N updates into one current-state frame. ++Best for a board++ |
 | **Close the connection** | Correctness needs every message. Let the client reconnect and use the catch-up path of section 32 |
 
 Closing looks brutal and is usually right. ==A client that cannot keep up is
@@ -1832,12 +1832,12 @@ balancer's affinity feature has nothing to act on. !!Enabling sticky sessions to
 
 Where stickiness ==does== matter is the designs that make repeated requests:
 
-| Design       | Does stickiness matter?                                                                                  |
-| ------------ | -------------------------------------------------------------------------------------------------------- |
-| WebSocket    | No. One connection, pinned by construction                                                               |
-| SSE          | Not for the stream. ++Possibly for the POSTs beside it++, if the handler keeps per-user state in process |
-| Long polling | ==Yes.== Every poll is a new request and can land anywhere                                               |
-| Polling      | Yes, for the same reason                                                                                 |
+| Design | Does stickiness matter? |
+|---|---|
+| WebSocket | No. One connection, pinned by construction |
+| SSE | Not for the stream. ++Possibly for the POSTs beside it++, if the handler keeps per-user state in process |
+| Long polling | ==Yes.== Every poll is a new request and can land anywhere |
+| Polling | Yes, for the same reason |
 
 And it has a real cost. Stickiness makes load ==uneven and unshakeable==: a hot
 instance stays hot, because the clients that made it hot cannot be moved. In a
@@ -1968,9 +1968,9 @@ will report the app as flaky.
 
 The decision, stated plainly:
 
-| If you need                                                   | Use                                                                     |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Cursor positions, typing indicators, presence                 | ++Redis pub/sub. Loss is fine; the next update corrects it++            |
+| If you need | Use |
+|---|---|
+| Cursor positions, typing indicators, presence | ++Redis pub/sub. Loss is fine; the next update corrects it++ |
 | Chat messages, task changes, anything with a permanent effect | ==Something durable and ordered==: Redis Streams, Kafka, NATS JetStream |
 
 :::signal
@@ -2105,12 +2105,12 @@ does exactly this.
 
 Four things have to exist for it to work:
 
-| Requirement                              | Why                                       |
-| ---------------------------------------- | ----------------------------------------- |
-| A monotonic sequence per topic           | Section 31. The precondition              |
-| A durable log with retention             | You cannot replay what you did not keep   |
-| The client persisting its position       | Across reconnects, ideally across reloads |
-| ++A fallback when the gap is too large++ | Below                                     |
+| Requirement | Why |
+|---|---|
+| A monotonic sequence per topic | Section 31. The precondition |
+| A durable log with retention | You cannot replay what you did not keep |
+| The client persisting its position | Across reconnects, ideally across reloads |
+| ++A fallback when the gap is too large++ | Below |
 
 **The fallback is what people forget.** Retention is finite, so a client away for
 two hours may ask for a sequence that has aged out. Answer that honestly:
@@ -2222,10 +2222,10 @@ discard two of them.
 **Batching** and **coalescing** are two different savings and you usually want
 both:
 
-|            | What it does                                            | Saves                      |
-| ---------- | ------------------------------------------------------- | -------------------------- |
-| Batching   | Many events into one frame on a timer                   | Syscalls, framing, wakeups |
-| Coalescing | Many events about ==one entity== collapse to the latest | The events themselves      |
+| | What it does | Saves |
+|---|---|---|
+| Batching | Many events into one frame on a timer | Syscalls, framing, wakeups |
+| Coalescing | Many events about ==one entity== collapse to the latest | The events themselves |
 
 A 50 millisecond tick is imperceptible to a human and reduces a burst of twenty
 events to one frame. It also ==turns the slow-client problem from section 25 into
@@ -2407,11 +2407,11 @@ URL and an optional subprotocol list, and no headers. ==You cannot send
 `Authorization: Bearer`==, exactly as with `EventSource` in section 10. Three
 options:
 
-| Approach                                  | The problem with it                                                                             |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **Cookie**                                | Sent automatically at the handshake. ==Enables the attack in section 39==, and needs `SameSite` |
-| **Token in the query string**             | !!Lands in access logs, proxy logs and browser history!!                                        |
-| **++Authenticate in the first message++** | Connection is open but unauthenticated for a moment; you must enforce a deadline                |
+| Approach | The problem with it |
+|---|---|
+| **Cookie** | Sent automatically at the handshake. ==Enables the attack in section 39==, and needs `SameSite` |
+| **Token in the query string** | !!Lands in access logs, proxy logs and browser history!! |
+| **++Authenticate in the first message++** | Connection is open but unauthenticated for a moment; you must enforce a deadline |
 
 ++The practical answer is a short-lived, single-use ticket++, fetched from an
 ordinary authenticated endpoint and passed in the query string. It leaks into
@@ -2540,7 +2540,8 @@ The lecture names presence as out of scope. It is asked about constantly, and it
 is a genuinely hard problem hiding behind a trivial-sounding feature.
 
 **Naive design.** Set a flag on connect, clear it on disconnect. It fails
-immediately, because ==disconnects are frequently not observed==: that is section 18. A crashed client, a dead network or a killed container leaves users online
+immediately, because ==disconnects are frequently not observed==: that is section
+18. A crashed client, a dead network or a killed container leaves users online
 forever.
 
 **The correct primitive is a TTL that must be refreshed.**
@@ -2615,13 +2616,13 @@ and is not acceptable in an editor.==
 
 **Two families of answer.**
 
-|                | Operational Transformation                                          | CRDT                                           |
-| -------------- | ------------------------------------------------------------------- | ---------------------------------------------- |
-| Idea           | ==Transform an incoming operation against ones already applied==    | ==Design the data type so operations commute== |
-| Needs a server | Usually yes, to order operations                                    | No. Converges peer to peer                     |
-| Complexity     | In the transform functions, which are notoriously hard to get right | In the data structure and its metadata         |
-| Cost           | Smaller documents on the wire                                       | Metadata per character, which grows            |
-| Used by        | Google Docs                                                         | Figma, Automerge, Yjs                          |
+| | Operational Transformation | CRDT |
+|---|---|---|
+| Idea | ==Transform an incoming operation against ones already applied== | ==Design the data type so operations commute== |
+| Needs a server | Usually yes, to order operations | No. Converges peer to peer |
+| Complexity | In the transform functions, which are notoriously hard to get right | In the data structure and its metadata |
+| Cost | Smaller documents on the wire | Metadata per character, which grows |
+| Used by | Google Docs | Figma, Automerge, Yjs |
 
 **What to say.** ++"I would use an existing CRDT library rather than implement
 either."++ That is not a dodge; it is the correct engineering answer, and both
@@ -2781,96 +2782,96 @@ interviewer has now watched you find.
 
 Answer each out loud before checking the section.
 
-| Question                                                          | Section |
-| ----------------------------------------------------------------- | ------- |
-| Why can the server not just connect back to the browser?          | 2       |
-| When is polling the right answer?                                 | 3, 4    |
-| Halve the poll interval. What happens to cost and to latency?     | 4       |
-| What exactly is wrong with long polling?                          | 5       |
-| Write a valid SSE event by hand                                   | 8       |
-| How does an SSE client resume after a drop?                       | 9       |
-| LLM APIs use SSE. Do they use `EventSource`?                      | 10      |
-| The stream works locally and not in staging. Why?                 | 11      |
-| Why does the app break in the seventh tab?                        | 12      |
-| Why does a WebSocket start as an HTTP GET?                        | 14      |
-| Is `Sec-WebSocket-Key` a security mechanism?                      | 14      |
-| What stops working after the 101?                                 | 15      |
-| How many bytes of overhead does a small message cost?             | 16      |
-| Why does the client mask frames and the server not?               | 17      |
-| Why do you need ping and pong when TCP has keepalive?             | 18      |
-| You see nothing but 1006 in the logs. Where do you look?          | 19      |
-| SSE or WebSocket, and why?                                        | 20      |
-| Why is your connection ceiling 1,017 and not 1,024?               | 21      |
-| Why does Go report a different limit than Python on the same box? | 22      |
-| Can a server hold more than 65,535 connections?                   | 23      |
-| How much RAM for a million connections, and what is it spent on?  | 24      |
-| One client on hotel wifi takes down the process. How?             | 25      |
-| You enabled compression and memory tripled. Why?                  | 26      |
-| Why does a WebSocket break statelessness?                         | 27      |
-| Do sticky sessions fix real-time?                                 | 28      |
-| How do two instances deliver to each other's clients?             | 29      |
-| What does Redis pub/sub lose, and when?                           | 30      |
-| Two events arrive out of order. What saves you?                   | 31      |
-| A user was offline for 90 seconds. Then what?                     | 32      |
-| 30,000 people watch one board. What is the cost of one move?      | 33      |
-| How do you reduce the number of events, not just the writes?      | 34      |
-| An instance dies. Why is that a database problem?                 | 35      |
-| How do you deploy without cutting every connection at once?       | 36      |
-| How do you authenticate a socket?                                 | 37      |
-| When does that authorisation expire, and what re-checks it?       | 38      |
-| Your CORS policy is strict. Are your sockets safe?                | 39      |
-| How do you know a user is online?                                 | 40      |
-| Two people edit the same paragraph. What do you use?              | 41      |
-| Why not WebTransport?                                             | 42      |
+| Question | Section |
+|---|---|
+| Why can the server not just connect back to the browser? | 2 |
+| When is polling the right answer? | 3, 4 |
+| Halve the poll interval. What happens to cost and to latency? | 4 |
+| What exactly is wrong with long polling? | 5 |
+| Write a valid SSE event by hand | 8 |
+| How does an SSE client resume after a drop? | 9 |
+| LLM APIs use SSE. Do they use `EventSource`? | 10 |
+| The stream works locally and not in staging. Why? | 11 |
+| Why does the app break in the seventh tab? | 12 |
+| Why does a WebSocket start as an HTTP GET? | 14 |
+| Is `Sec-WebSocket-Key` a security mechanism? | 14 |
+| What stops working after the 101? | 15 |
+| How many bytes of overhead does a small message cost? | 16 |
+| Why does the client mask frames and the server not? | 17 |
+| Why do you need ping and pong when TCP has keepalive? | 18 |
+| You see nothing but 1006 in the logs. Where do you look? | 19 |
+| SSE or WebSocket, and why? | 20 |
+| Why is your connection ceiling 1,017 and not 1,024? | 21 |
+| Why does Go report a different limit than Python on the same box? | 22 |
+| Can a server hold more than 65,535 connections? | 23 |
+| How much RAM for a million connections, and what is it spent on? | 24 |
+| One client on hotel wifi takes down the process. How? | 25 |
+| You enabled compression and memory tripled. Why? | 26 |
+| Why does a WebSocket break statelessness? | 27 |
+| Do sticky sessions fix real-time? | 28 |
+| How do two instances deliver to each other's clients? | 29 |
+| What does Redis pub/sub lose, and when? | 30 |
+| Two events arrive out of order. What saves you? | 31 |
+| A user was offline for 90 seconds. Then what? | 32 |
+| 30,000 people watch one board. What is the cost of one move? | 33 |
+| How do you reduce the number of events, not just the writes? | 34 |
+| An instance dies. Why is that a database problem? | 35 |
+| How do you deploy without cutting every connection at once? | 36 |
+| How do you authenticate a socket? | 37 |
+| When does that authorisation expire, and what re-checks it? | 38 |
+| Your CORS policy is strict. Are your sockets safe? | 39 |
+| How do you know a user is online? | 40 |
+| Two people edit the same paragraph. What do you use? | 41 |
+| Why not WebTransport? | 42 |
 
 :::part IX | Appendices
 :::
 
 ## Appendix A. Numbers to memorise
 
-| Quantity                            | Value                                                      |
-| ----------------------------------- | ---------------------------------------------------------- |
-| Polling requests per second         | `U / T`                                                    |
-| Polling average latency             | `T / 2`                                                    |
-| Polling cost times latency          | ==`U / 2`, a constant==                                    |
-| Long polling worst-case latency     | More than 3 network transits (RFC 6202)                    |
-| SSE MIME type                       | `text/event-stream`                                        |
-| SSE resume header                   | `Last-Event-ID`                                            |
-| SSE heartbeat interval              | 15 seconds, a `:` comment                                  |
-| HTTP/1.1 connections per origin     | ~6. HTTP/2 multiplexes instead                             |
-| WebSocket RFC                       | 6455                                                       |
-| WebSocket handshake status          | ==101 Switching Protocols==                                |
-| `Sec-WebSocket-Key`                 | 16 random bytes, base64                                    |
-| Handshake constant                  | `258EAFA5-E914-47DA-95CA-C5AB0DC85B11`                     |
-| Accept computation                  | `base64(SHA1(key + constant))`                             |
-| Opcodes                             | 0 continuation, 1 text, 2 binary, 8 close, 9 ping, 10 pong |
-| Frame header, small payload         | ==2 bytes, +4 for the client mask==                        |
-| Payload length encoding             | 7 bits; 126 means 2 more bytes; 127 means 8 more           |
-| HTTP overhead per poll              | ~1 KB, mostly cookies                                      |
-| Masking key                         | 4 bytes, cleartext, fresh per frame, client to server only |
-| Ping interval, typical              | 20 to 30 seconds                                           |
-| Pong deadline, typical              | 30 seconds                                                 |
-| TCP keepalive default (Linux)       | ==2 hours. Useless for this==                              |
-| Close code 1006                     | Abnormal. Set locally, ==never sent==                      |
-| Application close codes             | 4000 to 4999                                               |
-| Descriptor overhead per process     | ~7 (stdio, listener, epoll, internals)                     |
-| Default `ulimit -n`                 | 1,024 soft                                                 |
-| Go's raised limit                   | Hard limit minus one (e.g. 1,048,575)                      |
-| Default ephemeral port range        | 32,768 to 60,999 = ==28,232 ports==                        |
-| TCP connection identity             | The 4-tuple, not the port                                  |
-| Heap per idle connection            | ==~10 KB== (measured 9,751 / 9,752 / 9,881)                |
-| 1M idle connections                 | ~10 GB of heap, before kernel structures                   |
-| Buffers' share of that 10 KB        | ~80%: two 4 KB buffers                                     |
-| `permessage-deflate` per connection | Hundreds of KB at default window size                      |
-| ALB idle timeout                    | 60 seconds                                                 |
-| Nginx `proxy_read_timeout`          | 60 seconds                                                 |
-| ALB deregistration delay            | 300 seconds                                                |
-| Kubernetes grace period default     | 30 seconds                                                 |
-| Discord fan-out, 30k online         | ==900 ms to 2.1 s for one message==                        |
-| Coalescing tick                     | 50 ms, imperceptible                                       |
-| Presence TTL / refresh              | 45 s TTL, refreshed every 15 s                             |
-| Presence fan-out                    | ==`n²` in a room of `n`==                                  |
-| Backoff formula                     | `random(0, min(cap, base × 2^attempt))`                    |
+| Quantity | Value |
+|---|---|
+| Polling requests per second | `U / T` |
+| Polling average latency | `T / 2` |
+| Polling cost times latency | ==`U / 2`, a constant== |
+| Long polling worst-case latency | More than 3 network transits (RFC 6202) |
+| SSE MIME type | `text/event-stream` |
+| SSE resume header | `Last-Event-ID` |
+| SSE heartbeat interval | 15 seconds, a `:` comment |
+| HTTP/1.1 connections per origin | ~6. HTTP/2 multiplexes instead |
+| WebSocket RFC | 6455 |
+| WebSocket handshake status | ==101 Switching Protocols== |
+| `Sec-WebSocket-Key` | 16 random bytes, base64 |
+| Handshake constant | `258EAFA5-E914-47DA-95CA-C5AB0DC85B11` |
+| Accept computation | `base64(SHA1(key + constant))` |
+| Opcodes | 0 continuation, 1 text, 2 binary, 8 close, 9 ping, 10 pong |
+| Frame header, small payload | ==2 bytes, +4 for the client mask== |
+| Payload length encoding | 7 bits; 126 means 2 more bytes; 127 means 8 more |
+| HTTP overhead per poll | ~1 KB, mostly cookies |
+| Masking key | 4 bytes, cleartext, fresh per frame, client to server only |
+| Ping interval, typical | 20 to 30 seconds |
+| Pong deadline, typical | 30 seconds |
+| TCP keepalive default (Linux) | ==2 hours. Useless for this== |
+| Close code 1006 | Abnormal. Set locally, ==never sent== |
+| Application close codes | 4000 to 4999 |
+| Descriptor overhead per process | ~7 (stdio, listener, epoll, internals) |
+| Default `ulimit -n` | 1,024 soft |
+| Go's raised limit | Hard limit minus one (e.g. 1,048,575) |
+| Default ephemeral port range | 32,768 to 60,999 = ==28,232 ports== |
+| TCP connection identity | The 4-tuple, not the port |
+| Heap per idle connection | ==~10 KB== (measured 9,751 / 9,752 / 9,881) |
+| 1M idle connections | ~10 GB of heap, before kernel structures |
+| Buffers' share of that 10 KB | ~80%: two 4 KB buffers |
+| `permessage-deflate` per connection | Hundreds of KB at default window size |
+| ALB idle timeout | 60 seconds |
+| Nginx `proxy_read_timeout` | 60 seconds |
+| ALB deregistration delay | 300 seconds |
+| Kubernetes grace period default | 30 seconds |
+| Discord fan-out, 30k online | ==900 ms to 2.1 s for one message== |
+| Coalescing tick | 50 ms, imperceptible |
+| Presence TTL / refresh | 45 s TTL, refreshed every 15 s |
+| Presence fan-out | ==`n²` in a room of `n`== |
+| Backoff formula | `random(0, min(cap, base × 2^attempt))` |
 
 ## Appendix B. Glossary
 
