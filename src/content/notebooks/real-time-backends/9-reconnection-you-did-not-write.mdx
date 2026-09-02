@@ -41,7 +41,7 @@ es.addEventListener('task.moved', (e) => apply(JSON.parse(e.data)));
 // there is no reconnect handler here because there does not need to be
 ```
 
-Hold on to the shape of this, because <Peach>section 32 rebuilds it by hand for
+Hold on to the shape of this, because <Peach><Ref to="#32-the-catch-up-protocol">section 32</Ref> rebuilds it by hand for
 WebSockets</Peach>, where nothing is free.
 
 <Ask>
@@ -52,7 +52,7 @@ Nothing, unless you built the backlog. `Last-Event-ID` gives you the client's
 position; it does not give you the events. You still need somewhere to read
 "everything after 1842" from, which means a durable, ordered log per topic with
 a retention window. The browser hands you the question. Answering it is your
-design problem, and it is the same problem in section 32.
+design problem, and it is the same problem in <Ref to="#32-the-catch-up-protocol">section 32</Ref>.
 
 </Ask>
 

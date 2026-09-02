@@ -6,21 +6,15 @@
  * about who may read a notebook live here; the queries live next door.
  */
 
-/**
- * How long a free trial lasts, for copy only. The authoritative value is the
- * `interval '7 days'` inside `public.start_learn_trial()`; a client cannot
- * choose its own expiry. Change both together.
- */
-export const TRIAL_DAYS = 7;
-
 export type Access =
   /** Not signed in. Nothing has been decided yet. */
   | { state: "anonymous" }
   /** Signed in, but has never opened this notebook. */
   | { state: "none" }
-  /** May read it. `expiresAt` is null for a perpetual (paid) grant. */
+  /** May read it. `expiresAt` is null, which is every grant now. */
   | { state: "active"; expiresAt: string | null; source: string }
-  /** Had a trial, and it ran out. */
+  /** A grant from before access became permanent, which had run out. Kept so an
+   * old row cannot silently read as active. */
   | { state: "expired"; expiresAt: string };
 
 /** One entitlements row, as selected. */
@@ -55,19 +49,14 @@ export function toAccess(
     : { state: "expired", expiresAt: row.expires_at };
 }
 
-/** Whole days left on a grant, rounded up. 0 once it has lapsed. */
-export function daysLeft(expiresAt: string, now: number = Date.now()): number {
-  const ms = Date.parse(expiresAt) - now;
-  return ms <= 0 ? 0 : Math.ceil(ms / 86_400_000);
-}
-
-/** "6 days left" / "last day" / "expired", for a badge. Null when there is
- * nothing worth showing. */
-export function accessLabel(access: Access, now: number = Date.now()): string | null {
-  if (access.state === "expired") return "expired";
-  if (access.state !== "active") return null;
-  if (access.expiresAt === null) return "yours";
-  return daysLeft(access.expiresAt, now) <= 1
-    ? "last day"
-    : `${daysLeft(access.expiresAt, now)} days left`;
+/**
+ * The badge on a notebook card. Null when there is nothing worth showing.
+ *
+ * No countdown: access does not expire. These notebooks expand someone else's
+ * lectures, so a clock ticking towards a payment prompt would be the wrong
+ * thing to put on them.
+ */
+export function accessLabel(access: Access): string | null {
+  if (access.state === "expired") return null;
+  return access.state === "active" ? "yours" : null;
 }

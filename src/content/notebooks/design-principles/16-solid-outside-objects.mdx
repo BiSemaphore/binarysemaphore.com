@@ -21,7 +21,7 @@ inheritance, so Liskov becomes a rule about schema evolution: a new version of a
 producer must not strengthen what it demands of consumers, nor weaken what it
 promises them. That is exactly the precondition and postcondition rule, moved
 onto the wire, and it is why adding a required field to a request payload is a
-breaking change while adding an optional one is not. Notebook 08 section 12 is
+breaking change while adding an optional one is not. <Ref to="/rest-api-design">Notebook 08</Ref> <Ref to="#12-when-two-principles-disagree">section 12</Ref> is
 the same argument in the vocabulary of API versioning.
 
 <Signal>

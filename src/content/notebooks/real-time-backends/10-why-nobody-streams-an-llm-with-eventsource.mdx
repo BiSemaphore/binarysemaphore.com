@@ -33,12 +33,11 @@ const reader = res.body.getReader();     // parse `data:` lines by hand
 
 This matters beyond trivia, because it is <Peach>the same limitation you will hit
 authenticating your own stream</Peach>. A browser cannot put an `Authorization` header
-on an `EventSource`, and it cannot put one on a WebSocket either. Section 37 is
+on an `EventSource`, and it cannot put one on a WebSocket either. <Ref to="#37-authenticating-a-socket">Section 37</Ref> is
 the full treatment; the short version is cookie, query-string ticket, or a token
 in the first message.
 
-The trade is explicit. Hand-parsing costs you the free reconnection from section
-9, because that lived in `EventSource`, not in the format. <Rose>Choosing `fetch` for
+The trade is explicit. Hand-parsing costs you the free reconnection from <Ref to="#9-reconnection-you-did-not-write">section 9</Ref>, because that lived in `EventSource`, not in the format. <Rose>Choosing `fetch` for
 the headers means writing your own backoff and your own `Last-Event-ID`
 bookkeeping.</Rose>
 

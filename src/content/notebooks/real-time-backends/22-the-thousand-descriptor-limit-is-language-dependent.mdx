@@ -54,7 +54,7 @@ Why not just set the limit to a million everywhere?
 
 Because the descriptor limit is the only thing standing between a leak and the
 machine. It is a circuit breaker, not an obstacle. Raise it deliberately to a
-number you have sized against your memory budget from section 24, and alert on
+number you have sized against your memory budget from <Ref to="#24-ceiling-3-memory-and-where-10-kb-goes">section 24</Ref>, and alert on
 approaching it. A million descriptors on a box that runs out of memory at 200,000
 connections has converted a clean, immediate `too many open files` into an OOM
 kill that takes every connection with it.

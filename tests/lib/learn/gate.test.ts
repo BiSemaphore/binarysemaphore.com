@@ -156,17 +156,75 @@ describe("splitBook", () => {
 
   it("frees at least two sections even when the first is enormous", () => {
     const huge: SectionEntry[] = [
-      { slug: "a", number: "1", title: "A", part: "", partTitle: "", length: 99999 },
-      { slug: "b", number: "2", title: "B", part: "", partTitle: "", length: 10 },
-      { slug: "c", number: "3", title: "C", part: "", partTitle: "", length: 10 },
+      { slug: "a", number: "1", title: "A", part: "", partTitle: "", length: 99999, refs: [], backrefs: [] },
+      { slug: "b", number: "2", title: "B", part: "", partTitle: "", length: 10, refs: [], backrefs: [] },
+      { slug: "c", number: "3", title: "C", part: "", partTitle: "", length: 10, refs: [], backrefs: [] },
     ];
     expect(splitBook(huge).free).toHaveLength(2);
   });
 
   it("handles a one-section book without hiding all of it", () => {
     const one: SectionEntry[] = [
-      { slug: "a", number: "1", title: "A", part: "", partTitle: "", length: 100 },
+      { slug: "a", number: "1", title: "A", part: "", partTitle: "", length: 100, refs: [], backrefs: [] },
     ];
     expect(splitBook(one)).toEqual({ free: one, gated: [] });
+  });
+});
+
+describe("cross-references", () => {
+  const bySlug = new Map(all.map((s) => [`${s.notebook}/${s.slug}`, s]));
+
+  // The books say "as in section 26" constantly. A link to a section that does
+  // not exist is worse than the plain text it replaced.
+  it("only points at sections that exist", () => {
+    for (const s of all) {
+      for (const ref of s.refs) {
+        if (!ref.startsWith("s:")) continue;
+        expect(
+          bySlug.has(`${s.notebook}/${ref.slice(2)}`),
+          `${s.notebook}/${s.slug} -> ${ref}`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("only points at notebooks that are in the catalog", () => {
+    const known = new Set(notebooks.map((n) => n.slug));
+    for (const s of all) {
+      for (const ref of s.refs) {
+        if (!ref.startsWith("n:")) continue;
+        expect(known, `${s.notebook}/${s.slug} -> ${ref}`).toContain(ref.slice(2));
+      }
+    }
+  });
+
+  it("emits a link in the prose for every recorded reference", () => {
+    for (const s of all) {
+      if (s.refs.length === 0) continue;
+      const body = read(s.notebook, `${s.slug}.mdx`);
+      expect(body, `${s.notebook}/${s.slug}`).toContain("<Ref to=");
+    }
+  });
+
+  it("makes backrefs the exact inverse of refs", () => {
+    for (const notebook of notebooks) {
+      const sections = index(notebook.slug);
+      for (const target of sections) {
+        const expected = sections
+          .filter((s) => s.refs.includes(`s:${target.slug}`))
+          .map((s) => s.slug)
+          .sort();
+        expect(target.backrefs, `${notebook.slug}/${target.slug}`).toEqual(
+          expected,
+        );
+      }
+    }
+  });
+
+  it("gives about half the library something to show in the rail", () => {
+    const withSomething = all.filter(
+      (s) => s.refs.length > 0 || s.backrefs.length > 0,
+    ).length;
+    expect(withSomething / all.length).toBeGreaterThan(0.45);
   });
 });

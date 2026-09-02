@@ -5,7 +5,9 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 4262
+    "length": 4262,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "the-whole-picture-on-one-page",
@@ -13,7 +15,9 @@
     "title": "The whole picture on one page",
     "part": "",
     "partTitle": "",
-    "length": 2045
+    "length": 2045,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "1-the-requirement-an-interface-two-strangers-agree-on",
@@ -21,7 +25,9 @@
     "title": "The requirement: an interface two strangers agree on",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "length": 1713
+    "length": 1713,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "2-1990-to-1993-the-web-outgrows-its-inventor",
@@ -29,7 +35,9 @@
     "title": "1990 to 1993: the web outgrows its inventor",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "length": 1754
+    "length": 1754,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "3-fielding-s-six-constraints",
@@ -37,7 +45,16 @@
     "title": "Fielding's six constraints",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "length": 2511
+    "length": 2511,
+    "refs": [
+      "n:real-time-backends",
+      "n:scaling",
+      "n:security",
+      "s:5-the-constraint-nobody-implements"
+    ],
+    "backrefs": [
+      "5-the-constraint-nobody-implements"
+    ]
   },
   {
     "slug": "4-why-it-is-called-rest",
@@ -45,7 +62,9 @@
     "title": "Why it is called REST",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "length": 1280
+    "length": 1280,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "5-the-constraint-nobody-implements",
@@ -53,6 +72,12 @@
     "title": "The constraint nobody implements",
     "part": "I",
     "partTitle": "The standard exists so you do not have to negotiate",
-    "length": 2146
+    "length": 2146,
+    "refs": [
+      "s:3-fielding-s-six-constraints"
+    ],
+    "backrefs": [
+      "3-fielding-s-six-constraints"
+    ]
   }
 ]

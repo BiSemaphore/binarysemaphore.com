@@ -33,14 +33,14 @@ design with the fewest moving parts, and the failure mode of a missed poll is
 book has.
 
 The reason to keep going is not that polling is wrong. It is that its cost is
-attached to the wrong number, and section 4 does that arithmetic.
+attached to the wrong number, and <Ref to="#4-the-arithmetic-of-polling">section 4</Ref> does that arithmetic.
 
 <Trap>
 
 "Polling is the naive solution, so I would never use it." That answer is worse
 than the design it rejects. Every real-time system has a polling fallback,
 because when the socket path breaks you need something that still delivers, and
-the reconnect-and-refetch path in section 32 is polling with a longer interval.
+the reconnect-and-refetch path in <Ref to="#32-the-catch-up-protocol">section 32</Ref> is polling with a longer interval.
 The senior position is that polling is the correct default until you can name
 which of its two costs you are actually hitting.
 

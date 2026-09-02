@@ -4,7 +4,6 @@ import { SignInButtons } from "@/components/auth/sign-in-buttons";
 import { isSupabaseConfigured } from "@/utils/supabase/server";
 import { getCurrentUser } from "@/utils/supabase/auth";
 import { learnBase } from "@/lib/learn/paths";
-import { TRIAL_DAYS } from "@/lib/learn/access";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -40,8 +39,8 @@ export default async function LearnLoginPage({
             Sign in to read
           </h1>
           <p className="mx-auto mt-2.5 max-w-xs text-center text-sm leading-6 text-muted">
-            Every notebook is free for {TRIAL_DAYS} days. There is no card and
-            nothing to pay. The account is so a download belongs to someone.
+            An account is all it takes, and it is what makes a download belong
+            to someone.
           </p>
 
           <div className="mt-7">

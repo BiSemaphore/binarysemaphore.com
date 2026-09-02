@@ -18,14 +18,14 @@ hid this, because re-authorising every request meant revocation took effect
 within one request. Three mechanisms; you want at least the first two:
 
 1. **A connection deadline.** Close with 4001 on expiry and let the client
-   re-ticket. The reconnect is cheap because you built section 32.
+   re-ticket. The reconnect is cheap because you built <Ref to="#32-the-catch-up-protocol">section 32</Ref>.
 2. **Authorise per subscription, not per connection.** Being connected is not
    permission to receive board 412. <Mint>Check membership on subscribe</Mint>, and again
    when that board's membership changes.
 3. **A revocation channel.** A `user.access.revoked` event telling instances to
    drop that user's subscriptions immediately.
 
-Notebook 05 on authorisation applies unchanged; <Peach>what is new is that the check
+<Ref to="/security">Notebook 05</Ref> on authorisation applies unchanged; <Peach>what is new is that the check
 has no natural moment to re-run</Peach>, so you have to create one.
 
 <Signal>

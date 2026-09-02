@@ -61,7 +61,7 @@ How to decide what to index
   index foreign keys for you, which surprises people.
 - <Mint>Index everything else from evidence.</Mint> Wait for the trace that shows the
   slow query, then the `EXPLAIN ANALYZE` that shows the sequential scan, then
-  index that column. Section 14.
+  index that column. <Ref to="#14-explain-analyze-deciding-instead-of-guessing">Section 14</Ref>.
 - <Mint>Periodically look for unused indexes and drop them.</Mint> They are pure write
   cost. In Postgres, `pg_stat_user_indexes` tells you which ones have never been
   scanned.
@@ -77,5 +77,5 @@ trap, it is your next sentence.
 
 </Signal>
 
-Notebook 04, Postgres, sections 25 to 31 go considerably deeper on index types,
+<Ref to="/postgres">Notebook 04</Ref>, Postgres, sections 25 to 31 go considerably deeper on index types,
 partial indexes, and building them without locking a live table.

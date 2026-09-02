@@ -22,11 +22,11 @@ Everything in this book that seemed arbitrary is a property of this structure:
 
 | Behaviour | Because the index is… |
 |---|---|
-| Hot partitions from sequential keys (section 15) | partitioned by <Pink>key range</Pink> |
-| LIST is slow and paginated (section 16) | a <Peach>range scan</Peach>, not a lookup |
-| No atomic rename (section 16) | a key change <Peach>moves partitions</Peach> |
+| Hot partitions from sequential keys (<Ref to="#15-designing-the-key">section 15</Ref>) | partitioned by <Pink>key range</Pink> |
+| LIST is slow and paginated (<Ref to="#16-why-list-is-not-a-lookup">section 16</Ref>) | a <Peach>range scan</Peach>, not a lookup |
+| No atomic rename (<Ref to="#16-why-list-is-not-a-lookup">section 16</Ref>) | a key change <Peach>moves partitions</Peach> |
 | `HEAD` is instant and touches no drive | size and ETag <Peach>live in the index</Peach> |
-| Folders are a group-by (section 14) | a <Peach>sorted</Peach> structure, so prefixes are contiguous ranges |
+| Folders are a group-by (<Ref to="#14-there-are-no-folders">section 14</Ref>) | a <Peach>sorted</Peach> structure, so prefixes are contiguous ranges |
 
 And it must be <Peach>strongly consistent</Peach>, which is the genuinely hard requirement:
 trillions of keys, globally distributed, millisecond lookups, and a write must

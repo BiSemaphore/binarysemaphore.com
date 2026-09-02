@@ -56,7 +56,7 @@ each finish comfortably inside the limit.
 
 #### Statelessness, enforced
 
-Section 24 recommended statelessness. Serverless makes it mandatory, and this is
+<Ref to="#24-statelessness-is-the-price-of-admission">Section 24</Ref> recommended statelessness. Serverless makes it mandatory, and this is
 where the model bites hardest.
 
 ```text
@@ -69,6 +69,6 @@ where the model bites hardest.
 The database connection is the classic collision. A traditional server opens a
 pool once and reuses it for its lifetime. A serverless function may be a thousand
 concurrent instances, each wanting a connection, against a database that permits
-three hundred. <Peach>The connection ceiling from section 15 arrives all at once</Peach>,
+three hundred. <Peach>The connection ceiling from <Ref to="#15-connections-are-not-free">section 15</Ref> arrives all at once</Peach>,
 which is precisely why serverless-first databases with HTTP-based drivers and
 external pooling exist.

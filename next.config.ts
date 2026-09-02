@@ -29,6 +29,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.fbcdn.net" },
       // Hero panel photo (Unsplash CDN).
       { protocol: "https", hostname: "images.unsplash.com" },
+      // Lecture thumbnails on the study notebook credits. Rendered
+      // `unoptimized` (they are already small, and they are not ours to cache),
+      // but next/image still checks the host against this list.
+      { protocol: "https", hostname: "i.ytimg.com" },
     ],
   },
 };

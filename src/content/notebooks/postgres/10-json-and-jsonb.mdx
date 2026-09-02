@@ -42,7 +42,7 @@ the unique constraint, the foreign key and the type check.
 
 "jsonb means I do not need migrations"
 
-You still have a schema, it is just unenforced and undocumented (section 4). You
+You still have a schema, it is just unenforced and undocumented (<Ref to="#4-relational-or-not">section 4</Ref>). You
 also lose `NOT NULL`, `UNIQUE`, `CHECK` and foreign keys on anything inside the
 blob, and every reader has to defend against every shape any past version of the
 code ever wrote. Use it for the long tail, not the spine.

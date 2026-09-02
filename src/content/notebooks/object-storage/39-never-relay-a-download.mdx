@@ -4,7 +4,7 @@ title: "Never relay a download"
 part: "VII"
 partTitle: "Getting the bytes out"
 ---
-The rule from section 7, restated where it matters most.
+The rule from <Ref to="#7-failure-6-your-server-is-an-expensive-cdn">section 7</Ref>, restated where it matters most.
 
 ```text
   BAD                                    GOOD
@@ -20,7 +20,7 @@ The rule from section 7, restated where it matters most.
 
 Three costs, all of them avoidable:
 
-- **A worker per download.** Section 7. A goroutine or event-loop slot spends
+- **A worker per download.** <Ref to="#7-failure-6-your-server-is-an-expensive-cdn">Section 7</Ref>. A goroutine or event-loop slot spends
   minutes copying bytes at the user's speed.
 - **Bandwidth you pay for.** Every provider bills egress. Relaying means paying
   for the same bytes leaving the bucket and then leaving your server.

@@ -59,7 +59,7 @@ What about a shared network file system, NFS or EFS?
 Legitimate, and it is what many older systems did. It gives every node the same
 namespace, so the 404 goes away. What you inherit is POSIX coordination over a
 network: locking, metadata round trips, small-file latency, a throughput ceiling
-you now have to provision, and an operational surface. See section 10. It is the
+you now have to provision, and an operational surface. See <Ref to="#10-file-storage-and-what-posix-costs">section 10</Ref>. It is the
 right answer when you genuinely need file semantics, for example a legacy binary
 that calls `open()` and `seek()`. It is the wrong answer when all you needed was
 put and get.

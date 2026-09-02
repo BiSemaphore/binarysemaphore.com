@@ -5,7 +5,9 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 655
+    "length": 655,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "1-opening",
@@ -13,7 +15,12 @@
     "title": "Opening",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "72-answers-notebook-03",
+      "73-answers-notebook-04"
+    ]
   },
   {
     "slug": "2-framing-the-problem",
@@ -21,7 +28,14 @@
     "title": "Framing the problem",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "71-answers-notebook-02",
+      "75-answers-notebook-06",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "3-ingestion-getting-the-bytes-in",
@@ -29,7 +43,17 @@
     "title": "Ingestion, getting the bytes in",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:large-scale-ingestion",
+      "s:7-state-and-visibility",
+      "s:9-the-interview-itself"
+    ],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "77-answers-notebook-08",
+      "78-answers-notebook-09"
+    ]
   },
   {
     "slug": "4-the-handoff",
@@ -37,7 +61,13 @@
     "title": "The handoff",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "71-answers-notebook-02",
+      "72-answers-notebook-03",
+      "75-answers-notebook-06"
+    ]
   },
   {
     "slug": "5-the-queue",
@@ -45,7 +75,19 @@
     "title": "The queue",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "71-answers-notebook-02",
+      "72-answers-notebook-03",
+      "73-answers-notebook-04",
+      "74-answers-notebook-05",
+      "75-answers-notebook-06",
+      "76-answers-notebook-07",
+      "77-answers-notebook-08",
+      "78-answers-notebook-09"
+    ]
   },
   {
     "slug": "6-processing",
@@ -53,7 +95,15 @@
     "title": "Processing",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:large-scale-ingestion",
+      "s:20-opening"
+    ],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "71-answers-notebook-02"
+    ]
   },
   {
     "slug": "7-state-and-visibility",
@@ -61,7 +111,14 @@
     "title": "State and visibility",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "3-ingestion-getting-the-bytes-in",
+      "45-finding-the-bottleneck",
+      "70-answers-notebook-01",
+      "72-answers-notebook-03"
+    ]
   },
   {
     "slug": "8-senior-concerns",
@@ -69,7 +126,12 @@
     "title": "Senior concerns",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "71-answers-notebook-02",
+      "73-answers-notebook-04"
+    ]
   },
   {
     "slug": "9-the-interview-itself",
@@ -77,7 +139,19 @@
     "title": "The interview itself",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:large-scale-ingestion",
+      "s:31-why-a-database-at-all"
+    ],
+    "backrefs": [
+      "3-ingestion-getting-the-bytes-in",
+      "70-answers-notebook-01",
+      "72-answers-notebook-03",
+      "75-answers-notebook-06",
+      "76-answers-notebook-07",
+      "78-answers-notebook-09"
+    ]
   },
   {
     "slug": "10-final-review",
@@ -85,7 +159,14 @@
     "title": "Final review",
     "part": "01",
     "partTitle": "Large-Scale Data Ingestion",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:large-scale-ingestion"
+    ],
+    "backrefs": [
+      "45-finding-the-bottleneck",
+      "71-answers-notebook-02"
+    ]
   },
   {
     "slug": "11-opening",
@@ -93,7 +174,18 @@
     "title": "Opening",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:object-storage"
+    ],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "71-answers-notebook-02",
+      "72-answers-notebook-03",
+      "73-answers-notebook-04",
+      "75-answers-notebook-06",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "12-the-naive-design-and-the-seven-ways-it-dies",
@@ -101,7 +193,12 @@
     "title": "The naive design, and the seven ways it dies",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "71-answers-notebook-02",
+      "74-answers-notebook-05"
+    ]
   },
   {
     "slug": "13-three-kinds-of-storage",
@@ -109,7 +206,12 @@
     "title": "Three kinds of storage",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "71-answers-notebook-02",
+      "75-answers-notebook-06"
+    ]
   },
   {
     "slug": "14-anatomy-of-an-object",
@@ -117,7 +219,12 @@
     "title": "Anatomy of an object",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "72-answers-notebook-03",
+      "74-answers-notebook-05"
+    ]
   },
   {
     "slug": "15-inside-the-system",
@@ -125,7 +232,13 @@
     "title": "Inside the system",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "68-using-them-without-being-used-by-them",
+      "70-answers-notebook-01",
+      "78-answers-notebook-09"
+    ]
   },
   {
     "slug": "16-getting-the-bytes-in",
@@ -133,7 +246,17 @@
     "title": "Getting the bytes in",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:object-storage",
+      "s:31-why-a-database-at-all"
+    ],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "71-answers-notebook-02",
+      "73-answers-notebook-04",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "17-large-files",
@@ -141,7 +264,13 @@
     "title": "Large files",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "72-answers-notebook-03",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "18-getting-the-bytes-out",
@@ -149,7 +278,14 @@
     "title": "Getting the bytes out",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "69-the-interview-itself",
+      "70-answers-notebook-01",
+      "71-answers-notebook-02",
+      "73-answers-notebook-04"
+    ]
   },
   {
     "slug": "19-final-review",
@@ -157,7 +293,16 @@
     "title": "Final review",
     "part": "02",
     "partTitle": "Object Storage",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:object-storage"
+    ],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "72-answers-notebook-03",
+      "75-answers-notebook-06",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "20-opening",
@@ -165,7 +310,12 @@
     "title": "Opening",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "6-processing",
+      "70-answers-notebook-01"
+    ]
   },
   {
     "slug": "21-how-to-review-code-out-loud",
@@ -173,7 +323,14 @@
     "title": "How to review code out loud",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "47-caching",
+      "70-answers-notebook-01",
+      "71-answers-notebook-02",
+      "72-answers-notebook-03"
+    ]
   },
   {
     "slug": "22-the-node-js-runtime",
@@ -181,7 +338,13 @@
     "title": "The Node.js runtime",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "71-answers-notebook-02",
+      "76-answers-notebook-07",
+      "77-answers-notebook-08"
+    ]
   },
   {
     "slug": "23-express-and-the-http-boundary",
@@ -189,7 +352,12 @@
     "title": "Express and the HTTP boundary",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "72-answers-notebook-03"
+    ]
   },
   {
     "slug": "24-the-client-react-and-redux",
@@ -197,7 +365,14 @@
     "title": "The client: React and Redux",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "71-answers-notebook-02",
+      "74-answers-notebook-05",
+      "75-answers-notebook-06",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "25-postgresql",
@@ -205,7 +380,11 @@
     "title": "PostgreSQL",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "70-answers-notebook-01"
+    ]
   },
   {
     "slug": "26-mongodb",
@@ -213,7 +392,13 @@
     "title": "MongoDB",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "48-more-machines",
+      "70-answers-notebook-01",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "27-kafka",
@@ -221,7 +406,12 @@
     "title": "Kafka",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "70-answers-notebook-01",
+      "75-answers-notebook-06"
+    ]
   },
   {
     "slug": "28-twenty-four-more-drills",
@@ -229,7 +419,11 @@
     "title": "Twenty-four more drills",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "71-answers-notebook-02"
+    ]
   },
   {
     "slug": "29-delivery",
@@ -237,7 +431,14 @@
     "title": "Delivery",
     "part": "03",
     "partTitle": "Full-Stack Code Review",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "s:31-why-a-database-at-all"
+    ],
+    "backrefs": [
+      "75-answers-notebook-06",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "30-opening",
@@ -245,7 +446,15 @@
     "title": "Opening",
     "part": "04",
     "partTitle": "Postgres",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:postgres"
+    ],
+    "backrefs": [
+      "43-final-review",
+      "71-answers-notebook-02",
+      "73-answers-notebook-04"
+    ]
   },
   {
     "slug": "31-why-a-database-at-all",
@@ -253,7 +462,13 @@
     "title": "Why a database at all",
     "part": "04",
     "partTitle": "Postgres",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "16-getting-the-bytes-in",
+      "29-delivery",
+      "9-the-interview-itself"
+    ]
   },
   {
     "slug": "32-types-are-the-first-constraint",
@@ -261,7 +476,12 @@
     "title": "Types are the first constraint",
     "part": "04",
     "partTitle": "Postgres",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "73-answers-notebook-04",
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "33-designing-the-schema",
@@ -269,7 +489,11 @@
     "title": "Designing the schema",
     "part": "04",
     "partTitle": "Postgres",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "34-querying-for-an-api",
@@ -277,7 +501,9 @@
     "title": "Querying for an API",
     "part": "04",
     "partTitle": "Postgres",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "35-making-it-fast",
@@ -285,7 +511,12 @@
     "title": "Making it fast",
     "part": "04",
     "partTitle": "Postgres",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "50-moving-work-in-space-and-time",
+      "75-answers-notebook-06"
+    ]
   },
   {
     "slug": "36-correctness-under-concurrency",
@@ -293,7 +524,11 @@
     "title": "Correctness under concurrency",
     "part": "04",
     "partTitle": "Postgres",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "76-answers-notebook-07"
+    ]
   },
   {
     "slug": "37-final-review",
@@ -301,7 +536,11 @@
     "title": "Final review",
     "part": "04",
     "partTitle": "Postgres",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:postgres"
+    ],
+    "backrefs": []
   },
   {
     "slug": "38-opening",
@@ -309,7 +548,13 @@
     "title": "Opening",
     "part": "05",
     "partTitle": "Backend Security",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:security"
+    ],
+    "backrefs": [
+      "71-answers-notebook-02"
+    ]
   },
   {
     "slug": "39-injection",
@@ -317,7 +562,9 @@
     "title": "Injection",
     "part": "05",
     "partTitle": "Backend Security",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "40-authentication",
@@ -325,7 +572,9 @@
     "title": "Authentication",
     "part": "05",
     "partTitle": "Backend Security",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "41-authorization",
@@ -333,7 +582,9 @@
     "title": "Authorization",
     "part": "05",
     "partTitle": "Backend Security",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "42-the-browser-is-a-boundary-too",
@@ -341,7 +592,13 @@
     "title": "The browser is a boundary too",
     "part": "05",
     "partTitle": "Backend Security",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "71-answers-notebook-02",
+      "73-answers-notebook-04",
+      "75-answers-notebook-06"
+    ]
   },
   {
     "slug": "43-final-review",
@@ -349,7 +606,14 @@
     "title": "Final review",
     "part": "05",
     "partTitle": "Backend Security",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:security",
+      "s:30-opening"
+    ],
+    "backrefs": [
+      "53-final-review"
+    ]
   },
   {
     "slug": "44-what-fast-means",
@@ -357,7 +621,9 @@
     "title": "What \"fast\" means",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "45-finding-the-bottleneck",
@@ -365,7 +631,13 @@
     "title": "Finding the bottleneck",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:scaling",
+      "s:10-final-review",
+      "s:7-state-and-visibility"
+    ],
+    "backrefs": []
   },
   {
     "slug": "46-the-database",
@@ -373,7 +645,9 @@
     "title": "The database",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "47-caching",
@@ -381,7 +655,12 @@
     "title": "Caching",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:scaling",
+      "s:21-how-to-review-code-out-loud"
+    ],
+    "backrefs": []
   },
   {
     "slug": "48-more-machines",
@@ -389,7 +668,12 @@
     "title": "More machines",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:scaling",
+      "s:26-mongodb"
+    ],
+    "backrefs": []
   },
   {
     "slug": "49-the-stateful-part",
@@ -397,7 +681,9 @@
     "title": "The stateful part",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "50-moving-work-in-space-and-time",
@@ -405,7 +691,12 @@
     "title": "Moving work in space and time",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:scaling",
+      "s:35-making-it-fast"
+    ],
+    "backrefs": []
   },
   {
     "slug": "51-architecture-decisions",
@@ -413,7 +704,9 @@
     "title": "Architecture decisions",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "52-the-interview",
@@ -421,7 +714,9 @@
     "title": "The interview",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "53-final-review",
@@ -429,7 +724,12 @@
     "title": "Final review",
     "part": "06",
     "partTitle": "Scaling and Performance",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:scaling",
+      "s:43-final-review"
+    ],
+    "backrefs": []
   },
   {
     "slug": "54-opening",
@@ -437,7 +737,11 @@
     "title": "Opening",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:real-time-backends"
+    ],
+    "backrefs": []
   },
   {
     "slug": "55-the-client-always-spoke-first",
@@ -445,7 +749,9 @@
     "title": "The client always spoke first",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "56-server-sent-events-the-response-that-never-ends",
@@ -453,7 +759,9 @@
     "title": "Server-sent events: the response that never ends",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "57-websocket-leaving-http-behind",
@@ -461,7 +769,9 @@
     "title": "WebSocket: leaving HTTP behind",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "58-how-many-connections-fit-on-one-machine",
@@ -469,7 +779,9 @@
     "title": "How many connections fit on one machine",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "59-the-connection-is-state",
@@ -477,7 +789,9 @@
     "title": "The connection is state",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "60-delivery-gaps-storms-and-fan-out",
@@ -485,7 +799,9 @@
     "title": "Delivery: gaps, storms and fan-out",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "61-the-parts-the-lecture-left-out",
@@ -493,7 +809,9 @@
     "title": "The parts the lecture left out",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "62-final-review",
@@ -501,7 +819,11 @@
     "title": "Final review",
     "part": "07",
     "partTitle": "Real-Time Backends",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:real-time-backends"
+    ],
+    "backrefs": []
   },
   {
     "slug": "63-opening",
@@ -509,7 +831,11 @@
     "title": "Opening",
     "part": "08",
     "partTitle": "REST API Design",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:rest-api-design"
+    ],
+    "backrefs": []
   },
   {
     "slug": "64-the-standard-exists-so-you-do-not-have-to-negotiate",
@@ -517,7 +843,9 @@
     "title": "The standard exists so you do not have to negotiate",
     "part": "08",
     "partTitle": "REST API Design",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "65-opening",
@@ -525,7 +853,11 @@
     "title": "Opening",
     "part": "09",
     "partTitle": "Design Principles",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "n:design-principles"
+    ],
+    "backrefs": []
   },
   {
     "slug": "66-the-words-that-came-before-the-acronym",
@@ -533,7 +865,9 @@
     "title": "The words that came before the acronym",
     "part": "09",
     "partTitle": "Design Principles",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "67-the-five",
@@ -541,7 +875,9 @@
     "title": "The five",
     "part": "09",
     "partTitle": "Design Principles",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "68-using-them-without-being-used-by-them",
@@ -549,7 +885,11 @@
     "title": "Using them without being used by them",
     "part": "09",
     "partTitle": "Design Principles",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "s:15-inside-the-system"
+    ],
+    "backrefs": []
   },
   {
     "slug": "69-the-interview-itself",
@@ -557,7 +897,11 @@
     "title": "The interview itself",
     "part": "09",
     "partTitle": "Design Principles",
-    "length": 0
+    "length": 0,
+    "refs": [
+      "s:18-getting-the-bytes-out"
+    ],
+    "backrefs": []
   },
   {
     "slug": "70-answers-notebook-01",
@@ -565,7 +909,29 @@
     "title": "Answers, Notebook 01",
     "part": "10",
     "partTitle": "Answers",
-    "length": 7498
+    "length": 7498,
+    "refs": [
+      "n:large-scale-ingestion",
+      "s:11-opening",
+      "s:15-inside-the-system",
+      "s:16-getting-the-bytes-in",
+      "s:17-large-files",
+      "s:18-getting-the-bytes-out",
+      "s:19-final-review",
+      "s:2-framing-the-problem",
+      "s:20-opening",
+      "s:21-how-to-review-code-out-loud",
+      "s:23-express-and-the-http-boundary",
+      "s:25-postgresql",
+      "s:26-mongodb",
+      "s:27-kafka",
+      "s:3-ingestion-getting-the-bytes-in",
+      "s:5-the-queue",
+      "s:6-processing",
+      "s:7-state-and-visibility",
+      "s:9-the-interview-itself"
+    ],
+    "backrefs": []
   },
   {
     "slug": "71-answers-notebook-02",
@@ -573,7 +939,30 @@
     "title": "Answers, Notebook 02",
     "part": "10",
     "partTitle": "Answers",
-    "length": 7681
+    "length": 7681,
+    "refs": [
+      "n:large-scale-ingestion",
+      "n:object-storage",
+      "s:10-final-review",
+      "s:11-opening",
+      "s:12-the-naive-design-and-the-seven-ways-it-dies",
+      "s:13-three-kinds-of-storage",
+      "s:16-getting-the-bytes-in",
+      "s:18-getting-the-bytes-out",
+      "s:2-framing-the-problem",
+      "s:21-how-to-review-code-out-loud",
+      "s:22-the-node-js-runtime",
+      "s:24-the-client-react-and-redux",
+      "s:28-twenty-four-more-drills",
+      "s:30-opening",
+      "s:38-opening",
+      "s:4-the-handoff",
+      "s:42-the-browser-is-a-boundary-too",
+      "s:5-the-queue",
+      "s:6-processing",
+      "s:8-senior-concerns"
+    ],
+    "backrefs": []
   },
   {
     "slug": "72-answers-notebook-03",
@@ -581,7 +970,21 @@
     "title": "Answers, Notebook 03",
     "part": "10",
     "partTitle": "Answers",
-    "length": 9534
+    "length": 9534,
+    "refs": [
+      "s:1-opening",
+      "s:11-opening",
+      "s:14-anatomy-of-an-object",
+      "s:17-large-files",
+      "s:19-final-review",
+      "s:21-how-to-review-code-out-loud",
+      "s:23-express-and-the-http-boundary",
+      "s:4-the-handoff",
+      "s:5-the-queue",
+      "s:7-state-and-visibility",
+      "s:9-the-interview-itself"
+    ],
+    "backrefs": []
   },
   {
     "slug": "73-answers-notebook-04",
@@ -589,7 +992,20 @@
     "title": "Answers, Notebook 04",
     "part": "10",
     "partTitle": "Answers",
-    "length": 4027
+    "length": 4027,
+    "refs": [
+      "n:postgres",
+      "s:1-opening",
+      "s:11-opening",
+      "s:16-getting-the-bytes-in",
+      "s:18-getting-the-bytes-out",
+      "s:30-opening",
+      "s:32-types-are-the-first-constraint",
+      "s:42-the-browser-is-a-boundary-too",
+      "s:5-the-queue",
+      "s:8-senior-concerns"
+    ],
+    "backrefs": []
   },
   {
     "slug": "74-answers-notebook-05",
@@ -597,7 +1013,15 @@
     "title": "Answers, Notebook 05",
     "part": "10",
     "partTitle": "Answers",
-    "length": 2072
+    "length": 2072,
+    "refs": [
+      "n:security",
+      "s:12-the-naive-design-and-the-seven-ways-it-dies",
+      "s:14-anatomy-of-an-object",
+      "s:24-the-client-react-and-redux",
+      "s:5-the-queue"
+    ],
+    "backrefs": []
   },
   {
     "slug": "75-answers-notebook-06",
@@ -605,7 +1029,24 @@
     "title": "Answers, Notebook 06",
     "part": "10",
     "partTitle": "Answers",
-    "length": 5582
+    "length": 5582,
+    "refs": [
+      "n:postgres",
+      "n:scaling",
+      "s:11-opening",
+      "s:13-three-kinds-of-storage",
+      "s:19-final-review",
+      "s:2-framing-the-problem",
+      "s:24-the-client-react-and-redux",
+      "s:27-kafka",
+      "s:29-delivery",
+      "s:35-making-it-fast",
+      "s:4-the-handoff",
+      "s:42-the-browser-is-a-boundary-too",
+      "s:5-the-queue",
+      "s:9-the-interview-itself"
+    ],
+    "backrefs": []
   },
   {
     "slug": "76-answers-notebook-07",
@@ -613,7 +1054,25 @@
     "title": "Answers, Notebook 07",
     "part": "10",
     "partTitle": "Answers",
-    "length": 5692
+    "length": 5692,
+    "refs": [
+      "n:real-time-backends",
+      "s:11-opening",
+      "s:16-getting-the-bytes-in",
+      "s:17-large-files",
+      "s:19-final-review",
+      "s:2-framing-the-problem",
+      "s:22-the-node-js-runtime",
+      "s:24-the-client-react-and-redux",
+      "s:26-mongodb",
+      "s:29-delivery",
+      "s:32-types-are-the-first-constraint",
+      "s:33-designing-the-schema",
+      "s:36-correctness-under-concurrency",
+      "s:5-the-queue",
+      "s:9-the-interview-itself"
+    ],
+    "backrefs": []
   },
   {
     "slug": "77-answers-notebook-08",
@@ -621,7 +1080,15 @@
     "title": "Answers, Notebook 08",
     "part": "10",
     "partTitle": "Answers",
-    "length": 989
+    "length": 989,
+    "refs": [
+      "n:rest-api-design",
+      "n:security",
+      "s:22-the-node-js-runtime",
+      "s:3-ingestion-getting-the-bytes-in",
+      "s:5-the-queue"
+    ],
+    "backrefs": []
   },
   {
     "slug": "78-answers-notebook-09",
@@ -629,6 +1096,14 @@
     "title": "Answers, Notebook 09",
     "part": "10",
     "partTitle": "Answers",
-    "length": 1553
+    "length": 1553,
+    "refs": [
+      "n:design-principles",
+      "s:15-inside-the-system",
+      "s:3-ingestion-getting-the-bytes-in",
+      "s:5-the-queue",
+      "s:9-the-interview-itself"
+    ],
+    "backrefs": []
   }
 ]

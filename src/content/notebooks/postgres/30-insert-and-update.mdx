@@ -48,7 +48,7 @@ the keys of the request body.
 Where should `updated_at` be set?
 
 Not in application code, because then every writer has to remember and one of
-them will not. Set it with a <Peach>trigger</Peach> (section 42) so it is maintained by the
+them will not. Set it with a <Peach>trigger</Peach> (<Ref to="#42-triggers-and-when-not-to">section 42</Ref>) so it is maintained by the
 database for every writer including manual fixes and backfills. The lecture
 builds exactly this, and it is one of the few places a trigger clearly earns its
 keep.

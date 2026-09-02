@@ -68,6 +68,6 @@ wrapped in a function</Mint> (`WHERE lower(email) = ?` will not use an index on
 `email`; index the expression instead). <Mint>A leading column is missing</Mint>, per the
 prefix rule above. <Mint>The planner thinks a scan is cheaper</Mint>, which is often
 correct on a small table or a low-selectivity predicate. <Mint>Statistics are
-stale</Mint>, so run `ANALYZE`. Notebook 04 section 29 works through each.
+stale</Mint>, so run `ANALYZE`. <Ref to="/postgres">Notebook 04</Ref> <Ref to="#29-sharding-and-the-key-that-is-hard-to-choose">section 29</Ref> works through each.
 
 </Ask>

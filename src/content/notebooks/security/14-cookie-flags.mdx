@@ -14,9 +14,9 @@ partTitle: "Authentication"
 
 | Flag | Stops |
 |---|---|
-| `HttpOnly` | An XSS payload reading `document.cookie`. Section 23 |
+| `HttpOnly` | An XSS payload reading `document.cookie`. <Ref to="#23-content-security-policy">Section 23</Ref> |
 | `Secure` | The cookie travelling over plain HTTP and being read at any hop |
-| `SameSite=Lax` | Most CSRF. Section 25 |
+| `SameSite=Lax` | Most CSRF. <Ref to="#25-clickjacking">Section 25</Ref> |
 | `SameSite=Strict` | More CSRF, at the cost of breaking inbound links |
 | `Path` / `Domain` | Sending the cookie further than it needs to go |
 

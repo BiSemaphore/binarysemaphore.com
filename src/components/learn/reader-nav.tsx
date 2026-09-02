@@ -1,81 +1,34 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { SectionEntry } from "@/lib/learn/book";
-import { markReadAction } from "@/app/learn/actions";
+import { useActiveSection } from "@/components/learn/active-section";
 
 /**
  * The book's contents, following the scroll.
  *
- * Modelled on `src/components/table-of-contents.tsx`, but observing the
- * sections themselves rather than headings, since a notebook's structure is its
- * sections. The active entry is highlighted and kept scrolled into view, so a
- * 55-section list does not leave you hunting.
- *
- * It also records reading progress: whatever you are actually looking at is
- * what you have read. Debounced, so scrolling past forty sections does not write
- * forty rows, and fire-and-forget, because losing a bookmark must never
- * interrupt reading.
+ * The active section comes from ActiveSectionProvider, which owns the one
+ * observer the page needs, so this rail and the references rail always agree.
+ * The active entry is kept scrolled into view: a 55-section list otherwise
+ * leaves you hunting for where you are.
  */
 export function ReaderNav({
   sections,
   read,
-  slug,
-  entitled,
 }: {
   sections: SectionEntry[];
+  /** Section slugs already read, marked with a tick. */
   read: string[];
-  slug: string;
-  entitled: boolean;
 }) {
-  const [active, setActive] = useState<string>(sections[0]?.slug ?? "");
-  const [seen, setSeen] = useState<Set<string>>(() => new Set(read));
+  const active = useActiveSection();
   const listRef = useRef<HTMLDivElement>(null);
-  const pending = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const done = new Set(read);
 
   useEffect(() => {
-    const nodes = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-section]"),
-    );
-    if (nodes.length === 0) return;
-
-    // Top third of the viewport: the section you are reading is the one that
-    // has passed the top, not the one merely peeking in from the bottom.
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        const id = visible[0]?.target.id;
-        if (id) setActive(id);
-      },
-      { rootMargin: "-10% 0px -70% 0px", threshold: 0 },
-    );
-
-    for (const node of nodes) io.observe(node);
-    return () => io.disconnect();
-  }, [sections]);
-
-  // Keep the active entry visible in a long list.
-  useEffect(() => {
-    const el = listRef.current?.querySelector<HTMLElement>('[aria-current="true"]');
-    el?.scrollIntoView({ block: "nearest" });
+    listRef.current
+      ?.querySelector<HTMLElement>('[aria-current="true"]')
+      ?.scrollIntoView({ block: "nearest" });
   }, [active]);
-
-  // Record what has been read, once the reader has settled on a section.
-  useEffect(() => {
-    if (!entitled || !active || seen.has(active)) return;
-
-    if (pending.current) clearTimeout(pending.current);
-    pending.current = setTimeout(() => {
-      setSeen((prev) => new Set(prev).add(active));
-      void markReadAction(slug, active).catch(() => {});
-    }, 1500);
-
-    return () => {
-      if (pending.current) clearTimeout(pending.current);
-    };
-  }, [active, entitled, seen, slug]);
 
   return (
     <nav aria-label="Contents" className="text-sm">
@@ -89,7 +42,6 @@ export function ReaderNav({
       >
         {sections.map((section, i) => {
           const isActive = section.slug === active;
-          const isRead = seen.has(section.slug);
           const newPart =
             section.partTitle && sections[i - 1]?.part !== section.part;
 
@@ -113,10 +65,10 @@ export function ReaderNav({
               >
                 <span
                   className={`w-5 shrink-0 font-mono text-[11px] ${
-                    isRead ? "text-accent-strong" : "text-subtle"
+                    done.has(section.slug) ? "text-accent-strong" : "text-subtle"
                   }`}
                 >
-                  {isRead ? "✓" : section.number}
+                  {done.has(section.slug) ? "✓" : section.number}
                 </span>
                 <span>{section.title}</span>
               </a>

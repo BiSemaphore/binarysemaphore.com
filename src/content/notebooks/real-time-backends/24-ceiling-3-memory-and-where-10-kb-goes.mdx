@@ -68,7 +68,7 @@ You said 10 KB. Why do people report 30 KB or 100 KB in production?
 
 Because a real connection is not the benchmark's connection. This server had no
 application logic. Add TLS session state, a per-connection outbound queue, the
-compression context from section 26, a JSON decoder, and whatever your
+compression context from <Ref to="#26-compression-and-the-budget-it-destroys">section 26</Ref>, a JSON decoder, and whatever your
 application hangs off a session, and the figure moves by an order of magnitude.
 <Peach>10 KB is a floor established by an empty program</Peach>, not a budget. Measure your
 own with a heap profile at a realistic connection count.

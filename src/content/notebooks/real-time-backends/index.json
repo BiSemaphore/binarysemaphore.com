@@ -5,7 +5,13 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 3914
+    "length": 3914,
+    "refs": [
+      "n:scaling",
+      "n:security",
+      "s:4-the-arithmetic-of-polling"
+    ],
+    "backrefs": []
   },
   {
     "slug": "the-whole-picture-on-one-page",
@@ -13,7 +19,9 @@
     "title": "The whole picture on one page",
     "part": "",
     "partTitle": "",
-    "length": 801
+    "length": 801,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "1-the-requirement-two-people-one-board",
@@ -21,7 +29,9 @@
     "title": "The requirement: two people, one board",
     "part": "I",
     "partTitle": "The client always spoke first",
-    "length": 890
+    "length": 890,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "2-the-shape-of-every-request-you-have-written-so-far",
@@ -29,7 +39,9 @@
     "title": "The shape of every request you have written so far",
     "part": "I",
     "partTitle": "The client always spoke first",
-    "length": 1102
+    "length": 1102,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "3-polling-and-why-it-is-not-stupid",
@@ -37,7 +49,12 @@
     "title": "Polling, and why it is not stupid",
     "part": "I",
     "partTitle": "The client always spoke first",
-    "length": 270
+    "length": 270,
+    "refs": [
+      "s:32-the-catch-up-protocol",
+      "s:4-the-arithmetic-of-polling"
+    ],
+    "backrefs": []
   },
   {
     "slug": "4-the-arithmetic-of-polling",
@@ -45,7 +62,12 @@
     "title": "The arithmetic of polling",
     "part": "I",
     "partTitle": "The client always spoke first",
-    "length": 2221
+    "length": 2221,
+    "refs": [],
+    "backrefs": [
+      "3-polling-and-why-it-is-not-stupid",
+      "how-to-use-this-book"
+    ]
   },
   {
     "slug": "5-long-polling-and-the-gap",
@@ -53,7 +75,9 @@
     "title": "Long polling, and the gap",
     "part": "I",
     "partTitle": "The client always spoke first",
-    "length": 1228
+    "length": 1228,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "6-the-two-inversions",
@@ -61,7 +85,9 @@
     "title": "The two inversions",
     "part": "I",
     "partTitle": "The client always spoke first",
-    "length": 953
+    "length": 953,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "7-a-200-that-does-not-close",
@@ -69,7 +95,9 @@
     "title": "A 200 that does not close",
     "part": "II",
     "partTitle": "Server-sent events: the response that never ends",
-    "length": 1067
+    "length": 1067,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "8-the-wire-format-four-fields-and-a-blank-line",
@@ -77,7 +105,11 @@
     "title": "The wire format: four fields and a blank line",
     "part": "II",
     "partTitle": "Server-sent events: the response that never ends",
-    "length": 778
+    "length": 778,
+    "refs": [
+      "s:11-the-proxy-that-eats-your-stream"
+    ],
+    "backrefs": []
   },
   {
     "slug": "9-reconnection-you-did-not-write",
@@ -85,7 +117,14 @@
     "title": "Reconnection you did not write",
     "part": "II",
     "partTitle": "Server-sent events: the response that never ends",
-    "length": 1203
+    "length": 1203,
+    "refs": [
+      "s:32-the-catch-up-protocol"
+    ],
+    "backrefs": [
+      "10-why-nobody-streams-an-llm-with-eventsource",
+      "32-the-catch-up-protocol"
+    ]
   },
   {
     "slug": "10-why-nobody-streams-an-llm-with-eventsource",
@@ -93,7 +132,14 @@
     "title": "Why nobody streams an LLM with EventSource",
     "part": "II",
     "partTitle": "Server-sent events: the response that never ends",
-    "length": 1127
+    "length": 1127,
+    "refs": [
+      "s:37-authenticating-a-socket",
+      "s:9-reconnection-you-did-not-write"
+    ],
+    "backrefs": [
+      "37-authenticating-a-socket"
+    ]
   },
   {
     "slug": "11-the-proxy-that-eats-your-stream",
@@ -101,7 +147,14 @@
     "title": "The proxy that eats your stream",
     "part": "II",
     "partTitle": "Server-sent events: the response that never ends",
-    "length": 1165
+    "length": 1165,
+    "refs": [
+      "s:18-ping-pong-and-the-connection-that-is-already-dead"
+    ],
+    "backrefs": [
+      "18-ping-pong-and-the-connection-that-is-already-dead",
+      "8-the-wire-format-four-fields-and-a-blank-line"
+    ]
   },
   {
     "slug": "12-six-connections-per-origin",
@@ -109,7 +162,9 @@
     "title": "Six connections per origin",
     "part": "II",
     "partTitle": "Server-sent events: the response that never ends",
-    "length": 1203
+    "length": 1203,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "13-what-sse-cannot-do",
@@ -117,7 +172,9 @@
     "title": "What SSE cannot do",
     "part": "II",
     "partTitle": "Server-sent events: the response that never ends",
-    "length": 1664
+    "length": 1664,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "14-the-handshake-byte-by-byte",
@@ -125,7 +182,9 @@
     "title": "The handshake, byte by byte",
     "part": "III",
     "partTitle": "WebSocket: leaving HTTP behind",
-    "length": 720
+    "length": 720,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "15-what-101-actually-changed",
@@ -133,7 +192,11 @@
     "title": "What 101 actually changed",
     "part": "III",
     "partTitle": "WebSocket: leaving HTTP behind",
-    "length": 1101
+    "length": 1101,
+    "refs": [
+      "s:37-authenticating-a-socket"
+    ],
+    "backrefs": []
   },
   {
     "slug": "16-the-frame",
@@ -141,7 +204,11 @@
     "title": "The frame",
     "part": "III",
     "partTitle": "WebSocket: leaving HTTP behind",
-    "length": 1073
+    "length": 1073,
+    "refs": [],
+    "backrefs": [
+      "26-compression-and-the-budget-it-destroys"
+    ]
   },
   {
     "slug": "17-masking-and-the-proxy-it-was-designed-to-protect",
@@ -149,7 +216,9 @@
     "title": "Masking, and the proxy it was designed to protect",
     "part": "III",
     "partTitle": "WebSocket: leaving HTTP behind",
-    "length": 1063
+    "length": 1063,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "18-ping-pong-and-the-connection-that-is-already-dead",
@@ -157,7 +226,14 @@
     "title": "Ping, pong, and the connection that is already dead",
     "part": "III",
     "partTitle": "WebSocket: leaving HTTP behind",
-    "length": 978
+    "length": 978,
+    "refs": [
+      "s:11-the-proxy-that-eats-your-stream"
+    ],
+    "backrefs": [
+      "11-the-proxy-that-eats-your-stream",
+      "40-presence-who-is-online"
+    ]
   },
   {
     "slug": "19-close-codes-and-the-one-you-cannot-send",
@@ -165,7 +241,11 @@
     "title": "Close codes, and the one you cannot send",
     "part": "III",
     "partTitle": "WebSocket: leaving HTTP behind",
-    "length": 1217
+    "length": 1217,
+    "refs": [
+      "s:36-deploys-draining-a-connection-that-never-ends"
+    ],
+    "backrefs": []
   },
   {
     "slug": "20-choosing-polling-long-polling-sse-websocket",
@@ -173,7 +253,9 @@
     "title": "Choosing: polling, long polling, SSE, WebSocket",
     "part": "III",
     "partTitle": "WebSocket: leaving HTTP behind",
-    "length": 1109
+    "length": 1109,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "21-ceiling-1-file-descriptors",
@@ -181,7 +263,11 @@
     "title": "Ceiling 1: file descriptors",
     "part": "IV",
     "partTitle": "How many connections fit on one machine",
-    "length": 932
+    "length": 932,
+    "refs": [],
+    "backrefs": [
+      "27-what-you-just-broke"
+    ]
   },
   {
     "slug": "22-the-thousand-descriptor-limit-is-language-dependent",
@@ -189,7 +275,11 @@
     "title": "The thousand-descriptor limit is language-dependent",
     "part": "IV",
     "partTitle": "How many connections fit on one machine",
-    "length": 1077
+    "length": 1077,
+    "refs": [
+      "s:24-ceiling-3-memory-and-where-10-kb-goes"
+    ],
+    "backrefs": []
   },
   {
     "slug": "23-ceiling-2-the-client-s-ports-not-the-server-s",
@@ -197,7 +287,9 @@
     "title": "Ceiling 2: the client's ports, not the server's",
     "part": "IV",
     "partTitle": "How many connections fit on one machine",
-    "length": 834
+    "length": 834,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "24-ceiling-3-memory-and-where-10-kb-goes",
@@ -205,7 +297,14 @@
     "title": "Ceiling 3: memory, and where 10 KB goes",
     "part": "IV",
     "partTitle": "How many connections fit on one machine",
-    "length": 1366
+    "length": 1366,
+    "refs": [
+      "s:26-compression-and-the-budget-it-destroys"
+    ],
+    "backrefs": [
+      "22-the-thousand-descriptor-limit-is-language-dependent",
+      "26-compression-and-the-budget-it-destroys"
+    ]
   },
   {
     "slug": "25-the-ceiling-the-benchmark-did-not-measure",
@@ -213,7 +312,13 @@
     "title": "The ceiling the benchmark did not measure",
     "part": "IV",
     "partTitle": "How many connections fit on one machine",
-    "length": 1194
+    "length": 1194,
+    "refs": [
+      "s:32-the-catch-up-protocol"
+    ],
+    "backrefs": [
+      "34-coalescing-the-other-lever"
+    ]
   },
   {
     "slug": "26-compression-and-the-budget-it-destroys",
@@ -221,7 +326,14 @@
     "title": "Compression, and the budget it destroys",
     "part": "IV",
     "partTitle": "How many connections fit on one machine",
-    "length": 585
+    "length": 585,
+    "refs": [
+      "s:16-the-frame",
+      "s:24-ceiling-3-memory-and-where-10-kb-goes"
+    ],
+    "backrefs": [
+      "24-ceiling-3-memory-and-where-10-kb-goes"
+    ]
   },
   {
     "slug": "27-what-you-just-broke",
@@ -229,7 +341,12 @@
     "title": "What you just broke",
     "part": "V",
     "partTitle": "The connection is state",
-    "length": 714
+    "length": 714,
+    "refs": [
+      "n:scaling",
+      "s:21-ceiling-1-file-descriptors"
+    ],
+    "backrefs": []
   },
   {
     "slug": "28-sticky-sessions-are-not-the-answer-and-not-for-the-reason-you-think",
@@ -237,7 +354,9 @@
     "title": "Sticky sessions are not the answer, and not for the reason you think",
     "part": "V",
     "partTitle": "The connection is state",
-    "length": 1571
+    "length": 1571,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "29-pub-sub-the-instances-talk-to-each-other",
@@ -245,7 +364,9 @@
     "title": "Pub/sub: the instances talk to each other",
     "part": "V",
     "partTitle": "The connection is state",
-    "length": 1043
+    "length": 1043,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "30-redis-pub-sub-is-at-most-once-and-deploys-are-when-it-bites",
@@ -253,7 +374,11 @@
     "title": "Redis pub/sub is at-most-once, and deploys are when it bites",
     "part": "V",
     "partTitle": "The connection is state",
-    "length": 1032
+    "length": 1032,
+    "refs": [
+      "s:32-the-catch-up-protocol"
+    ],
+    "backrefs": []
   },
   {
     "slug": "31-ordering-and-why-sequence-numbers-come-first",
@@ -261,7 +386,11 @@
     "title": "Ordering, and why sequence numbers come first",
     "part": "V",
     "partTitle": "The connection is state",
-    "length": 1379
+    "length": 1379,
+    "refs": [],
+    "backrefs": [
+      "32-the-catch-up-protocol"
+    ]
   },
   {
     "slug": "32-the-catch-up-protocol",
@@ -269,7 +398,18 @@
     "title": "The catch-up protocol",
     "part": "VI",
     "partTitle": "Delivery: gaps, storms and fan-out",
-    "length": 1136
+    "length": 1136,
+    "refs": [
+      "s:31-ordering-and-why-sequence-numbers-come-first",
+      "s:9-reconnection-you-did-not-write"
+    ],
+    "backrefs": [
+      "25-the-ceiling-the-benchmark-did-not-measure",
+      "3-polling-and-why-it-is-not-stupid",
+      "30-redis-pub-sub-is-at-most-once-and-deploys-are-when-it-bites",
+      "38-the-token-that-never-expires",
+      "9-reconnection-you-did-not-write"
+    ]
   },
   {
     "slug": "33-fan-out-events-times-subscribers",
@@ -277,7 +417,11 @@
     "title": "Fan-out: events times subscribers",
     "part": "VI",
     "partTitle": "Delivery: gaps, storms and fan-out",
-    "length": 1350
+    "length": 1350,
+    "refs": [
+      "s:34-coalescing-the-other-lever"
+    ],
+    "backrefs": []
   },
   {
     "slug": "34-coalescing-the-other-lever",
@@ -285,7 +429,13 @@
     "title": "Coalescing: the other lever",
     "part": "VI",
     "partTitle": "Delivery: gaps, storms and fan-out",
-    "length": 1033
+    "length": 1033,
+    "refs": [
+      "s:25-the-ceiling-the-benchmark-did-not-measure"
+    ],
+    "backrefs": [
+      "33-fan-out-events-times-subscribers"
+    ]
   },
   {
     "slug": "35-the-reconnect-storm",
@@ -293,7 +443,11 @@
     "title": "The reconnect storm",
     "part": "VI",
     "partTitle": "Delivery: gaps, storms and fan-out",
-    "length": 1008
+    "length": 1008,
+    "refs": [],
+    "backrefs": [
+      "36-deploys-draining-a-connection-that-never-ends"
+    ]
   },
   {
     "slug": "36-deploys-draining-a-connection-that-never-ends",
@@ -301,7 +455,13 @@
     "title": "Deploys: draining a connection that never ends",
     "part": "VI",
     "partTitle": "Delivery: gaps, storms and fan-out",
-    "length": 1300
+    "length": 1300,
+    "refs": [
+      "s:35-the-reconnect-storm"
+    ],
+    "backrefs": [
+      "19-close-codes-and-the-one-you-cannot-send"
+    ]
   },
   {
     "slug": "37-authenticating-a-socket",
@@ -309,7 +469,16 @@
     "title": "Authenticating a socket",
     "part": "VII",
     "partTitle": "The parts the lecture left out",
-    "length": 788
+    "length": 788,
+    "refs": [
+      "s:10-why-nobody-streams-an-llm-with-eventsource",
+      "s:39-cross-site-websocket-hijacking"
+    ],
+    "backrefs": [
+      "10-why-nobody-streams-an-llm-with-eventsource",
+      "15-what-101-actually-changed",
+      "39-cross-site-websocket-hijacking"
+    ]
   },
   {
     "slug": "38-the-token-that-never-expires",
@@ -317,7 +486,12 @@
     "title": "The token that never expires",
     "part": "VII",
     "partTitle": "The parts the lecture left out",
-    "length": 708
+    "length": 708,
+    "refs": [
+      "n:security",
+      "s:32-the-catch-up-protocol"
+    ],
+    "backrefs": []
   },
   {
     "slug": "39-cross-site-websocket-hijacking",
@@ -325,7 +499,13 @@
     "title": "Cross-site WebSocket hijacking",
     "part": "VII",
     "partTitle": "The parts the lecture left out",
-    "length": 1522
+    "length": 1522,
+    "refs": [
+      "s:37-authenticating-a-socket"
+    ],
+    "backrefs": [
+      "37-authenticating-a-socket"
+    ]
   },
   {
     "slug": "40-presence-who-is-online",
@@ -333,7 +513,11 @@
     "title": "Presence: who is online",
     "part": "VII",
     "partTitle": "The parts the lecture left out",
-    "length": 1475
+    "length": 1475,
+    "refs": [
+      "s:18-ping-pong-and-the-connection-that-is-already-dead"
+    ],
+    "backrefs": []
   },
   {
     "slug": "41-collaborative-editing-in-one-page",
@@ -341,7 +525,9 @@
     "title": "Collaborative editing, in one page",
     "part": "VII",
     "partTitle": "The parts the lecture left out",
-    "length": 1686
+    "length": 1686,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "42-where-this-goes-next-webtransport",
@@ -349,7 +535,9 @@
     "title": "Where this goes next: WebTransport",
     "part": "VII",
     "partTitle": "The parts the lecture left out",
-    "length": 1014
+    "length": 1014,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "43-the-delivery-script",
@@ -357,7 +545,9 @@
     "title": "The delivery script",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "length": 2679
+    "length": 2679,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "44-whiteboard-drawing-order",
@@ -365,7 +555,9 @@
     "title": "Whiteboard drawing order",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "length": 347
+    "length": 347,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "45-follow-up-question-bank",
@@ -373,7 +565,9 @@
     "title": "Follow-up question bank",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "length": 2287
+    "length": 2287,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-a-numbers-to-memorise",
@@ -381,7 +575,9 @@
     "title": "Appendix A. Numbers to memorise",
     "part": "IX",
     "partTitle": "Appendices",
-    "length": 2446
+    "length": 2446,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-b-glossary",
@@ -389,7 +585,9 @@
     "title": "Appendix B. Glossary",
     "part": "IX",
     "partTitle": "Appendices",
-    "length": 105
+    "length": 105,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-c-self-test",
@@ -397,6 +595,8 @@
     "title": "Appendix C. Self-test",
     "part": "IX",
     "partTitle": "Appendices",
-    "length": 95
+    "length": 95,
+    "refs": [],
+    "backrefs": []
   }
 ]

@@ -3,12 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getNotebook } from "@/lib/learn";
 import { getSections, splitBook } from "@/lib/learn/book";
-import { canRead, getAccess, TRIAL_DAYS } from "@/lib/learn/access";
+import { canRead, getAccess } from "@/lib/learn/access";
 import { getProgress } from "@/lib/learn/progress";
 import { learnBase } from "@/lib/learn/paths";
 import { ReaderNav } from "@/components/learn/reader-nav";
-import { startTrialAction } from "@/app/learn/actions";
+import { ActiveSectionProvider } from "@/components/learn/active-section";
+import { ReferencedRail } from "@/components/learn/referenced-rail";
+import { notebooks } from "@/lib/learn";
+import { openNotebookAction } from "@/app/learn/actions";
 import { LockIcon } from "@/components/icons";
+import { Credit } from "@/components/learn/credit";
 import type { SectionEntry } from "@/lib/learn/book";
 
 type Params = { slug: string };
@@ -92,22 +96,29 @@ export default async function ReaderPage({
   // never imported, so it is not in the page.
   const shown = entitled ? sections : free;
 
+  const notebookTitles = Object.fromEntries(
+    notebooks.map((n) => [n.slug, n.title]),
+  );
+
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 pb-24">
-      <div className="relative">
-        {/* Contents, following the scroll. Below this width there is no room:
-            the column is 768px centred, so at 1360px its left edge sits at
-            296px and the 208px sidebar plus its 40px gutter starts at 48px. */}
-        <aside className="absolute right-full top-0 hidden h-full pr-10 min-[1360px]:block">
-          <div className="sticky top-24 w-52">
-            <ReaderNav
-              sections={shown}
-              read={[...progress.read]}
-              slug={slug}
-              entitled={entitled}
-            />
+    <ActiveSectionProvider
+      first={shown[0]?.slug ?? ""}
+      slug={slug}
+      entitled={entitled}
+      read={[...progress.read]}
+    >
+      {/* Three columns, centred as one block. Centring the reading column alone
+          and hanging the contents off it left the page visibly heavy on the
+          left and empty on the right. Below 1360px there is no room for either
+          rail, so it collapses to the column. */}
+      <div className="mx-auto grid w-full max-w-3xl grid-cols-1 gap-10 px-6 pb-24 min-[1360px]:max-w-none min-[1360px]:grid-cols-[13rem_minmax(0,48rem)_13rem] min-[1360px]:justify-center">
+        <div className="hidden min-[1360px]:block">
+          <div className="sticky top-24">
+            <ReaderNav sections={shown} read={[...progress.read]} />
           </div>
-        </aside>
+        </div>
+
+        <div>
 
         <nav className="pt-10">
           <Link
@@ -126,6 +137,7 @@ export default async function ReaderPage({
           <p className="mt-4 text-lg leading-7 text-muted">
             {notebook.subtitle}
           </p>
+          <Credit notebook={notebook} className="mt-7" />
         </header>
 
         <article className="thread notebook">
@@ -147,19 +159,17 @@ export default async function ReaderPage({
                 id="gate-heading"
                 className="font-display text-lg font-semibold tracking-tight text-foreground"
               >
-                {access.state === "expired"
-                  ? `Your ${TRIAL_DAYS} days are up`
-                  : `${gated.length} more sections`}
+                {`${gated.length} more sections`}
               </h2>
             </div>
 
             {access.state === "anonymous" ? (
               <>
                 <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
-                  You have read {shown.length} of {sections.length} sections. The
-                  rest of {notebook.title}, all {notebook.pages} pages, plus the
-                  three PDF editions, are free for {TRIAL_DAYS} days. No card,
-                  nothing to pay.
+                  That is {shown.length} of {sections.length} sections. Sign in
+                  to read the rest of {notebook.title}, all {notebook.pages}{" "}
+                  pages, and take the PDF editions with you. An account is all
+                  it takes, and it is what makes a download belong to someone.
                 </p>
                 <Link
                   href={`${base}/login?next=${encodeURIComponent(`${base}/${slug}/read`)}`}
@@ -168,32 +178,37 @@ export default async function ReaderPage({
                   Sign in to read on
                 </Link>
               </>
-            ) : access.state === "expired" ? (
-              <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
-                Paid access is not open yet, so there is nothing to buy today.
-                Anything you already downloaded is still yours.
-              </p>
             ) : (
               <>
                 <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
-                  Open {notebook.title} and read the whole thing, plus the three
-                  PDF editions, free for {TRIAL_DAYS} days. The clock starts when
-                  you click.
+                  Open {notebook.title} to read the whole thing, and take the
+                  three PDF editions with you.
                 </p>
-                <form action={startTrialAction} className="mt-5">
+                <form action={openNotebookAction} className="mt-5">
                   <input type="hidden" name="slug" value={slug} />
                   <button
                     type="submit"
                     className="inline-flex items-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
                   >
-                    Start reading
+                    Open the notebook
                   </button>
                 </form>
               </>
             )}
           </section>
         )}
+        </div>
+
+        <div className="hidden min-[1360px]:block">
+          <div className="sticky top-24">
+            <ReferencedRail
+              sections={shown}
+              notebookTitles={notebookTitles}
+              base={base}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+    </ActiveSectionProvider>
   );
 }

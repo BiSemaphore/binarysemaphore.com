@@ -4,14 +4,14 @@ title: "Answers, Notebook 02"
 part: "10"
 partTitle: "Answers"
 ---
-**Q29** How much memory does a streaming upload actually use?  *Notebook 02, section 2.*
+**Q29** How much memory does a streaming upload actually use?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#2-framing-the-problem">section 2</Ref>.*
 
 One buffer, typically tens of kilobytes, regardless of whether the object is
 1 MB or 1 GB. You read a chunk off the request body and write it to the storage
-client, then reuse the buffer. Section 24 has the measured comparison: same
+client, then reuse the buffer. <Ref to="#24-the-client-react-and-redux">Section 24</Ref> has the measured comparison: same
 wall-clock time, flat memory line instead of a 500 MB climb.
 
-**Q30** Could you fix this with sticky sessions?  *Notebook 02, section 4.*
+**Q30** Could you fix this with sticky sessions?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#4-the-handoff">section 4</Ref>.*
 
 You can make it appear fixed, and you should say why that is a bad trade.
 Session affinity pins a user to one node, so a redeploy, a crash or a scale-in
@@ -20,17 +20,17 @@ stateless tier into a stateful one to avoid a storage decision. It also does
 nothing when two different users need the same object, which is the normal case
 for shared or public content.
 
-**Q31** What about a shared network file system, NFS or EFS?  *Notebook 02, section 4.*
+**Q31** What about a shared network file system, NFS or EFS?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#4-the-handoff">section 4</Ref>.*
 
 Legitimate, and it is what many older systems did. It gives every node the same
 namespace, so the 404 goes away. What you inherit is POSIX coordination over a
 network: locking, metadata round trips, small-file latency, a throughput ceiling
-you now have to provision, and an operational surface. See section 10. It is the
+you now have to provision, and an operational surface. See <Ref to="#10-final-review">section 10</Ref>. It is the
 right answer when you genuinely need file semantics, for example a legacy binary
 that calls `open()` and `seek()`. It is the wrong answer when all you needed was
 put and get.
 
-**Q32** Is capacity really infinite in object storage?  *Notebook 02, section 5.*
+**Q32** Is capacity really infinite in object storage?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#5-the-queue">section 5</Ref>.*
 
 Practically, yes, and precisely, no. There is no volume you size, no resize
 operation and no ceiling you will reach, but there are per-object limits (S3
@@ -38,16 +38,16 @@ caps a single object at 5 TiB and a single PUT at 5 GiB, hence multipart), and
 account-level request rate limits per prefix. "Infinite capacity, finite request
 rate per partition" is the accurate sentence.
 
-**Q33** This sounds like the dual-write problem. Is it?  *Notebook 02, section 8.*
+**Q33** This sounds like the dual-write problem. Is it?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#8-senior-concerns">section 8</Ref>.*
 
 It is exactly the dual-write problem, and the transactional outbox is the
 general solution: commit the intent in the same transaction as your business
-data, then let a relay perform the second effect with retries. Notebook 01
-section 11 works this through in full. For upload specifically, two-phase plus
+data, then let a relay perform the second effect with retries. <Ref to="/large-scale-ingestion">Notebook 01</Ref>
+<Ref to="#11-opening">section 11</Ref> works this through in full. For upload specifically, two-phase plus
 a sweeper is usually enough, because the object store gives you a cheap,
 authoritative existence check (`HEAD`) that a message broker cannot.
 
-**Q35** So when would you not use object storage?  *Notebook 02, section 12.*
+**Q35** So when would you not use object storage?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#12-the-naive-design-and-the-seven-ways-it-dies">section 12</Ref>.*
 
 When you need what it gave up. Small mutable state with transactions belongs in
 a database. Microsecond latency and in-place writes belong on block storage,
@@ -56,18 +56,18 @@ a network file system. And very small blobs, a few KB, that must appear and
 disappear atomically with a row can reasonably live in the database itself:
 the per-object request overhead can exceed the benefit at that size.
 
-**Q37** What is an ETag, exactly?  *Notebook 02, section 13.*
+**Q37** What is an ETag, exactly?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#13-three-kinds-of-storage">section 13</Ref>.*
 
 An opaque entity tag the store returns for the current contents of an object.
 For a single-part PUT it is usually the MD5 of the body, which makes it a handy
 integrity check; for a multipart upload it is a hash of the part hashes with a
 `-N` suffix, so it is <Peach>not</Peach> the MD5 of the whole object and you should never
 present it as a content checksum. Its real job is conditional requests:
-`If-None-Match` for caching (section 42) and for the conditional writes in
-section 22. If you need a real content hash, ask for one explicitly with the
+`If-None-Match` for caching (<Ref to="#42-the-browser-is-a-boundary-too">section 42</Ref>) and for the conditional writes in
+<Ref to="#22-the-node-js-runtime">section 22</Ref>. If you need a real content hash, ask for one explicitly with the
 checksum headers.
 
-**Q38** Why does a bucket name have to be globally unique?  *Notebook 02, section 13.*
+**Q38** Why does a bucket name have to be globally unique?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#13-three-kinds-of-storage">section 13</Ref>.*
 
 Because objects are addressable over HTTP by hostname:
 `https://my-bucket.s3.amazonaws.com/key`. The bucket name is part of the DNS
@@ -75,7 +75,7 @@ name, so it shares a global namespace across every account on the platform.
 That also means bucket names are <Peach>public information</Peach>: never encode a customer
 name or anything sensitive into one.
 
-**Q40** Why is there no atomic rename, if the bytes do not have to move?  *Notebook 02, section 16.*
+**Q40** Why is there no atomic rename, if the bytes do not have to move?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#16-getting-the-bytes-in">section 16</Ref>.*
 
 Because the key determines the partition. Changing the key means removing an
 entry from one partition of a globally distributed sorted index and inserting it
@@ -84,7 +84,7 @@ distributed transaction, which is the exact thing this design refuses to have.
 The same structure explains a nicer property: the index holds size, ETag and
 content type, so `HEAD` answers instantly <Peach>without touching a single drive</Peach>.
 
-**Q41** Why not use erasure coding for everything, including small objects?  *Notebook 02, section 18.*
+**Q41** Why not use erasure coding for everything, including small objects?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#18-getting-the-bytes-out">section 18</Ref>.*
 
 Because the overhead is per object, not per byte. Splitting a 2 KB object into
 20 shards means 20 tiny IOs and 20 index entries to hold a fraction of a block,
@@ -92,7 +92,7 @@ and the fixed per-shard cost dominates. Real systems batch small objects into
 larger internal containers first, then erasure code the container. This is also
 why very small objects have a minimum billable size, often 128 KB.
 
-**Q42** Is everything strongly consistent, then?  *Notebook 02, section 21.*
+**Q42** Is everything strongly consistent, then?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#21-how-to-review-code-out-loud">section 21</Ref>.*
 
 The object data path is: PUT, GET, HEAD, DELETE and LIST are strongly consistent
 in S3 today. Some <Peach>bucket-level configuration</Peach> remains eventually consistent
@@ -101,16 +101,16 @@ replication is asynchronous by definition, so a replica bucket is a different
 question entirely. The precise sentence is "strong read-after-write for objects
 in a bucket; configuration and cross-region replication are eventual".
 
-**Q44** The upload comes from another backend service, not a browser. Does this change?  *Notebook 02, section 28.*
+**Q44** The upload comes from another backend service, not a browser. Does this change?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#28-twenty-four-more-drills">section 28</Ref>.*
 
 The principle holds, the mechanism simplifies. Service to service you can grant
 a scoped IAM role, or let the producer write into a bucket you read, and skip
 signing entirely. If the producer is a third party you cannot change, you may
 have to pull instead: your worker streams from their endpoint into the bucket
-using ranged requests so it can resume. Notebook 01 section 6 covers the
+using ranged requests so it can resume. <Ref to="/large-scale-ingestion">Notebook 01</Ref> <Ref to="#6-processing">section 6</Ref> covers the
 service-to-service variant.
 
-**Q45** Could you use bucket event notifications instead of the client calling complete?  *Notebook 02, section 30.*
+**Q45** Could you use bucket event notifications instead of the client calling complete?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#30-opening">section 30</Ref>.*
 
 Yes, and it is stronger. S3 can publish `s3:ObjectCreated:*` to SQS, SNS, Lambda
 or EventBridge, so completion is driven by the storage system rather than
@@ -121,7 +121,7 @@ in the path. The mature answer is <Peach>both</Peach>: the client's call for the
 so the UI updates immediately, the event as the authoritative backstop, and the
 sweeper for whatever both of them miss.
 
-**Q47** How does the client know it is the same file after a reload?  *Notebook 02, section 38.*
+**Q47** How does the client know it is the same file after a reload?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#38-opening">section 38</Ref>.*
 
 It cannot rely on the filename. Fingerprint it: size plus last-modified plus a
 hash of the first and last part is usually enough, and is cheap because slicing
@@ -129,7 +129,7 @@ is lazy. Store that fingerprint on the pending row. Getting this wrong means
 resuming one file into another file's upload, which produces a corrupt object
 that passes every existence check.
 
-**Q49** Does a range request cost less than a full GET?  *Notebook 02, section 42.*
+**Q49** Does a range request cost less than a full GET?  *<Ref to="/object-storage">Notebook 02</Ref>, <Ref to="#42-the-browser-is-a-boundary-too">section 42</Ref>.*
 
 You pay one request either way, and egress only for the bytes returned. So a
 range read of 8 bytes costs one GET plus 8 bytes of egress. That is why

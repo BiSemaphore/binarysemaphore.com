@@ -48,7 +48,7 @@ handshake, against an allowlist, and reject with 403 before upgrading.</Mint>
   if !allowed[origin] { http.Error(w, "forbidden", 403); return }
 ```
 
-And the better structural answer is section 37's ticket: <Peach>a credential the
+And the better structural answer is <Ref to="#37-authenticating-a-socket">section 37</Ref>'s ticket: <Peach>a credential the
 attacker's page cannot obtain</Peach>. An `Origin` check is a blocklist against browsers;
 a ticket the attacker cannot mint is a positive proof, and it makes the ambient
 cookie irrelevant.

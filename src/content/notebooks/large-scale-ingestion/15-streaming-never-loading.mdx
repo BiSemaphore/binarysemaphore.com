@@ -75,7 +75,7 @@ The file is a 4 GB gzip. Does streaming still work?
 
 Yes, decompress in the stream (`GZIPInputStream`), memory stays bounded. But
 gzip is not splittable, so you cannot assign byte ranges to different workers
-and the fan-out in section 19 is unavailable. Formats matter: bzip2, zstd with
+and the fan-out in <Ref to="#19-parallelising-one-big-file">section 19</Ref> is unavailable. Formats matter: bzip2, zstd with
 frames, and Parquet are splittable, plain gzip is not. Knowing that distinction
 is a strong signal.
 

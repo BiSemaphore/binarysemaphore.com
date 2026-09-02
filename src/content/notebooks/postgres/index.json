@@ -5,7 +5,9 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 1953
+    "length": 1953,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "the-schema-on-one-page",
@@ -13,7 +15,9 @@
     "title": "The schema on one page",
     "part": "",
     "partTitle": "",
-    "length": 400
+    "length": 400,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "1-persistence-and-where-data-lives",
@@ -21,7 +25,9 @@
     "title": "Persistence, and where data lives",
     "part": "I",
     "partTitle": "Why a database at all",
-    "length": 512
+    "length": 512,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "2-what-a-text-file-cannot-do",
@@ -29,7 +35,13 @@
     "title": "What a text file cannot do",
     "part": "I",
     "partTitle": "Why a database at all",
-    "length": 1024
+    "length": 1024,
+    "refs": [
+      "s:40-the-lost-update-revisited"
+    ],
+    "backrefs": [
+      "40-the-lost-update-revisited"
+    ]
   },
   {
     "slug": "3-what-a-dbms-promises",
@@ -37,7 +49,9 @@
     "title": "What a DBMS promises",
     "part": "I",
     "partTitle": "Why a database at all",
-    "length": 497
+    "length": 497,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "4-relational-or-not",
@@ -45,7 +59,11 @@
     "title": "Relational or not",
     "part": "I",
     "partTitle": "Why a database at all",
-    "length": 823
+    "length": 823,
+    "refs": [],
+    "backrefs": [
+      "10-json-and-jsonb"
+    ]
   },
   {
     "slug": "5-why-postgres",
@@ -53,7 +71,9 @@
     "title": "Why Postgres",
     "part": "I",
     "partTitle": "Why a database at all",
-    "length": 561
+    "length": 561,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "6-numbers-and-the-money-rule",
@@ -61,7 +81,9 @@
     "title": "Numbers, and the money rule",
     "part": "II",
     "partTitle": "Types are the first constraint",
-    "length": 54
+    "length": 54,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "7-text-and-why-the-answer-is-text",
@@ -69,7 +91,9 @@
     "title": "Text, and why the answer is `text`",
     "part": "II",
     "partTitle": "Types are the first constraint",
-    "length": 797
+    "length": 797,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "8-time-and-the-one-that-bites",
@@ -77,7 +101,9 @@
     "title": "Time, and the one that bites",
     "part": "II",
     "partTitle": "Types are the first constraint",
-    "length": 416
+    "length": 416,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "9-identity-serial-identity-uuid",
@@ -85,7 +111,9 @@
     "title": "Identity: serial, identity, uuid",
     "part": "II",
     "partTitle": "Types are the first constraint",
-    "length": 1151
+    "length": 1151,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "10-json-and-jsonb",
@@ -93,7 +121,11 @@
     "title": "JSON and JSONB",
     "part": "II",
     "partTitle": "Types are the first constraint",
-    "length": 365
+    "length": 365,
+    "refs": [
+      "s:4-relational-or-not"
+    ],
+    "backrefs": []
   },
   {
     "slug": "11-enums-and-the-argument-that-actually-wins",
@@ -101,7 +133,9 @@
     "title": "Enums, and the argument that actually wins",
     "part": "II",
     "partTitle": "Types are the first constraint",
-    "length": 376
+    "length": 376,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "12-why-you-never-touch-the-database-by-hand",
@@ -109,7 +143,9 @@
     "title": "Why you never touch the database by hand",
     "part": "III",
     "partTitle": "Migrations",
-    "length": 426
+    "length": 426,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "13-up-down-and-the-version-table",
@@ -117,7 +153,9 @@
     "title": "Up, down, and the version table",
     "part": "III",
     "partTitle": "Migrations",
-    "length": 240
+    "length": 240,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "14-migrations-that-do-not-lock-the-table",
@@ -125,7 +163,9 @@
     "title": "Migrations that do not lock the table",
     "part": "III",
     "partTitle": "Migrations",
-    "length": 761
+    "length": 761,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "15-the-columns-every-table-has",
@@ -133,7 +173,11 @@
     "title": "The columns every table has",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 555
+    "length": 555,
+    "refs": [
+      "s:42-triggers-and-when-not-to"
+    ],
+    "backrefs": []
   },
   {
     "slug": "16-not-null-is-the-default-you-want",
@@ -141,7 +185,9 @@
     "title": "`NOT NULL` is the default you want",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 309
+    "length": 309,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "17-keys-primary-foreign-composite",
@@ -149,7 +195,9 @@
     "title": "Keys: primary, foreign, composite",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 155
+    "length": 155,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "18-one-to-one-and-when-to-split-a-table",
@@ -157,7 +205,9 @@
     "title": "One to one, and when to split a table",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 598
+    "length": 598,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "19-one-to-many",
@@ -165,7 +215,11 @@
     "title": "One to many",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 295
+    "length": 295,
+    "refs": [],
+    "backrefs": [
+      "44-backups-and-the-difference-that-matters"
+    ]
   },
   {
     "slug": "20-many-to-many-and-the-linking-table",
@@ -173,7 +227,9 @@
     "title": "Many to many, and the linking table",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 706
+    "length": 706,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "21-referential-integrity-on-delete",
@@ -181,7 +237,9 @@
     "title": "Referential integrity on delete",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 606
+    "length": 606,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "22-check-unique-and-pushing-rules-down",
@@ -189,7 +247,11 @@
     "title": "`CHECK`, `UNIQUE`, and pushing rules down",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 482
+    "length": 482,
+    "refs": [],
+    "backrefs": [
+      "40-the-lost-update-revisited"
+    ]
   },
   {
     "slug": "23-naming-plural-lower-snake",
@@ -197,7 +259,9 @@
     "title": "Naming: plural, lower, snake",
     "part": "IV",
     "partTitle": "Designing the schema",
-    "length": 358
+    "length": 358,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "24-write-from-before-select",
@@ -205,7 +269,9 @@
     "title": "Write `FROM` before `SELECT`",
     "part": "V",
     "partTitle": "Querying for an API",
-    "length": 542
+    "length": 542,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "25-join-and-why-left-is-usually-right",
@@ -213,7 +279,9 @@
     "title": "`JOIN`, and why `LEFT` is usually right",
     "part": "V",
     "partTitle": "Querying for an API",
-    "length": 236
+    "length": 236,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "26-nested-json-in-one-round-trip",
@@ -221,7 +289,9 @@
     "title": "Nested JSON in one round trip",
     "part": "V",
     "partTitle": "Querying for an API",
-    "length": 664
+    "length": 664,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "27-parameterised-queries-and-sql-injection",
@@ -229,7 +299,9 @@
     "title": "Parameterised queries, and SQL injection",
     "part": "V",
     "partTitle": "Querying for an API",
-    "length": 360
+    "length": 360,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "28-dynamic-filters-and-sorts-without-opening-a-hole",
@@ -237,7 +309,11 @@
     "title": "Dynamic filters and sorts, without opening a hole",
     "part": "V",
     "partTitle": "Querying for an API",
-    "length": 637
+    "length": 637,
+    "refs": [],
+    "backrefs": [
+      "36-beyond-b-tree"
+    ]
   },
   {
     "slug": "29-pagination-offset-and-why-it-dies",
@@ -245,7 +321,9 @@
     "title": "Pagination: `OFFSET`, and why it dies",
     "part": "V",
     "partTitle": "Querying for an API",
-    "length": 483
+    "length": 483,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "30-insert-and-update",
@@ -253,7 +331,11 @@
     "title": "Insert and update",
     "part": "V",
     "partTitle": "Querying for an API",
-    "length": 302
+    "length": 302,
+    "refs": [
+      "s:42-triggers-and-when-not-to"
+    ],
+    "backrefs": []
   },
   {
     "slug": "31-the-n-1-problem",
@@ -261,7 +343,11 @@
     "title": "The N+1 problem",
     "part": "V",
     "partTitle": "Querying for an API",
-    "length": 487
+    "length": 487,
+    "refs": [],
+    "backrefs": [
+      "35-reading-explain-analyze"
+    ]
   },
   {
     "slug": "32-what-an-index-actually-is",
@@ -269,7 +355,9 @@
     "title": "What an index actually is",
     "part": "VI",
     "partTitle": "Making it fast",
-    "length": 410
+    "length": 410,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "33-what-to-index-and-what-postgres-already-did",
@@ -277,7 +365,9 @@
     "title": "What to index, and what Postgres already did",
     "part": "VI",
     "partTitle": "Making it fast",
-    "length": 606
+    "length": 606,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "34-what-an-index-costs",
@@ -285,7 +375,11 @@
     "title": "What an index costs",
     "part": "VI",
     "partTitle": "Making it fast",
-    "length": 382
+    "length": 382,
+    "refs": [
+      "s:35-reading-explain-analyze"
+    ],
+    "backrefs": []
   },
   {
     "slug": "35-reading-explain-analyze",
@@ -293,7 +387,13 @@
     "title": "Reading `EXPLAIN ANALYZE`",
     "part": "VI",
     "partTitle": "Making it fast",
-    "length": 659
+    "length": 659,
+    "refs": [
+      "s:31-the-n-1-problem"
+    ],
+    "backrefs": [
+      "34-what-an-index-costs"
+    ]
   },
   {
     "slug": "36-beyond-b-tree",
@@ -301,7 +401,11 @@
     "title": "Beyond B-tree",
     "part": "VI",
     "partTitle": "Making it fast",
-    "length": 642
+    "length": 642,
+    "refs": [
+      "s:28-dynamic-filters-and-sorts-without-opening-a-hole"
+    ],
+    "backrefs": []
   },
   {
     "slug": "37-transactions-and-what-acid-buys",
@@ -309,7 +413,13 @@
     "title": "Transactions, and what ACID buys",
     "part": "VII",
     "partTitle": "Correctness under concurrency",
-    "length": 635
+    "length": 635,
+    "refs": [
+      "s:38-isolation-levels"
+    ],
+    "backrefs": [
+      "43-vacuum-bloat-and-wraparound"
+    ]
   },
   {
     "slug": "38-isolation-levels",
@@ -317,7 +427,11 @@
     "title": "Isolation levels",
     "part": "VII",
     "partTitle": "Correctness under concurrency",
-    "length": 675
+    "length": 675,
+    "refs": [],
+    "backrefs": [
+      "37-transactions-and-what-acid-buys"
+    ]
   },
   {
     "slug": "39-row-locks-and-select-for-update",
@@ -325,7 +439,9 @@
     "title": "Row locks and `SELECT FOR UPDATE`",
     "part": "VII",
     "partTitle": "Correctness under concurrency",
-    "length": 697
+    "length": 697,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "40-the-lost-update-revisited",
@@ -333,7 +449,15 @@
     "title": "The lost update, revisited",
     "part": "VII",
     "partTitle": "Correctness under concurrency",
-    "length": 141
+    "length": 141,
+    "refs": [
+      "n:object-storage",
+      "s:2-what-a-text-file-cannot-do",
+      "s:22-check-unique-and-pushing-rules-down"
+    ],
+    "backrefs": [
+      "2-what-a-text-file-cannot-do"
+    ]
   },
   {
     "slug": "41-connection-pooling",
@@ -341,7 +465,9 @@
     "title": "Connection pooling",
     "part": "VIII",
     "partTitle": "Living with it in production",
-    "length": 612
+    "length": 612,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "42-triggers-and-when-not-to",
@@ -349,7 +475,12 @@
     "title": "Triggers, and when not to",
     "part": "VIII",
     "partTitle": "Living with it in production",
-    "length": 274
+    "length": 274,
+    "refs": [],
+    "backrefs": [
+      "15-the-columns-every-table-has",
+      "30-insert-and-update"
+    ]
   },
   {
     "slug": "43-vacuum-bloat-and-wraparound",
@@ -357,7 +488,11 @@
     "title": "Vacuum, bloat and wraparound",
     "part": "VIII",
     "partTitle": "Living with it in production",
-    "length": 859
+    "length": 859,
+    "refs": [
+      "s:37-transactions-and-what-acid-buys"
+    ],
+    "backrefs": []
   },
   {
     "slug": "44-backups-and-the-difference-that-matters",
@@ -365,7 +500,12 @@
     "title": "Backups, and the difference that matters",
     "part": "VIII",
     "partTitle": "Living with it in production",
-    "length": 332
+    "length": 332,
+    "refs": [
+      "n:object-storage",
+      "s:19-one-to-many"
+    ],
+    "backrefs": []
   },
   {
     "slug": "45-the-delivery-script",
@@ -373,7 +513,9 @@
     "title": "The delivery script",
     "part": "IX",
     "partTitle": "The interview itself",
-    "length": 1611
+    "length": 1611,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "46-follow-up-question-bank",
@@ -381,7 +523,9 @@
     "title": "Follow-up question bank",
     "part": "IX",
     "partTitle": "The interview itself",
-    "length": 1294
+    "length": 1294,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-a-defaults-to-memorise",
@@ -389,7 +533,9 @@
     "title": "Appendix A. Defaults to memorise",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 1060
+    "length": 1060,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-b-glossary",
@@ -397,7 +543,9 @@
     "title": "Appendix B. Glossary",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 1927
+    "length": 1927,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-c-self-test",
@@ -405,6 +553,8 @@
     "title": "Appendix C. Self-test",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 15
+    "length": 15,
+    "refs": [],
+    "backrefs": []
   }
 ]

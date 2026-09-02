@@ -5,7 +5,9 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 1418
+    "length": 1418,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "the-whole-system-on-one-page",
@@ -13,7 +15,9 @@
     "title": "The whole system on one page",
     "part": "",
     "partTitle": "",
-    "length": 103
+    "length": 103,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "1-the-problem-stated-properly",
@@ -21,7 +25,9 @@
     "title": "The problem, stated properly",
     "part": "I",
     "partTitle": "Framing the problem",
-    "length": 1093
+    "length": 1093,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "2-clarifying-questions-that-buy-you-the-design",
@@ -29,7 +35,11 @@
     "title": "Clarifying questions that buy you the design",
     "part": "I",
     "partTitle": "Framing the problem",
-    "length": 1194
+    "length": 1194,
+    "refs": [
+      "s:19-parallelising-one-big-file"
+    ],
+    "backrefs": []
   },
   {
     "slug": "3-back-of-the-envelope-before-the-boxes",
@@ -37,7 +47,9 @@
     "title": "Back-of-the-envelope, before the boxes",
     "part": "I",
     "partTitle": "Framing the problem",
-    "length": 329
+    "length": 329,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "4-the-first-principle-separate-ingestion-from-processing",
@@ -45,7 +57,9 @@
     "title": "The first principle: separate ingestion from processing",
     "part": "I",
     "partTitle": "Framing the problem",
-    "length": 876
+    "length": 876,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "5-why-object-storage-not-the-database",
@@ -53,7 +67,9 @@
     "title": "Why object storage, not the database",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "length": 885
+    "length": 885,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "6-presigned-urls-keeping-the-bytes-out-of-your-backend",
@@ -61,7 +77,9 @@
     "title": "Presigned URLs, keeping the bytes out of your backend",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "length": 662
+    "length": 662,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "7-multipart-and-resumable-upload",
@@ -69,7 +87,13 @@
     "title": "Multipart and resumable upload",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "length": 392
+    "length": 392,
+    "refs": [
+      "s:27-cost-the-bill-nobody-mentions"
+    ],
+    "backrefs": [
+      "9-when-the-network-fails-mid-upload"
+    ]
   },
   {
     "slug": "8-choosing-the-part-size",
@@ -77,7 +101,9 @@
     "title": "Choosing the part size",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "length": 392
+    "length": 392,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "9-when-the-network-fails-mid-upload",
@@ -85,7 +111,11 @@
     "title": "When the network fails mid-upload",
     "part": "II",
     "partTitle": "Ingestion, getting the bytes in",
-    "length": 141
+    "length": 141,
+    "refs": [
+      "s:7-multipart-and-resumable-upload"
+    ],
+    "backrefs": []
   },
   {
     "slug": "10-completing-the-upload-and-verifying-it",
@@ -93,7 +123,9 @@
     "title": "Completing the upload and verifying it",
     "part": "III",
     "partTitle": "The handoff",
-    "length": 558
+    "length": 558,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "11-the-dual-write-problem-and-the-outbox",
@@ -101,7 +133,13 @@
     "title": "The dual-write problem and the outbox",
     "part": "III",
     "partTitle": "The handoff",
-    "length": 496
+    "length": 496,
+    "refs": [
+      "s:17-idempotency"
+    ],
+    "backrefs": [
+      "16-chunking-and-checkpointing"
+    ]
   },
   {
     "slug": "12-why-a-queue-at-all",
@@ -109,7 +147,9 @@
     "title": "Why a queue at all",
     "part": "IV",
     "partTitle": "The queue",
-    "length": 588
+    "length": 588,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "13-kafka-or-rabbitmq-or-sqs",
@@ -117,7 +157,9 @@
     "title": "Kafka or RabbitMQ or SQS",
     "part": "IV",
     "partTitle": "The queue",
-    "length": 960
+    "length": 960,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "14-the-worker-loop",
@@ -125,7 +167,9 @@
     "title": "The worker loop",
     "part": "V",
     "partTitle": "Processing",
-    "length": 260
+    "length": 260,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "15-streaming-never-loading",
@@ -133,7 +177,11 @@
     "title": "Streaming, never loading",
     "part": "V",
     "partTitle": "Processing",
-    "length": 331
+    "length": 331,
+    "refs": [
+      "s:19-parallelising-one-big-file"
+    ],
+    "backrefs": []
   },
   {
     "slug": "16-chunking-and-checkpointing",
@@ -141,7 +189,11 @@
     "title": "Chunking and checkpointing",
     "part": "V",
     "partTitle": "Processing",
-    "length": 533
+    "length": 533,
+    "refs": [
+      "s:11-the-dual-write-problem-and-the-outbox"
+    ],
+    "backrefs": []
   },
   {
     "slug": "17-idempotency",
@@ -149,7 +201,11 @@
     "title": "Idempotency",
     "part": "V",
     "partTitle": "Processing",
-    "length": 470
+    "length": 470,
+    "refs": [],
+    "backrefs": [
+      "11-the-dual-write-problem-and-the-outbox"
+    ]
   },
   {
     "slug": "18-the-lease-problem-when-the-queue-thinks-you-died",
@@ -157,7 +213,11 @@
     "title": "The lease problem: when the queue thinks you died",
     "part": "V",
     "partTitle": "Processing",
-    "length": 845
+    "length": 845,
+    "refs": [
+      "s:19-parallelising-one-big-file"
+    ],
+    "backrefs": []
   },
   {
     "slug": "19-parallelising-one-big-file",
@@ -165,7 +225,13 @@
     "title": "Parallelising one big file",
     "part": "V",
     "partTitle": "Processing",
-    "length": 633
+    "length": 633,
+    "refs": [],
+    "backrefs": [
+      "15-streaming-never-loading",
+      "18-the-lease-problem-when-the-queue-thinks-you-died",
+      "2-clarifying-questions-that-buy-you-the-design"
+    ]
   },
   {
     "slug": "20-retries-poison-pills-and-the-dlq",
@@ -173,7 +239,9 @@
     "title": "Retries, poison pills and the DLQ",
     "part": "V",
     "partTitle": "Processing",
-    "length": 458
+    "length": 458,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "21-the-job-state-machine",
@@ -181,7 +249,9 @@
     "title": "The job state machine",
     "part": "VI",
     "partTitle": "State and visibility",
-    "length": 145
+    "length": 145,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "22-progress-without-hammering-the-database",
@@ -189,7 +259,9 @@
     "title": "Progress without hammering the database",
     "part": "VI",
     "partTitle": "State and visibility",
-    "length": 473
+    "length": 473,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "23-telling-the-frontend",
@@ -197,7 +269,9 @@
     "title": "Telling the frontend",
     "part": "VI",
     "partTitle": "State and visibility",
-    "length": 543
+    "length": 543,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "24-scaling-workers-backpressure-and-queue-depth",
@@ -205,7 +279,9 @@
     "title": "Scaling: workers, backpressure and queue depth",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "length": 137
+    "length": 137,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "25-multi-tenancy-and-fairness",
@@ -213,7 +289,9 @@
     "title": "Multi-tenancy and fairness",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "length": 538
+    "length": 538,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "26-partial-failure-what-failed-means",
@@ -221,7 +299,9 @@
     "title": "Partial failure: what \"failed\" means",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "length": 148
+    "length": 148,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "27-cost-the-bill-nobody-mentions",
@@ -229,7 +309,11 @@
     "title": "Cost, the bill nobody mentions",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "length": 864
+    "length": 864,
+    "refs": [],
+    "backrefs": [
+      "7-multipart-and-resumable-upload"
+    ]
   },
   {
     "slug": "28-observability-and-security",
@@ -237,7 +321,9 @@
     "title": "Observability and security",
     "part": "VII",
     "partTitle": "Senior concerns",
-    "length": 825
+    "length": 825,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "29-the-seven-step-delivery-script",
@@ -245,7 +331,9 @@
     "title": "The seven-step delivery script",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "length": 672
+    "length": 672,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "30-whiteboard-drawing-order",
@@ -253,7 +341,9 @@
     "title": "Whiteboard drawing order",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "length": 80
+    "length": 80,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "31-follow-up-question-bank",
@@ -261,7 +351,9 @@
     "title": "Follow-up question bank",
     "part": "VIII",
     "partTitle": "The interview itself",
-    "length": 3273
+    "length": 3273,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-a-numbers-to-memorise",
@@ -269,7 +361,9 @@
     "title": "Appendix A. Numbers to memorise",
     "part": "IX",
     "partTitle": "Appendices",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-b-glossary",
@@ -277,7 +371,9 @@
     "title": "Appendix B. Glossary",
     "part": "IX",
     "partTitle": "Appendices",
-    "length": 1330
+    "length": 1330,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-c-self-test",
@@ -285,6 +381,8 @@
     "title": "Appendix C. Self-test",
     "part": "IX",
     "partTitle": "Appendices",
-    "length": 1196
+    "length": 1196,
+    "refs": [],
+    "backrefs": []
   }
 ]

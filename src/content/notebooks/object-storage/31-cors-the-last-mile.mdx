@@ -19,7 +19,7 @@ cross-origin request and CORS applies to it.
 
 `ExposeHeaders: ["ETag"]` is the line people miss. Without it the browser
 receives the response but <Peach>JavaScript cannot read the ETag</Peach>, and multipart
-uploads (section 37) need the per-part ETags to complete the upload. The upload
+uploads (<Ref to="#37-the-full-large-file-architecture">section 37</Ref>) need the per-part ETags to complete the upload. The upload
 appears to succeed and the completion step fails with an empty value.
 
 <DoThis>

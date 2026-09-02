@@ -15,7 +15,7 @@ lookup table to use in review, and it is the practical output of the whole book.
 | A boolean parameter that selects behaviour | S | Two behaviours, two actors, one function |
 | A method with an unrelated third argument | S, I | The function serves more than one purpose |
 | A domain class importing the ORM or HTTP layer | D | The arrow points at the volatile detail |
-| An interface with one implementation, forever | (none) | Section 13, not a violation but a cost |
+| An interface with one implementation, forever | (none) | <Ref to="#13-ocp-against-yagni-the-abstraction-you-did-not-need">Section 13</Ref>, not a violation but a cost |
 | A test that needs six mocks to run | I, D | The dependency surface is too wide |
 
 The last row is the most useful in practice. <Peach>Test setup pain is the most

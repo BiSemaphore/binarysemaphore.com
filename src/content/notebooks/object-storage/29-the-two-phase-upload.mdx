@@ -5,7 +5,7 @@ part: "V"
 partTitle: "Getting the bytes in"
 ---
 The bytes now bypass your server entirely, which reintroduces the question that
-started section 8: <Peach>if you never see the upload, how does your database learn
+started <Ref to="#8-failure-7-no-transaction-across-two-systems">section 8</Ref>: <Peach>if you never see the upload, how does your database learn
 about it?</Peach>
 
 ```text
@@ -67,7 +67,7 @@ row you already wrote and already authorised.
                          metadata index, without touching a drive.
 ```
 
-`HEAD` is the right call because of section 20: size, type and ETag live in the
+`HEAD` is the right call because of <Ref to="#20-the-metadata-plane">section 20</Ref>: size, type and ETag live in the
 index, so the answer is free.
 
 <Trap>

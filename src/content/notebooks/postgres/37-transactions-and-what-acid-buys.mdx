@@ -15,7 +15,7 @@ COMMIT;                      -- both, or neither. never one.
 |---|---|---|
 | <Peach>Atomicity</Peach> | All statements or none | Money debited but never credited |
 | <Peach>Consistency</Peach> | Constraints hold at commit | A row that violates a `CHECK` |
-| <Peach>Isolation</Peach> | Concurrent transactions do not corrupt each other | Section 38 |
+| <Peach>Isolation</Peach> | Concurrent transactions do not corrupt each other | <Ref to="#38-isolation-levels">Section 38</Ref> |
 | <Peach>Durability</Peach> | Committed means survives a crash | "It said saved" and it was not |
 
 The practical rule: <Peach>a transaction should wrap one unit of business meaning</Peach>,

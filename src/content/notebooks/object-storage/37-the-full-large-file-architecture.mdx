@@ -44,7 +44,7 @@ Four notes that only show up once you build it:
   memory is `partSize × concurrency`, not file size. A 2 GB upload with 16 MiB
   parts at concurrency 5 holds about 80 MB.
 - **CORS must expose `ETag`.** Without it JavaScript cannot read the per-part
-  ETags, so step 4 sends empty values and completion fails. Section 31.
+  ETags, so step 4 sends empty values and completion fails. <Ref to="#31-cors-the-last-mile">Section 31</Ref>.
 
 #### What the progress bar is actually made of
 

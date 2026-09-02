@@ -55,7 +55,7 @@ const CALLOUTS = {
 };
 
 /** Directives that are instructions to the typesetter, not content. */
-const CONSUMED = new Set(["title", "toc", "glossary", "part"]);
+const CONSUMED = new Set(["toc", "glossary", "part"]);
 
 /** The four highlighters plus the circle, as the books write them. */
 /**
@@ -123,6 +123,8 @@ function parse(markdown) {
   const lines = markdown.split("\n");
   const parts = [];
   const sections = [];
+  /** The book's own number, from its :::title block, for "see Notebook 02". */
+  let number = "";
   let current = null;
   let buffer = [];
 
@@ -164,7 +166,10 @@ function parse(markdown) {
       }
       const inner = body.join("\n").trim();
 
-      if (name === "part") {
+      if (name === "title") {
+        // "System Design Notebook / 02" on the first line.
+        number = (inner.split("\n")[0].split("/")[1] ?? "").trim();
+      } else if (name === "part") {
         close();
         const [number, title] = args.split("|").map((x) => x.trim());
         parts.push({ number: number ?? "", title: title ?? "" });
@@ -205,7 +210,7 @@ function parse(markdown) {
   }
 
   close();
-  return { parts, sections };
+  return { number, parts, sections };
 }
 
 /**
@@ -264,18 +269,77 @@ function blocks(body) {
 const check = process.argv.includes("--check");
 const written = new Map();
 
+/**
+ * Parse every book before writing any of them.
+ *
+ * The books cross-reference constantly ("as in section 26", "see Notebook 02"),
+ * and those are dead text today. Resolving them needs the whole library: a
+ * section number to a slug within the same book, and a notebook number to
+ * another book. So: parse everything, then write.
+ */
+const parsed = new Map();
 for (const [slug, file] of Object.entries(BOOKS)) {
   const from = path.join(SRC, file);
   if (!existsSync(from)) {
     console.error(`  ! missing ${from}`);
     process.exit(1);
   }
+  parsed.set(slug, parse(await readFile(from, "utf8")));
+}
 
-  const { parts, sections } = parse(await readFile(from, "utf8"));
+/** Notebook number ("02") -> slug, for "see Notebook 02". */
+const byNumber = new Map(
+  [...parsed].map(([slug, book]) => [book.number, slug]),
+);
+
+/** Within one book, section number ("26") -> section slug. */
+function sectionIndex(book) {
+  return new Map(
+    book.sections.filter((s) => s.number).map((s) => [s.number, s.slug]),
+  );
+}
+
+/**
+ * Turn "section 26" and "Notebook 02" into links.
+ *
+ * Only when the target exists: the books also cite lecture numbers ("Notebook
+ * 15") that are not part of this library, and a link to nothing is worse than
+ * plain text. Code is masked first, so a comment mentioning a section is left
+ * alone.
+ */
+function linkReferences(body, sections, refs) {
+  const held = [];
+  let masked = body.replace(PROTECTED, (code) => {
+    held.push(code);
+    return `\u0000${held.length - 1}\u0000`;
+  });
+
+  masked = masked.replace(/\b(section)\s+(\d+)\b/gi, (whole, word, n) => {
+    const target = sections.get(String(Number(n)));
+    if (!target) return whole;
+    refs.add(`s:${target}`);
+    return `<Ref to="#${target}">${word} ${n}</Ref>`;
+  });
+
+  masked = masked.replace(/\bNotebook\s+(\d+)\b/g, (whole, n) => {
+    const target = byNumber.get(n.padStart(2, "0"));
+    if (!target) return whole;
+    refs.add(`n:${target}`);
+    return `<Ref to="/${target}">${whole}</Ref>`;
+  });
+
+  return masked.replace(/\u0000(\d+)\u0000/g, (_, i) => held[Number(i)]);
+}
+
+for (const [slug, book] of parsed) {
+  const { parts, sections } = book;
+  const numbers = sectionIndex(book);
   const index = [];
 
   for (const section of sections) {
     const part = section.part >= 0 ? parts[section.part] : null;
+    const refs = new Set();
+    const body = linkReferences(section.body, numbers, refs);
 
     const frontmatter = [
       "---",
@@ -287,10 +351,7 @@ for (const [slug, file] of Object.entries(BOOKS)) {
       "",
     ].join("\n");
 
-    written.set(
-      path.join(slug, `${section.slug}.mdx`),
-      frontmatter + section.body + "\n",
-    );
+    written.set(path.join(slug, `${section.slug}.mdx`), frontmatter + body + "\n");
 
     index.push({
       slug: section.slug,
@@ -304,7 +365,26 @@ for (const [slug, file] of Object.entries(BOOKS)) {
         (n, b) => n + (b.startsWith("<") || b.startsWith("```") ? 0 : b.length),
         0,
       ),
+      // What this section points at. "s:<slug>" within this book,
+      // "n:<slug>" to another notebook.
+      refs: [...refs].sort(),
     });
+  }
+
+  // Backlinks. A section is worth reaching from the ones that lean on it, and
+  // outgoing references alone leave two thirds of the rail empty: adding these
+  // takes the sections with something to show from 32% to about half.
+  const incoming = new Map();
+  for (const section of index) {
+    for (const ref of section.refs) {
+      if (!ref.startsWith("s:")) continue;
+      const target = ref.slice(2);
+      if (!incoming.has(target)) incoming.set(target, []);
+      incoming.get(target).push(section.slug);
+    }
+  }
+  for (const section of index) {
+    section.backrefs = (incoming.get(section.slug) ?? []).sort();
   }
 
   written.set(path.join(slug, "index.json"), JSON.stringify(index, null, 2) + "\n");

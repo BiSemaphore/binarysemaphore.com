@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { learnBase } from "@/lib/learn/paths";
 
 /**
  * The study notebooks' own vocabulary, as MDX components.
@@ -162,4 +163,30 @@ export const notebookComponents = {
   Mint,
   Pink,
   Circle,
+  Ref,
 };
+
+/**
+ * A cross-reference the books make constantly: "as in section 26", "see
+ * Notebook 02". `scripts/sync-notebooks.mjs` resolves these at generation time
+ * and only emits one when the target exists, so this never links to nothing.
+ *
+ * `to` is either `#<section-slug>` within the same book, or `/<notebook-slug>`
+ * for another one. The second needs the learn base, since the same routes are
+ * served both at learn.binarysemaphore.com and under /learn in dev.
+ */
+export async function Ref({
+  to,
+  children,
+}: Props & { to?: string }) {
+  const href = to?.startsWith("#") ? to : `${await learnBase()}${to ?? ""}`;
+
+  return (
+    <a
+      href={href}
+      className="underline decoration-accent/40 decoration-dotted underline-offset-4 transition-colors hover:decoration-accent"
+    >
+      {children}
+    </a>
+  );
+}

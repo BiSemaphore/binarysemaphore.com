@@ -23,7 +23,7 @@ Three constraints, each closing a specific attack:
 
 | Condition | Stops |
 |---|---|
-| `content-length-range` | The 5 GB upload from section 27. <Peach>Enforced by the store</Peach> |
+| `content-length-range` | The 5 GB upload from <Ref to="#27-the-hole-in-a-presigned-put">section 27</Ref>. <Peach>Enforced by the store</Peach> |
 | `starts-with $Content-Type` | An executable arriving where an image was authorised |
 | `starts-with $key` | Writing outside the caller's prefix, into another tenant's space |
 
@@ -76,7 +76,7 @@ The principle holds, the mechanism simplifies. Service to service you can grant
 a scoped IAM role, or let the producer write into a bucket you read, and skip
 signing entirely. If the producer is a third party you cannot change, you may
 have to pull instead: your worker streams from their endpoint into the bucket
-using ranged requests so it can resume. Notebook 01 section 6 covers the
+using ranged requests so it can resume. <Ref to="/large-scale-ingestion">Notebook 01</Ref> <Ref to="#6-failure-5-durability-is-not-availability">section 6</Ref> covers the
 service-to-service variant.
 
 </Ask>

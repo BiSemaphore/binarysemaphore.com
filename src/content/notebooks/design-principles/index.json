@@ -5,7 +5,9 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 3957
+    "length": 3957,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "the-whole-picture-on-one-page",
@@ -13,7 +15,9 @@
     "title": "The whole picture on one page",
     "part": "",
     "partTitle": "",
-    "length": 794
+    "length": 794,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "1-the-requirement-a-change-that-should-have-been-small",
@@ -21,7 +25,9 @@
     "title": "The requirement: a change that should have been small",
     "part": "I",
     "partTitle": "The words that came before the acronym",
-    "length": 1192
+    "length": 1192,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "2-cohesion-and-coupling-the-older-better-words",
@@ -29,7 +35,9 @@
     "title": "Cohesion and coupling: the older, better words",
     "part": "I",
     "partTitle": "The words that came before the acronym",
-    "length": 1177
+    "length": 1177,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "3-separation-of-concerns-and-where-these-principles-live",
@@ -37,7 +45,11 @@
     "title": "Separation of concerns, and where these principles live",
     "part": "I",
     "partTitle": "The words that came before the acronym",
-    "length": 982
+    "length": 982,
+    "refs": [
+      "s:12-when-two-principles-disagree"
+    ],
+    "backrefs": []
   },
   {
     "slug": "4-s-one-reason-to-change",
@@ -45,7 +57,11 @@
     "title": "S: one reason to change",
     "part": "II",
     "partTitle": "The five",
-    "length": 678
+    "length": 678,
+    "refs": [],
+    "backrefs": [
+      "17-the-critique-is-solid-still-right"
+    ]
   },
   {
     "slug": "5-s-refined-responsibility-means-an-actor",
@@ -53,7 +69,11 @@
     "title": "S, refined: responsibility means an actor",
     "part": "II",
     "partTitle": "The five",
-    "length": 991
+    "length": 991,
+    "refs": [
+      "s:15-the-smell-catalogue-what-a-violation-looks-like-in-a-diff"
+    ],
+    "backrefs": []
   },
   {
     "slug": "6-o-change-by-adding-not-by-editing",
@@ -61,7 +81,13 @@
     "title": "O: change by adding, not by editing",
     "part": "II",
     "partTitle": "The five",
-    "length": 677
+    "length": 677,
+    "refs": [
+      "s:16-solid-outside-objects"
+    ],
+    "backrefs": [
+      "8-l-what-liskov-actually-said"
+    ]
   },
   {
     "slug": "7-o-meyer-s-version-and-martin-s-are-not-the-same",
@@ -69,7 +95,11 @@
     "title": "O: Meyer's version and Martin's are not the same",
     "part": "II",
     "partTitle": "The five",
-    "length": 1012
+    "length": 1012,
+    "refs": [
+      "s:8-l-what-liskov-actually-said"
+    ],
+    "backrefs": []
   },
   {
     "slug": "8-l-what-liskov-actually-said",
@@ -77,7 +107,13 @@
     "title": "L: what Liskov actually said",
     "part": "II",
     "partTitle": "The five",
-    "length": 1067
+    "length": 1067,
+    "refs": [
+      "s:6-o-change-by-adding-not-by-editing"
+    ],
+    "backrefs": [
+      "7-o-meyer-s-version-and-martin-s-are-not-the-same"
+    ]
   },
   {
     "slug": "9-l-the-four-rules-and-the-square",
@@ -85,7 +121,9 @@
     "title": "L: the four rules, and the square",
     "part": "II",
     "partTitle": "The five",
-    "length": 1609
+    "length": 1609,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "10-i-the-interface-that-carries-what-you-do-not-use",
@@ -93,7 +131,9 @@
     "title": "I: the interface that carries what you do not use",
     "part": "II",
     "partTitle": "The five",
-    "length": 1001
+    "length": 1001,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "11-d-point-the-dependency-at-what-changes-least",
@@ -101,7 +141,9 @@
     "title": "D: point the dependency at what changes least",
     "part": "II",
     "partTitle": "The five",
-    "length": 1255
+    "length": 1255,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "12-when-two-principles-disagree",
@@ -109,7 +151,12 @@
     "title": "When two principles disagree",
     "part": "III",
     "partTitle": "Using them without being used by them",
-    "length": 1153
+    "length": 1153,
+    "refs": [],
+    "backrefs": [
+      "16-solid-outside-objects",
+      "3-separation-of-concerns-and-where-these-principles-live"
+    ]
   },
   {
     "slug": "13-ocp-against-yagni-the-abstraction-you-did-not-need",
@@ -117,7 +164,13 @@
     "title": "OCP against YAGNI: the abstraction you did not need",
     "part": "III",
     "partTitle": "Using them without being used by them",
-    "length": 391
+    "length": 391,
+    "refs": [],
+    "backrefs": [
+      "15-the-smell-catalogue-what-a-violation-looks-like-in-a-diff",
+      "17-the-critique-is-solid-still-right",
+      "18-the-delivery-script"
+    ]
   },
   {
     "slug": "14-srp-against-dry-the-duplication-you-should-keep",
@@ -125,7 +178,9 @@
     "title": "SRP against DRY: the duplication you should keep",
     "part": "III",
     "partTitle": "Using them without being used by them",
-    "length": 580
+    "length": 580,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "15-the-smell-catalogue-what-a-violation-looks-like-in-a-diff",
@@ -133,7 +188,15 @@
     "title": "The smell catalogue: what a violation looks like in a diff",
     "part": "III",
     "partTitle": "Using them without being used by them",
-    "length": 1296
+    "length": 1296,
+    "refs": [
+      "s:13-ocp-against-yagni-the-abstraction-you-did-not-need"
+    ],
+    "backrefs": [
+      "17-the-critique-is-solid-still-right",
+      "18-the-delivery-script",
+      "5-s-refined-responsibility-means-an-actor"
+    ]
   },
   {
     "slug": "16-solid-outside-objects",
@@ -141,7 +204,14 @@
     "title": "SOLID outside objects",
     "part": "III",
     "partTitle": "Using them without being used by them",
-    "length": 663
+    "length": 663,
+    "refs": [
+      "n:rest-api-design",
+      "s:12-when-two-principles-disagree"
+    ],
+    "backrefs": [
+      "6-o-change-by-adding-not-by-editing"
+    ]
   },
   {
     "slug": "17-the-critique-is-solid-still-right",
@@ -149,7 +219,13 @@
     "title": "The critique: is SOLID still right?",
     "part": "III",
     "partTitle": "Using them without being used by them",
-    "length": 1756
+    "length": 1756,
+    "refs": [
+      "s:13-ocp-against-yagni-the-abstraction-you-did-not-need",
+      "s:15-the-smell-catalogue-what-a-violation-looks-like-in-a-diff",
+      "s:4-s-one-reason-to-change"
+    ],
+    "backrefs": []
   },
   {
     "slug": "18-the-delivery-script",
@@ -157,7 +233,14 @@
     "title": "The delivery script",
     "part": "IV",
     "partTitle": "The interview itself",
-    "length": 1692
+    "length": 1692,
+    "refs": [
+      "s:13-ocp-against-yagni-the-abstraction-you-did-not-need",
+      "s:15-the-smell-catalogue-what-a-violation-looks-like-in-a-diff"
+    ],
+    "backrefs": [
+      "20-follow-up-question-bank"
+    ]
   },
   {
     "slug": "19-whiteboard-refactoring-live",
@@ -165,7 +248,9 @@
     "title": "Whiteboard: refactoring live",
     "part": "IV",
     "partTitle": "The interview itself",
-    "length": 383
+    "length": 383,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "20-follow-up-question-bank",
@@ -173,7 +258,11 @@
     "title": "Follow-up question bank",
     "part": "IV",
     "partTitle": "The interview itself",
-    "length": 1243
+    "length": 1243,
+    "refs": [
+      "s:18-the-delivery-script"
+    ],
+    "backrefs": []
   },
   {
     "slug": "appendix-a-the-sources-and-what-each-one-actually-says",
@@ -181,7 +270,9 @@
     "title": "Appendix A. The sources, and what each one actually says",
     "part": "V",
     "partTitle": "Appendices",
-    "length": 1482
+    "length": 1482,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-b-the-one-page-summary",
@@ -189,7 +280,9 @@
     "title": "Appendix B. The one-page summary",
     "part": "V",
     "partTitle": "Appendices",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-c-glossary",
@@ -197,7 +290,9 @@
     "title": "Appendix C. Glossary",
     "part": "V",
     "partTitle": "Appendices",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-d-self-test",
@@ -205,6 +300,8 @@
     "title": "Appendix D. Self-test",
     "part": "V",
     "partTitle": "Appendices",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   }
 ]

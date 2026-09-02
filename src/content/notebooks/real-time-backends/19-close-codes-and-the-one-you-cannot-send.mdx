@@ -35,7 +35,7 @@ reconnect path, and a look at whether an idle timeout is doing it on a schedule.
 
 <Mint>Use the 4000 to 4999 range for application meanings</Mint>, because it is reserved
 for exactly that. `4001 token expired` and `4002 rebalancing, reconnect`
-(section 36) let the client respond intelligently instead of blindly retrying.
+(<Ref to="#36-deploys-draining-a-connection-that-never-ends">section 36</Ref>) let the client respond intelligently instead of blindly retrying.
 
 <Ask>
 
@@ -45,7 +45,7 @@ Look at the timing distribution before the code. If closures cluster at a round
 number of seconds after connect, it is an idle timeout and the number names the
 hop: 60 seconds says ALB or nginx defaults. If they are spread out and correlate
 with mobile clients, it is normal network churn and the answer is a good
-reconnect path, not a fix. If they spike at deploys, it is section 36.
+reconnect path, not a fix. If they spike at deploys, it is <Ref to="#36-deploys-draining-a-connection-that-never-ends">section 36</Ref>.
 
 </Ask>
 

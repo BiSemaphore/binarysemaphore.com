@@ -8,6 +8,7 @@ import { getProgress, summarise } from "@/lib/learn/progress";
 import { learnBase } from "@/lib/learn/paths";
 import { AccessPanel } from "@/components/learn/access-panel";
 import { ArrowRightIcon } from "@/components/icons";
+import { Credit } from "@/components/learn/credit";
 
 type Params = { slug: string };
 
@@ -93,6 +94,7 @@ export default async function NotebookPage({
             </div>
           ))}
         </dl>
+        <Credit notebook={notebook} className="mt-7" />
       </header>
 
       <div className="mt-10">

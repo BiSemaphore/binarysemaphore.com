@@ -36,10 +36,9 @@ The property worth stating out loud in an interview:
 "CompleteMultipartUpload takes the <Peach>same time for a 50 GB object as for a 50 MB
 one</Peach>, because the service is not concatenating anything. It writes an index
 entry saying this key consists of these parts in this order. It is a metadata
-plane operation, not a data plane one, which is exactly the split from section
-17."
+plane operation, not a data plane one, which is exactly the split from <Ref to="#17-what-happens-when-you-put">section 17</Ref>."
 
 </Signal>
 
 Until step 3, the key does not exist. A GET returns 404, a LIST does not show
-it, and the console shows nothing. That has a consequence, and it is section 36.
+it, and the console shows nothing. That has a consequence, and it is <Ref to="#36-abandoned-uploads-the-invisible-bill">section 36</Ref>.

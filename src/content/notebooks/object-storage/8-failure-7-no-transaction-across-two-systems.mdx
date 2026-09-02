@@ -29,11 +29,11 @@ What you can do is choose <Peach>which failure mode you prefer</Peach>, and then
   unreferenced object costs money and can be swept by a lifecycle rule. A
   dangling row corrupts user-visible behaviour and every read path must defend
   against it.
-- Make the intent durable first. Section 29's two-phase flow writes a `pending`
+- Make the intent durable first. <Ref to="#29-the-two-phase-upload">Section 29</Ref>'s two-phase flow writes a `pending`
   row <Peach>before</Peach> any bytes move, so a failure leaves a row you can reason about
   rather than a mystery.
 - Reconcile on a schedule. A background job resolves disagreements between the
-  two sources of truth. Section 30.
+  two sources of truth. <Ref to="#30-reconciliation-pending-expired-orphaned">Section 30</Ref>.
 
 <KeyIdea>
 
@@ -49,8 +49,8 @@ This sounds like the dual-write problem. Is it?
 
 It is exactly the dual-write problem, and the transactional outbox is the
 general solution: commit the intent in the same transaction as your business
-data, then let a relay perform the second effect with retries. Notebook 01
-section 11 works this through in full. For upload specifically, two-phase plus
+data, then let a relay perform the second effect with retries. <Ref to="/large-scale-ingestion">Notebook 01</Ref>
+<Ref to="#11-object-storage-the-minimum-interface">section 11</Ref> works this through in full. For upload specifically, two-phase plus
 a sweeper is usually enough, because the object store gives you a cheap,
 authoritative existence check (`HEAD`) that a message broker cannot.
 

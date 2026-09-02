@@ -33,7 +33,7 @@ Index deliberately, then verify
   and filters on these two columns" is a reason; "this looks like a column
   people search" is not.
 - Add the index, then confirm with `EXPLAIN` that the planner <Peach>actually uses
-  it</Peach> (section 35). An unused index is pure cost.
+  it</Peach> (<Ref to="#35-reading-explain-analyze">section 35</Ref>). An unused index is pure cost.
 - Find dead weight with `pg_stat_user_indexes`: an index with `idx_scan = 0`
   after a representative period is being paid for and never used.
 - Drop them `CONCURRENTLY`, like you created them.

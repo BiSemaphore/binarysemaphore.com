@@ -5,7 +5,11 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 2667
+    "length": 2667,
+    "refs": [
+      "n:large-scale-ingestion"
+    ],
+    "backrefs": []
   },
   {
     "slug": "the-whole-picture-on-one-page",
@@ -13,7 +17,9 @@
     "title": "The whole picture on one page",
     "part": "",
     "partTitle": "",
-    "length": 413
+    "length": 413,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "1-the-requirement-and-the-intuitive-answer",
@@ -21,7 +27,9 @@
     "title": "The requirement, and the intuitive answer",
     "part": "I",
     "partTitle": "The naive design, and the seven ways it dies",
-    "length": 950
+    "length": 950,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "2-failure-1-the-file-does-not-fit",
@@ -29,7 +37,12 @@
     "title": "Failure 1: the file does not fit",
     "part": "I",
     "partTitle": "The naive design, and the seven ways it dies",
-    "length": 753
+    "length": 753,
+    "refs": [
+      "s:24-buffering-versus-streaming",
+      "s:25-the-limits-streaming-does-not-remove"
+    ],
+    "backrefs": []
   },
   {
     "slug": "3-failure-2-the-disk-is-ephemeral",
@@ -37,7 +50,9 @@
     "title": "Failure 2: the disk is ephemeral",
     "part": "I",
     "partTitle": "The naive design, and the seven ways it dies",
-    "length": 1249
+    "length": 1249,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "4-failure-3-horizontal-scaling-and-the-1-in-n-404",
@@ -45,7 +60,11 @@
     "title": "Failure 3: horizontal scaling, and the 1-in-N 404",
     "part": "I",
     "partTitle": "The naive design, and the seven ways it dies",
-    "length": 457
+    "length": 457,
+    "refs": [
+      "s:10-file-storage-and-what-posix-costs"
+    ],
+    "backrefs": []
   },
   {
     "slug": "5-failure-4-the-disk-grows-the-wrong-way",
@@ -53,7 +72,9 @@
     "title": "Failure 4: the disk grows the wrong way",
     "part": "I",
     "partTitle": "The naive design, and the seven ways it dies",
-    "length": 435
+    "length": 435,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "6-failure-5-durability-is-not-availability",
@@ -61,7 +82,11 @@
     "title": "Failure 5: durability is not availability",
     "part": "I",
     "partTitle": "The naive design, and the seven ways it dies",
-    "length": 1200
+    "length": 1200,
+    "refs": [],
+    "backrefs": [
+      "28-presigned-post-policies"
+    ]
   },
   {
     "slug": "7-failure-6-your-server-is-an-expensive-cdn",
@@ -69,7 +94,11 @@
     "title": "Failure 6: your server is an expensive CDN",
     "part": "I",
     "partTitle": "The naive design, and the seven ways it dies",
-    "length": 1035
+    "length": 1035,
+    "refs": [],
+    "backrefs": [
+      "39-never-relay-a-download"
+    ]
   },
   {
     "slug": "8-failure-7-no-transaction-across-two-systems",
@@ -77,7 +106,17 @@
     "title": "Failure 7: no transaction across two systems",
     "part": "I",
     "partTitle": "The naive design, and the seven ways it dies",
-    "length": 1041
+    "length": 1041,
+    "refs": [
+      "n:large-scale-ingestion",
+      "s:11-object-storage-the-minimum-interface",
+      "s:29-the-two-phase-upload",
+      "s:30-reconciliation-pending-expired-orphaned"
+    ],
+    "backrefs": [
+      "29-the-two-phase-upload",
+      "34-choosing-the-part-size"
+    ]
   },
   {
     "slug": "9-block-storage",
@@ -85,7 +124,9 @@
     "title": "Block storage",
     "part": "II",
     "partTitle": "Three kinds of storage",
-    "length": 1284
+    "length": 1284,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "10-file-storage-and-what-posix-costs",
@@ -93,7 +134,11 @@
     "title": "File storage, and what POSIX costs",
     "part": "II",
     "partTitle": "Three kinds of storage",
-    "length": 1941
+    "length": 1941,
+    "refs": [],
+    "backrefs": [
+      "4-failure-3-horizontal-scaling-and-the-1-in-n-404"
+    ]
   },
   {
     "slug": "11-object-storage-the-minimum-interface",
@@ -101,7 +146,16 @@
     "title": "Object storage: the minimum interface",
     "part": "II",
     "partTitle": "Three kinds of storage",
-    "length": 2076
+    "length": 2076,
+    "refs": [
+      "s:14-there-are-no-folders",
+      "s:19-eleven-nines-read-carefully",
+      "s:22-conditional-writes-the-primitive-that-changed-things"
+    ],
+    "backrefs": [
+      "42-range-requests",
+      "8-failure-7-no-transaction-across-two-systems"
+    ]
   },
   {
     "slug": "12-the-trade-you-are-actually-making",
@@ -109,7 +163,9 @@
     "title": "The trade you are actually making",
     "part": "II",
     "partTitle": "Three kinds of storage",
-    "length": 773
+    "length": 773,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "13-key-value-metadata-bucket",
@@ -117,7 +173,13 @@
     "title": "Key, value, metadata, bucket",
     "part": "III",
     "partTitle": "Anatomy of an object",
-    "length": 552
+    "length": 552,
+    "refs": [
+      "s:15-designing-the-key",
+      "s:22-conditional-writes-the-primitive-that-changed-things",
+      "s:42-range-requests"
+    ],
+    "backrefs": []
   },
   {
     "slug": "14-there-are-no-folders",
@@ -125,7 +187,12 @@
     "title": "There are no folders",
     "part": "III",
     "partTitle": "Anatomy of an object",
-    "length": 1147
+    "length": 1147,
+    "refs": [],
+    "backrefs": [
+      "11-object-storage-the-minimum-interface",
+      "20-the-metadata-plane"
+    ]
   },
   {
     "slug": "15-designing-the-key",
@@ -133,7 +200,15 @@
     "title": "Designing the key",
     "part": "III",
     "partTitle": "Anatomy of an object",
-    "length": 2238
+    "length": 2238,
+    "refs": [],
+    "backrefs": [
+      "13-key-value-metadata-bucket",
+      "20-the-metadata-plane",
+      "22-conditional-writes-the-primitive-that-changed-things",
+      "45-the-security-surface",
+      "47-untrusted-content-and-what-to-watch"
+    ]
   },
   {
     "slug": "16-why-list-is-not-a-lookup",
@@ -141,7 +216,12 @@
     "title": "Why LIST is not a lookup",
     "part": "III",
     "partTitle": "Anatomy of an object",
-    "length": 703
+    "length": 703,
+    "refs": [],
+    "backrefs": [
+      "20-the-metadata-plane",
+      "44-the-bill"
+    ]
   },
   {
     "slug": "17-what-happens-when-you-put",
@@ -149,7 +229,11 @@
     "title": "What happens when you PUT",
     "part": "IV",
     "partTitle": "Inside the system",
-    "length": 206
+    "length": 206,
+    "refs": [],
+    "backrefs": [
+      "33-the-multipart-protocol"
+    ]
   },
   {
     "slug": "18-the-data-plane-replication-and-erasure-coding",
@@ -157,7 +241,11 @@
     "title": "The data plane: replication and erasure coding",
     "part": "IV",
     "partTitle": "Inside the system",
-    "length": 1114
+    "length": 1114,
+    "refs": [],
+    "backrefs": [
+      "19-eleven-nines-read-carefully"
+    ]
   },
   {
     "slug": "19-eleven-nines-read-carefully",
@@ -165,7 +253,13 @@
     "title": "Eleven nines, read carefully",
     "part": "IV",
     "partTitle": "Inside the system",
-    "length": 489
+    "length": 489,
+    "refs": [
+      "s:18-the-data-plane-replication-and-erasure-coding"
+    ],
+    "backrefs": [
+      "11-object-storage-the-minimum-interface"
+    ]
   },
   {
     "slug": "20-the-metadata-plane",
@@ -173,7 +267,15 @@
     "title": "The metadata plane",
     "part": "IV",
     "partTitle": "Inside the system",
-    "length": 839
+    "length": 839,
+    "refs": [
+      "s:14-there-are-no-folders",
+      "s:15-designing-the-key",
+      "s:16-why-list-is-not-a-lookup"
+    ],
+    "backrefs": [
+      "29-the-two-phase-upload"
+    ]
   },
   {
     "slug": "21-consistency-eventual-then-strong",
@@ -181,7 +283,9 @@
     "title": "Consistency: eventual, then strong",
     "part": "IV",
     "partTitle": "Inside the system",
-    "length": 769
+    "length": 769,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "22-conditional-writes-the-primitive-that-changed-things",
@@ -189,7 +293,14 @@
     "title": "Conditional writes, the primitive that changed things",
     "part": "IV",
     "partTitle": "Inside the system",
-    "length": 1570
+    "length": 1570,
+    "refs": [
+      "s:15-designing-the-key"
+    ],
+    "backrefs": [
+      "11-object-storage-the-minimum-interface",
+      "13-key-value-metadata-bucket"
+    ]
   },
   {
     "slug": "23-architecture-a-through-your-server",
@@ -197,7 +308,9 @@
     "title": "Architecture A: through your server",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 806
+    "length": 806,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "24-buffering-versus-streaming",
@@ -205,7 +318,11 @@
     "title": "Buffering versus streaming",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 273
+    "length": 273,
+    "refs": [],
+    "backrefs": [
+      "2-failure-1-the-file-does-not-fit"
+    ]
   },
   {
     "slug": "25-the-limits-streaming-does-not-remove",
@@ -213,7 +330,11 @@
     "title": "The limits streaming does not remove",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 744
+    "length": 744,
+    "refs": [],
+    "backrefs": [
+      "2-failure-1-the-file-does-not-fit"
+    ]
   },
   {
     "slug": "26-architecture-b-presigned-urls",
@@ -221,7 +342,11 @@
     "title": "Architecture B: presigned URLs",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 919
+    "length": 919,
+    "refs": [],
+    "backrefs": [
+      "40-three-delivery-patterns"
+    ]
   },
   {
     "slug": "27-the-hole-in-a-presigned-put",
@@ -229,7 +354,11 @@
     "title": "The hole in a presigned PUT",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 589
+    "length": 589,
+    "refs": [],
+    "backrefs": [
+      "28-presigned-post-policies"
+    ]
   },
   {
     "slug": "28-presigned-post-policies",
@@ -237,7 +366,13 @@
     "title": "Presigned POST policies",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 1067
+    "length": 1067,
+    "refs": [
+      "n:large-scale-ingestion",
+      "s:27-the-hole-in-a-presigned-put",
+      "s:6-failure-5-durability-is-not-availability"
+    ],
+    "backrefs": []
   },
   {
     "slug": "29-the-two-phase-upload",
@@ -245,7 +380,14 @@
     "title": "The two-phase upload",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 851
+    "length": 851,
+    "refs": [
+      "s:20-the-metadata-plane",
+      "s:8-failure-7-no-transaction-across-two-systems"
+    ],
+    "backrefs": [
+      "8-failure-7-no-transaction-across-two-systems"
+    ]
   },
   {
     "slug": "30-reconciliation-pending-expired-orphaned",
@@ -253,7 +395,13 @@
     "title": "Reconciliation: pending, expired, orphaned",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 747
+    "length": 747,
+    "refs": [],
+    "backrefs": [
+      "46-lifecycle-storage-classes-and-versioning",
+      "47-untrusted-content-and-what-to-watch",
+      "8-failure-7-no-transaction-across-two-systems"
+    ]
   },
   {
     "slug": "31-cors-the-last-mile",
@@ -261,7 +409,13 @@
     "title": "CORS, the last mile",
     "part": "V",
     "partTitle": "Getting the bytes in",
-    "length": 431
+    "length": 431,
+    "refs": [
+      "s:37-the-full-large-file-architecture"
+    ],
+    "backrefs": [
+      "37-the-full-large-file-architecture"
+    ]
   },
   {
     "slug": "32-why-a-single-put-stops-working",
@@ -269,7 +423,9 @@
     "title": "Why a single PUT stops working",
     "part": "VI",
     "partTitle": "Large files",
-    "length": 1299
+    "length": 1299,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "33-the-multipart-protocol",
@@ -277,7 +433,12 @@
     "title": "The multipart protocol",
     "part": "VI",
     "partTitle": "Large files",
-    "length": 252
+    "length": 252,
+    "refs": [
+      "s:17-what-happens-when-you-put",
+      "s:36-abandoned-uploads-the-invisible-bill"
+    ],
+    "backrefs": []
   },
   {
     "slug": "34-choosing-the-part-size",
@@ -285,7 +446,12 @@
     "title": "Choosing the part size",
     "part": "VI",
     "partTitle": "Large files",
-    "length": 539
+    "length": 539,
+    "refs": [
+      "n:large-scale-ingestion",
+      "s:8-failure-7-no-transaction-across-two-systems"
+    ],
+    "backrefs": []
   },
   {
     "slug": "35-the-etag-trap",
@@ -293,7 +459,9 @@
     "title": "The ETag trap",
     "part": "VI",
     "partTitle": "Large files",
-    "length": 328
+    "length": 328,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "36-abandoned-uploads-the-invisible-bill",
@@ -301,7 +469,14 @@
     "title": "Abandoned uploads: the invisible bill",
     "part": "VI",
     "partTitle": "Large files",
-    "length": 137
+    "length": 137,
+    "refs": [],
+    "backrefs": [
+      "33-the-multipart-protocol",
+      "44-the-bill",
+      "46-lifecycle-storage-classes-and-versioning",
+      "47-untrusted-content-and-what-to-watch"
+    ]
   },
   {
     "slug": "37-the-full-large-file-architecture",
@@ -309,7 +484,13 @@
     "title": "The full large-file architecture",
     "part": "VI",
     "partTitle": "Large files",
-    "length": 898
+    "length": 898,
+    "refs": [
+      "s:31-cors-the-last-mile"
+    ],
+    "backrefs": [
+      "31-cors-the-last-mile"
+    ]
   },
   {
     "slug": "38-resuming",
@@ -317,7 +498,9 @@
     "title": "Resuming",
     "part": "VI",
     "partTitle": "Large files",
-    "length": 219
+    "length": 219,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "39-never-relay-a-download",
@@ -325,7 +508,11 @@
     "title": "Never relay a download",
     "part": "VII",
     "partTitle": "Getting the bytes out",
-    "length": 444
+    "length": 444,
+    "refs": [
+      "s:7-failure-6-your-server-is-an-expensive-cdn"
+    ],
+    "backrefs": []
   },
   {
     "slug": "40-three-delivery-patterns",
@@ -333,7 +520,11 @@
     "title": "Three delivery patterns",
     "part": "VII",
     "partTitle": "Getting the bytes out",
-    "length": 971
+    "length": 971,
+    "refs": [
+      "s:26-architecture-b-presigned-urls"
+    ],
+    "backrefs": []
   },
   {
     "slug": "41-why-a-presigned-get-destroys-your-cache",
@@ -341,7 +532,12 @@
     "title": "Why a presigned GET destroys your cache",
     "part": "VII",
     "partTitle": "Getting the bytes out",
-    "length": 170
+    "length": 170,
+    "refs": [],
+    "backrefs": [
+      "44-the-bill",
+      "47-untrusted-content-and-what-to-watch"
+    ]
   },
   {
     "slug": "42-range-requests",
@@ -349,7 +545,14 @@
     "title": "Range requests",
     "part": "VII",
     "partTitle": "Getting the bytes out",
-    "length": 543
+    "length": 543,
+    "refs": [
+      "s:11-object-storage-the-minimum-interface"
+    ],
+    "backrefs": [
+      "13-key-value-metadata-bucket",
+      "47-untrusted-content-and-what-to-watch"
+    ]
   },
   {
     "slug": "43-segmented-streaming-and-where-object-storage-stops",
@@ -357,7 +560,11 @@
     "title": "Segmented streaming, and where object storage stops",
     "part": "VII",
     "partTitle": "Getting the bytes out",
-    "length": 332
+    "length": 332,
+    "refs": [
+      "n:large-scale-ingestion"
+    ],
+    "backrefs": []
   },
   {
     "slug": "44-the-bill",
@@ -365,7 +572,14 @@
     "title": "The bill",
     "part": "VII",
     "partTitle": "Getting the bytes out",
-    "length": 754
+    "length": 754,
+    "refs": [
+      "s:16-why-list-is-not-a-lookup",
+      "s:36-abandoned-uploads-the-invisible-bill",
+      "s:41-why-a-presigned-get-destroys-your-cache",
+      "s:46-lifecycle-storage-classes-and-versioning"
+    ],
+    "backrefs": []
   },
   {
     "slug": "45-the-security-surface",
@@ -373,7 +587,11 @@
     "title": "The security surface",
     "part": "VIII",
     "partTitle": "Production concerns",
-    "length": 1188
+    "length": 1188,
+    "refs": [
+      "s:15-designing-the-key"
+    ],
+    "backrefs": []
   },
   {
     "slug": "46-lifecycle-storage-classes-and-versioning",
@@ -381,7 +599,14 @@
     "title": "Lifecycle, storage classes and versioning",
     "part": "VIII",
     "partTitle": "Production concerns",
-    "length": 380
+    "length": 380,
+    "refs": [
+      "s:30-reconciliation-pending-expired-orphaned",
+      "s:36-abandoned-uploads-the-invisible-bill"
+    ],
+    "backrefs": [
+      "44-the-bill"
+    ]
   },
   {
     "slug": "47-untrusted-content-and-what-to-watch",
@@ -389,7 +614,15 @@
     "title": "Untrusted content, and what to watch",
     "part": "VIII",
     "partTitle": "Production concerns",
-    "length": 554
+    "length": 554,
+    "refs": [
+      "s:15-designing-the-key",
+      "s:30-reconciliation-pending-expired-orphaned",
+      "s:36-abandoned-uploads-the-invisible-bill",
+      "s:41-why-a-presigned-get-destroys-your-cache",
+      "s:42-range-requests"
+    ],
+    "backrefs": []
   },
   {
     "slug": "48-the-delivery-script",
@@ -397,7 +630,9 @@
     "title": "The delivery script",
     "part": "IX",
     "partTitle": "The interview itself",
-    "length": 1704
+    "length": 1704,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "49-whiteboard-drawing-order",
@@ -405,7 +640,9 @@
     "title": "Whiteboard drawing order",
     "part": "IX",
     "partTitle": "The interview itself",
-    "length": 231
+    "length": 231,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "50-follow-up-question-bank",
@@ -413,7 +650,9 @@
     "title": "Follow-up question bank",
     "part": "IX",
     "partTitle": "The interview itself",
-    "length": 1370
+    "length": 1370,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-a-numbers-to-memorise",
@@ -421,7 +660,9 @@
     "title": "Appendix A. Numbers to memorise",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 1077
+    "length": 1077,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-b-glossary",
@@ -429,7 +670,9 @@
     "title": "Appendix B. Glossary",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 1892
+    "length": 1892,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-c-self-test",
@@ -437,6 +680,8 @@
     "title": "Appendix C. Self-test",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 15
+    "length": 15,
+    "refs": [],
+    "backrefs": []
   }
 ]

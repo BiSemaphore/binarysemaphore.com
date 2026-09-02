@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { editions, notebooks, totalPages } from "@/lib/learn";
-import { accessLabel, getAllAccess, TRIAL_DAYS } from "@/lib/learn/access";
+import { accessLabel, getAllAccess } from "@/lib/learn/access";
 import { learnBase } from "@/lib/learn/paths";
 import { getAllProgress, summarise } from "@/lib/learn/progress";
 import { getSections } from "@/lib/learn/book";
@@ -22,7 +22,7 @@ function Colophon({ pages }: { pages: number }) {
     { label: "Notebooks", value: String(notebooks.length) },
     { label: "Pages", value: pages.toLocaleString("en-GB") },
     { label: "Editions", value: editions.map((e) => e.name).join(" / ") },
-    { label: "Price", value: `Free, ${TRIAL_DAYS} days` },
+    { label: "To read", value: "Sign in" },
   ];
 
   return (
@@ -180,10 +180,9 @@ export default async function LearnIndexPage() {
             How to get one
           </h2>
           <p className="mt-4 text-[0.95rem] leading-7 text-muted">
-            Sign in, open the notebook you want, and it is yours for{" "}
-            {TRIAL_DAYS} days: every page, every edition, nothing withheld and
-            nothing to pay. The clock starts when you open it, not when you sign
-            up, so browsing costs you nothing.
+            Sign in, open the notebook you want, and it stays open: every page,
+            every edition, nothing withheld and no clock on it. The account is
+            there so a download belongs to someone, not to charge you.
           </p>
         </div>
 

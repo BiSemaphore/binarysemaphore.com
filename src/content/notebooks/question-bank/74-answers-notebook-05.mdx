@@ -4,7 +4,7 @@ title: "Answers, Notebook 05"
 part: "10"
 partTitle: "Answers"
 ---
-**Q119** Does an ORM make me safe?  *Notebook 05, section 5.*
+**Q119** Does an ORM make me safe?  *<Ref to="/security">Notebook 05</Ref>, <Ref to="#5-the-queue">section 5</Ref>.*
 
 Mostly, for the queries it generates, and <Peach>not at all for the escape hatches</Peach>.
 Every ORM has `raw()`, `query()`, `literal()` or a `WHERE` fragment that takes a
@@ -13,7 +13,7 @@ Sequelize's `literal`, Django's `extra`, ActiveRecord's string conditions: the
 names all warn you, and people use them under deadline anyway. Grep your
 codebase for them; that grep is a five-minute audit with a high hit rate.
 
-**Q121** What is peppering, and do you need it?  *Notebook 05, section 12.*
+**Q121** What is peppering, and do you need it?  *<Ref to="/security">Notebook 05</Ref>, <Ref to="#12-the-naive-design-and-the-seven-ways-it-dies">section 12</Ref>.*
 
 A <Pink>pepper</Pink> is a secret value mixed into the hash that lives in your
 application config or an HSM rather than the database. It means a stolen
@@ -22,7 +22,7 @@ useful, and the cost is that rotating it requires rehashing on next login and
 that losing it locks everyone out. Reasonable to describe as "a defence-in-depth
 option I would consider, not a substitute for a slow salted hash".
 
-**Q122** What is the argument for binding a session to the IP or user agent?  *Notebook 05, section 14.*
+**Q122** What is the argument for binding a session to the IP or user agent?  *<Ref to="/security">Notebook 05</Ref>, <Ref to="#14-anatomy-of-an-object">section 14</Ref>.*
 
 It raises the cost of using a stolen cookie, and it costs you real users:
 mobile clients change IP constantly, corporate networks share them, and user
@@ -31,7 +31,7 @@ to record</Peach>: store the IP and user agent, and use a change as a signal to
 re-authenticate for sensitive actions or to notify the user, rather than to
 kill the session outright.
 
-**Q125** What is actually dangerous in a CORS config?  *Notebook 05, section 24.*
+**Q125** What is actually dangerous in a CORS config?  *<Ref to="/security">Notebook 05</Ref>, <Ref to="#24-the-client-react-and-redux">section 24</Ref>.*
 
 `Access-Control-Allow-Origin: *` combined with credentials (browsers refuse
 this pairing, which is the point), and worse, <Peach>reflecting the `Origin` header

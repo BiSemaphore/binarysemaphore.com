@@ -23,8 +23,8 @@ everything needed to understand it. The server keeps nothing between calls. This
 sounds like an inconvenience until you put a load balancer in front of four
 instances: because no instance remembers anything, <Peach>any of them can serve any
 request, and adding a fifth requires no coordination at all.</Peach> Every horizontal
-scaling story you have ever heard is downstream of this constraint. Notebook 06
-section 12 covers what it costs and where sessions actually go; Notebook 07 is
+scaling story you have ever heard is downstream of this constraint. <Ref to="/scaling">Notebook 06</Ref>
+section 12 covers what it costs and where sessions actually go; <Ref to="/real-time-backends">Notebook 07</Ref> is
 the book about what happens when you break it deliberately.
 
 **Layered system is why you can put things in front of your API.** A component
@@ -55,7 +55,7 @@ correctly.</Peach> A cache can store a `GET` without knowing what a project is. 
 library can safely repeat a `PUT` without understanding your business. That
 property is not a nicety; it is what allows infrastructure to exist at all.
 
-Sub-constraint (d) is the one nobody implements, and it gets section 5 to itself.
+Sub-constraint (d) is the one nobody implements, and it gets <Ref to="#5-the-constraint-nobody-implements">section 5</Ref> to itself.
 
 <Ask>
 
@@ -66,8 +66,8 @@ The token serves statelessness: it travels with every request, so any instance
 can validate it without shared memory. A session table breaks statelessness,
 because the server now remembers something between calls, and the fix people
 reach for first, sticky sessions, actually breaks the layered-system constraint
-too by making the load balancer care which instance you spoke to last. Notebook
-05 section 22 covers the token side properly.
+too by making the load balancer care which instance you spoke to last. <Ref to="/security">Notebook
+05</Ref> section 22 covers the token side properly.
 
 </Ask>
 

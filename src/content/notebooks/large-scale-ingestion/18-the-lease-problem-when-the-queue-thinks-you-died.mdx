@@ -51,7 +51,7 @@ UPDATE jobs SET status = 'QUEUED'
 
 **3. Split the work so no single lease is long.** If each message is one chunk
 rather than one file, no lease needs to outlive a few minutes, and the whole
-class of problem shrinks. This is the real motivation for section 19.
+class of problem shrinks. This is the real motivation for <Ref to="#19-parallelising-one-big-file">section 19</Ref>.
 
 <KeyIdea>
 

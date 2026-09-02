@@ -4,7 +4,7 @@ title: "Answers, Notebook 08"
 part: "10"
 partTitle: "Answers"
 ---
-**Q236**   *Notebook 08, section 3.*
+**Q236**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#3-ingestion-getting-the-bytes-in">section 3</Ref>.*
 
 "Which REST constraint does a JWT in an `Authorization` header serve, and which
 one does a server-side session table break?"
@@ -13,10 +13,10 @@ The token serves statelessness: it travels with every request, so any instance
 can validate it without shared memory. A session table breaks statelessness,
 because the server now remembers something between calls, and the fix people
 reach for first, sticky sessions, actually breaks the layered-system constraint
-too by making the load balancer care which instance you spoke to last. Notebook
-05 section 22 covers the token side properly.
+too by making the load balancer care which instance you spoke to last. <Ref to="/security">Notebook
+05</Ref> <Ref to="#22-the-node-js-runtime">section 22</Ref> covers the token side properly.
 
-**Q237**   *Notebook 08, section 5.*
+**Q237**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#5-the-queue">section 5</Ref>.*
 
 "So is your API RESTful?"
 
