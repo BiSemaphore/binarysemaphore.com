@@ -8,6 +8,8 @@ import { learnBase } from "@/lib/learn/paths";
 import { startTrialAction } from "@/app/learn/actions";
 import { ArrowRightIcon, LockIcon } from "@/components/icons";
 import { SectionNav } from "@/components/learn/section-nav";
+import { MarkRead } from "@/components/learn/mark-read";
+import { getProgress } from "@/lib/learn/progress";
 
 type Params = { slug: string; section: string };
 
@@ -45,6 +47,7 @@ export default async function SectionPage({
   if (!notebook || !ctx) notFound();
 
   const sections = getSections(slug);
+  const progress = await getProgress(slug);
 
   const [access, base] = await Promise.all([getAccess(slug), learnBase()]);
   const entitled = canRead(access);
@@ -75,6 +78,7 @@ export default async function SectionPage({
             <SectionNav
               sections={sections}
               current={section}
+              read={progress.read}
               base={base}
               slug={slug}
             />
@@ -114,6 +118,8 @@ export default async function SectionPage({
           <span>{ctx.section.title}</span>
         </h1>
       </header>
+
+      {entitled ? <MarkRead slug={slug} section={section} /> : null}
 
       <article className="thread mt-9">
         <Preview />

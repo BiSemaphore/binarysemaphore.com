@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { getNotebook } from "@/lib/learn";
-import { startTrial } from "@/lib/learn/access";
+import { canRead, getAccess, startTrial } from "@/lib/learn/access";
+import { markRead } from "@/lib/learn/progress";
 
 /**
  * Start the free trial for one notebook.
@@ -21,4 +22,19 @@ export async function startTrialAction(formData: FormData) {
   // Internal paths, not the subdomain-facing ones.
   revalidatePath(`/learn/${slug}`);
   revalidatePath("/learn");
+}
+
+/**
+ * Record that a section was opened.
+ *
+ * Called from the section page after it renders, rather than during render,
+ * because a render must not have side effects. Only for a reader who may
+ * actually read it: an unentitled visitor seeing a preview has not read the
+ * section, and marking it would put a bookmark on a page they cannot finish.
+ */
+export async function markReadAction(slug: string, section: string) {
+  if (!getNotebook(slug)) return;
+  if (!canRead(await getAccess(slug))) return;
+
+  await markRead(slug, section);
 }

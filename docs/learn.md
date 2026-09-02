@@ -193,6 +193,29 @@ line.
 Verified by fetching gated sections signed out and checking that no line of the
 `.rest.mdx` appears in the HTML except the teaser.
 
+## Reading progress
+
+`public.reading_progress` records which sections a reader has opened, keyed by
+(user, notebook, section slug). It drives three things: a tick beside read
+sections, a progress bar, and "Continue reading" on the notebook page.
+
+Stored in Postgres rather than the browser, so it follows the reader between
+devices and matches the rest of the model.
+
+**Unlike entitlements, a reader writes their own rows.** That is deliberate:
+progress grants no access, and the worst a forged row can do is move your own
+bookmark. The `with check (auth.uid() = user_id)` on the insert policy is what
+stops one reader writing progress as another; verified by trying it as `anon`,
+which returns `42501`.
+
+Sections are keyed by slug because they are generated from the books and have no
+database identity. A renamed section leaves a dead row, which the app ignores and
+`summarise()` clamps so progress never reads over 100%.
+
+Marking happens in `MarkRead`, a client component that calls a server action from
+an effect: a render must not have side effects. It fires only for an entitled
+reader, since someone seeing a gated preview has not read the section.
+
 ## Routing
 
 `learn` is an **app subdomain** (`APP_SUBDOMAINS` in `src/lib/subdomains.ts`),

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { editions, getNotebook, notebooks } from "@/lib/learn";
 import { getAccess } from "@/lib/learn/access";
 import { getSections } from "@/lib/learn/book";
+import { getProgress, summarise } from "@/lib/learn/progress";
 import { learnBase } from "@/lib/learn/paths";
 import { AccessPanel } from "@/components/learn/access-panel";
 import { ArrowRightIcon } from "@/components/icons";
@@ -43,6 +44,10 @@ export default async function NotebookPage({
 
   const [access, base] = await Promise.all([getAccess(slug), learnBase()]);
   const sections = getSections(slug);
+  const progress = await getProgress(slug);
+  const done = summarise(progress.read, sections.length);
+  const resume =
+    progress.resume ?? (sections.length > 0 ? sections[0].slug : null);
   const available = editions.filter((e) => notebook.assets[e.id]);
   const others = notebooks.filter((n) => n.slug !== slug).slice(0, 3);
 
@@ -94,6 +99,49 @@ export default async function NotebookPage({
         <AccessPanel notebook={notebook} access={access} base={base} />
       </div>
 
+      {resume ? (
+        <section className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-panel border border-border bg-card px-6 py-5 shadow-soft">
+          <div>
+            <p className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-subtle">
+              {done.count > 0 ? "Where you left off" : "Start reading"}
+            </p>
+            <p className="mt-1.5 font-display text-lg font-semibold tracking-tight text-foreground">
+              {sections.find((s) => s.slug === resume)?.title ??
+                sections[0].title}
+            </p>
+            {done.count > 0 ? (
+              <div className="mt-3 flex items-center gap-3">
+                <span
+                  role="progressbar"
+                  aria-valuenow={done.percent}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`${done.count} of ${done.total} sections read`}
+                  className="h-1 w-32 overflow-hidden rounded-full bg-border"
+                >
+                  <span
+                    className="block h-full rounded-full bg-accent"
+                    style={{ width: `${done.percent}%` }}
+                  />
+                </span>
+                <span className="font-mono text-xs text-subtle">
+                  {done.complete
+                    ? "finished"
+                    : `${done.count} of ${done.total}`}
+                </span>
+              </div>
+            ) : null}
+          </div>
+
+          <Link
+            href={`${base}/${notebook.slug}/${resume}`}
+            className="inline-flex shrink-0 items-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
+          >
+            {done.count > 0 ? "Continue reading" : "Start reading"}
+          </Link>
+        </section>
+      ) : null}
+
       <section className="mt-14">
         <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
           What is inside
@@ -111,13 +159,16 @@ export default async function NotebookPage({
                 href={`${base}/${notebook.slug}/${section.slug}`}
                 className="group flex items-baseline gap-3 py-2.5 text-sm leading-6 text-foreground/85 transition-colors hover:text-foreground"
               >
-                {section.number ? (
-                  <span className="w-6 shrink-0 font-mono text-xs text-subtle transition-colors group-hover:text-accent-strong">
-                    {section.number}
-                  </span>
-                ) : (
-                  <span aria-hidden className="w-6 shrink-0" />
-                )}
+                <span
+                  className={`w-6 shrink-0 font-mono text-xs transition-colors ${
+                    progress.read.has(section.slug)
+                      ? "text-accent-strong"
+                      : "text-subtle group-hover:text-accent-strong"
+                  }`}
+                  title={progress.read.has(section.slug) ? "Read" : undefined}
+                >
+                  {progress.read.has(section.slug) ? "\u2713" : section.number}
+                </span>
                 <span>{section.title}</span>
               </Link>
             </li>
