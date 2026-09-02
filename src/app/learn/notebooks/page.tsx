@@ -51,15 +51,16 @@ export default async function LearnIndexPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 pb-28 lg:px-10">
-      {/* Masthead. "Learn" is the title; Binary Semaphore is the publisher. */}
+      {/* Masthead. The library is one section of learn, so it is titled for
+          itself; "Learn" belongs to the section front page. */}
       <header className="grid gap-12 pt-20 pb-16 md:grid-cols-[1fr_auto] md:items-end md:gap-16 md:pt-28">
         <div>
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.28em] text-accent-strong">
-            Binary Semaphore
+            Learn / Notebooks
           </p>
 
-          <h1 className="mt-4 font-display text-[4.5rem] font-semibold leading-[0.85] tracking-[-0.045em] text-foreground sm:text-[7rem] lg:text-[8.5rem]">
-            Learn<span className="text-accent">.</span>
+          <h1 className="mt-4 font-display text-[3.5rem] font-semibold leading-[0.9] tracking-[-0.04em] text-foreground sm:text-[5rem] lg:text-[6rem]">
+            Study Notebooks
           </h1>
 
           <p className="mt-8 max-w-xl text-lg leading-8 text-muted">

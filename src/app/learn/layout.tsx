@@ -55,6 +55,26 @@ export default async function LearnLayout({
                 learn
               </Link>
             </span>
+
+            {/* The two sections. `learn` is a platform now, not a library, so
+                both have to be reachable from either. */}
+            <nav
+              aria-label="Sections"
+              className="ml-3 hidden items-center gap-4 border-l border-border pl-4 sm:flex"
+            >
+              <Link
+                href={base || "/"}
+                className="font-mono text-xs text-muted transition-colors hover:text-foreground"
+              >
+                mentorship
+              </Link>
+              <Link
+                href={`${base}/notebooks`}
+                className="font-mono text-xs text-muted transition-colors hover:text-foreground"
+              >
+                notebooks
+              </Link>
+            </nav>
           </div>
 
           <div className="flex shrink-0 items-center gap-3">

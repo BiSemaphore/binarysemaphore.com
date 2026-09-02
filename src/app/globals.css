@@ -523,6 +523,69 @@ body {
   background: color-mix(in srgb, var(--foreground) 6%, transparent);
 }
 
+/* --- Notes paper (the learn landing page) -------------------------------- */
+/* The reference is a student's own notes: paper, a handwritten heading, a
+   highlighter swiped over the line that matters, a sticky note for the thing to
+   remember. The paper itself is <DotGrid>, which already exists; these are the
+   marks that go on it. */
+
+/* A sticky note. The shadow does the work; the tilt is applied per instance,
+   because nobody sticks one on straight. */
+.sticky-note {
+  border-radius: 0.25rem;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.06),
+    0 10px 20px -14px rgb(0 0 0 / 0.4);
+}
+
+/* The four highlighters, swiped behind a phrase rather than filling a box, so
+   the words stay part of the sentence. Same colours as the notebooks' own
+   marks, so the site and the books agree. */
+.swipe {
+  padding: 0.05em 0.2em;
+  border-radius: 0.2em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.swipe-peach {
+  background: color-mix(in srgb, #ff9d7a 42%, transparent);
+}
+.swipe-mint {
+  background: color-mix(in srgb, #52d1a4 38%, transparent);
+}
+.swipe-sky {
+  background: color-mix(in srgb, #6ec6ff 38%, transparent);
+}
+.swipe-pink {
+  background: color-mix(in srgb, #d59bff 38%, transparent);
+}
+
+.dark .swipe-peach {
+  background: color-mix(in srgb, #ff9d7a 26%, transparent);
+}
+.dark .swipe-mint {
+  background: color-mix(in srgb, #52d1a4 26%, transparent);
+}
+.dark .swipe-sky {
+  background: color-mix(in srgb, #6ec6ff 26%, transparent);
+}
+.dark .swipe-pink {
+  background: color-mix(in srgb, #d59bff 26%, transparent);
+}
+
+/* Washi tape, pinning a sheet to the page. */
+.tape {
+  position: absolute;
+  height: 1.25rem;
+  width: 4.5rem;
+  opacity: 0.7;
+  background: repeating-linear-gradient(
+    -45deg,
+    color-mix(in srgb, #6ec6ff 55%, transparent) 0 6px,
+    color-mix(in srgb, #6ec6ff 28%, transparent) 6px 12px
+  );
+}
+
 /* --- Study notebook reader ----------------------------------------------- */
 /* The notebooks have their own typography, set in the `learnings` repo's
    engine/theme.css and visible in the PDFs: a serif body, handwritten section
