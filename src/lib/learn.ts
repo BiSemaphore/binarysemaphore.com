@@ -110,7 +110,7 @@ export const notebooks: Notebook[] = [
       "253 prompts pulled from notebooks 01 to 09, answers at the back",
     blurb:
       "Work in pen. A prompt you can only half answer is the whole point of the exercise: mark it, and go back to the section it names. Regenerated from every other notebook, so it stays in step with them.",
-    pages: 150,
+    pages: 163,
     contents: [
       "1. Opening",
       "2. Framing the problem",
@@ -191,10 +191,10 @@ export const notebooks: Notebook[] = [
       "77. Answers, Notebook 08",
       "78. Answers, Notebook 09",
     ],
+    // Print and Tablet are withdrawn until they are rebuilt: the Reading
+    // edition has been rewritten and those two are still the old draft.
     assets: {
-      reading: { file: "Question-Bank-Reading.pdf", bytes: 2818488 },
-      print: { file: "Question-Bank-Print.pdf", bytes: 4080973 },
-      tablet: { file: "Question-Bank-Tablet.pdf", bytes: 5905901 },
+      reading: { file: "Question-Bank-Reading.pdf", bytes: 3316017 },
     },
     sources: [],
   },
@@ -630,7 +630,7 @@ export const notebooks: Notebook[] = [
       "Designing an interface for someone you will never meet",
     blurb:
       "An interface is a promise to someone you will never meet. Fielding's constraints and which one nobody implements, resources and the methods that act on them, status codes a client can act on, and what a well-behaved error looks like.",
-    pages: 18,
+    pages: 99,
     contents: [
       "The whole picture on one page",
       "1. The requirement: an interface two strangers agree on",
@@ -639,10 +639,10 @@ export const notebooks: Notebook[] = [
       "4. Why it is called REST",
       "5. The constraint nobody implements",
     ],
+    // Print and Tablet are withdrawn until they are rebuilt: the Reading
+    // edition has been rewritten and those two are still the old draft.
     assets: {
-      reading: { file: "REST-API-Design-Reading.pdf", bytes: 539766 },
-      print: { file: "REST-API-Design-Print.pdf", bytes: 768301 },
-      tablet: { file: "REST-API-Design-Tablet.pdf", bytes: 844054 },
+      reading: { file: "REST-API-Design-Reading.pdf", bytes: 2891344 },
     },
     sources: [
       {
@@ -690,9 +690,9 @@ export const notebooks: Notebook[] = [
       "Appendix D. Self-test",
     ],
     assets: {
-      reading: { file: "Design-Principles-Reading.pdf", bytes: 1071700 },
-      print: { file: "Design-Principles-Print.pdf", bytes: 1538362 },
-      tablet: { file: "Design-Principles-Tablet.pdf", bytes: 1908710 },
+      reading: { file: "Design-Principles-Reading.pdf", bytes: 1074869 },
+      print: { file: "Design-Principles-Print.pdf", bytes: 1541603 },
+      tablet: { file: "Design-Principles-Tablet.pdf", bytes: 1911872 },
     },
     sources: [],
   },
