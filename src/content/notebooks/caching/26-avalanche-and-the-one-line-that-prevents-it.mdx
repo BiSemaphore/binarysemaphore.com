@@ -1,0 +1,60 @@
+---
+number: "26"
+title: "Avalanche, and the one line that prevents it"
+part: "V"
+partTitle: "The failure modes"
+---
+The herd, multiplied. Instead of one hot key expiring, <Peach>thousands expire at the
+same instant</Peach>, because they were all written at the same instant.
+
+```text
+   06:00  a deploy restarts every instance, all caches empty
+          OR a warming job populates 50,000 keys, all with TTL 3600
+
+   07:00  all 50,000 expire in the same second
+          every one of them stampedes
+          the database receives its entire day's load at once
+```
+
+**The cause is correlated expiry**, and it is created by exactly the things that
+feel responsible: a cache warming job, a deploy, a bulk import, a flush. Anything
+that writes many keys together gives them all the same TTL, and a fixed TTL turns
+"written together" into "expire together" forever.
+
+**The fix is one line.**
+
+```text
+   ttl = base                             ✗  everything expires together
+   ttl = base + random(0, base * 0.1)     ✓  spread over a 10% window
+
+   3600 second base  →  expiries spread across six minutes
+```
+
+<Mint>Add jitter to every TTL you set.</Mint> It costs nothing, it cannot make anything
+worse, and it converts a synchronised spike into a smooth trickle of individual
+refreshes. <Peach>This is the highest ratio of benefit to effort in the entire book.</Peach>
+
+**The related case is a cold start.** After a deploy or a Redis restart, the cache
+is empty and <Peach>every request is a miss simultaneously</Peach>, which is an avalanche
+with no expiry involved. Defences:
+
+- <Mint>Warm the cache before taking traffic</Mint>, for the keys you know are hot.
+- <Mint>Roll deploys</Mint> so instances restart in sequence rather than together.
+- <Mint>Rate-limit your own origin calls</Mint>, so a cold cache degrades into slowness
+  rather than a database outage. <Ref to="/scaling">Notebook 06</Ref> covers the shedding side.
+
+<DoThis>
+
+Make jitter the default in your cache helper rather than something a caller must
+remember. <Mint>If `cache.set(key, value, ttl)` applies `ttl ± 10%` internally, the
+avalanche becomes structurally impossible</Mint> instead of relying on discipline.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Keys written together expire together unless you jitter the TTL.</Peach> One line in
+one helper removes an entire class of outage, including the one that arrives an
+hour after every deploy.
+
+</KeyIdea>

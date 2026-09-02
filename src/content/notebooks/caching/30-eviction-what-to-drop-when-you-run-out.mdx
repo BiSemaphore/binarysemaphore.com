@@ -1,0 +1,92 @@
+---
+number: "30"
+title: "Eviction: what to drop when you run out"
+part: "V"
+partTitle: "The failure modes"
+---
+Back to the lecture's material, which covers this well. Eviction is the capacity
+question: memory is full and something must go. <Peach>Note that this is unrelated to
+correctness</Peach>, which is Part IV's problem.
+
+Redis names the policies by what they consider and how they choose:
+
+| Policy | Behaviour |
+|---|---|
+| `noeviction` | <Mint>Refuse writes with an error.</Mint> The default, and rarely what you want |
+| `allkeys-lru` | <Peach>Evict the least recently used, from all keys</Peach> |
+| `allkeys-lfu` | Evict the least frequently used |
+| `allkeys-random` | Evict at random. Genuinely fine in some workloads |
+| `volatile-lru` | LRU, but only among keys that have a TTL |
+| `volatile-ttl` | Evict whichever expires soonest |
+
+**LRU against LFU**, which the lecture explains correctly and is worth sharpening
+with when each fails.
+
+<Mint>LRU</Mint> tracks recency. It adapts quickly to changing access patterns, and it is
+defeated by a scan: a bulk job touching a million keys once evicts your entire
+working set, because everything it touched is now more recently used than
+anything real.
+
+<Mint>LFU</Mint> tracks frequency. It survives scans, because touching something once does
+not make it frequent. It is defeated by <Peach>changing popularity</Peach>: yesterday's
+viral post has an enormous count and will outlive today's, long after anyone
+wants it. Redis addresses this by decaying counters over time rather than
+counting forever.
+
+```text
+   the failure of each, in one line
+
+   LRU   a nightly batch job wipes your working set
+   LFU   last week's hot key refuses to leave
+```
+
+**Two practical notes.**
+
+<Peach>Redis's LRU is approximate.</Peach> It samples a handful of keys and evicts the best
+candidate among them rather than tracking a true ordering, because exact LRU would
+cost a linked list touched on every access. More samples give a better
+approximation and cost more CPU. <Mint>This is a deliberate trade and the default is
+fine.</Mint>
+
+<Mint>Set `maxmemory` and a policy explicitly.</Mint> The default `noeviction` means that
+when memory fills, writes begin failing, and <Peach>a cache that returns errors on
+write is a strictly worse database.</Peach> For a pure cache, `allkeys-lru` is the right
+starting point.
+
+<Trap>
+
+<Rose>"Eviction and invalidation are both just removing things from the cache."</Rose>
+
+They remove entries for opposite reasons and have opposite failure modes.
+<Mint>Eviction removes correct data because you need space; the cost is a cache miss.
+Invalidation removes incorrect data because it is wrong; the cost of failing to do
+it is serving a wrong answer.</Mint> <Peach>Tuning eviction can never fix a staleness bug,
+and no invalidation strategy saves you from a full cache.</Peach>
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Eviction is capacity, invalidation is correctness.</Peach> Set `maxmemory` and
+`allkeys-lru` deliberately, and know that LRU dies to scans while LFU dies to
+changing popularity.
+
+</KeyIdea>
+
+<Recall>
+
+Draw the thundering herd timeline, and give the three fixes in order of quality. | 8
+
+</Recall>
+
+<Recall>
+
+What is cache penetration, and why must negative TTLs be short? | 6
+
+</Recall>
+
+<Recall>
+
+Redis is unreachable. Name the three things that must be configured for failing open to be safe. | 7
+
+</Recall>

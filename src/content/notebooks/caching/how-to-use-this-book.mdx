@@ -1,0 +1,90 @@
+---
+number: ""
+title: "How to use this book"
+part: ""
+partTitle: ""
+---
+Caching is taught as an optimisation and it is not one. An optimisation makes the
+same thing faster. <Peach>A cache makes a different thing faster: an older thing.</Peach>
+
+Every cache in this book, from the L1 line on your processor to the CDN edge node
+in São Paulo, works the same way. It answers a question using data that was
+correct at some point in the past, and it is faster precisely because it did not
+go and check. The speed is not free and it is not paid for in money. It is paid
+for in <Mint>correctness, in a currency of seconds</Mint>.
+
+The lecture behind this book is *Caching, the secret behind it all*
+(`youtube.com/watch?v=estH64OkwxU`, 64 minutes). Its examples are good and its
+coverage of where caches live is the right map. It spends almost no time on the
+half of the subject that is hard, which is what happens when the cached answer is
+wrong and someone notices.
+
+#### The one question
+
+<Peach>How wrong are you willing to be, and for how long?</Peach>
+
+Every decision in caching is an answer to it. A TTL is a numeric answer. An
+eviction policy is an answer about what you are willing to lose. An invalidation
+strategy is an attempt to put a bound on the answer. A hit ratio is how often you
+got away with it.
+
+| Part | The question, aimed at |
+|---|---|
+| I | Whether to cache at all, and what it costs |
+| II | Which layer is wrong, and for how long |
+| III | When you accept the staleness |
+| IV | How you bound it |
+| V | What happens when the bet goes wrong at scale |
+| VI | Telling someone else's cache how wrong it may be |
+| VII | The one process holding all of it |
+
+If you can state the staleness window for every cache in your system, you
+understand your system. <Peach>Most engineers cannot state it for any of them</Peach>, which
+is why the second half of this book exists.
+
+#### What is in the lecture and what is not
+
+Parts I and II are the lecture, expanded, with the numbers filled in. Parts III
+to VII are mostly outside it. The lecture covers two caching strategies; there
+are five, and the two it omits are the ones that fail interestingly. It covers
+eviction and never covers invalidation, which is the harder of the two by a wide
+margin. It never mentions the thundering herd, cache stampede, penetration, or
+`Cache-Control`, and it makes one claim about write-through freshness that is
+not true in any system with more than one server.
+
+There are three direct corrections, each in a trap block.
+
+#### The five block types
+
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or the number. |
+| Key idea | The one thing to carry out of that section. |
+
+#### The four highlighters
+
+| Mark | Means |
+|---|---|
+| <Peach>peach</Peach> | The sentence to carry away |
+| <Rose>rose</Rose> | The wrong answer, the thing that bites |
+| <Mint>mint</Mint> | The correct practice |
+| <Pink>pink</Pink> | A definition, at the point it is first defined |
+
+#### A suggested route
+
+1. Do the arithmetic in <Ref to="#3-the-arithmetic-of-a-hit-ratio">section 3</Ref> with a pen. It is the argument for everything
+   else, and it has a result most people find surprising.
+2. Part II is a map. Read it once and refer back.
+3. Parts IV and V are the book. They are where interviews go and where
+   production incidents come from.
+
+<KeyIdea>
+
+A cache is a deliberate decision to serve data you have not checked. <Peach>The
+engineering is not in making it fast, it is in bounding how wrong it can be and
+knowing what happens when it disappears.</Peach>
+
+</KeyIdea>

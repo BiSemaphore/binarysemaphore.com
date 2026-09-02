@@ -1,0 +1,65 @@
+---
+number: "4"
+title: "The cost you just took on"
+part: "I"
+partTitle: "Caching is a bet about staleness"
+---
+The lecture presents caching as close to free: less latency, less load, happier
+users. Here is the other side of the ledger, because an interview will ask for it
+and a production system will present it whether or not you asked.
+
+**A consistency problem you did not have before.** Two copies, no mechanism
+keeping them equal. Every subsequent part of this book is about managing this.
+
+**A new dependency.** Your application now needs Redis to be up. If you did not
+plan for its absence, <Peach>you have converted a fast path into a hard requirement</Peach>,
+and <Ref to="#29-when-the-cache-goes-down">section 29</Ref> is about what that costs.
+
+**A new failure mode that is worse than being slow.** A slow system is visibly
+slow. <Peach>A stale system is confidently wrong</Peach>, and the user has no signal at all.
+A customer who changed their email address and still sees the old one has no
+reason to think a cache exists.
+
+**Operational surface.** Memory limits, eviction policy, keyspace growth,
+connection pools, a failover story, and one more thing to page someone about at
+3am.
+
+**Debugging difficulty.** "It works on my machine" becomes "it works on the
+instance that has the fresh copy". <Peach>A bug that reproduces only on some requests
+is the expensive kind</Peach>, and an in-process cache across four instances produces
+exactly that.
+
+**A number to hold on to.** The cheapest cache is the one you did not add. Before
+adding one, the questions in order are:
+
+```text
+   1. can the query be made fast enough?          an index, usually
+   2. can the work be done once, in advance?      a materialised view,
+                                                  a scheduled job
+   3. can the client avoid asking?                HTTP caching, part VI
+   4. now cache it
+```
+
+<Mint>Steps 1 and 2 have no consistency cost and are skipped constantly</Mint>, because
+adding Redis is more interesting than reading a query plan. <Ref to="/postgres">Notebook 04</Ref> covers
+the index question and <Ref to="/scaling">Notebook 06</Ref> covers when the answer is genuinely capacity.
+
+<Trap>
+
+<Rose>"We added Redis and the endpoint got faster, so it was the right call."</Rose>
+
+It got faster and it also became wrong sometimes, in a way that will surface as a
+support ticket rather than an alert. <Mint>The right call requires knowing what the
+staleness window is and confirming that someone who understands the product finds
+it acceptable.</Mint> "How out of date may this be?" is a product question, and
+engineers answer it silently by picking a TTL that felt reasonable.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>A cache trades correctness for speed, adds a dependency, and creates a failure
+mode with no user-visible signal.</Peach> Try the index and the precomputation first,
+because neither of them costs you any of that.
+
+</KeyIdea>

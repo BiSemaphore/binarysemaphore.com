@@ -1,0 +1,52 @@
+---
+number: "39"
+title: "Redis or Memcached"
+part: "VII"
+partTitle: "Redis in practice"
+---
+The lecture names both and never distinguishes them. The short version is that
+<Peach>Memcached does one thing and Redis does twenty</Peach>, and the one thing is done very
+well.
+
+| | Memcached | Redis |
+|---|---|---|
+| Data types | Strings only | <Peach>Strings, lists, sets, sorted sets, hashes, streams</Peach> |
+| Threading | <Mint>Multi-threaded</Mint> | Single-threaded commands |
+| Persistence | None | RDB and AOF |
+| Replication | None built in | Yes, plus Sentinel and Cluster |
+| Eviction | LRU only | Eight policies |
+| Atomic operations | Very limited | <Mint>Extensive, plus Lua scripting</Mint> |
+| Memory efficiency | <Peach>Slightly better for plain strings</Peach> | Higher per-key overhead |
+
+**When Memcached is genuinely the better choice**, which is rarer than it was:
+<Peach>a pure cache of opaque blobs, on a large multi-core machine, at very high
+throughput.</Peach> Its multi-threading means one instance uses all cores, where Redis
+needs one process per core to do the same.
+
+**Redis for nearly everything else**, and the reason is the data structures rather
+than the speed. <Mint>A rate limiter is an `INCR` with an expiry. A leaderboard is a
+sorted set. A lock is `SET NX`. A queue is a list.</Mint> Each of those is one atomic
+command in Redis and a read-modify-write race in Memcached.
+
+If you have no specific reason to choose, choose Redis, or its fork Valkey, which
+the lecture mentions and which exists because Redis changed its licence in 2024.
+
+<KeyIdea>
+
+<Peach>Memcached is a faster, simpler, multi-threaded blob cache. Redis is a
+single-threaded data structure server.</Peach> The data structures, not the speed, are
+why Redis is usually the answer.
+
+</KeyIdea>
+
+<Recall>
+
+Why is `KEYS` dangerous, what replaces it, and what does the replacement give up? | 6
+
+</Recall>
+
+<Recall>
+
+Show the fixed-window rate limit bug with times and numbers. | 6
+
+</Recall>

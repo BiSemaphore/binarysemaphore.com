@@ -1,0 +1,54 @@
+---
+number: "19"
+title: "Why invalidation is the hard part"
+part: "IV"
+partTitle: "Invalidation"
+---
+The joke, attributed to Phil Karlton, is that there are only two hard things in
+computer science: cache invalidation and naming things. It is quoted constantly
+and rarely explained, so here is why it is true.
+
+**To invalidate correctly you must know three things**, and in a real system you
+reliably know none of them:
+
+```text
+   1. WHAT changed              easy for one row, hard for a computed
+                                value derived from forty of them
+
+   2. WHICH cache entries       the dashboard aggregate depends on
+      depend on it              tasks, projects, members. which keys
+                                does one task edit invalidate?
+
+   3. WHERE those entries       Redis, yes. also four in-process caches,
+      physically are            a CDN with 100 PoPs, and every browser
+                                that fetched it
+```
+
+Point 2 is the deep one. <Peach>A cache entry is the result of a computation, and
+nothing in your system records which inputs it consumed.</Peach> You wrote
+`SELECT ... JOIN ... GROUP BY` and stored the answer. When one of the four
+million rows behind it changes, there is no mechanism that connects that row to
+that key. You have to know, by hand, and encode that knowledge somewhere it will
+rot.
+
+**This is why TTL is so popular.** It answers the question without needing to
+know any of the three. <Peach>You give up on correctness and buy a bound on incorrectness
+instead</Peach>, which is an unglamorous trade that works, and it is why <Ref to="#20-ttl-is-the-honest-answer">section 20</Ref>
+argues that TTL is the honest default rather than the lazy one.
+
+<Signal>
+
+"Invalidation is hard because a cached value is a computation over inputs nobody
+tracked. That is why I default to a TTL, which bounds staleness without requiring
+dependency knowledge, and add explicit invalidation only for the specific things
+users notice immediately."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Invalidation requires knowing which cached computations depend on which inputs,
+and nothing in a normal system records that.</Peach> Every technique in this part
+either reduces the problem or accepts a bound instead of solving it.
+
+</KeyIdea>

@@ -1,0 +1,54 @@
+---
+number: "32"
+title: "max-age, s-maxage, and who obeys which"
+part: "VI"
+partTitle: "Telling someone else's cache what to do"
+---
+The two lifetimes exist because the browser and the CDN want different numbers,
+and <Peach>you almost always want the CDN to hold things far longer than the browser
+does.</Peach>
+
+```text
+   Cache-Control: public, max-age=60, s-maxage=3600
+
+   the browser              keeps it fresh for  60 seconds
+   the CDN, and any         keeps it fresh for  3600 seconds
+     other shared cache     (s-maxage overrides max-age for them)
+```
+
+**Why the asymmetry is right.** <Peach>You can purge the CDN and you can never purge a
+browser.</Peach> <Ref to="#9-the-caches-you-did-not-configure">Section 9</Ref> made the point: once a response has left, its lifetime is
+fixed. So give the browser a short, safe number, give the shared cache a long one
+that gets you a high hit ratio, and purge on change.
+
+```text
+   short browser TTL   +   long CDN TTL   +   purge on change
+   ─────────────────       ────────────       ───────────────
+   bounded staleness       high hit ratio     fast updates
+   for the copy you
+   cannot reach
+```
+
+<Mint>That combination is the standard production shape for cacheable content</Mint>, and
+it gets you most of the benefit of a CDN without the "we changed the price and it
+took a day to show" problem.
+
+**The exception is content-hashed assets**, from <Ref to="#9-the-caches-you-did-not-configure">section 9</Ref>. `app.4f2a91.js` can
+carry `max-age=31536000, immutable` for both, because the URL changes when the
+content does. <Peach>`immutable` additionally tells the browser not to revalidate even
+when the user presses reload</Peach>, which removes a request that would otherwise
+return `304` on every refresh.
+
+**One number that is not obvious:** if you send no caching headers at all, caches
+are permitted to apply <Pink>heuristic freshness</Pink>, typically guessing from
+`Last-Modified`. <Mint>A response with no `Cache-Control` is not uncached, it is
+cached for a duration you did not choose.</Mint> Send the header, always, even when the
+answer is `no-store`.
+
+<KeyIdea>
+
+<Peach>Short `max-age` for the browser, long `s-maxage` for the CDN, and purge on
+change.</Peach> The browser copy is the one you can never recall, so it gets the small
+number.
+
+</KeyIdea>

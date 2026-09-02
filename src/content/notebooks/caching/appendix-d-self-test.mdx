@@ -1,0 +1,99 @@
+---
+number: ""
+title: "Appendix D. Self-test"
+part: "IX"
+partTitle: "Appendices"
+---
+<Quiz>
+
+Q1 | 10 / 03 | 6
+
+Give the average latency formula, and explain why moving from 90% to 99% hit
+ratio barely changes latency but matters a great deal.
+
+</Quiz>
+
+<Quiz>
+
+Q2 | 10 / 02 | 5
+
+What is the difference between eviction and invalidation, and why can tuning one
+never fix the other?
+
+</Quiz>
+
+<Quiz>
+
+Q3 | 10 / 13 | 7
+
+Draw the cache-aside race with a reader and a writer, and give the four
+mitigations.
+
+</Quiz>
+
+<Quiz>
+
+Q4 | 10 / 15 | 7
+
+Why is "write-through means the cache is always fresh" wrong? Give three reasons.
+
+</Quiz>
+
+<Quiz>
+
+Q5 | 10 / 22 | 7
+
+Give the correct ordering of a database write and a cache delete, and explain the
+race in the wrong ordering.
+
+</Quiz>
+
+<Quiz>
+
+Q6 | 10 / 24 | 6
+
+List six inputs that must appear in a cache key, and say which omission is a data
+breach.
+
+</Quiz>
+
+<Quiz>
+
+Q7 | 10 / 25 | 8
+
+Draw the thundering herd timeline and give the three fixes in order of quality.
+
+</Quiz>
+
+<Quiz>
+
+Q8 | 10 / 26 | 5
+
+Why do keys written together expire together, and what single line prevents the
+resulting outage?
+
+</Quiz>
+
+<Quiz>
+
+Q9 | 10 / 29 | 7
+
+Redis is unreachable. Walk through what happens, and name the three things that
+must be configured for failing open to be safe.
+
+</Quiz>
+
+<Quiz>
+
+Q10 | 10 / 31 | 5
+
+What is the difference between `no-cache` and `no-store`, and which protects a
+bank balance?
+
+</Quiz>
+
+<Redraw>
+
+The seven caches between a browser and a disk, with the staleness window of each and the invalidation mechanism available at each. | Mark the ones you cannot purge. Compare with the drawing you made on the title page.
+
+</Redraw>

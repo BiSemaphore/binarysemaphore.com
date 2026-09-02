@@ -40,6 +40,7 @@ const BOOKS = {
   "real-time-backends": "real-time-backends.md",
   "rest-api-design": "rest-api-design.md",
   "design-principles": "design-principles.md",
+  caching: "caching.md",
 };
 
 /** Directive -> MDX component. The eight annotation blocks. */

@@ -1,0 +1,57 @@
+---
+number: "2"
+title: "What a cache actually is"
+part: "I"
+partTitle: "Caching is a bet about staleness"
+---
+The lecture's definition is good and worth keeping: <Peach>a subset of some data, held
+somewhere faster to reach.</Peach> Three words in that sentence carry the weight.
+
+<Term name="Cache">
+
+A store holding a subset of data from a slower, larger, authoritative source, so
+that repeated requests can be answered without consulting it. <Peach>The authoritative
+source is still authoritative</Peach>; the cache is a copy that is allowed to be wrong.
+
+</Term>
+
+**Subset**, because if it held everything it would be a replica and would need
+the capacity and the durability of the original. The lecture makes this point
+well with Netflix: no edge node holds the catalogue, and choosing what each one
+holds is itself a machine learning problem.
+
+**Faster**, which is always a trade against something. Every layer of the
+hierarchy in <Ref to="#7-hardware-caching-and-the-numbers-worth-memorising">section 7</Ref> buys speed with capacity, cost, or durability, and usually
+all three.
+
+**A copy**, and this is the word the lecture does not press on. <Peach>The moment the
+copy exists, there are two answers to the same question and no mechanism keeping
+them equal.</Peach> Everything difficult about caching descends from that sentence, and
+it is why Parts IV and V are longer than Parts II and III.
+
+**The vocabulary, once, so the rest of the book can use it:**
+
+```text
+   cache hit        the data was there. you paid the cache lookup only
+   cache miss       it was not. you paid the lookup AND the full path
+   hit ratio        hits / (hits + misses). the number that matters
+   eviction         removing something because you are out of room
+   invalidation     removing something because it is WRONG
+   TTL              time to live: how long a copy may be used
+   stale            still present, no longer correct
+```
+
+<Mint>Eviction and invalidation are different problems and people conflate them
+constantly.</Mint> Eviction is a capacity question: what do I drop to make room?
+Invalidation is a correctness question: what is no longer true? <Peach>The lecture
+covers eviction thoroughly and invalidation not at all</Peach>, which is the single
+largest gap in it, and Part IV is the answer.
+
+<KeyIdea>
+
+<Peach>A cache is a copy that is allowed to be wrong.</Peach> Eviction is about running out
+of space; invalidation is about running out of truth. They are solved by
+different mechanisms and confusing them is the most common conceptual error in
+this subject.
+
+</KeyIdea>

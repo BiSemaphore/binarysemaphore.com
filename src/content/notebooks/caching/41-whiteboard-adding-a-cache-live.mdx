@@ -1,0 +1,53 @@
+---
+number: "41"
+title: "Whiteboard: adding a cache live"
+part: "VIII"
+partTitle: "The interview itself"
+---
+You have drawn a system and been asked to make the read path faster. Work in this
+order, out loud.
+
+```text
+   1. WHAT IS SLOW           "which query, and how slow? is it missing
+        │                     an index?"                         4
+        ▼                     rules out the free fix first
+   2. READ TO WRITE RATIO    "how often is this read, how often does
+        │                     it change?"                        1
+        ▼                     this decides whether to cache at all
+   3. THE KEY                "what varies the answer? tenant, user,
+        │                     role, locale, filters"            24
+        ▼                     say the tenant id out loud
+   4. THE TTL                "what staleness does the product accept?"
+        │                     a product question, answered explicitly  20
+        ▼
+   5. INVALIDATION           "delete on write, database first, TTL as
+        │                     the backstop"                    21, 22
+        ▼
+   6. THE HARD PARTS         stampede, cold start, Redis down
+                                                            25, 26, 29
+```
+
+**Step 2 is the one that distinguishes candidates.** <Peach>Everyone jumps to step 3.</Peach>
+Asking for the read-to-write ratio shows you know a cache can be the wrong answer,
+and it takes ten seconds.
+
+**Step 6 is where the interview is decided**, and most candidates never arrive
+because they spent the time on steps 3 and 4. <Mint>Move briskly through the routine
+parts and say that you are doing so.</Mint>
+
+<DoThis>
+
+Volunteer the failure mode before you are asked. "And if Redis is down, this
+endpoint falls back to the database with a 50ms timeout, which the database can
+handle because it is sized for it, or cannot, in which case that is a decision we
+should make explicitly." <Mint>Naming the dependency is the single strongest signal in
+this topic.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Slow query, ratio, key, TTL, invalidation, failure.</Peach> Never start at "add
+Redis", and always reach the failure question.
+
+</KeyIdea>

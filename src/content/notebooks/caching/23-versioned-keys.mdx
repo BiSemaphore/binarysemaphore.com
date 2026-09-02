@@ -1,0 +1,50 @@
+---
+number: "23"
+title: "Versioned keys"
+part: "IV"
+partTitle: "Invalidation"
+---
+An approach that sidesteps invalidation rather than performing it. <Peach>Instead of
+removing a stale entry, make it unreachable by changing the key.</Peach>
+
+```text
+   key:  "org:8f2a:v7:dashboard"
+                    ──
+                    a version that changes when the org changes
+
+   on any write to organisation 8f2a:
+        INCR org:8f2a:version        → 8
+
+   every subsequent read builds  "org:8f2a:v8:dashboard"  → miss → fresh
+   the v7 entries are now unreferenced and expire on their own
+```
+
+**What this buys is atomicity.** A single increment invalidates <Peach>every derived
+key for that entity at once</Peach>, without enumerating them. The dashboard, the
+member list, the summary blob, and the six keys a colleague added last month all
+become unreachable together, and you never had to know they existed. That is a
+direct answer to problem 2 in <Ref to="#19-why-invalidation-is-the-hard-part">section 19</Ref>.
+
+**It also removes the delete race entirely.** A slow reader that repopulates
+after the version bump writes to `v7`, which nothing will ever read again.
+<Peach>The stale write lands somewhere harmless</Peach> instead of poisoning the live key.
+
+**The costs are real:**
+
+- <Mint>Every read needs the version first</Mint>, so a read is two round trips unless you
+  keep the version in a short-lived local cache, which reintroduces a small
+  staleness window of its own.
+- <Peach>Orphaned entries occupy memory until they expire</Peach>, so this needs a TTL and
+  an eviction policy that will not fill up. <Ref to="#30-eviction-what-to-drop-when-you-run-out">Section 30</Ref>.
+- The version counter is itself state that must not be lost. If Redis restarts
+  and the counter resets to 1, old `v1` entries are suddenly live again, which is
+  a genuinely nasty failure mode. <Mint>Seed the counter from a timestamp rather than
+  starting at zero.</Mint>
+
+<KeyIdea>
+
+<Peach>A version in the key invalidates a whole family of derived entries with one
+increment, and makes stale writes land harmlessly.</Peach> It trades memory and an
+extra read for not having to know what depends on what.
+
+</KeyIdea>

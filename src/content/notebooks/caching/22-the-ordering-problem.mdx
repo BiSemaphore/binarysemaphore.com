@@ -1,0 +1,69 @@
+---
+number: "22"
+title: "The ordering problem"
+part: "IV"
+partTitle: "Invalidation"
+---
+You are deleting rather than updating. There are still two operations, the
+database write and the cache delete, and <Peach>the order changes which race you get.</Peach>
+
+**Wrong order: delete the cache, then write the database.**
+
+```text
+   writer:  DELETE cache key
+                                 reader:  miss
+                                 reader:  SELECT → gets the OLD value
+                                 reader:  SET cache = OLD
+   writer:  UPDATE database
+            ▲
+            the cache now holds the old value, written AFTER the delete,
+            and the window is the whole duration of the write transaction
+```
+
+<Peach>This is the bad one</Peach> because the vulnerable window is as long as your database
+write takes, which is easily milliseconds, and it happens under ordinary load.
+
+**Right order: write the database, then delete the cache.**
+
+```text
+   writer:  UPDATE database
+   writer:  DELETE cache key
+                                 reader:  miss → SELECT → gets NEW value ✓
+```
+
+The race from <Ref to="#13-cache-aside-and-the-race-inside-it">section 13</Ref> still exists: a reader that read before the write can
+repopulate after the delete. <Mint>But that window requires the read to be slower than
+the entire write plus the delete</Mint>, which is far narrower than the other ordering.
+
+```text
+   ALWAYS:   1. write the database        (the source of truth first)
+             2. delete the cache key      (then remove the stale copy)
+             3. TTL on the key            (the backstop for the residual race)
+```
+
+**Delayed double delete**, when the residual window matters: delete, write,
+then schedule a second delete a second or two later, which clears anything a slow
+reader repopulated in between. <Peach>It is a mitigation, not a proof</Peach>, and it is
+usually less valuable than a short TTL plus the single-flight lock in <Ref to="#25-the-thundering-herd">section 25</Ref>.
+
+<Ask>
+
+"Why not delete the cache after the database write inside the same transaction?"
+
+Because Redis is not in your database transaction, and cannot be. <Peach>If the
+transaction rolls back after you have deleted, you have invalidated for nothing</Peach>,
+which is harmless. If you delete before commit and the commit fails, a reader may
+have repopulated from the pre-write state, which is the wrong ordering above. The
+practical answer is to delete after commit, accept the residual race, and keep a
+TTL. Anything stronger needs a change data capture pipeline reading the database
+log, which is a real solution at a scale most systems never reach.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>Write the database first, then delete the cache.</Peach> The reverse ordering opens a
+window as wide as your write transaction, and the correct ordering leaves only a
+narrow race that a TTL bounds.
+
+</KeyIdea>

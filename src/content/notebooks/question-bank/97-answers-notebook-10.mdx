@@ -1,0 +1,27 @@
+---
+number: "97"
+title: "Answers, Notebook 10"
+part: "11"
+partTitle: "Answers"
+---
+**Q282**   *<Ref to="/caching">Notebook 10</Ref>, <Ref to="#7-state-and-visibility">section 7</Ref>.*
+
+"Why is a CDN faster than a bigger origin server?"
+
+Because the limit is distance, not capacity. <Peach>A request from Sydney to London
+costs 150ms before the server has done anything at all</Peach>, and doubling the
+server's CPU does not change that. The CDN's entire contribution is moving the
+answer to within a few milliseconds of the user, which is the only lever that
+works on the dominant term.
+
+**Q288**   *<Ref to="/caching">Notebook 10</Ref>, <Ref to="#22-the-node-js-runtime">section 22</Ref>.*
+
+"Why not delete the cache after the database write inside the same transaction?"
+
+Because Redis is not in your database transaction, and cannot be. <Peach>If the
+transaction rolls back after you have deleted, you have invalidated for nothing</Peach>,
+which is harmless. If you delete before commit and the commit fails, a reader may
+have repopulated from the pre-write state, which is the wrong ordering above. The
+practical answer is to delete after commit, accept the residual race, and keep a
+TTL. Anything stronger needs a change data capture pipeline reading the database
+log, which is a real solution at a scale most systems never reach.

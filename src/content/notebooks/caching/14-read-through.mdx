@@ -1,0 +1,41 @@
+---
+number: "14"
+title: "Read-through"
+part: "III"
+partTitle: "The strategies"
+---
+Identical behaviour on reads, different ownership. Instead of your application
+checking the cache and falling back, <Peach>the cache itself sits in front of the
+database and does the fallback for you.</Peach>
+
+```text
+   CACHE-ASIDE                      READ-THROUGH
+
+   app → cache  (miss)              app → cache  (miss)
+   app → database                          cache → database
+   app → cache  (populate)                 cache populates itself
+                                    app ← cache
+```
+
+The application makes one call and never sees a miss. This is what a CDN does,
+what an ORM's second-level cache does, and what a library like a loading cache
+gives you in-process.
+
+**The advantage is that the fallback logic exists once**, rather than being
+written slightly differently at every call site, which in a large codebase is the
+difference between four consistent implementations and forty inconsistent ones.
+<Mint>It also gives you one place to put the single-flight lock from <Ref to="#25-the-thundering-herd">section 25</Ref></Mint>,
+which is much harder to enforce when every call site does its own miss handling.
+
+**The disadvantage is coupling.** The cache now needs to know how to load your
+data, which means configuration, a loader function, and a component that fails in
+a new way: <Peach>if the loader throws, the caller sees a cache error rather than a
+database error</Peach>, and the distinction matters at 3am.
+
+<KeyIdea>
+
+<Peach>Read-through moves the miss handling into the cache.</Peach> Same semantics as
+cache-aside, one implementation instead of many, at the cost of teaching your
+cache about your database.
+
+</KeyIdea>

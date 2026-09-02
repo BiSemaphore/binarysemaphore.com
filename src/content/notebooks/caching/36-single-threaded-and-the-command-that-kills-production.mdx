@@ -1,0 +1,58 @@
+---
+number: "36"
+title: "Single-threaded, and the command that kills production"
+part: "VII"
+partTitle: "Redis in practice"
+---
+Redis executes commands on <Peach>one thread, one at a time.</Peach> Newer versions use extra
+threads for reading and writing sockets, but the commands themselves still run
+sequentially on a single core.
+
+**This is mostly a gift.** Every command is atomic with no locking, `INCR` cannot
+race, and there are no deadlocks. It is why Redis is the natural home for
+counters and locks.
+
+**And it means one slow command blocks everything.**
+
+```text
+   client A:  KEYS user:*        scans 10 million keys, takes 4 seconds
+   client B:  GET session:44     ← waits 4 seconds
+   client C:  INCR ratelimit:x   ← waits 4 seconds
+   everyone else                 ← waits 4 seconds
+```
+
+<Rose>`KEYS` in production is the classic way to take an application down with one
+command.</Rose> It is `O(N)` over the entire keyspace, it holds the only thread for the
+whole scan, and <Peach>every other client simply stops.</Peach> It looks harmless in a
+console.
+
+```text
+   KEYS user:*         ✗  O(N), blocks everything
+   SCAN 0 MATCH user:* ✓  incremental, returns a cursor, yields
+                          between batches
+```
+
+<Mint>Use `SCAN`.</Mint> It returns a cursor and a handful of keys per call, so the thread
+is released between batches. It gives weaker guarantees, keys added or removed
+mid-scan may be missed or repeated, and that is nearly always an acceptable price.
+
+**Other commands with the same shape:** `FLUSHALL` and `FLUSHDB` on a large
+keyspace, `SMEMBERS` on a huge set, `HGETALL` on a huge hash, `SORT`, and any Lua
+script with a loop in it. <Peach>The rule is that anything proportional to the size of a
+large collection blocks every other client for its whole duration.</Peach>
+
+<DoThis>
+
+Disable or rename the dangerous commands in production. <Mint>Redis lets you rename
+`KEYS`, `FLUSHALL` and `FLUSHDB` to something unguessable in the config</Mint>, which
+removes the possibility of a tired engineer running one at 3am.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>One thread, one command at a time, so any `O(N)` command is a full outage for
+its duration.</Peach> `SCAN` instead of `KEYS`, always, and rename the destructive
+commands in production.
+
+</KeyIdea>

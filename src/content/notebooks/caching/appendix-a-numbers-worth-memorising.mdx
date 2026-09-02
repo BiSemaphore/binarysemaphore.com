@@ -1,0 +1,31 @@
+---
+number: ""
+title: "Appendix A. Numbers worth memorising"
+part: "IX"
+partTitle: "Appendices"
+---
+```text
+   LATENCY
+   L1 cache                    1 ns
+   main memory               100 ns          ← memorise
+   SSD random read           100 µs          ← memorise
+   round trip, same DC       500 µs
+   disk seek                  10 ms
+   round trip, half a world  150 ms          ← memorise. this one is physics
+
+   THE FORMULA
+   T_avg  =  T_cache  +  (1 - h) · T_origin
+
+   origin load  =  (1 - h) × request rate
+
+   h = 0.90  →  10%  of traffic reaches the origin
+   h = 0.99  →   1%     a ten-fold reduction, for 9 points of hit ratio
+   h = 0.999 →   0.1%
+
+   DEFAULTS THAT ARE DECISIONS
+   TTL                      always set one, always add ±10% jitter
+   maxmemory-policy         allkeys-lru, not the noeviction default
+   negative cache TTL       seconds, not minutes
+   Redis command timeout    50ms, not the client library default
+   appendfsync              everysec: up to 1 second of loss
+```

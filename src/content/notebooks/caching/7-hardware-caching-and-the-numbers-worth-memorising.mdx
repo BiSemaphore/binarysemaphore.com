@@ -1,0 +1,49 @@
+---
+number: "7"
+title: "Hardware caching, and the numbers worth memorising"
+part: "II"
+partTitle: "Where caches live"
+---
+The lecture covers L1, L2 and L3 briefly and correctly. The part worth carrying
+into an interview is not the topology but the relative costs, because they let
+you reason about anything.
+
+| Operation | Time | Relative |
+|---|---|---|
+| L1 reference | 1 ns | 1 |
+| L3 reference | 30 ns | 30 |
+| Main memory reference | 100 ns | 100 |
+| SSD random read | 100 µs | <Peach>100,000</Peach> |
+| Round trip, same datacentre | 500 µs | 500,000 |
+| Disk seek | 10 ms | 10,000,000 |
+| Round trip, London to Sydney | 150 ms | <Peach>150,000,000</Peach> |
+
+<Mint>Memorise three of them: memory is 100ns, an SSD read is 100µs, a cross-world
+round trip is 150ms.</Mint> Everything else can be estimated from those, and being
+able to say "that is three orders of magnitude" out loud is worth more than any
+exact figure.
+
+**The bottom row is the one that governs system design.** <Peach>No amount of
+optimisation defeats the speed of light.</Peach> London to Sydney and back is roughly
+150ms because the distance is 17,000 kilometres and light in fibre travels at
+about two thirds of `c`. That number cannot be improved by better hardware, which
+is why the only answer is to not make the trip, which is what a CDN is.
+
+<Ask>
+
+"Why is a CDN faster than a bigger origin server?"
+
+Because the limit is distance, not capacity. <Peach>A request from Sydney to London
+costs 150ms before the server has done anything at all</Peach>, and doubling the
+server's CPU does not change that. The CDN's entire contribution is moving the
+answer to within a few milliseconds of the user, which is the only lever that
+works on the dominant term.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>Memory is 100ns, SSD is 100µs, the far side of the world is 150ms.</Peach> The last
+one is physics and is the reason edge caching exists.
+
+</KeyIdea>

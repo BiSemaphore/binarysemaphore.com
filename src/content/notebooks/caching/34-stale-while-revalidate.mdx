@@ -1,0 +1,57 @@
+---
+number: "34"
+title: "stale-while-revalidate"
+part: "VI"
+partTitle: "Telling someone else's cache what to do"
+---
+<Ref to="#17-refresh-ahead-and-stale-while-revalidate">Section 17</Ref>'s pattern, as a header, obeyed by CDNs without you writing anything.
+
+```text
+   Cache-Control: max-age=60, stale-while-revalidate=600
+
+   0 to 60s      fresh          serve from cache
+   60 to 660s    STALE          serve from cache IMMEDIATELY,
+                                 and refresh in the background
+   after 660s    expired        block and fetch
+```
+
+<Peach>Nobody waits during the revalidation window.</Peach> The user who arrives at second 61
+gets an answer that is one second past its freshness date, in the time it takes to
+read from the edge, and triggers the refresh that makes the next user's copy
+current.
+
+**This is the single most valuable directive for a busy site**, because it turns
+the herd from <Ref to="#25-the-thundering-herd">section 25</Ref> into a non-event at the CDN layer: the first request past
+expiry starts a background refresh and every other request is served from the
+existing copy while it runs.
+
+**Its sibling is `stale-if-error`**, and it is a resilience feature rather than a
+performance one:
+
+```text
+   Cache-Control: max-age=60, stale-if-error=86400
+
+   your origin returns 500 for two hours
+   → the CDN keeps serving the last good copy
+   → users see a slightly old site instead of an error page
+```
+
+<Mint>For a mostly-read site this converts an origin outage into a stale site</Mint>,
+which is a very large improvement for one directive. Both come from RFC 5861.
+
+<DoThis>
+
+Add `stale-while-revalidate` to every cacheable `GET` where a slightly old answer
+is acceptable, which is most of them. <Mint>It costs one directive and removes the
+worst latency spike your users experience</Mint>, the one paid by whoever happens to
+arrive at expiry.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>`stale-while-revalidate` means nobody waits for a refresh, and `stale-if-error`
+means an origin outage is invisible.</Peach> Two directives, both obeyed by CDNs, both
+usually free wins.
+
+</KeyIdea>

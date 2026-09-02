@@ -1,0 +1,49 @@
+---
+number: "18"
+title: "Choosing"
+part: "III"
+partTitle: "The strategies"
+---
+| Strategy | Read path | Write path | Reach for it when |
+|---|---|---|---|
+| <Peach>Cache-aside</Peach> | App checks, falls back | Write DB, delete key | <Mint>The default. Start here</Mint> |
+| Read-through | Cache falls back | Usually with write-through | Many call sites, one policy |
+| Write-through | Normal | Write both | Read-heavy, writes must be visible at once |
+| Write-behind | Normal | Write cache, flush later | Counters, and only counters |
+| Refresh-ahead | Normal | Normal | A small set of expensive hot keys |
+
+**Start with cache-aside and a TTL.** It is the simplest thing that works, it
+degrades safely when the cache is unavailable, and <Peach>the other four are answers to
+problems you should be able to demonstrate you have.</Peach>
+
+The decision tree, in the order the questions actually arrive:
+
+```text
+   is it read far more than written?          no  → do not cache
+        │ yes
+   must a write be visible immediately?       no  → cache-aside + TTL
+        │ yes
+   can you afford a dual write?               no  → cache-aside, short TTL
+        │ yes                                        and delete on write
+   write-through, still with a TTL
+```
+
+<KeyIdea>
+
+<Peach>Cache-aside with a TTL, until you can name the specific problem another
+strategy solves.</Peach> Every alternative buys one property and costs either
+consistency or durability.
+
+</KeyIdea>
+
+<Recall>
+
+Draw the cache-aside race, and give the four mitigations in order. | 8
+
+</Recall>
+
+<Recall>
+
+Why is "write-through means always fresh" wrong? Give the three reasons. | 7
+
+</Recall>

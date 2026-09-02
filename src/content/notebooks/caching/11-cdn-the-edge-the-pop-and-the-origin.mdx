@@ -1,0 +1,69 @@
+---
+number: "11"
+title: "CDN: the edge, the PoP, and the origin"
+part: "II"
+partTitle: "Where caches live"
+---
+The lecture's account is good. A <Pink>CDN</Pink> keeps copies of your content on servers
+placed near users, so most requests never reach you.
+
+```text
+   user in São Paulo
+        │  DNS resolves to the nearest point of presence
+        ▼
+   POP (a cluster of edge servers)
+        │
+        ├── HIT   ── serve from here. your origin never knows       ~10 ms
+        │
+        └── MISS  ── fetch from origin, store it, then serve       ~150 ms
+                     subsequent users in São Paulo now hit
+```
+
+<Term name="Point of presence">
+
+A physical location holding a cluster of edge servers. A CDN has tens to hundreds
+of them worldwide, and "the edge" means whichever one is nearest a given user.
+
+</Term>
+
+**Three things to add to the lecture's version.**
+
+**The edge cache has a key, and you control it.** By default it is the full URL.
+Anything that varies the response and is not in the key means users receive each
+other's content, which is <Ref to="#24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data">section 24</Ref>'s problem at global scale. <Peach>The `Vary`
+header is how you add a request header to the edge's cache key</Peach>, and <Ref to="#35-vary-and-the-cache-key-you-did-not-know-you-had">section 35</Ref>
+covers it.
+
+**TTL is not your only tool. Purge exists.** Most CDNs let you actively evict a
+path or a tag. <Mint>Long TTLs plus purge on change gives you high hit ratios and
+fast updates</Mint>, where TTL alone forces you to choose between them.
+
+**Origin shield is worth knowing about.** With a hundred PoPs, a cold object
+means a hundred simultaneous misses arriving at your origin. An origin shield is
+a designated intermediate cache that all PoPs consult first, <Peach>turning a hundred
+origin requests into one.</Peach> That is the thundering herd from <Ref to="#25-the-thundering-herd">section 25</Ref>, solved
+at CDN scale.
+
+<Trap>
+
+<Rose>"The CDN routes you to a PoP that has the video quality suited to your
+connection speed."</Rose>
+
+The lecture says this and it is not how adaptive streaming works. <Mint>DNS and
+anycast routing choose a PoP by network topology, geography and load. They do not
+inspect your bandwidth and they do not select renditions.</Mint> Quality selection
+happens <Peach>in the player</Peach>: the server publishes a manifest listing every
+available rendition, and the client measures its own throughput and requests the
+next segment at whichever bitrate it can sustain, switching mid-playback. The
+routing layer and the bitrate layer are independent, and conflating them is a
+common misunderstanding of how streaming works.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>A CDN converts a distance problem into a cache problem.</Peach> Control its cache key
+deliberately, prefer long TTLs plus purge over short TTLs, and know that an
+uncached object means every PoP asks you at once.
+
+</KeyIdea>

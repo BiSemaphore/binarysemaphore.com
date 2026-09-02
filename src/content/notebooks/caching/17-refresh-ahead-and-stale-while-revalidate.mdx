@@ -1,0 +1,58 @@
+---
+number: "17"
+title: "Refresh-ahead and stale-while-revalidate"
+part: "III"
+partTitle: "The strategies"
+---
+Both attack the same problem: <Peach>the user who happens to arrive at the moment the
+TTL expires pays for everyone else's freshness.</Peach>
+
+```text
+   plain TTL
+
+   t=0 ────────────── cached, fast ──────────────┤ t=300 EXPIRED
+                                                  │
+                                    this user waits 400ms for the
+                                    recompute, and so does everyone
+                                    who arrives during it   ← section 25
+```
+
+**Refresh-ahead** recomputes the value before it expires, on a schedule or when a
+read arrives near expiry. <Mint>Nobody ever waits, because the value is never
+missing.</Mint> It costs you recomputation of things that may not be requested again,
+so it suits a small set of known-hot keys rather than a large keyspace.
+
+**Stale-while-revalidate** serves the expired value immediately and refreshes in
+the background:
+
+```text
+   request arrives, entry is stale
+        │
+        ├──▶ return the stale value NOW          the user waits ~1 ms
+        │
+        └──▶ trigger a background refresh        the next reader gets fresh
+```
+
+<Peach>The user gets a fast answer that is slightly out of date, instead of a slow
+answer that is current.</Peach> For a dashboard, a trending list, a product page, that
+is almost always the better trade, and it is the direct answer to the one question
+this book is built on: you have decided you are willing to be wrong for one more
+refresh cycle in exchange for never being slow.
+
+It is also a standard HTTP directive, `stale-while-revalidate`, covered in
+<Ref to="#34-stale-while-revalidate">section 34</Ref>, so you can get this behaviour from a CDN without writing any of it.
+
+<DoThis>
+
+For an expensive value with a stable set of hot keys, <Mint>combine them: refresh
+ahead for the known-hot keys and stale-while-revalidate for the long tail.</Mint> The
+hot keys never expire and the tail never blocks a user.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Both patterns exist so that no user pays for the recompute.</Peach> Refresh-ahead
+prevents expiry; stale-while-revalidate serves the old value while fixing it.
+
+</KeyIdea>

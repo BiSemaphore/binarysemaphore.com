@@ -1,0 +1,78 @@
+---
+number: "15"
+title: "Write-through, and the claim that it is always fresh"
+part: "III"
+partTitle: "The strategies"
+---
+On every write, the application writes both the database and the cache.
+
+```text
+   WRITE
+     1. write the database
+     2. write the cache with the new value        (not a delete)
+```
+
+The lecture's summary: writes carry more overhead because you update two systems,
+and the benefit is that <Peach>the cache is always fresh, never expired, and you never
+serve old data.</Peach>
+
+**The trade is stated correctly and the benefit is overstated.** There are three
+reasons the cache can hold something other than what the database holds, and none
+of them is exotic.
+
+**There is no transaction across two systems.** The database commit succeeds and
+the Redis write fails, because Redis restarted, or the connection timed out, or
+the process was killed between the two lines. <Peach>You now have a permanently wrong
+cache entry and no mechanism will ever notice</Peach>, which is worse than cache-aside,
+because with a delete the next read repairs it.
+
+```text
+   UPDATE users SET email = 'new@x.com'   ✓ committed
+   redis.set("user:44", {...new...})      ✗ connection reset
+
+   database: new@x.com          cache: old@x.com          forever
+```
+
+**Concurrent writes can land in a different order.** Two writers update the same
+key. The database serialises them and B wins. Their cache writes race
+independently and A's arrives second:
+
+```text
+   database order:   A then B    →  database holds B
+   cache order:      B then A    →  cache holds A
+```
+
+<Peach>Nothing detects this and nothing repairs it.</Peach>
+
+**It only makes one cache fresh.** The picture on page 5 has seven. Write-through
+to Redis does nothing for the CDN, the browser, or the in-process memory of three
+other application instances.
+
+<Trap>
+
+<Rose>"Write-through means the cache is always fresh, so you do not need a TTL."</Rose>
+
+This is the lecture's claim and it is the most consequential error in it. <Mint>There
+is no atomic write across a database and a cache</Mint>, so a partial failure or an
+interleaved concurrent write leaves them divergent with nothing to correct it.
+<Peach>A TTL is what converts "wrong forever" into "wrong for five minutes".</Peach> Set one
+under every strategy, including this one, and treat it as a backstop rather than
+as the mechanism.
+
+</Trap>
+
+<Signal>
+
+"Write-through is a dual write, and dual writes have no transaction. I still set
+a TTL under it, because the failure mode without one is permanent inconsistency
+rather than temporary staleness."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Write-through reduces the staleness window; it does not close it.</Peach> Two systems
+written in sequence can always diverge, so the TTL is not optional under any
+strategy.
+
+</KeyIdea>

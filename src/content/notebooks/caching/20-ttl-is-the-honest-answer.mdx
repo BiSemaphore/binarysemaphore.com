@@ -1,0 +1,62 @@
+---
+number: "20"
+title: "TTL is the honest answer"
+part: "IV"
+partTitle: "Invalidation"
+---
+A <Pink>TTL</Pink> is a promise that the entry will be forgotten after N seconds. It is
+the crudest tool available and it should be your default, on every key, under
+every strategy, always.
+
+**Because it is the only mechanism that needs no knowledge.** It does not care
+what changed, which entries depend on it, or where they are. <Peach>It bounds the
+wrongness without understanding it</Peach>, and it keeps working when your explicit
+invalidation has a bug, which it will.
+
+**Choosing the number is a product question, not an engineering one:**
+
+```text
+   what is the worst thing that happens if this is N seconds out of date?
+```
+
+| Data | Typical | Why |
+|---|---|---|
+| Static assets, immutable content | 1 year | Change the filename instead. <Ref to="#9-the-caches-you-did-not-configure">Section 9</Ref> |
+| Product catalogue, profiles | 5 to 60 min | Visible but not urgent |
+| Dashboard aggregates | 1 to 5 min | Nobody notices a minute in a weekly chart |
+| Inventory, prices | <Peach>seconds</Peach> | Someone can buy the wrong thing |
+| Permissions | seconds, plus explicit | <Ref to="#5-what-must-never-be-cached">Section 5</Ref> |
+| Session data | Its own expiry | Not really a cache |
+
+**Two refinements worth knowing.**
+
+<Mint>Add jitter.</Mint> A thousand keys written at once with the same TTL expire at once.
+<Ref to="#26-avalanche-and-the-one-line-that-prevents-it">Section 26</Ref> is about the resulting stampede; the fix is to set the TTL to
+`base ± random(10%)` so expiries spread out. This is one line and prevents a real
+class of outage.
+
+<Mint>Combine TTL with explicit invalidation rather than choosing between them.</Mint> The
+TTL is the backstop, the explicit delete is the optimisation. <Peach>A system with only
+explicit invalidation is one missed code path away from serving a wrong value
+forever</Peach>, and there is always a missed code path: the admin tool, the migration
+script, the manual fix someone ran in a console.
+
+<Trap>
+
+<Rose>"We invalidate explicitly on every write, so we do not need a TTL."</Rose>
+
+You invalidate on every write path you know about. <Mint>The bulk importer, the
+database migration, the support engineer running an UPDATE by hand, and the
+feature a colleague ships next quarter are all write paths that will not call
+your invalidation.</Mint> <Peach>A TTL is insurance against your own future incompleteness</Peach>
+and it costs one argument.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Put a TTL on every key, always, even when you also invalidate explicitly.</Peach> It
+is the only mechanism that requires no knowledge of what changed, and it is what
+bounds the damage from every bug in the mechanisms that do.
+
+</KeyIdea>

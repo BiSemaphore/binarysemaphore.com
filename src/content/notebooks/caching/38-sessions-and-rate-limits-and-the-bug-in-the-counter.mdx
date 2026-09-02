@@ -1,0 +1,64 @@
+---
+number: "38"
+title: "Sessions and rate limits, and the bug in the counter"
+part: "VII"
+partTitle: "Redis in practice"
+---
+Two of the lecture's use cases, both correct, both with something to add.
+
+**Sessions.** Storing session tokens in Redis is right, and there is a subtlety
+worth naming. <Ref to="/rest-api-design">Notebook 08</Ref> <Ref to="#3-the-arithmetic-of-a-hit-ratio">section 3</Ref> said statelessness is what lets any instance
+serve any request. Putting sessions in Redis appears to reintroduce server-side
+state, and it does, <Peach>but the state is shared rather than local</Peach>, so every
+instance still answers identically and you can still add or remove instances
+freely. That is the property statelessness was protecting, and a shared session
+store preserves it while a local one destroys it.
+
+**Rate limiting**, where the lecture's design has a real bug. Its counter:
+
+```text
+   INCR ratelimit:<ip>:<minute>        limit 50 per minute
+```
+
+That is a <Pink>fixed window counter</Pink>, and it permits twice the limit:
+
+```text
+   window 10:00:00 to 10:00:59        50 requests at 10:00:59
+   window 10:01:00 to 10:01:59        50 requests at 10:01:00
+
+   100 REQUESTS IN TWO SECONDS, and no limit was violated
+```
+
+<Mint>Every fixed window counter has this boundary burst</Mint>, and for a limit protecting
+an expensive endpoint, receiving 2x in a moment is exactly what you were trying to
+prevent. Three better shapes, and <Ref to="/scaling">Notebook 06</Ref> <Ref to="#29-when-the-cache-goes-down">section 29</Ref> covers the algorithms
+properly:
+
+| Approach | |
+|---|---|
+| Sliding window log | Exact. Store a timestamp per request. Most memory |
+| <Peach>Sliding window counter</Peach> | Weight the previous window by overlap. <Mint>The usual choice</Mint> |
+| Token bucket | Allows deliberate bursts, refills at a fixed rate |
+
+**And one security note on the lecture's key.** It takes the client IP from the
+`X-Forwarded-For` header. <Peach>That header is client-supplied and trivially
+forged</Peach>, so an attacker sends a different value on every request and has no rate
+limit at all.
+
+```text
+   X-Forwarded-For: 1.2.3.4, 5.6.7.8, 9.10.11.12
+                    ─────── the client's claim │
+                                               └ appended by YOUR proxy
+```
+
+<Mint>Trust only the value your own trusted proxy appended</Mint>, which usually means
+taking it from a fixed position from the right, or using a header your proxy sets
+and overwrites. <Ref to="/security">Notebook 05</Ref> covers header spoofing.
+
+<KeyIdea>
+
+<Peach>Fixed window counters permit double the limit across a boundary, and
+`X-Forwarded-For` is attacker-controlled unless your proxy overwrites it.</Peach> Both
+turn a rate limit into decoration.
+
+</KeyIdea>

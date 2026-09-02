@@ -1,0 +1,67 @@
+---
+number: "37"
+title: "Persistence, and what durable means here"
+part: "VII"
+partTitle: "Redis in practice"
+---
+The lecture says these technologies handle persistence with secondary storage,
+loading data back into memory at startup. <Peach>That is true and it is easy to read as
+a stronger promise than Redis makes.</Peach>
+
+**Two mechanisms, and neither is a database's durability.**
+
+```text
+   RDB    a point-in-time snapshot, written periodically
+          fork the process, write the dataset to a file
+          ✓ compact, fast restart
+          ✗ A CRASH LOSES EVERYTHING since the last snapshot,
+            which is minutes by default
+
+   AOF    an append-only log of every write command
+          ✓ far less loss
+          ✗ larger files, slower restart, needs rewriting periodically
+```
+
+**The number that matters is the AOF fsync policy:**
+
+| Setting | Worst-case loss |
+|---|---|
+| `always` | Nothing, and it is slow enough that few people use it |
+| <Peach>`everysec`</Peach> | <Mint>One second of writes. The default</Mint> |
+| `no` | Whatever the operating system was holding. Seconds to a minute |
+
+<Peach>The default configuration can lose one second of acknowledged writes.</Peach> For a
+cache that is completely irrelevant, because the source of truth is elsewhere and
+a lost entry is a miss. For the write-behind pattern in <Ref to="#16-write-behind">section 16</Ref>, where Redis
+briefly holds the only copy, <Peach>one second of loss is one second of vanished
+data</Peach>, and that is the trade you accepted when you chose it.
+
+**Two operational notes.**
+
+<Mint>RDB snapshots fork the process.</Mint> The copy-on-write means memory usage can
+approach double during a snapshot if the dataset is being written heavily, and a
+Redis sized to just fit its data can be killed by the operating system during a
+routine save.
+
+<Mint>Replication is not a backup.</Mint> A replica faithfully replicates a `FLUSHALL`.
+
+<Trap>
+
+<Rose>"Redis persists to disk, so it is safe to use as a primary datastore."</Rose>
+
+It persists, and its default configuration can lose the last second of writes on
+a crash, which is a different promise from a database's committed transaction.
+<Mint>Redis is an excellent cache, an excellent counter, and a reasonable primary
+store only when you have explicitly chosen a persistence configuration and
+accepted its loss window.</Mint> <Peach>Using it as a cache means you never have to think
+about any of this, which is part of why it is a good cache.</Peach>
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Redis persistence bounds loss, it does not eliminate it.</Peach> The default is up to
+one second of writes, which is free for a cache and a real decision for anything
+holding the only copy.
+
+</KeyIdea>

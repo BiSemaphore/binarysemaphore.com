@@ -1,0 +1,89 @@
+---
+number: "35"
+title: "Vary, and the cache key you did not know you had"
+part: "VI"
+partTitle: "Telling someone else's cache what to do"
+---
+<Ref to="#24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data">Section 24</Ref> gave the rule: the cache key must contain every input that changes the
+answer. <Peach>A shared cache's key is the URL, and nothing else, unless you say
+otherwise.</Peach>
+
+```text
+   GET /api/dashboard
+   Authorization: Bearer <user 44>      →  200, user 44's dashboard
+                                            CDN stores it under
+                                            "/api/dashboard"
+
+   GET /api/dashboard
+   Authorization: Bearer <user 91>      →  served user 44's dashboard
+```
+
+<Peach>That is <Ref to="#24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data">section 24</Ref>'s breach happening in a cache you do not operate.</Peach> The
+response varied on a request header, the cache key did not include it, and the
+CDN behaved exactly as specified.
+
+**`Vary` adds request headers to the cache key.**
+
+```text
+   Vary: Accept-Encoding        separate entries for gzip and brotli
+   Vary: Accept-Language        separate entries per language
+   Vary: Authorization          ALMOST ALWAYS THE WRONG FIX
+```
+
+<Mint>`Vary: Accept-Encoding` is standard and you should always send it</Mint> when you
+compress, or a client that cannot decompress brotli may be handed a brotli body.
+
+**But `Vary` on anything high-cardinality destroys your hit ratio.** Every
+distinct value of the varied header produces a separate cache entry. `Vary:
+Authorization` means one entry per token, which is one entry per user per session:
+<Peach>technically correct, and it caches nothing</Peach>, because no two requests share a
+key.
+
+`Vary: Cookie` is the same trap and is worse, because almost every request carries
+a unique analytics cookie, so <Peach>the cache stores millions of entries and serves
+none of them twice.</Peach>
+
+**The right answer for authenticated content is not to vary. It is `private`.**
+
+```text
+   authenticated, user-specific    Cache-Control: private, max-age=0
+                                   the browser may keep its own copy,
+                                   no shared cache stores it at all
+
+   public, identical for everyone  Cache-Control: public, s-maxage=3600
+                                   cache it hard at the edge
+```
+
+<Mint>Split your routes so that public content is genuinely public and personalised
+content is marked `private`.</Mint> <Peach>A response that is sometimes personalised is the
+dangerous case</Peach>, because it will be cached during a request that happened not to
+be, and served to everyone afterwards.
+
+<Signal>
+
+"Shared caches key on the URL alone, so any personalisation has to be either in
+the URL, declared in `Vary`, or marked `private`. I default to `private` for
+anything authenticated, because varying on `Authorization` is correct and caches
+nothing."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>A CDN's cache key is the URL unless `Vary` says otherwise.</Peach> Vary on
+`Accept-Encoding`, never on `Authorization` or `Cookie`, and mark personalised
+responses `private` instead.
+
+</KeyIdea>
+
+<Recall>
+
+Give the difference between `no-cache` and `no-store`, and which one protects a bank balance. | 5
+
+</Recall>
+
+<Recall>
+
+Why does `Vary: Cookie` destroy a hit ratio, and what should you do instead? | 6
+
+</Recall>

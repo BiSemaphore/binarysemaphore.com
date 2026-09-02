@@ -1,0 +1,45 @@
+---
+number: "28"
+title: "Hot keys"
+part: "V"
+partTitle: "The failure modes"
+---
+Your cache is distributed across nodes by hashing the key. That works as long as
+traffic is spread across many keys. <Peach>One key receiving a large share of all
+traffic breaks the assumption</Peach>, because a key lives on exactly one node.
+
+```text
+   a celebrity posts. 200,000 requests per second for one profile
+
+   node 1  ██████████████████████████████████████  saturated
+   node 2  ▏                                       idle
+   node 3  ▏                                       idle
+
+   adding nodes does not help. the key is on node 1
+```
+
+This is the caching version of a partition hotspot, and <Ref to="/postgres">Notebook 04</Ref> covers the
+database equivalent. <Peach>Sharding distributes keys, not requests for one key.</Peach>
+
+**Three answers:**
+
+<Mint>Replicate the hot key.</Mint> Write it under several suffixed names, `profile:44:0`
+through `profile:44:9`, and have readers pick one at random. The load spreads
+across nodes at the cost of ten copies and ten invalidations.
+
+<Mint>Put a local cache in front of it.</Mint> A few seconds in per-instance memory
+absorbs almost all of the traffic before it reaches Redis at all. <Ref to="#29-when-the-cache-goes-down">Section 29</Ref>
+covers what you are accepting by doing this, and for a value that is already
+seconds stale it is usually nothing.
+
+<Mint>Detect them.</Mint> You cannot fix what you cannot see. Redis can sample the
+keyspace, and instrumenting request counts per key prefix will find the celebrity
+before the incident does.
+
+<KeyIdea>
+
+<Peach>Sharding spreads keys, not traffic to one key.</Peach> A single hot key saturates one
+node however many you add, and the usual fix is a very short local cache in front
+of it.
+
+</KeyIdea>

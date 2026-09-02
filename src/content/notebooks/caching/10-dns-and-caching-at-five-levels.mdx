@@ -1,0 +1,56 @@
+---
+number: "10"
+title: "DNS, and caching at five levels"
+part: "II"
+partTitle: "Where caches live"
+---
+The lecture's walkthrough of DNS resolution is accurate and worth compressing to
+one page. A name is resolved by asking a chain of servers, and <Peach>every link in
+that chain caches, which is why the full walk is rare.</Peach>
+
+```text
+   1. OS cache               already know it? done
+   2. browser cache          browsers keep their own
+   3. recursive resolver     your ISP, or 8.8.8.8, or 1.1.1.1
+        │                    caches heavily. most queries stop here
+        ├─▶ root server      "I don't know example.com, ask .com"
+        ├─▶ TLD server       "ask ns1.example.com"
+        └─▶ authoritative    "93.184.216.34"
+   4. answer flows back, cached at every level on the way
+```
+
+**The consequence that matters for your systems is failover.** Every record has a
+TTL, and that TTL is how long the world may keep believing an address that is no
+longer correct.
+
+```text
+   TTL 86400 (a day)     changing an address takes up to a day to
+                         propagate. resolvers will not ask again
+   TTL 60                changes propagate in about a minute, at the
+                         cost of far more queries
+```
+
+<Mint>Before a planned migration, lower the TTL well in advance, then move, then
+raise it again.</Mint> Lowering it on the day does not help, because resolvers are
+still holding the old record with the old long TTL.
+
+<Peach>And some resolvers ignore your TTL entirely</Peach>, clamping it to their own minimum
+or holding records far longer than instructed. This is the clearest example in the
+book of a cache you do not control: you can publish a number and you cannot
+enforce it, so <Mint>DNS-based failover is never instant and must never be the only
+failover mechanism.</Mint>
+
+<Signal>
+
+"DNS TTL is a lower bound on propagation, not a guarantee, because resolvers may
+hold records longer. So we lower TTLs days before a migration and never rely on
+DNS alone for failover."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Every DNS layer caches, so a record change reaches the world at the speed of the
+TTL you set previously, not the one you set today.</Peach>
+
+</KeyIdea>

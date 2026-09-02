@@ -1,0 +1,71 @@
+---
+number: "29"
+title: "When the cache goes down"
+part: "V"
+partTitle: "The failure modes"
+---
+The question every interviewer asks and most systems have never tested.
+<Peach>Redis is not there. What happens?</Peach>
+
+**The failure most people have built without meaning to:**
+
+```text
+   1. Redis becomes unreachable
+   2. every request now misses
+   3. every request hits the database
+   4. the database is sized for 10% of traffic         ← section 3
+   5. the database falls over
+   6. the site is down, not slow
+```
+
+You did not build a fast system with a cache. <Peach>You built a system that requires
+a cache and does not say so.</Peach> The database was quietly resized around the hit
+ratio, and the cache became a hard dependency the day someone provisioned for
+steady-state load.
+
+**Decide deliberately, and the answer is usually fail open:**
+
+| Behaviour | When it is right |
+|---|---|
+| <Peach>Fail open</Peach> | <Mint>Almost always for reads.</Mint> Miss, hit the origin, be slow |
+| Fail closed | The origin cannot survive the load. Shed instead |
+| Serve stale | Best of both, if you have a second layer holding old values |
+
+<Mint>Fail open needs three things to be safe</Mint>, and each is a line of configuration
+people leave at its default:
+
+```text
+   1. a short connect and command timeout      50ms, not 5 seconds
+   2. a circuit breaker                        stop trying after N failures,
+                                               retry occasionally
+   3. origin protection                        rate limit or shed, so a cold
+                                               cache degrades rather than
+                                               collapses         ← Notebook 06
+```
+
+<Peach>Without the timeout, a hung Redis is worse than a missing one</Peach>: every request
+waits five seconds for a connection that will never open, your threads or
+connections exhaust, and the outage is total rather than partial. This is the most
+common way a cache outage becomes a full outage.
+
+**The in-process cache is your friend here.** A small local cache with a few
+seconds of TTL keeps the hottest keys answerable even when Redis is gone. It costs
+you the consistency described in <Ref to="#12-the-application-cache-redis-and-memcached">section 12</Ref>, where N instances hold N answers, and
+<Mint>for a few seconds of staleness on hot data, that is usually a trade worth
+making.</Mint>
+
+<DoThis>
+
+Test it. <Mint>Kill Redis in staging under realistic load and watch what happens.</Mint>
+This is a fifteen-minute experiment that reliably finds a missing timeout, and
+almost nobody runs it before the incident rather than after.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>If your database cannot serve 100% of traffic, your cache is a hard
+dependency.</Peach> Set aggressive timeouts, fail open, protect the origin, and test the
+outage before it happens.
+
+</KeyIdea>
