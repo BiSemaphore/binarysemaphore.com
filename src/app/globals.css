@@ -487,6 +487,19 @@ body {
   color: var(--shiki-dark);
 }
 
+/* An ASCII figure, not code: a `text` fence in the notebooks is a drawing.
+   Quieter than a code block, no border, and it does not invite copying. */
+.thread pre[data-figure] {
+  border: 0;
+  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+  border-radius: 0.9rem;
+  padding: 1.25rem 1.1rem;
+  color: var(--muted);
+}
+.dark .thread pre[data-figure] {
+  background: color-mix(in srgb, var(--foreground) 6%, transparent);
+}
+
 /* --- Study notebook marks ------------------------------------------------ */
 /* Notebook sections use .thread for prose, exactly like a thread. These are the
    only additions: the four highlighters the books are written with, which the

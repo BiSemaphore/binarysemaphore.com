@@ -1,12 +1,17 @@
 "use client";
 
 /**
- * Thread code blocks with a copy-to-clipboard button.
+ * Code blocks with a copy-to-clipboard button.
  *
  * Registered as the `pre` element in `src/mdx-components.tsx`. The incoming
  * props (including rehype-pretty-code's `data-*` attributes and classes) are
  * spread straight onto the real <pre>, so the highlighted output is preserved
  * exactly; we only wrap it to position the button.
+ *
+ * A `text` fence is exempt. The study notebooks draw their diagrams as ASCII in
+ * a text fence (AUTHORING.md: "ASCII first"), so it is a figure, not code.
+ * Giving it a copy button and code chrome invites the reader to paste a picture
+ * into an editor.
  */
 
 import { useRef, useState, type ComponentPropsWithoutRef } from "react";
@@ -28,6 +33,12 @@ export function Pre(props: ComponentPropsWithoutRef<"pre">) {
       // Clipboard unavailable (insecure context, denied permission): leave the
       // button idle rather than pretending it worked.
     }
+  }
+
+  // rehype-pretty-code puts the fence's language here.
+  const language = (props as { "data-language"?: string })["data-language"];
+  if (language === "text") {
+    return <pre {...props} data-figure="" />;
   }
 
   return (

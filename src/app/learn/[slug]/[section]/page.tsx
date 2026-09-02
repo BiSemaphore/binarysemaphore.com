@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getNotebook } from "@/lib/learn";
-import { getSection } from "@/lib/learn/book";
+import { getSection, getSections } from "@/lib/learn/book";
 import { canRead, getAccess, TRIAL_DAYS } from "@/lib/learn/access";
 import { learnBase } from "@/lib/learn/paths";
 import { startTrialAction } from "@/app/learn/actions";
 import { ArrowRightIcon, LockIcon } from "@/components/icons";
+import { SectionNav } from "@/components/learn/section-nav";
 
 type Params = { slug: string; section: string };
 
@@ -43,6 +44,8 @@ export default async function SectionPage({
   const ctx = getSection(slug, section);
   if (!notebook || !ctx) notFound();
 
+  const sections = getSections(slug);
+
   const [access, base] = await Promise.all([getAccess(slug), learnBase()]);
   const entitled = canRead(access);
 
@@ -59,6 +62,25 @@ export default async function SectionPage({
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 pb-24">
+      <div className="relative">
+        {/* The book's contents, beside what you are reading. A notebook is read
+            a section at a time, so without this the only way onward is back to
+            the notebook page. Below this width there is no room for it, and
+            prev/next at the foot does the job. The breakpoint is set so the
+            sidebar clears the viewport edge: the column is 768px centred, so at
+            1360px its left edge sits at 296px and the 208px sidebar plus its
+            40px gutter starts at 48px. Below that it would be clipped. */}
+        <aside className="absolute right-full top-0 hidden h-full pr-10 min-[1360px]:block">
+          <div className="sticky top-24 w-52">
+            <SectionNav
+              sections={sections}
+              current={section}
+              base={base}
+              slug={slug}
+            />
+          </div>
+        </aside>
+
       <nav className="flex items-center gap-2 pt-10 font-mono text-xs text-subtle">
         <Link
           href={`${base}/${slug}`}
@@ -202,6 +224,7 @@ export default async function SectionPage({
           </Link>
         ) : null}
       </nav>
+      </div>
     </div>
   );
 }
