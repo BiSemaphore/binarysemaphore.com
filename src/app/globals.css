@@ -487,6 +487,150 @@ body {
   color: var(--shiki-dark);
 }
 
+/* --- Study notebook prose ------------------------------------------------ */
+/* Mirrors .thread, because a notebook section should read like a thread. The
+   difference is the four highlighters the books are written with, which the PDF
+   draws as marker strokes and which are the whole point of "read with a pen". */
+
+.notebook > * + * {
+  margin-top: 1rem;
+}
+.notebook h3 {
+  margin-top: 2rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+}
+.notebook h4 {
+  margin-top: 1.5rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.notebook p,
+.notebook li {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+.notebook ul,
+.notebook ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.notebook ul {
+  list-style: disc;
+}
+.notebook ol {
+  list-style: decimal;
+}
+.notebook li::marker {
+  color: var(--subtle);
+}
+.notebook strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.notebook a {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.notebook blockquote {
+  border-left: 2px solid var(--border);
+  padding-left: 1rem;
+  font-style: italic;
+}
+.notebook table {
+  width: 100%;
+  margin: 1.25rem 0;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.notebook th,
+.notebook td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  color: var(--muted);
+}
+.notebook th {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--subtle);
+}
+.notebook pre {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--card);
+  padding: 1rem 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.notebook pre code {
+  font-family: var(--font-mono);
+  color: var(--foreground);
+}
+.notebook :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  padding: 0.1em 0.35em;
+}
+
+/* The four highlighters. Drawn as a marker stroke behind the text rather than a
+   filled box, so a marked phrase still reads as part of the sentence. */
+.nb-mark {
+  padding: 0.05em 0.15em;
+  border-radius: 0.2em;
+  color: var(--foreground);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.nb-mark-peach {
+  background: color-mix(in srgb, #ff9d7a 38%, transparent);
+}
+.nb-mark-rose {
+  background: color-mix(in srgb, #ff6f8d 30%, transparent);
+}
+.nb-mark-mint {
+  background: color-mix(in srgb, #52d1a4 32%, transparent);
+}
+.nb-mark-pink {
+  background: color-mix(in srgb, #d59bff 32%, transparent);
+}
+
+.dark .nb-mark-peach {
+  background: color-mix(in srgb, #ff9d7a 26%, transparent);
+}
+.dark .nb-mark-rose {
+  background: color-mix(in srgb, #ff6f8d 24%, transparent);
+}
+.dark .nb-mark-mint {
+  background: color-mix(in srgb, #52d1a4 24%, transparent);
+}
+.dark .nb-mark-pink {
+  background: color-mix(in srgb, #d59bff 24%, transparent);
+}
+
+/* ((circle)): the PDF draws a hand-authored ellipse; on screen an outline. */
+.nb-circle {
+  padding: 0.05em 0.35em;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: 999px;
+  color: var(--foreground);
+}
+
 /* --- Resume tune sliders ------------------------------------------------- */
 /* Brand-styled range input: thin track, coral-accent fill, soft round thumb.
    Native `accent-color` looks heavy and inconsistent across browsers. */

@@ -132,6 +132,50 @@ the window is deliberately short.
    The secret (service-role) key is required, because uploading is exactly what
    RLS exists to stop a user doing. Never put it in `.env.local`.
 
+## Reading in the browser
+
+Every section of every notebook is a page: `learn.binarysemaphore.com/<slug>/<section>`.
+The contents list on a notebook's page links straight into them.
+
+The books are not plain markdown. They carry a directive vocabulary the PDF
+typesetter understands, specified in `learnings/notebooks/AUTHORING.md`:
+`:::part`, `:::ask`, `:::signal`, `:::trap`, `:::do`, `:::key`, `:::recall`,
+`:::quiz`, `:::redraw`, `:::term`, `:::figure`, plus four inline highlighters
+(`==peach==`, `!!rose!!`, `++mint++`, `%%pink%%`) and `((circle))`.
+
+- `src/lib/learn/parse.ts` resolves that structure into parts, sections and
+  blocks. It is not a markdown parser: prose stays raw for the renderer.
+- `src/lib/learn/render.ts` turns prose into HTML with a unified pipeline, after
+  a pre-pass that rewrites the highlighters as spans. Marks inside fenced or
+  inline code are left alone, because code is full of `==`, `!!` and `++`.
+- `src/components/learn/notebook-blocks.tsx` draws each block type. The eight
+  annotation blocks get distinct weights on purpose: if they all look alike the
+  reader stops seeing any of them.
+- `.notebook` in `globals.css` mirrors `.thread`, so a section reads like a
+  thread, plus the four highlighter colours.
+
+### The gate
+
+`splitAtGate()` gives a signed-out reader a **share** of the section's prose
+(35%), not a fixed number of blocks: sections run from a few hundred to several
+thousand characters, and a fixed count opens a short section entirely.
+
+Under the preview sits a snippet of what comes next, faded out. That snippet is
+truncated to 180 characters **on the server** by `teaser()`. Rendering a whole
+block and hiding it with CSS would ship it to anyone who opens view-source,
+which is the paywall mistake worth avoiding. Verified by fetching section pages
+signed out and grepping for the back half of each section's source.
+
+A section that is only one block long is split at a paragraph break instead, so
+it still holds something back.
+
+### Content sync
+
+The markdown is committed here, in `src/content/notebooks/`, and copied from the
+`learnings` repo by `scripts/sync-notebooks.mjs`. Copying rather than importing
+keeps the site buildable on CI, where the other repo does not exist, and makes a
+change to a book show up as a reviewable diff. `--check` fails if they drift.
+
 ## Routing
 
 `learn` is an **app subdomain** (`APP_SUBDOMAINS` in `src/lib/subdomains.ts`),

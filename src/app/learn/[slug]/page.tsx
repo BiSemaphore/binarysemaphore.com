@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { editions, getNotebook, notebooks } from "@/lib/learn";
 import { getAccess } from "@/lib/learn/access";
+import { getBook } from "@/lib/learn/book";
 import { learnBase } from "@/lib/learn/paths";
 import { AccessPanel } from "@/components/learn/access-panel";
 import { ArrowRightIcon } from "@/components/icons";
@@ -41,6 +42,7 @@ export default async function NotebookPage({
   if (!notebook) notFound();
 
   const [access, base] = await Promise.all([getAccess(slug), learnBase()]);
+  const book = getBook(slug);
   const available = editions.filter((e) => notebook.assets[e.id]);
   const others = notebooks.filter((n) => n.slug !== slug).slice(0, 3);
 
@@ -97,18 +99,27 @@ export default async function NotebookPage({
           What is inside
         </h2>
         <p className="mt-2 text-sm leading-6 text-muted">
-          The full table of contents. Nothing here is hidden: if a section you
-          need is not in this list, the notebook is not the right one and you
-          should not spend a week on it.
+          Every section, and every one of them opens in the browser. Nothing
+          here is hidden: if a section you need is not in this list, the
+          notebook is not the right one and you should not spend a week on it.
         </p>
 
         <ol className="mt-6 grid gap-x-8 gap-y-0 sm:grid-cols-2">
-          {notebook.contents.map((section) => (
-            <li
-              key={section}
-              className="border-b border-border/60 py-2.5 text-sm leading-6 text-foreground/85"
-            >
-              {section}
+          {(book?.sections ?? []).map((section) => (
+            <li key={section.slug} className="border-b border-border/60">
+              <Link
+                href={`${base}/${notebook.slug}/${section.slug}`}
+                className="group flex items-baseline gap-3 py-2.5 text-sm leading-6 text-foreground/85 transition-colors hover:text-foreground"
+              >
+                {section.number ? (
+                  <span className="w-6 shrink-0 font-mono text-xs text-subtle transition-colors group-hover:text-accent-strong">
+                    {section.number}
+                  </span>
+                ) : (
+                  <span aria-hidden className="w-6 shrink-0" />
+                )}
+                <span>{section.title}</span>
+              </Link>
             </li>
           ))}
         </ol>
