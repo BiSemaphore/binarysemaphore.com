@@ -545,6 +545,73 @@ export const notebooks: Notebook[] = [
       tablet: { file: "Real-Time-Backends-Tablet.pdf", bytes: 4402860 },
     },
   },
+  {
+    slug: "rest-api-design",
+    series: "System Design Notebook",
+    number: "08",
+    title: "REST API Design",
+    subtitle:
+      "Designing an interface for someone you will never meet",
+    blurb:
+      "An interface is a promise to someone you will never meet. Fielding's constraints and which one nobody implements, resources and the methods that act on them, status codes a client can act on, and what a well-behaved error looks like.",
+    pages: 18,
+    contents: [
+      "The whole picture on one page",
+      "1. The requirement: an interface two strangers agree on",
+      "2. 1990 to 1993: the web outgrows its inventor",
+      "3. Fielding's six constraints",
+      "4. Why it is called REST",
+      "5. The constraint nobody implements",
+    ],
+    assets: {
+      reading: { file: "REST-API-Design-Reading.pdf", bytes: 539766 },
+      print: { file: "REST-API-Design-Print.pdf", bytes: 768301 },
+      tablet: { file: "REST-API-Design-Tablet.pdf", bytes: 844054 },
+    },
+  },
+  {
+    slug: "design-principles",
+    series: "System Design Notebook",
+    number: "09",
+    title: "Design Principles",
+    subtitle:
+      "SOLID, and the question underneath it",
+    blurb:
+      "SOLID is the answer. The question underneath it is which changes a design makes cheap and which it makes expensive, so each letter is taken back to the coupling it is really about, including where two of them disagree.",
+    pages: 42,
+    contents: [
+      "The whole picture on one page",
+      "1. The requirement: a change that should have been small",
+      "2. Cohesion and coupling: the older, better words",
+      "3. Separation of concerns, and where these principles live",
+      "4. S: one reason to change",
+      "5. S, refined: responsibility means an actor",
+      "6. O: change by adding, not by editing",
+      "7. O: Meyer's version and Martin's are not the same",
+      "8. L: what Liskov actually said",
+      "9. L: the four rules, and the square",
+      "10. I: the interface that carries what you do not use",
+      "11. D: point the dependency at what changes least",
+      "12. When two principles disagree",
+      "13. OCP against YAGNI: the abstraction you did not need",
+      "14. SRP against DRY: the duplication you should keep",
+      "15. The smell catalogue: what a violation looks like in a diff",
+      "16. SOLID outside objects",
+      "17. The critique: is SOLID still right?",
+      "18. The delivery script",
+      "19. Whiteboard: refactoring live",
+      "20. Follow-up question bank",
+      "Appendix A. The sources, and what each one actually says",
+      "Appendix B. The one-page summary",
+      "Appendix C. Glossary",
+      "Appendix D. Self-test",
+    ],
+    assets: {
+      reading: { file: "Design-Principles-Reading.pdf", bytes: 1071700 },
+      print: { file: "Design-Principles-Print.pdf", bytes: 1538362 },
+      tablet: { file: "Design-Principles-Tablet.pdf", bytes: 1908710 },
+    },
+  },
 ];
 
 /** The notebook with this slug, or undefined. */

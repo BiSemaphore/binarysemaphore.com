@@ -311,3 +311,9 @@ on conflict (id) do update set title = excluded.title;
 update public.learn_products
 set active = false
 where id = 'full-stack-code-review';
+
+-- Added later: see supabase/migrations/0005_add_notebooks_08_09.sql.
+insert into public.learn_products (id, title) values
+  ('rest-api-design', 'REST API Design'),
+  ('design-principles', 'Design Principles')
+on conflict (id) do update set title = excluded.title, active = true;
