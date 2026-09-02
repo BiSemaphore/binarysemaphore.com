@@ -1,0 +1,22 @@
+---
+number: "4"
+title: "The first principle: separate ingestion from processing"
+part: "I"
+partTitle: "Framing the problem"
+---
+This is the decision the whole design rests on. The naive model is:
+
+```text
+        WRONG
+
+  Frontend
+     │  POST 10 GB
+     ▼
+  Backend  ─────────►  parse + transform + write  (20+ minutes)
+     │
+     ▼
+  HTTP 200
+```
+
+This fails for at least five independent reasons, and it is worth naming them
+all rather than just saying "it does not scale":

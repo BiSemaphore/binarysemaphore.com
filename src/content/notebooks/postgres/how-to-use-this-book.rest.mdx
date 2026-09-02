@@ -1,0 +1,40 @@
+Parts I to VI are the lecture, expanded. ==Parts VII and VIII are not in the
+lecture at all==, and they are where interviews go once schema design is agreed:
+transactions and isolation, the N+1 problem, connection pooling, `EXPLAIN`,
+vacuum. A schema you can draw is table stakes. Knowing what happens when two
+requests hit the same row at the same time is the difference.
+
+#### The five block types
+
+| Block | What it means |
+|---|---|
+| Interviewer asks | A real follow-up you should expect. Answer it out loud before reading on. |
+| Senior signal | The specific sentence that separates a senior answer from a mid-level one. |
+| Trap | A common answer that sounds right and is wrong. |
+| Do this | The concrete practice, with the parameter or command. |
+| Key idea | The one thing to carry out of that section. |
+
+#### The four highlighters
+
+| Mark | Means |
+|---|---|
+| <Peach>peach</Peach> | The sentence to carry away |
+| <Rose>rose</Rose> | The wrong answer, the thing that bites |
+| <Mint>mint</Mint> | The correct practice |
+| <Pink>pink</Pink> | A definition, at the point it is first defined |
+
+#### One running example
+
+Everything is built on the same five-table schema, a project management
+platform, because a schema you keep returning to teaches more than twelve
+disconnected examples. By Part V you will be writing the queries that back real
+endpoints against it, and by Part VI indexing those exact queries.
+
+<KeyIdea>
+
+The database is the one component you cannot roll back cheaply. Code deploys
+twice a day; <Peach>a bad column type outlives the team that chose it</Peach>. That is why
+this topic rewards being deliberate in a way most of backend engineering does
+not.
+
+</KeyIdea>

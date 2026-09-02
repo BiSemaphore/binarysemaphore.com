@@ -1,0 +1,461 @@
+[
+  {
+    "slug": "how-to-use-this-book",
+    "number": "",
+    "title": "How to use this book",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "Parts I to VI are the lecture, expanded. ==Parts VII and VIII are not in the lecture at all==, and they are where interviews go once schema design is agreed: transactions and"
+  },
+  {
+    "slug": "the-schema-on-one-page",
+    "number": "",
+    "title": "The schema on one page",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "Three relationships, and they are the whole of relational modelling:"
+  },
+  {
+    "slug": "1-persistence-and-where-data-lives",
+    "number": "1",
+    "title": "Persistence, and where data lives",
+    "part": "I",
+    "partTitle": "Why a database at all",
+    "gated": true,
+    "teaser": "Two orders of magnitude of latency, two orders of magnitude of capacity, in opposite directions. That trade decides which tool goes where:"
+  },
+  {
+    "slug": "2-what-a-text-file-cannot-do",
+    "number": "2",
+    "title": "What a text file cannot do",
+    "part": "I",
+    "partTitle": "Why a database at all",
+    "gated": true,
+    "teaser": "Every lookup becomes: open the file, read every line, split every line, compare every field. That is O(n) in application code for a question the database answers in O(log n), and"
+  },
+  {
+    "slug": "3-what-a-dbms-promises",
+    "number": "3",
+    "title": "What a DBMS promises",
+    "part": "I",
+    "partTitle": "Why a database at all",
+    "gated": true,
+    "teaser": "Integrity is the one to dwell on, because it is the one people give away."
+  },
+  {
+    "slug": "4-relational-or-not",
+    "number": "4",
+    "title": "Relational or not",
+    "part": "I",
+    "partTitle": "Why a database at all",
+    "gated": true,
+    "teaser": "The lecture's two examples are well chosen:"
+  },
+  {
+    "slug": "5-why-postgres",
+    "number": "5",
+    "title": "Why Postgres",
+    "part": "I",
+    "partTitle": "Why a database at all",
+    "gated": true,
+    "teaser": "That last point removes the usual reason to reach for a document store:"
+  },
+  {
+    "slug": "6-numbers-and-the-money-rule",
+    "number": "6",
+    "title": "Numbers, and the money rule",
+    "part": "II",
+    "partTitle": "Types are the first constraint",
+    "gated": true,
+    "teaser": "The rule you must be able to state without hesitating:"
+  },
+  {
+    "slug": "7-text-and-why-the-answer-is-text",
+    "number": "7",
+    "title": "Text, and why the answer is `text`",
+    "part": "II",
+    "partTitle": "Types are the first constraint",
+    "gated": true,
+    "teaser": "In Postgres, all three perform identically. There is no speed advantage to declaring a limit, and text indexes exactly as well as varchar. The documentation itself recommends text."
+  },
+  {
+    "slug": "8-time-and-the-one-that-bites",
+    "number": "8",
+    "title": "Time, and the one that bites",
+    "part": "II",
+    "partTitle": "Types are the first constraint",
+    "gated": true,
+    "teaser": "timestamp without a time zone does not mean UTC. It means no zone at all: the value is stored exactly as written and interpreted by whoever reads it. Two servers in different"
+  },
+  {
+    "slug": "9-identity-serial-identity-uuid",
+    "number": "9",
+    "title": "Identity: serial, identity, uuid",
+    "part": "II",
+    "partTitle": "Types are the first constraint",
+    "gated": true,
+    "teaser": "The lecture uses serial, which is what most existing code uses. Worth knowing the correction: ==serial is not a type==, it is a macro that creates an integer column, a sequence"
+  },
+  {
+    "slug": "10-json-and-jsonb",
+    "number": "10",
+    "title": "JSON and JSONB",
+    "part": "II",
+    "partTitle": "Types are the first constraint",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "11-enums-and-the-argument-that-actually-wins",
+    "number": "11",
+    "title": "Enums, and the argument that actually wins",
+    "part": "II",
+    "partTitle": "Types are the first constraint",
+    "gated": true,
+    "teaser": "Integrity. Writing 'activ' fails at the database rather than sitting in the table until a report looks wrong. Real, but you were probably validating in the application anyway."
+  },
+  {
+    "slug": "12-why-you-never-touch-the-database-by-hand",
+    "number": "12",
+    "title": "Why you never touch the database by hand",
+    "part": "III",
+    "partTitle": "Migrations",
+    "gated": true,
+    "teaser": "A migration is an ordinary SQL file in an ordered folder, applied by a tool (dbmate, golang-migrate, Flyway, Alembic, or whatever your framework ships). The tool keeps a"
+  },
+  {
+    "slug": "13-up-down-and-the-version-table",
+    "number": "13",
+    "title": "Up, down, and the version table",
+    "part": "III",
+    "partTitle": "Migrations",
+    "gated": true,
+    "teaser": "Note the down section reverses the up section in the opposite order: the table depends on the type, so the table goes first. Getting that backwards is the most common reason a"
+  },
+  {
+    "slug": "14-migrations-that-do-not-lock-the-table",
+    "number": "14",
+    "title": "Migrations that do not lock the table",
+    "part": "III",
+    "partTitle": "Migrations",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "15-the-columns-every-table-has",
+    "number": "15",
+    "title": "The columns every table has",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "Note passwordhash, not password. The column name is a piece of documentation that stops someone storing the wrong thing in it."
+  },
+  {
+    "slug": "16-not-null-is-the-default-you-want",
+    "number": "16",
+    "title": "`NOT NULL` is the default you want",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "Null is not \"empty\". It is \"unknown\", and it propagates: NULL + 1 is NULL, WHERE status <> 'active' does not return rows where status is null, and UNIQUE permits many nulls."
+  },
+  {
+    "slug": "17-keys-primary-foreign-composite",
+    "number": "17",
+    "title": "Keys: primary, foreign, composite",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "Without it, that row is an orphan: valid-looking, joined to nothing, invisible in every report, and discovered a year later."
+  },
+  {
+    "slug": "18-one-to-one-and-when-to-split-a-table",
+    "number": "18",
+    "title": "One to one, and when to split a table",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "The implementation trick is the whole pattern: ==the foreign key is also the primary key==. That single declaration gives you the one-to-one guarantee for free, because the"
+  },
+  {
+    "slug": "19-one-to-many",
+    "number": "19",
+    "title": "One to many",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "NOT NULL on projectid is a modelling statement: ==a task cannot exist without a project==. If orphan tasks are legal in your domain, leave it nullable, but decide deliberately"
+  },
+  {
+    "slug": "20-many-to-many-and-the-linking-table",
+    "number": "20",
+    "title": "Many to many, and the linking table",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "The composite primary key. (projectid, userid) being the key says \"this user is in this project\" is a fact that can be true at most once. No surrogate id, no UNIQUE constraint"
+  },
+  {
+    "slug": "21-referential-integrity-on-delete",
+    "number": "21",
+    "title": "Referential integrity on delete",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "Applied to the running schema, every choice says something:"
+  },
+  {
+    "slug": "22-check-unique-and-pushing-rules-down",
+    "number": "22",
+    "title": "`CHECK`, `UNIQUE`, and pushing rules down",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "Every rule you can express here is a rule that ==holds against every writer for the life of the table==, including the migration you run at 2am and the script a colleague writes"
+  },
+  {
+    "slug": "23-naming-plural-lower-snake",
+    "number": "23",
+    "title": "Naming: plural, lower, snake",
+    "part": "IV",
+    "partTitle": "Designing the schema",
+    "gated": true,
+    "teaser": "Plural versus singular is a convention with no technical winner, so follow the one the codebase already uses; plural is the more common industry default."
+  },
+  {
+    "slug": "24-write-from-before-select",
+    "number": "24",
+    "title": "Write `FROM` before `SELECT`",
+    "part": "V",
+    "partTitle": "Querying for an API",
+    "gated": true,
+    "teaser": "This is also the order the planner works in, and thinking that way makes the next four sections obvious: filters and joins are what you index, and the select list is mostly free."
+  },
+  {
+    "slug": "25-join-and-why-left-is-usually-right",
+    "number": "25",
+    "title": "`JOIN`, and why `LEFT` is usually right",
+    "part": "V",
+    "partTitle": "Querying for an API",
+    "gated": true,
+    "teaser": "An INNER JOIN here silently deletes users from your API response. Nobody gets an error; the list is just short, and the bug is reported months later as \"some users do not appear\"."
+  },
+  {
+    "slug": "26-nested-json-in-one-round-trip",
+    "number": "26",
+    "title": "Nested JSON in one round trip",
+    "part": "V",
+    "partTitle": "Querying for an API",
+    "gated": true,
+    "teaser": "tojsonb(up.) turns the joined row into a JSON object, so the driver hands your code a nested structure directly. For a one-to-many, aggregate instead:"
+  },
+  {
+    "slug": "27-parameterised-queries-and-sql-injection",
+    "number": "27",
+    "title": "Parameterised queries, and SQL injection",
+    "part": "V",
+    "partTitle": "Querying for an API",
+    "gated": true,
+    "teaser": "The mechanism is worth stating precisely, because \"it escapes the string\" is only half true. The query text and the data travel separately. The planner parses the statement with a"
+  },
+  {
+    "slug": "28-dynamic-filters-and-sorts-without-opening-a-hole",
+    "number": "28",
+    "title": "Dynamic filters and sorts, without opening a hole",
+    "part": "V",
+    "partTitle": "Querying for an API",
+    "gated": true,
+    "teaser": "Three rules, and they are the whole of it:"
+  },
+  {
+    "slug": "29-pagination-offset-and-why-it-dies",
+    "number": "29",
+    "title": "Pagination: `OFFSET`, and why it dies",
+    "part": "V",
+    "partTitle": "Querying for an API",
+    "gated": true,
+    "teaser": "It gets slower the deeper you go. OFFSET 100000 does not skip to row 100,000. The database produces the first 100,000 rows and throws them away, every time. Page 1 is instant,"
+  },
+  {
+    "slug": "30-insert-and-update",
+    "number": "30",
+    "title": "Insert and update",
+    "part": "V",
+    "partTitle": "Querying for an API",
+    "gated": true,
+    "teaser": "RETURNING is the detail worth keeping: the row comes back, with its database-generated id and createdat, in the same round trip. Without it you insert and then select, which is"
+  },
+  {
+    "slug": "31-the-n-1-problem",
+    "number": "31",
+    "title": "The N+1 problem",
+    "part": "V",
+    "partTitle": "Querying for an API",
+    "gated": true,
+    "teaser": "Each individual query is fast, which is what makes this hard to spot: nothing appears in a slow query log. What you see is an endpoint that takes 400ms for no apparent reason, and"
+  },
+  {
+    "slug": "32-what-an-index-actually-is",
+    "number": "32",
+    "title": "What an index actually is",
+    "part": "VI",
+    "partTitle": "Making it fast",
+    "gated": true,
+    "teaser": "One refinement on the lecture's description: it is not a flat lookup table but a B-tree, which is why it stays fast as it grows and why it can also answer range queries (createdat"
+  },
+  {
+    "slug": "33-what-to-index-and-what-postgres-already-did",
+    "number": "33",
+    "title": "What to index, and what Postgres already did",
+    "part": "VI",
+    "partTitle": "Making it fast",
+    "gated": true,
+    "teaser": "Two things Postgres does and does not do for you, and the gap between them is a common production bug:"
+  },
+  {
+    "slug": "34-what-an-index-costs",
+    "number": "34",
+    "title": "What an index costs",
+    "part": "VI",
+    "partTitle": "Making it fast",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "35-reading-explain-analyze",
+    "number": "35",
+    "title": "Reading `EXPLAIN ANALYZE`",
+    "part": "VI",
+    "partTitle": "Making it fast",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "36-beyond-b-tree",
+    "number": "36",
+    "title": "Beyond B-tree",
+    "part": "VI",
+    "partTitle": "Making it fast",
+    "gated": true,
+    "teaser": "This matters because the lecture indexes email and then filters with ILIKE, and those two do not meet. Three ways to close it:"
+  },
+  {
+    "slug": "37-transactions-and-what-acid-buys",
+    "number": "37",
+    "title": "Transactions, and what ACID buys",
+    "part": "VII",
+    "partTitle": "Correctness under concurrency",
+    "gated": true,
+    "teaser": "The practical rule: a transaction should wrap one unit of business meaning, and it should be as short as possible in wall-clock time, because everything it touches stays locked"
+  },
+  {
+    "slug": "38-isolation-levels",
+    "number": "38",
+    "title": "Isolation levels",
+    "part": "VII",
+    "partTitle": "Correctness under concurrency",
+    "gated": true,
+    "teaser": "Two Postgres-specific facts worth knowing:"
+  },
+  {
+    "slug": "39-row-locks-and-select-for-update",
+    "number": "39",
+    "title": "Row locks and `SELECT FOR UPDATE`",
+    "part": "VII",
+    "partTitle": "Correctness under concurrency",
+    "gated": true,
+    "teaser": "SKIP LOCKED is the one worth remembering, because it turns a table into a work queue with no extra infrastructure:"
+  },
+  {
+    "slug": "40-the-lost-update-revisited",
+    "number": "40",
+    "title": "The lost update, revisited",
+    "part": "VII",
+    "partTitle": "Correctness under concurrency",
+    "gated": true,
+    "teaser": "Four fixes, in ascending order of cost:"
+  },
+  {
+    "slug": "41-connection-pooling",
+    "number": "41",
+    "title": "Connection pooling",
+    "part": "VIII",
+    "partTitle": "Living with it in production",
+    "gated": true,
+    "teaser": "An in-process pool cannot help you when the problem is that you have forty serverless instances, each with its own pool. That is what PgBouncer is for."
+  },
+  {
+    "slug": "42-triggers-and-when-not-to",
+    "number": "42",
+    "title": "Triggers, and when not to",
+    "part": "VIII",
+    "partTitle": "Living with it in production",
+    "gated": true,
+    "teaser": "This earns its place because the rule is ==mechanical, universal, and must hold for every writer==, including a manual UPDATE in psql and a one-off backfill script. No application"
+  },
+  {
+    "slug": "43-vacuum-bloat-and-wraparound",
+    "number": "43",
+    "title": "Vacuum, bloat and wraparound",
+    "part": "VIII",
+    "partTitle": "Living with it in production",
+    "gated": true,
+    "teaser": "Autovacuum handles this by default. It falls behind under heavy update or delete load, and a long-running transaction blocks it entirely, because rows visible to that transaction"
+  },
+  {
+    "slug": "44-backups-and-the-difference-that-matters",
+    "number": "44",
+    "title": "Backups, and the difference that matters",
+    "part": "VIII",
+    "partTitle": "Living with it in production",
+    "gated": true,
+    "teaser": "See below |"
+  },
+  {
+    "slug": "45-the-delivery-script",
+    "number": "45",
+    "title": "The delivery script",
+    "part": "IX",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "Then name what you left out: partitioning, sharding, read replicas, soft deletes, audit tables. Naming the boundary reads as judgement, not as a gap."
+  },
+  {
+    "slug": "46-follow-up-question-bank",
+    "number": "46",
+    "title": "Follow-up question bank",
+    "part": "IX",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "What is it? | 31 | | Which columns does Postgres index for you, and which does it not? | 33 | | You added an index and the query did not get faster. Why? | 35, 36 | | Two requests"
+  },
+  {
+    "slug": "appendix-a-defaults-to-memorise",
+    "number": "",
+    "title": "Appendix A. Defaults to memorise",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "Calendar day: date | | Surrogate key | uuid (v7 if available), or bigint GENERATED ALWAYS AS IDENTITY | | Flexible column | jsonb + GIN, never json | | Nullability | NOT NULL"
+  },
+  {
+    "slug": "appendix-b-glossary",
+    "number": "",
+    "title": "Appendix B. Glossary",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "Equality, ranges, sorts, prefixes | | GIN | Index for jsonb, arrays, full text, trigrams | | Leftmost prefix | An index on (a,b,c) serves (a), (a,b), (a,b,c) | | Sequential scan |"
+  },
+  {
+    "slug": "appendix-c-self-test",
+    "number": "",
+    "title": "Appendix C. Self-test",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": ""
+  }
+]

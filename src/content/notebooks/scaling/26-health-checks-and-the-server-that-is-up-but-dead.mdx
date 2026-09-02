@@ -1,0 +1,26 @@
+---
+number: "26"
+title: "Health checks, and the server that is up but dead"
+part: "V"
+partTitle: "More machines"
+---
+A load balancer that does not know an instance is broken will keep sending it
+traffic. Round robin is loyal that way: one instance in three is returning 502
+and the algorithm keeps handing it a third of your users.
+
+<Term name="Health check">
+
+A request the load balancer sends to each instance on a schedule, purely to find
+out whether it is working. A healthy instance answers 200. An instance that
+fails is removed from rotation until it starts answering again.
+
+</Term>
+
+```text
+  every 2s:  LB → GET /healthz → instance
+
+  200        keep it in rotation
+  500 / timeout / connection refused
+             remove it. stop sending user traffic.
+             keep probing, so recovery is detected automatically.
+```

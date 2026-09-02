@@ -1,0 +1,51 @@
+At a million requests a day, that 1% is ten thousand real people staring at a
+loading spinner for five seconds. The average hid all of them, and it will keep
+hiding them no matter how bad they get, because ==an average is a summary that
+deletes exactly the information you need==.
+
+#### Percentiles
+
+The fix is to stop summarising and start reporting the shape of the
+distribution. A <Pink>percentile</Pink> names a latency and tells you what fraction of
+requests came in under it.
+
+| Metric | Reads as | Means |
+|---|---|---|
+| `P50 = 400ms` | median | Half of requests were faster than 400ms |
+| `P90 = 900ms` | 90th percentile | 10% of requests were slower than 900ms |
+| `P99 = 2s` | 99th percentile | 1% of requests were slower than 2 seconds |
+
+The useful mental move is to subtract from 100. P99 means one in a hundred. P95
+means one in twenty. ==Say the fraction out loud and the number stops being
+abstract==: "one request in twenty takes over two seconds" is a sentence
+somebody will act on. "P95 is 2000" is not.
+
+<Figure>
+
+The same thousand requests, drawn as a distribution rather than collapsed to a
+mean. The long thin tail on the right is where your worst experiences live, and
+it is the part the average is worst at describing.
+
+</Figure>
+
+<Ask>
+
+Where should latency be measured?
+
+<Peach>At the client, not in the handler.</Peach> A handler that reports 40ms tells you
+nothing about the 300ms the request spent queued in your load balancer, the
+150ms of TLS handshake, or the 200ms of network to a user in another continent.
+Server-side timings are for finding the bottleneck once you know there is one.
+Client-side or synthetic timings are for knowing whether there is one. Mature
+teams keep both and know they will not match.
+
+</Ask>
+
+<Signal>
+
+"Our P99 is 2 seconds" is a better sentence than "our average is 100
+milliseconds" even when both describe the same system, because only one of them
+can be acted on. Quoting a percentile unprompted is one of the fastest ways to
+sound like you have run something in production.
+
+</Signal>

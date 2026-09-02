@@ -1,0 +1,31 @@
+Never draw everything and then explain.
+
+```text
+  step 1        step 2                     step 3
+  ──────        ──────                     ──────
+  FE  API       FE ──► API ──► S3          FE ─► API ─► S3 ─► Q ─► W ─► DB
+                       │
+                       └──► DB (metadata)
+
+  step 4: annotate the arrows with the failure and its answer
+          FE ─► S3     multipart + resume + backoff
+          S3 ─► Q      outbox, at-least-once
+          Q  ─► W      lease + heartbeat, DLQ
+          W  ─► DB     idempotent writes, checkpoint per chunk
+
+  step 5: only now, the extras
+          Redis progress, SSE, per-tenant lanes, metrics, lifecycle rules
+```
+
+<DoThis>
+
+Three whiteboard habits that read as senior
+
+1. Label arrows with the <Peach>protocol and the failure mode</Peach>, not just a verb.
+   "PUT part, retry with backoff" beats "upload".
+2. Write the state machine in a corner and point at it when discussing failures.
+   It saves you re-explaining the same transition three times.
+3. Leave space. A cramped diagram you cannot extend forces you to erase, and
+   erasing mid-answer breaks your narrative.
+
+</DoThis>

@@ -1,0 +1,17 @@
+---
+number: "24"
+title: "Scaling: workers, backpressure and queue depth"
+part: "VII"
+partTitle: "Senior concerns"
+---
+```text
+  queue depth
+      │                                        ▲ autoscale up
+  1000├───────────────╮                        │ (depth per worker > threshold)
+      │               ╰──╮
+   500│                  ╰────╮
+      │                       ╰──────╮
+     0└────────────────────────────────╰─────────────────────────► time
+                                              ▼ autoscale down
+                                                (idle workers)
+```

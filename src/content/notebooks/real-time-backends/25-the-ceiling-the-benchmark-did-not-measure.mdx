@@ -1,0 +1,9 @@
+---
+number: "25"
+title: "The ceiling the benchmark did not measure"
+part: "IV"
+partTitle: "How many connections fit on one machine"
+---
+Everything in this part measured <Peach>idle</Peach> connections. Production connections are
+not idle, and the thing that actually takes real-time servers down is not the
+count. It is one client that reads slowly.

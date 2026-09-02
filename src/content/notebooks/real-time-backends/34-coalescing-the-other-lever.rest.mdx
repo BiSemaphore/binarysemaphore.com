@@ -1,0 +1,47 @@
+Most real-time payloads are <Peach>state, not history</Peach>. If a task moves three times in
+two hundred milliseconds, the client does not need three frames. It needs the
+final position. Sending all three is work you performed so the client could
+discard two of them.
+
+```text
+  WITHOUT COALESCING          WITH A 50ms TICK
+  event ──▶ write             event ──▶ into per-connection pending
+  event ──▶ write             event ──▶ overwrite pending (same entity)
+  event ──▶ write             event ──▶ overwrite pending
+  3 frames per subscriber     ─── tick ───▶ 1 frame per subscriber
+```
+
+**Batching** and **coalescing** are two different savings and you usually want
+both:
+
+| | What it does | Saves |
+|---|---|---|
+| Batching | Many events into one frame on a timer | Syscalls, framing, wakeups |
+| Coalescing | Many events about <Peach>one entity</Peach> collapse to the latest | The events themselves |
+
+A 50 millisecond tick is imperceptible to a human and reduces a burst of twenty
+events to one frame. It also ==turns the slow-client problem from section 25 into
+a bounded one==: if the pending set holds at most one entry per entity, a client
+that cannot keep up accumulates a set the size of the board, not a queue the size
+of history.
+
+<Mint>Coalesce anything idempotent and state-shaped</Mint>: positions, presence, typing
+indicators, counters, progress. !!Never coalesce anything with independent
+meaning!!: chat messages, log lines, transactions. Merging two chat messages into
+one is data loss, not an optimisation.
+
+<DoThis>
+
+Give each connection a pending map keyed by entity id, and flush it on a ticker
+rather than writing on publish. ==This one change usually beats every other
+optimisation in this part==, because it attacks the multiplicand rather than the
+multiplier, and it makes backpressure bounded for free.
+
+</DoThis>
+
+<KeyIdea>
+
+Coalesce state, batch everything, and never coalesce messages that mean something
+individually. A tick you cannot perceive removes most of the work.
+
+</KeyIdea>

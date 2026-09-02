@@ -1,0 +1,13 @@
+---
+number: "8"
+title: "Time, and the one that bites"
+part: "II"
+partTitle: "Types are the first constraint"
+---
+```text
+  date          2026-08-29                     no time, no zone
+  time          14:30:00                       rarely what you want alone
+  timestamp     2026-08-29 14:30:00            ✗ NO TIME ZONE
+  timestamptz   2026-08-29 14:30:00+05:30      ✓ the one you want
+  interval      '7 days', '2 hours 30 minutes'
+```

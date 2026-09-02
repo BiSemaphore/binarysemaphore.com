@@ -1,0 +1,29 @@
+---
+number: "39"
+title: "Cross-site WebSocket hijacking"
+part: "VII"
+partTitle: "The parts the lecture left out"
+---
+A specific attack that catches teams who correctly configured CORS and reasonably
+assumed it covered them. <Peach>It does not.</Peach>
+
+**The WebSocket handshake is not subject to CORS.** There is no preflight, and the
+same-origin policy does not block the connection. What the browser does instead is
+send an `Origin` header and <Peach>hand the decision to your server</Peach>. If your server
+does not look at it, any page on the internet can open an authenticated socket to
+your API using your user's cookies.
+
+```text
+  1. victim is logged in to app.example.com (session cookie set)
+  2. victim visits evil.example
+  3. evil.example runs:
+
+         const ws = new WebSocket("wss://api.example.com/ws");
+
+  4. the browser attaches the cookie, because the handshake is a
+     normal request with credentials
+  5. no preflight. no CORS check. no same-origin block.
+  6. your server upgrades the connection
+  7. evil.example now has an authenticated, bidirectional socket
+     into your API as the victim
+```

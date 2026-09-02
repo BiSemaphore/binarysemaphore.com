@@ -1,0 +1,35 @@
+The appeal is that <Peach>nothing about your system has to be redesigned</Peach>. No load
+balancer, no session store, no distributed state, no new failure modes. You
+click a bigger instance type and reboot. Twice the CPU handles roughly twice the
+requests, twice the RAM caches roughly twice the data, and the arithmetic is
+about as honest as arithmetic gets in this field.
+
+It is also often cheaper than it looks. One machine of size 2N usually costs
+less than two machines of size N, and it costs far less operational attention:
+one thing to patch, one thing to monitor, one thing to back up.
+
+So why does anyone do anything else? Three ceilings.
+
+<DoThis>
+
+The three limits of vertical scaling
+
+1. <Mint>There is a biggest machine.</Mint> Every cloud provider has a largest instance
+   type. When you reach it, you are done; there is no next step, at any price.
+2. <Mint>It is a single point of failure.</Mint> One very powerful machine that is down is
+   still down. Standby servers and automatic failover reduce this, and do not
+   remove it.
+3. <Mint>It exists in one place.</Mint> A server in Virginia serves users in Mumbai
+   across 200ms of physics that no upgrade can buy back. Section 31.
+
+</DoThis>
+
+<Signal>
+
+<Mint>Start vertical.</Mint> It is genuinely the right first answer for most systems, and
+saying so is a stronger signal than reaching for a distributed architecture,
+because it shows you weigh complexity as a cost. "I would scale up until either
+we hit the instance ceiling or we need multi-region, because the moment we go
+horizontal we inherit a distributed systems problem we did not have."
+
+</Signal>

@@ -1,0 +1,23 @@
+---
+number: "3"
+title: "The boundary between data and code"
+part: "I"
+partTitle: "The attacker's question"
+---
+<Figure>
+
+The same characters. On the left they are a string a user typed. On the right
+they are syntax the database obeyed.
+
+</Figure>
+
+```sql
+-- what the developer wrote
+"SELECT * FROM users WHERE email = '" + input + "'"
+
+-- what the user typed
+' OR '1'='1' --
+
+-- what the database received and executed
+SELECT * FROM users WHERE email = '' OR '1'='1' --'
+```

@@ -1,0 +1,37 @@
+So the reason to split is not throughput. Here is the actual reason:
+
+<KeyIdea>
+
+==Microservices are a solution to an organisational problem, not a performance
+one.== They exist so that a hundred engineers can ship without coordinating on
+one deploy. If you have twelve engineers, you do not have that problem, and you
+will pay the full price of the solution anyway.
+
+</KeyIdea>
+
+Three real motivations, in the order they usually apply:
+
+**Deployment independence.** With 300 engineers on one repository, the payments
+team's urgent fix is blocked because the notifications team has unfinished work
+on main. Feature flags and release trains help. At sufficient scale they stop
+helping.
+
+**Independent scaling.** Notifications are cheap; payments are expensive. In a
+monolith you scale the whole thing, so you buy CPU for notifications you do not
+need in order to get CPU for payments. Split them and you scale each to its own
+demand.
+
+**Technology fit.** One module needs a Node library that has no equivalent
+elsewhere. Another does image processing and would be ten times faster in Go or
+Rust. A single deployable unit is a single runtime, so you cannot have both.
+
+<Signal>
+
+When asked "would you use microservices?", the strongest answer starts with a
+question back: <Peach>how many engineers, and are they blocking each other?</Peach> If the
+answer is under fifty and no, the answer is a modular monolith with clean
+internal boundaries. That is not a cop-out; it is the answer most experienced
+engineers give, and it also happens to be the architecture you can split later
+if the boundaries are already clean.
+
+</Signal>

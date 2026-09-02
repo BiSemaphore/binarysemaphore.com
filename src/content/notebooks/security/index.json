@@ -1,0 +1,326 @@
+[
+  {
+    "slug": "how-to-use-this-book",
+    "number": "",
+    "title": "How to use this book",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "The goal is not to make you able to recite OWASP. It is to make you slightly paranoid in a useful way, so that when you write a handler you notice the moment you assumed the input"
+  },
+  {
+    "slug": "the-whole-book-in-one-question",
+    "number": "",
+    "title": "The whole book in one question",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "Three questions to ask of any handler you write, and they are the whole method:"
+  },
+  {
+    "slug": "1-assumptions-are-the-vulnerability",
+    "number": "1",
+    "title": "Assumptions are the vulnerability",
+    "part": "I",
+    "partTitle": "The attacker's question",
+    "gated": true,
+    "teaser": "Every one of those is reasonable under a deadline, and every one is a happy-path assumption: the user fills the form correctly, clicks the right buttons, navigates the way you"
+  },
+  {
+    "slug": "2-your-application-speaks-several-languages",
+    "number": "2",
+    "title": "Your application speaks several languages",
+    "part": "I",
+    "partTitle": "The attacker's question",
+    "gated": true,
+    "teaser": "Your backend is one process, but it emits text into several very different interpreters, and ==each of them has its own grammar, its own special characters, and its own idea of"
+  },
+  {
+    "slug": "3-the-boundary-between-data-and-code",
+    "number": "3",
+    "title": "The boundary between data and code",
+    "part": "I",
+    "partTitle": "The attacker's question",
+    "gated": true,
+    "teaser": "Read the last line as the database reads it. The quote closes the string early, OR '1'='1' is a condition that is always true, and -- comments out everything that followed. The"
+  },
+  {
+    "slug": "4-sql-injection",
+    "number": "4",
+    "title": "SQL injection",
+    "part": "II",
+    "partTitle": "Injection",
+    "gated": true,
+    "teaser": "That last row matters because it removes the usual comfort. An endpoint that returns nothing useful, only \"invalid login\", still leaks the whole database if the attacker can"
+  },
+  {
+    "slug": "5-parameterised-queries-and-what-they-cannot-do",
+    "number": "5",
+    "title": "Parameterised queries, and what they cannot do",
+    "part": "II",
+    "partTitle": "Injection",
+    "gated": true,
+    "teaser": "The mechanism is worth stating precisely, because \"it escapes the string\" is only half of it. The statement and the data travel separately. By the time your value arrives, the"
+  },
+  {
+    "slug": "6-nosql-injection",
+    "number": "6",
+    "title": "NoSQL injection",
+    "part": "II",
+    "partTitle": "Injection",
+    "gated": true,
+    "teaser": "The injected content is not a quote, it is a data structure. $ne, $gt, $regex and $where are operators, and a JSON body can carry them wherever your code expected a scalar."
+  },
+  {
+    "slug": "7-command-injection",
+    "number": "7",
+    "title": "Command injection",
+    "part": "II",
+    "partTitle": "Injection",
+    "gated": true,
+    "teaser": "The setup is ordinary. Users upload an image, your backend resizes it by shelling out:"
+  },
+  {
+    "slug": "8-the-argument-array",
+    "number": "8",
+    "title": "The argument array",
+    "part": "II",
+    "partTitle": "Injection",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "9-build-it-only-if-you-have-a-reason",
+    "number": "9",
+    "title": "Build it only if you have a reason",
+    "part": "III",
+    "partTitle": "Authentication",
+    "gated": true,
+    "teaser": "That is the honest position, and it is a good interview answer precisely because it is a judgement rather than a reflex. Build it yourself when you have a specific reason: an"
+  },
+  {
+    "slug": "10-never-store-a-password",
+    "number": "10",
+    "title": "Never store a password",
+    "part": "III",
+    "partTitle": "Authentication",
+    "gated": true,
+    "teaser": "Encryption is the wrong tool and knowing why is a good signal: encryption is reversible by design, so the key must exist somewhere near the data, and an attacker with your"
+  },
+  {
+    "slug": "11-why-hashing-alone-is-not-enough",
+    "number": "11",
+    "title": "Why hashing alone is not enough",
+    "part": "III",
+    "partTitle": "Authentication",
+    "gated": true,
+    "teaser": "If sha256(\"password123\") is always ef92b7..., then an attacker does not have to attack your hash. They compute the hashes of every common password once, store the mapping, and"
+  },
+  {
+    "slug": "12-salt-and-the-right-algorithm",
+    "number": "12",
+    "title": "Salt, and the right algorithm",
+    "part": "III",
+    "partTitle": "Authentication",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "13-sessions",
+    "number": "13",
+    "title": "Sessions",
+    "part": "III",
+    "partTitle": "Authentication",
+    "gated": true,
+    "teaser": "That rotation row is the one people miss. If an attacker can set a victim's session id before they log in (via a link, a subdomain, an XSS), and you keep the same id afterwards,"
+  },
+  {
+    "slug": "14-cookie-flags",
+    "number": "14",
+    "title": "Cookie flags",
+    "part": "III",
+    "partTitle": "Authentication",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "15-jwt-what-you-gain-and-what-you-give-up",
+    "number": "15",
+    "title": "JWT: what you gain and what you give up",
+    "part": "III",
+    "partTitle": "Authentication",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "16-rate-limiting",
+    "number": "16",
+    "title": "Rate limiting",
+    "part": "III",
+    "partTitle": "Authentication",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "17-the-layer-where-the-check-belongs",
+    "number": "17",
+    "title": "The layer where the check belongs",
+    "part": "IV",
+    "partTitle": "Authorization",
+    "gated": true,
+    "teaser": "Every guard passed. The caller is authenticated, and their role does permit reading invoices. It just does not permit reading this invoice, and nothing in the stack ever asked."
+  },
+  {
+    "slug": "18-broken-object-level-authorization",
+    "number": "18",
+    "title": "Broken object level authorization",
+    "part": "IV",
+    "partTitle": "Authorization",
+    "gated": true,
+    "teaser": "There is nothing to detect in the request. It is well-formed, authenticated, and matches your API contract exactly. ==The only thing wrong with it is that you answered.=="
+  },
+  {
+    "slug": "19-what-the-status-code-leaks",
+    "number": "19",
+    "title": "What the status code leaks",
+    "part": "IV",
+    "partTitle": "Authorization",
+    "gated": true,
+    "teaser": "The same reasoning applies at the front door: \"no account with that email\" and \"wrong password\" must be one message, or your login form is an account enumeration endpoint."
+  },
+  {
+    "slug": "20-deny-by-default",
+    "number": "20",
+    "title": "Deny by default",
+    "part": "IV",
+    "partTitle": "Authorization",
+    "gated": true,
+    "teaser": "This is the single highest-leverage structural decision in the whole book, because it changes what happens on the day someone forgets. With deny-by-default the failure mode of"
+  },
+  {
+    "slug": "21-audit-logging",
+    "number": "21",
+    "title": "Audit logging",
+    "part": "IV",
+    "partTitle": "Authorization",
+    "gated": true,
+    "teaser": "An audit log tells you what actually happened, and it is the difference between \"we were breached\" and \"we know exactly which 340 records were read, when, and by whom\"."
+  },
+  {
+    "slug": "22-cross-site-scripting",
+    "number": "22",
+    "title": "Cross-site scripting",
+    "part": "V",
+    "partTitle": "The browser is a boundary too",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "23-content-security-policy",
+    "number": "23",
+    "title": "Content Security Policy",
+    "part": "V",
+    "partTitle": "The browser is a boundary too",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "24-cross-site-request-forgery",
+    "number": "24",
+    "title": "Cross-site request forgery",
+    "part": "V",
+    "partTitle": "The browser is a boundary too",
+    "gated": true,
+    "teaser": "The browser sees an image tag, issues the GET, and ==attaches your bank cookies because they belong to that domain==. Your bank sees a fully authenticated request from a real"
+  },
+  {
+    "slug": "25-clickjacking",
+    "number": "25",
+    "title": "Clickjacking",
+    "part": "V",
+    "partTitle": "The browser is a boundary too",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "26-secrets",
+    "number": "26",
+    "title": "Secrets",
+    "part": "VI",
+    "partTitle": "The things that leak",
+    "gated": true,
+    "teaser": "And the part people get wrong when they notice: ==deleting the file in a later commit does nothing.== Git keeps history. The secret is still in the object store, still in every"
+  },
+  {
+    "slug": "27-error-messages-and-debug-output",
+    "number": "27",
+    "title": "Error messages and debug output",
+    "part": "VI",
+    "partTitle": "The things that leak",
+    "gated": true,
+    "teaser": "Every detail in the first block shortens the attacker's reconnaissance. Version numbers select an exploit; paths reveal your framework; a schema name tells them what to ask for"
+  },
+  {
+    "slug": "28-what-you-must-not-log",
+    "number": "28",
+    "title": "What you must not log",
+    "part": "VI",
+    "partTitle": "The things that leak",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "29-dependencies",
+    "number": "29",
+    "title": "Dependencies",
+    "part": "VI",
+    "partTitle": "The things that leak",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "30-reviewing-an-endpoint",
+    "number": "30",
+    "title": "Reviewing an endpoint",
+    "part": "VII",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "Run it out loud, in this order, and you will find things."
+  },
+  {
+    "slug": "31-follow-up-question-bank",
+    "number": "31",
+    "title": "Follow-up question bank",
+    "part": "VII",
+    "partTitle": "The interview itself",
+    "gated": true,
+    "teaser": "True? | 4 | | How does a parameterised query actually work? | 5 | | I use Mongo. Am I safe from injection? | 6 | | How do you shell out safely? | 7, 8 | | Why not encrypt"
+  },
+  {
+    "slug": "appendix-a-the-response-headers",
+    "number": "",
+    "title": "Appendix A. The response headers",
+    "part": "VIII",
+    "partTitle": "Appendices",
+    "gated": false,
+    "teaser": ""
+  },
+  {
+    "slug": "appendix-b-glossary",
+    "number": "",
+    "title": "Appendix B. Glossary",
+    "part": "VIII",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "Not secret | | Pepper | Secret value outside the database, mixed into the hash | | Session id | Opaque bearer token mapping to server-side state | | HttpOnly | Cookie flag:"
+  },
+  {
+    "slug": "appendix-c-self-test",
+    "number": "",
+    "title": "Appendix C. Self-test",
+    "part": "VIII",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": ""
+  }
+]

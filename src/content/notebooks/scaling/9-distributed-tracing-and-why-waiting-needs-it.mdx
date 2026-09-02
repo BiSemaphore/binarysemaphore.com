@@ -1,0 +1,9 @@
+---
+number: "9"
+title: "Distributed tracing, and why waiting needs it"
+part: "II"
+partTitle: "Finding the bottleneck"
+---
+Most backend latency is <Pink>IO bound</Pink>: waiting on a database, a queue, a cache,
+an object store, another service. The work is not computing, it is waiting, and
+waiting is what a trace measures.

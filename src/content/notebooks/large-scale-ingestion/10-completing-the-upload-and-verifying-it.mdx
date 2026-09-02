@@ -1,0 +1,27 @@
+---
+number: "10"
+title: "Completing the upload and verifying it"
+part: "III"
+partTitle: "The handoff"
+---
+The client says the upload is done. Do not believe it.
+
+```text
+  Frontend                   API                        S3
+     │                        │                          │
+     │ POST /jobs/8f21/complete                          │
+     │  { uploadId, parts[] } │                          │
+     │───────────────────────►│                          │
+     │                        │ CompleteMultipartUpload  │
+     │                        │─────────────────────────►│
+     │                        │◄──── 200 + ETag ─────────│
+     │                        │                          │
+     │                        │ HeadObject (size, checksum)
+     │                        │─────────────────────────►│
+     │                        │◄──── 10,737,418,240 B ───│
+     │                        │
+     │                        │ verify size + checksum vs the job row
+     │                        │ status: UPLOADING -> UPLOADED
+     │                        │ write outbox row (same transaction)
+     │◄─── 202 Accepted ──────│
+```

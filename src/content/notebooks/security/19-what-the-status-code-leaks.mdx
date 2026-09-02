@@ -1,0 +1,20 @@
+---
+number: "19"
+title: "What the status code leaks"
+part: "IV"
+partTitle: "Authorization"
+---
+You correctly refuse. Which refusal do you send?
+
+```text
+  403 Forbidden   "this invoice exists, and it is not yours"
+                        ▲
+                        └── you just confirmed it exists.
+                            loop the ids, keep the 403s, and you have
+                            mapped every invoice in the system, plus a
+                            rough count of your customers' activity.
+
+  404 Not Found   "there is no such invoice, as far as you are concerned"
+                        ▲
+                        └── indistinguishable from a real miss
+```

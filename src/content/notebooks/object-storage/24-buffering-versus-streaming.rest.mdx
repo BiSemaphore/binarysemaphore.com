@@ -1,0 +1,58 @@
+The default helper in every framework buffers: `ParseMultipartForm`, the
+default body parser, the convenient decorator. You have to opt in to streaming.
+
+```go
+// buffered: the entire file lands in memory before you see it
+r.ParseMultipartForm(32 << 20)
+file, hdr, _ := r.FormFile("file")
+
+// streaming: hand the reader straight to the uploader
+mr, _ := r.MultipartReader()
+for {
+    part, err := mr.NextPart()
+    if err == io.EOF { break }
+    if part.FormName() != "file" { continue }
+    _, err = uploader.Upload(ctx, &s3.PutObjectInput{
+        Bucket: aws.String(bucket),
+        Key:    aws.String(key),
+        Body:   part,            // a reader, not a []byte
+    })
+}
+```
+
+Measured, uploading the same 500 MB file twice:
+
+```text
+  buffered                              streaming
+  ────────────────────────────          ────────────────────────────
+  RSS  ▁▂▃▄▅▆▇█  +500 MB                RSS  ▁▁▁▁▁▁▁▁  flat
+  time 6.5 s                            time 6.5 s
+```
+
+Same wall-clock time. The only difference is whether the bytes accumulate.
+
+<DoThis>
+
+Two things, in every language, on every upload endpoint
+
+- Hand the storage SDK a <Mint>reader</Mint>, never a byte array. In Go, the multipart
+  `Part`; in Node, `req.pipe(...)` or `Upload({ Body: stream })`; in Python,
+  `upload_fileobj`, not `upload_file` after a read.
+- Wrap the body in a <Mint>hard size limit before you read a single byte</Mint>:
+  `http.MaxBytesReader` in Go, `limits` in your framework, `client_max_body_size`
+  in nginx. A client sending 4 GB should be cut off at your limit, not allowed
+  to try.
+
+</DoThis>
+
+<Trap>
+
+"It works on my machine, so the upload path is fine"
+
+This class of bug is invisible in development by construction: you test with a
+small file, on a 1 Gbps link, on a laptop with 32 GB of RAM. Production is a
+2 Mbps mobile connection, a 512 MB container, and twenty concurrent users. Load
+test the upload path with a large file over a throttled link, or you will find
+out from an OOMKilled event.
+
+</Trap>

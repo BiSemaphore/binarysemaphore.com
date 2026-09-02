@@ -1,0 +1,17 @@
+---
+number: "40"
+title: "When serverless fits, and when it does not"
+part: "VIII"
+partTitle: "Architecture decisions"
+---
+```text
+  good fit                              bad fit
+  ────────                              ───────
+  spiky or unpredictable traffic        steady high traffic (cheaper on a VM)
+  event-driven work: a file lands,      latency-critical paths where a cold
+    a queue message, a webhook            start is unacceptable
+  scheduled and batch jobs              long-running work over the time limit
+  media processing on demand            WebSockets and streaming connections
+  glue between managed services         anything needing many DB connections
+  low-volume internal tools             workloads with heavy local state
+```

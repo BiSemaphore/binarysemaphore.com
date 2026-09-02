@@ -1,0 +1,28 @@
+---
+number: "19"
+title: "Where the cache lives"
+part: "IV"
+partTitle: "Caching"
+---
+Two options, and a third that is both.
+
+#### Local: a map in your process
+
+```text
+  instance A   [ map ]  ──→ database
+  instance B   [ map ]  ──→ database
+  instance C   [ map ]  ──→ database
+```
+
+Fastest possible read: nanoseconds, no network, no serialization. And with three
+instances you now have three caches that disagree. Invalidate on instance A and
+B and C keep serving the old value until their own TTLs expire. ==The
+inconsistency window is not a bug you can fix; it is the architecture.==
+
+#### Distributed: Redis, Valkey, Memcached
+
+```text
+  instance A ─┐
+  instance B ─┼──→ [ Redis ] ──→ database
+  instance C ─┘
+```

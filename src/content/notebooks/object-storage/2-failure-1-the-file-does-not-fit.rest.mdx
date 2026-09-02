@@ -1,0 +1,30 @@
+`ParseMultipartForm` in Go, the default body parser in an Express app, the same
+helper in every framework: the convenient call is the one that buffers. The
+container hits its memory limit and the kernel kills it.
+
+Note the second-order effect, which is the part people miss. The instance
+restarts, and <Peach>every file ever uploaded to that instance is gone</Peach>, because it
+was on the container's file system. One user's oversized video destroyed other
+users' data. The blast radius of an OOM is not one request.
+
+<Trap>
+
+"We stream the upload, so the file size is not a problem"
+
+Streaming fixes <Rose>memory</Rose>. It does not fix bandwidth, connection hold time,
+load balancer idle timeouts, reverse proxy body caps, or the fact that a request
+worker is pinned for the duration. Section 25 is entirely about the limits that
+survive streaming. Say "streaming fixes memory, not the data path".
+
+</Trap>
+
+<Ask>
+
+How much memory does a streaming upload actually use?
+
+One buffer, typically tens of kilobytes, regardless of whether the object is
+1 MB or 1 GB. You read a chunk off the request body and write it to the storage
+client, then reuse the buffer. Section 24 has the measured comparison: same
+wall-clock time, flat memory line instead of a 500 MB climb.
+
+</Ask>

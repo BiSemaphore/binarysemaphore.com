@@ -1,0 +1,27 @@
+---
+number: "37"
+title: "What a network boundary costs"
+part: "VIII"
+partTitle: "Architecture decisions"
+---
+Every function call you convert into a network call buys you independence and
+sells you four things.
+
+```text
+  before                          after
+  ──────                          ─────
+  orders.getPayment(id)           POST http://payments/status
+  ~0.001 ms                       ~5 ms, and it can fail
+  cannot fail independently       can time out, refuse, or return garbage
+  one stack trace                 four services' logs
+  one transaction                 no transaction
+```
+
+#### Latency
+
+Sub-microsecond becomes single-digit milliseconds, at best. That is fine once and
+ruinous in a loop, and it is where the tail amplification from section 3 arrives
+in force: five hops, each with a P99 of 50ms, and your request's own P99 is
+worse than any of them.
+
+#### Failure

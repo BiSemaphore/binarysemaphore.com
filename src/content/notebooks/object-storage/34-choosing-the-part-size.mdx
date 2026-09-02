@@ -1,0 +1,15 @@
+---
+number: "34"
+title: "Choosing the part size"
+part: "VI"
+partTitle: "Large files"
+---
+There is a hard cap of <Peach>10,000 parts</Peach>, and this is where people get hurt.
+
+```text
+  fixed 5 MiB parts  ×  10,000  =  50 GB ceiling
+
+  upload a 60 GB file with 5 MiB parts:
+      parts 1 … 10,000     upload fine        ← 50 GB transferred
+      part 10,001          ✗ rejected         ← and now you start over
+```

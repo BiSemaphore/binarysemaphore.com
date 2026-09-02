@@ -1,0 +1,73 @@
+Simple, self-healing, and requires no discipline anywhere else in the codebase.
+The cost is that you have chosen your staleness in advance and you will
+sometimes be wrong: too short and your hit rate collapses, too long and you
+serve data users know is out of date.
+
+#### Event-based invalidation
+
+Delete the entry when the underlying data changes.
+
+```js
+await db.update(users).set({ name }).where(eq(users.id, id));
+await cache.del(`user:${id}`);          // must not be forgotten
+```
+
+Precise: no guessing at a TTL, no window of avoidable staleness. And the cost is
+in that comment. ==Every code path that writes this data must remember to
+invalidate.== Miss one, and you serve stale data indefinitely, with no TTL to
+eventually rescue you. Six months later somebody adds an admin tool that updates
+the row directly and nobody connects the bug report to it.
+
+<DoThis>
+
+Use both, deliberately
+
+++Event-based invalidation for correctness, with a TTL underneath as a safety
+net.++ The events keep it fresh; the TTL bounds how wrong you can be if an event
+is missed. A five-minute TTL turns "stale forever" into "stale for at most five
+minutes", which is the difference between a bug and an inconvenience.
+
+</DoThis>
+
+#### The gap the lecture leaves: cache stampede
+
+The failure that TTLs create and nobody warns you about.
+
+A popular key expires. In the next millisecond, four hundred concurrent requests
+all miss, and all four hundred run the 800ms query at once.
+
+```text
+  t=0.000   TTL expires
+  t=0.001   400 requests miss
+  t=0.001   400 identical queries hit the database
+  t=0.002   the database is the bottleneck it was cached to protect
+```
+
+This is <Pink>cache stampede</Pink>, or the thundering herd. It is worst for exactly the
+keys you care most about, because popularity is what creates the pile-up. And it
+tends to happen at the least convenient moment, because entries cached together
+expire together.
+
+<DoThis>
+
+Three fixes, cheapest first
+
+- <Mint>Jitter the TTL.</Mint> `300 + random(0..60)` seconds. One line, and it stops
+  synchronised expiry, which is the most common form.
+- <Mint>Single-flight.</Mint> The first request to miss takes a short lock and recomputes;
+  the rest wait for its result or briefly serve the stale value. One query
+  instead of four hundred.
+- <Mint>Stale-while-revalidate.</Mint> Serve the expired value immediately and refresh in
+  the background. Best perceived latency, and the right default for anything
+  where a few seconds of staleness is harmless.
+
+</DoThis>
+
+<Signal>
+
+Bringing up stampede unprompted when asked about caching is a strong signal,
+because it is the failure you only meet in production. "We jitter TTLs and
+single-flight the recompute, otherwise expiry of a hot key turns into a
+self-inflicted load spike."
+
+</Signal>

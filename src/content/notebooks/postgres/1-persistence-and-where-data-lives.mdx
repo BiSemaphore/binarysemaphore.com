@@ -1,0 +1,24 @@
+---
+number: "1"
+title: "Persistence, and where data lives"
+part: "I"
+partTitle: "Why a database at all"
+---
+<Pink>Persistence</Pink> means data survives the process that created it. Close the app,
+reopen it a week later on a different machine, and the state is what you left.
+
+That single requirement forces a choice about <Peach>where the bytes sit</Peach>.
+
+```text
+  ┌─────────┐
+  │   CPU   │
+  └────┬────┘
+       │
+       ├──▶ RAM, primary memory
+       │       nanoseconds        8 to 128 GB       expensive per GB
+       │       volatile: gone when the process dies
+       │
+       └──▶ DISK, secondary memory (SSD, NVMe)
+               microseconds       512 GB to many TB  cheap per GB
+               durable: survives the process, the reboot, the power cut
+```

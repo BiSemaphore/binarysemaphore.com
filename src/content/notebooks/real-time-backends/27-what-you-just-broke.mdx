@@ -1,0 +1,28 @@
+---
+number: "27"
+title: "What you just broke"
+part: "V"
+partTitle: "The connection is state"
+---
+Two instances behind a load balancer. Browser A connects and lands on instance 1.
+Browser B connects and lands on instance 2. Both healthy, both holding a live
+socket. Aas moves a task in browser A.
+
+<Peach>Nothing happens in browser B.</Peach>
+
+```text
+                    ┌──────────────────┐
+   BROWSER A ──────▶│   LOAD BALANCER  │◀────── BROWSER B
+                    └────┬────────┬────┘
+                         │        │
+              ┌──────────▼──┐  ┌──▼──────────┐
+              │ INSTANCE 1  │  │ INSTANCE 2  │
+              │             │  │             │
+              │ socket: A   │  │ socket: B   │
+              │ board 412   │  │ board 412   │
+              └─────────────┘  └─────────────┘
+
+              knows about A       knows about B
+              has never heard     has never heard
+              of B                of A
+```

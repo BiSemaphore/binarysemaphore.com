@@ -1,0 +1,36 @@
+---
+number: "29"
+title: "Pub/sub: the instances talk to each other"
+part: "V"
+partTitle: "The connection is state"
+---
+If the connection cannot move and the event must reach it, then the event has to
+travel between instances. That is the entire architecture, and it is one idea:
+
+<Peach>The instance that receives the change does not deliver it. It publishes it.</Peach>
+
+```text
+  1. browser A ──▶ instance 1:  POST /tasks/9/move
+  2. instance 1 commits to the database        ← source of truth first
+  3. instance 1 PUBLISHES to topic "board.412"
+                          │
+                          ▼
+                 ┌──────────────────┐
+                 │  REDIS / NATS /  │
+                 │      KAFKA       │
+                 └───┬──────────┬───┘
+       4. delivered  │          │  delivered to every
+          to every   │          │  subscribed instance
+                     ▼          ▼
+              ┌───────────┐  ┌───────────┐
+              │INSTANCE 1 │  │INSTANCE 2 │
+              └─────┬─────┘  └─────┬─────┘
+                    │              │
+       5. each instance looks at ITS OWN connections,
+          finds the ones watching board 412, writes the frame
+                    │              │
+                    ▼              ▼
+               browser A      browser B   ← sees it instantly
+```
+
+Three properties make this work.

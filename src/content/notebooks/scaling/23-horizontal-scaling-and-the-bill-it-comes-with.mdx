@@ -1,0 +1,23 @@
+---
+number: "23"
+title: "Horizontal scaling, and the bill it comes with"
+part: "V"
+partTitle: "More machines"
+---
+<Term name="Horizontal scaling">
+
+Adding more machines of the same size rather than one larger machine. Also
+called scaling out. Instead of one server handling all traffic, several
+identical servers each handle a share of it, coordinated by a load balancer in
+front.
+
+</Term>
+
+```text
+        ┌──→ instance A
+  LB ───┼──→ instance B
+        └──→ instance C
+```
+
+The theoretical wins are real and they are the mirror image of the three
+ceilings:

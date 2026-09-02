@@ -1,0 +1,12 @@
+---
+number: "25"
+title: "`JOIN`, and why `LEFT` is usually right"
+part: "V"
+partTitle: "Querying for an API"
+---
+```text
+  INNER JOIN     rows that match on BOTH sides
+  LEFT JOIN      every row from the left, matched or not (NULLs on the right)
+```
+
+The distinction is a correctness bug waiting to happen:

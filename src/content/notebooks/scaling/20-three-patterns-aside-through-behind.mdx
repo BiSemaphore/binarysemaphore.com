@@ -1,0 +1,26 @@
+---
+number: "20"
+title: "Three patterns: aside, through, behind"
+part: "IV"
+partTitle: "Caching"
+---
+The pattern decides who writes to the cache, and when.
+
+#### Cache-aside, also called lazy loading
+
+```text
+  read:    check cache → miss → query db → store in cache → return
+  write:   write db → delete cache entry
+```
+
+The default, and what most people mean when they say caching. Only data actually
+requested gets cached, and a cache failure degrades to a slow read rather than a
+broken write. The cost is that every miss pays the full latency, and the first
+request after any write always misses.
+
+#### Write-through
+
+```text
+  read:    check cache → almost always hit
+  write:   write db AND write cache, both before responding
+```

@@ -1,0 +1,19 @@
+---
+number: "36"
+title: "Abandoned uploads: the invisible bill"
+part: "VI"
+partTitle: "Large files"
+---
+Follow a failure through.
+
+```text
+  300 parts × 32 MiB  =  ~10 GB uploaded into the staging area
+        │
+        │  the user closes the tab
+        ▼
+  CompleteMultipartUpload   never called
+  AbortMultipartUpload      never called
+        │
+        ▼
+  10 GB sits there. billed every month. forever.
+```

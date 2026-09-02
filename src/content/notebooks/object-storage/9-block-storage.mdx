@@ -1,0 +1,21 @@
+---
+number: "9"
+title: "Block storage"
+part: "II"
+partTitle: "Three kinds of storage"
+---
+The lowest level. A block device gives you a raw array of fixed-size blocks,
+each with a number, and that is the entire interface.
+
+```text
+  block #0   block #1   block #2   …   block #9,000,000
+  ┌────────┐ ┌────────┐ ┌────────┐     ┌────────┐
+  │ 4 KB   │ │ 4 KB   │ │ 4 KB   │ ··· │ 4 KB   │
+  └────────┘ └────────┘ └────────┘     └────────┘
+
+  read(block_number)          write(block_number, bytes)
+```
+
+Blocks are typically 512 bytes or 4 KB. There is no file, no name, no directory,
+no permission. Your SSD is a block device. AWS EBS is a block device delivered
+over a network.

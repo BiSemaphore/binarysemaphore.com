@@ -1,0 +1,39 @@
+---
+number: ""
+title: "The whole picture on one page"
+part: ""
+partTitle: ""
+---
+```text
+   BROWSER A                                          BROWSER B
+   (board 412)                                        (board 412)
+       │                                                  ▲
+       │ 1. POST /tasks/9/move        7. frame: task.moved │
+       ▼                                                  │
+  ┌─────────────┐                                  ┌─────────────┐
+  │ INSTANCE 1  │                                  │ INSTANCE 2  │
+  │             │                                  │             │
+  │ ws conns:   │                                  │ ws conns:   │
+  │   A ────────┼──┐                          ┌────┼──────── B   │
+  └──────┬──────┘  │                          │    └─────────────┘
+         │         │  each instance holds     │
+    2. commit      │  its own sockets and     │  6. look up local
+         │         │  knows nothing about     │     subscribers
+         ▼         │  the other's             │     for board 412
+  ┌─────────────┐  │                          │
+  │  DATABASE   │  └──────────────────────────┘
+  │             │              ▲
+  │ source of   │              │
+  │ truth       │       ┌──────┴───────┐
+  └─────────────┘       │   PUB / SUB  │
+         │              │              │
+    3. assign seq   4.  │ topic:       │  5. delivered to every
+       number    publish│  board.412   │     subscribed instance
+         └──────────────▶              │
+                        └──────────────┘
+                               │
+                        ┌──────┴───────┐
+                        │  EVENT LOG   │ ← only if you need at-least-once
+                        │  seq 1..N    │   and a catch-up path
+                        └──────────────┘
+```

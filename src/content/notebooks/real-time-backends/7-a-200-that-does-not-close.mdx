@@ -1,0 +1,36 @@
+---
+number: "7"
+title: "A 200 that does not close"
+part: "II"
+partTitle: "Server-sent events: the response that never ends"
+---
+Long polling failed because a response ends. So do not end it.
+
+<Pink>Server-sent events</Pink>, or SSE, is a normal HTTP GET whose response body never
+completes. The server sends status 200 and a `Content-Type` of
+`text/event-stream`, and then, every time it has something to say, writes a few
+more lines into the body it never closed.
+
+```text
+  GET /events HTTP/1.1
+  Accept: text/event-stream
+
+  HTTP/1.1 200 OK
+  Content-Type: text/event-stream
+  Cache-Control: no-cache
+  Connection: keep-alive
+                                    ← body starts here and does not end
+  id: 1841
+  event: task.moved
+  data: {"task":9,"from":"todo","to":"doing"}
+                                    ← blank line terminates one event
+  id: 1842
+  event: task.created
+  data: {"task":10,"title":"Write the migration"}
+
+           ... connection stays open, minutes, hours ...
+```
+
+The connection lives as long as the tab does. Close the tab, lose the network,
+navigate away, and it ends; while the page is open, ==there is always a channel
+from your server into that browser==.

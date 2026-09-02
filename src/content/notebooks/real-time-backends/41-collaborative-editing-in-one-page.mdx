@@ -1,0 +1,25 @@
+---
+number: "41"
+title: "Collaborative editing, in one page"
+part: "VII"
+partTitle: "The parts the lecture left out"
+---
+The other thing the lecture names as out of scope, and the correct answer to it in
+an interview is short, because the honest answer is "this is a large field and
+here is the decision".
+
+**The problem.** Two people edit the same paragraph at the same time. Both
+edits are valid, both are already applied locally, and neither can be rejected
+without the editor feeling broken. ==Last-write-wins destroys one person's work
+and is not acceptable in an editor.==
+
+```text
+  document: "hello world"
+  Aas inserts "big " at position 6      ──▶ "hello big world"
+  Leo inserts "!"    at position 11     ──▶ "hello world!"
+
+  applied naively in either order, positions have shifted
+  underneath the second edit and the result is wrong
+```
+
+**Two families of answer.**

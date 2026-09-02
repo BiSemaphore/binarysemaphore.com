@@ -1,0 +1,31 @@
+---
+number: "10"
+title: "File storage, and what POSIX costs"
+part: "II"
+partTitle: "Three kinds of storage"
+---
+A file system is one abstraction layer on top of blocks. It spends blocks on
+bookkeeping (inodes, directory entries, free space maps) and in exchange gives
+you the richest interface in computing:
+
+```text
+  open()  read()  write()  seek()  truncate()  close()
+  rename()  link()  unlink()  mkdir()  chmod()  flock()
+```
+
+That set is roughly what people mean by <Pink>POSIX semantics</Pink>: the standard that
+defines what an operating system offers, including the file system calls every
+program assumes. Some of its guarantees are much stronger than they look.
+
+#### Rename is atomic
+
+`rename()` either happens completely or not at all. There is no observable
+in-between state. An enormous amount of software depends on this, and the
+save-file dance in your editor is the everyday example:
+
+```text
+  you type          ──▶  edits held in memory / a temp file
+  you press save    ──▶  write complete new contents to  file.ts.tmp
+                    ──▶  fsync
+                    ──▶  rename("file.ts.tmp", "file.ts")   ← atomic
+```

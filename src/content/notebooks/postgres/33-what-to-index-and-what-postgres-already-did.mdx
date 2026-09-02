@@ -1,0 +1,18 @@
+---
+number: "33"
+title: "What to index, and what Postgres already did"
+part: "VI"
+partTitle: "Making it fast"
+---
+The rule of thumb is: index what appears in a `WHERE`, a `JOIN`, or an
+`ORDER BY`, weighted by how often the query runs.
+
+Applied to the running schema:
+
+```sql
+CREATE INDEX users_created_at   ON users     (created_at DESC);  -- list sort
+CREATE INDEX tasks_project_id   ON tasks     (project_id);       -- FK, joins
+CREATE INDEX tasks_assigned_to  ON tasks     (assigned_to);      -- FK, joins
+CREATE INDEX tasks_status       ON tasks     (status);           -- filter
+CREATE INDEX members_user_id    ON project_members (user_id);    -- reverse lookup
+```

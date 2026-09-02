@@ -1,0 +1,20 @@
+---
+number: "33"
+title: "Fan-out: events times subscribers"
+part: "VI"
+partTitle: "Delivery: gaps, storms and fan-out"
+---
+Pub/sub solved reaching every instance. It did not reduce the work, and at scale
+the work is the problem.
+
+```text
+  writes to perform  =  events  ×  subscribers
+
+  30,000 people watching one board
+  1 person moves 1 task
+  ──▶ 30,000 frames must be serialised and written
+```
+
+One user action, thirty thousand writes. And the multiplication is invisible in
+the code: your handler publishes one event and looks like it did one unit of
+work.

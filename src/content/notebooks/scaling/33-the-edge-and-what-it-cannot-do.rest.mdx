@@ -1,0 +1,50 @@
+The reason it is fast is not that the computation is faster. It is the same
+computation. ==What changes is that the 100ms round trip is replaced by a 3ms
+one==, so a cheap computation that used to cost 105ms now costs 8ms.
+
+#### The example that pays for itself
+
+Rejecting unauthenticated requests.
+
+```text
+  at the origin                     at the edge
+  ─────────────                     ───────────
+  request → 100 ms → origin         request → 3 ms → edge node
+  check session                     check session
+  401 → 100 ms → user               401 → 3 ms → user
+
+  200 ms to say no                  6 ms to say no
+  and your origin was disturbed     and your origin never heard about it
+```
+
+The user gets their answer thirty times faster and your origin only ever sees
+requests that are already valid. Personalisation by geography or language, A/B
+bucketing, redirects and bot filtering all have the same shape: a cheap decision
+that determines whether the expensive path runs at all.
+
+#### Why not run everything there
+
+Edge runtimes are constrained by design, and the constraints are the answer to
+"why not just deploy the whole app to the edge?"
+
+```text
+  small machines      CDN nodes are ISP-adjacent infrastructure sized for
+                      routing, not for compute. tight memory and CPU limits.
+
+  restricted runtime  Cloudflare Workers run V8 isolates: no filesystem, no
+                      arbitrary TCP, limited native modules, short CPU budgets.
+
+  far from your data  the edge is 3 ms from the user and often 100 ms from your
+                      database. a request that queries Postgres has moved the
+                      round trip, not removed it.
+```
+
+<KeyIdea>
+
+That last one is the trap. ==Moving compute to the edge only helps if the data
+it needs is also at the edge.== An edge function that makes three sequential
+calls to a database in Virginia is slower than an origin server sitting next to
+that database. The edge is for decisions you can make from the request itself,
+plus something small and globally replicated.
+
+</KeyIdea>

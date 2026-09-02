@@ -1,0 +1,26 @@
+---
+number: "73"
+title: "Answers, Notebook 04"
+part: "10"
+partTitle: "Answers"
+---
+**Q95** If disk is the bottleneck, why is Postgres fast?  *Notebook 04, section 1.*
+
+Because it does not read from disk most of the time. Postgres keeps hot pages in
+its shared buffer cache in RAM, and the operating system caches underneath that,
+so a well-indexed query against a working set that fits in memory rarely touches
+a platter. "Disk based" describes where the <Peach>durable copy</Peach> lives, not where
+every read is served from. That distinction is worth making out loud, because it
+is the same reason adding a cache in front of a well-tuned Postgres sometimes
+buys nothing.
+
+**Q96** When would you genuinely not choose Postgres?  *Notebook 04, section 5.*
+
+When the access pattern is the product and it is not relational: a
+single-digit-millisecond key-value lookup at enormous scale (DynamoDB,
+Cassandra), a time-series firehose (Timescale, ClickHouse), a full-text search
+product where relevance tuning is the feature (Elasticsearch, and see Notebook
+16), or a graph traversal that is the core query (Neo4j). Note that the first
+three of those are often <Peach>added alongside</Peach> Postgres rather than instead of it.
+
+**Q98** Why not store epoch integers and avoid the whole question?  *Notebook 04, section 8.*

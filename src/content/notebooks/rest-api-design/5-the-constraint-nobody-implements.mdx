@@ -1,0 +1,29 @@
+---
+number: "5"
+title: "The constraint nobody implements"
+part: "I"
+partTitle: "The standard exists so you do not have to negotiate"
+---
+Sub-constraint (d) of the uniform interface has an unfortunate name: %%hypermedia
+as the engine of application state%%, abbreviated HATEOAS. The idea is simple.
+
+A response should not only carry data. It should carry the ++set of things you
+can do next++, as links. The client starts at one URL and discovers the rest of
+the API by following what it is given, exactly as a person uses a website without
+ever being told its URL structure.
+
+```text
+  { "id": "8f2a",
+    "name": "Acme",
+    "status": "active",
+    "_links": {
+      "self":     { "href": "/v1/organizations/8f2a" },
+      "projects": { "href": "/v1/organizations/8f2a/projects" },
+      "archive":  { "href": "/v1/organizations/8f2a/archive", "method": "POST" }
+    } }
+```
+
+The payoff is real: the client stops hard-coding URLs, so you can move them. And
+when the organisation is already archived, you simply omit the `archive` link,
+and ==the client's available actions become server-controlled state rather than
+client-side business logic duplicated in three apps.==

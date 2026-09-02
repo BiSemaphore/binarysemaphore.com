@@ -1,0 +1,23 @@
+---
+number: ""
+title: "Appendix B. Glossary"
+part: "IX"
+partTitle: "Appendices"
+---
+| Term | Meaning |
+|---|---|
+| Backpressure | Letting work queue up instead of pushing it into an overloaded dependency |
+| Checkpoint | Durable record of progress, so a restart resumes rather than repeats |
+| DLQ | Dead letter queue: where messages go after exhausting retries |
+| Dual write | Writing to two systems without a shared transaction, so they can disagree |
+| Effectively once | At-least-once delivery plus idempotent processing; the achievable goal |
+| Fan-out / fan-in | Splitting one job into parallel units, then detecting collective completion |
+| Head-of-line blocking | One slow item at the front delaying everything behind it |
+| Idempotent | Repeating the operation produces the same result as doing it once |
+| Lease / visibility timeout | The window in which a consumer must ack before redelivery |
+| Multipart upload | Uploading one object as independently retryable parts |
+| Outbox | Events written in the same transaction as the state change, relayed after |
+| Poison pill | A message that will never succeed, no matter how often it is retried |
+| Presigned URL | A time-limited signed URL authorising one operation on one key |
+| Splittable format | A format that can be read from an arbitrary offset (not plain gzip) |
+| Thundering herd | Many clients retrying in lockstep and recreating the outage |

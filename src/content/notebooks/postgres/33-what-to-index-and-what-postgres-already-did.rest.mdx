@@ -1,0 +1,40 @@
+Two things Postgres does and does not do for you, and the gap between them is a
+common production bug:
+
+```text
+  PRIMARY KEY         ✓ indexed automatically
+  UNIQUE constraint   ✓ indexed automatically (that is how it is enforced)
+
+  FOREIGN KEY         ✗ NOT indexed. Postgres indexes the parent's key,
+                        because it is a primary key, and does nothing
+                        for the child's column.
+```
+
+So every `JOIN tasks ON tasks.project_id = projects.id` scans `tasks` unless you
+index `project_id` yourself. It is also why deleting a parent row can be
+mysteriously slow: the cascade or restrict check has to find referencing rows,
+and with no index that is a full scan of the child table per deleted row.
+
+#### Composite indexes, and the order of columns
+
+```text
+  CREATE INDEX tasks_project_status ON tasks (project_id, status);
+
+  serves:   WHERE project_id = $1
+            WHERE project_id = $1 AND status = $2
+  does NOT serve:  WHERE status = $2          ← leading column missing
+
+  leftmost prefix rule: an index on (a, b, c) serves
+  queries on (a), (a, b), (a, b, c). Never on (b) alone.
+```
+
+<DoThis>
+
+Put the equality column first
+
+In a composite index, order by: equality filters first, then the range or sort
+column. For `WHERE project_id = $1 ORDER BY created_at DESC`, the index is
+`(project_id, created_at DESC)`, which satisfies both the filter and the sort
+in one walk with no sort step at all.
+
+</DoThis>

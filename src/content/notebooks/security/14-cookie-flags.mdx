@@ -1,0 +1,13 @@
+---
+number: "14"
+title: "Cookie flags"
+part: "III"
+partTitle: "Authentication"
+---
+```text
+  Set-Cookie: sid=…; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=1209600
+                     ▲         ▲       ▲
+                     │         │       └ not sent on most cross-site requests
+                     │         └ HTTPS only, so it is never sent in the clear
+                     └ JavaScript cannot read it, so XSS cannot steal it
+```

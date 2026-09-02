@@ -1,0 +1,79 @@
+Standard connection draining does not resolve this. A load balancer stops sending
+<Peach>new</Peach> connections to a draining target and waits for existing ones to close, up
+to a deregistration delay (300 seconds on an AWS ALB by default). Ordinary HTTP
+requests finish in milliseconds, so draining works. ==A WebSocket does not
+finish.== It sits there until the delay expires and is then cut.
+
+```text
+  a normal deploy                     a deploy with WebSockets
+  ---------------                     ------------------------
+  stop new requests                   stop new connections
+  in-flight finish in ~50ms           in-flight finish in ... never
+  drain complete                      wait out the deregistration delay
+  replace                             then CUT 5,000 sockets at once
+                                      ──▶ a reconnect storm you scheduled
+```
+
+So a deploy manufactures the exact failure of section 35, on purpose, several
+times a day.
+
+<Mint>The fix is to make the shutdown cooperative rather than waiting for a timeout.</Mint>
+
+```text
+  1. SIGTERM. stop accepting new connections. fail the readiness probe
+  2. tell the clients, in the application protocol:
+         { "type": "reconnect", "after_ms": <random 0..30000> }
+     or close with code 4002, "rebalancing"
+  3. clients disconnect on their own schedule, spread over 30 seconds,
+     and reconnect to instances that are already healthy
+  4. when the connection count reaches zero, or a deadline passes, exit
+  5. only then let the orchestrator replace the container
+```
+
+The client's response to a 4002 close is <Peach>different from its response to 1006</Peach>:
+it knows this was deliberate, it knows a jittered delay was suggested, and it can
+skip the "is the network broken" backoff entirely.
+
+Two more details that matter operationally:
+
+- <Peach>Your readiness probe must fail before your liveness probe does.</Peach> Otherwise
+  the orchestrator kills the container mid-drain.
+- ==Set `terminationGracePeriodSeconds` longer than your drain window.== The
+  default is 30 seconds in Kubernetes, and a 30-second drain plus a 30-second
+  grace period means being killed exactly as the last clients are leaving.
+
+<Signal>
+
+"I treat a deploy as a scheduled reconnect storm, so I drain cooperatively: I
+tell clients to reconnect with a jittered delay using an application-level
+message, rather than letting the load balancer cut them all at once when the
+deregistration delay expires." That is an answer nobody gives who has not
+operated one of these.
+
+</Signal>
+
+<KeyIdea>
+
+A connection that never ends cannot be drained by waiting. ==Tell the clients to
+leave, with jitter==, and size the grace period around the drain rather than the
+default.
+
+</KeyIdea>
+
+<Recall>
+
+Write the catch-up protocol, including what happens when the gap exceeds retention. | 8
+
+</Recall>
+
+<Recall>
+
+Give the fan-out formula, Discord's measured numbers, and the three fixes in order. | 7
+
+</Recall>
+
+<Recall>
+
+Why does a fixed reconnect delay not solve a reconnect storm? Give the correct formula. | 6
+
+</Recall>

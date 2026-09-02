@@ -1,0 +1,23 @@
+---
+number: "2"
+title: "Cohesion and coupling: the older, better words"
+part: "I"
+partTitle: "The words that came before the acronym"
+---
+Larry Constantine introduced these in the structured design work of the late
+1960s and 1970s, two decades before any of SOLID. They remain the most useful
+vocabulary in the subject, and they are what the five letters are made of.
+
+<Pink>Cohesion</Pink> is how strongly the things inside one module belong together.
+<Pink>Coupling</Pink> is how much one module must know about another.
+
+```text
+   HIGH COHESION            LOW COUPLING
+   things that change       modules that can change
+   together live together   without telling each other
+            │                        │
+            └────────┬───────────────┘
+                     ▼
+        the two halves of every principle
+        in this book, without exception
+```

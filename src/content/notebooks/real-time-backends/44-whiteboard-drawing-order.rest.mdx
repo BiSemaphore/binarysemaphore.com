@@ -1,0 +1,25 @@
+```text
+   1. two browsers, side by side, same board
+   2. one arrow: browser A ──▶ server   "the write. ordinary POST."
+   3. the question mark: server ──▶ browser B, and say
+      "HTTP has no arrow here. everything else follows from that."
+
+   4. ONE server box. show the socket to A and the socket to B.
+      this version works. say so.
+
+   5. now split it: TWO instances behind a load balancer.
+      redraw the sockets: A on instance 1, B on instance 2.
+   6. draw the arrow you cannot draw: instance 1 ──▶ browser B.
+      cross it out. THIS IS THE WHOLE PROBLEM.
+
+   7. add the bus underneath. topic "board.412".
+      publish from 1, deliver to 1 and 2, each writes its own sockets.
+   8. label the sequence number on the event.
+   9. only now: the log for catch-up, the snapshot path,
+      the coalescing tick, the edge cache for reconnect storms
+```
+
+Step 6 is the moment the whiteboard does the work for you. ==Draw the arrow, then
+cross it out, and say "a socket is a file descriptor in one process, so this
+arrow cannot exist".== Everything after that is you resolving a problem the
+interviewer has now watched you find.

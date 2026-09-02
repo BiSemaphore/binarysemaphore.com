@@ -1,0 +1,18 @@
+---
+number: "16"
+title: "Pooling, and the autoscaler that killed the database"
+part: "III"
+partTitle: "The database"
+---
+A <Pink>connection pool</Pink> keeps a set of established connections open and lends them
+out. Your code borrows one, runs a query, and returns it. The five setup costs
+are paid once per connection, not once per query, and the pool size caps how
+many can exist.
+
+```text
+  without a pool                    with a pool
+  ──────────────                    ───────────
+  query → open → run → close        query → borrow → run → return
+  5 costs, every time               5 costs, once. then reuse.
+  unbounded connections             a hard cap you chose
+```

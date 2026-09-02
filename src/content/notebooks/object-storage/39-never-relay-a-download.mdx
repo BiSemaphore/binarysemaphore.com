@@ -1,0 +1,21 @@
+---
+number: "39"
+title: "Never relay a download"
+part: "VII"
+partTitle: "Getting the bytes out"
+---
+The rule from section 7, restated where it matters most.
+
+```text
+  BAD                                    GOOD
+
+  bucket                                 bucket
+    │ GetObject                            │
+    ▼                                      ▼
+  your server   ← a worker pinned         CDN edge   ← cached, near the user
+    │             for the whole             │
+    ▼             download, plus            ▼
+  user            egress you pay for      user
+```
+
+Three costs, all of them avoidable:

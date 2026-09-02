@@ -1,0 +1,51 @@
+**Preconditions may not be strengthened** is the one that catches most real bugs.
+If `Parent.save(user)` accepts any user, and `Child.save(user)` throws unless the
+user has an email, ==every existing caller of `save` is now conditionally
+broken==, and no compiler will tell you.
+
+**The square and the rectangle** is the canonical example, and it is worth
+knowing precisely because it is asked so often.
+
+```text
+   class Rectangle { setWidth(w); setHeight(h); area() }
+   class Square extends Rectangle { ... }        ← a square IS a rectangle,
+                                                   mathematically
+
+   r.setWidth(5)
+   r.setHeight(4)
+   assert r.area() === 20      ← true for Rectangle
+                               ← false for Square, which got 16
+```
+
+`Square` must keep width and height equal, so setting one changes the other. That
+breaks the invariant every caller of `Rectangle` relies on. ==The mathematical "is
+a" relationship is true and the subtyping relationship is still wrong==, because
+subtyping is about substitutable behaviour, and a mutable square does not behave
+like a mutable rectangle.
+
+**This happens in real libraries.** `Arrays.asList()` in Java returns a `List`
+whose `add` throws `UnsupportedOperationException`. It satisfies the interface
+and violates it behaviourally: any code written against `List` can be broken by
+being handed one. !!An `UnsupportedOperationException` is almost always an
+admission of an LSP violation.!!
+
+<Ask>
+
+"How would you fix the square and rectangle?"
+
+The good answer refuses the premise. Do not make `Square` a subtype of a
+__mutable__ `Rectangle`; the mutability is what breaks it. Options, in order:
+make both immutable, so `withWidth()` returns a new object and no invariant can
+be violated; or drop the inheritance and let both implement a `Shape` interface
+that only exposes `area()`. ++The general lesson is that inheritance hierarchies
+that are safe for immutable types are frequently unsafe for mutable ones.++
+
+</Ask>
+
+<KeyIdea>
+
+==Preconditions may not be strengthened, postconditions may not be weakened,
+invariants and history must hold.== Four checkable rules, and a thrown
+`UnsupportedOperationException` is the smell that one of them is being broken.
+
+</KeyIdea>

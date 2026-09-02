@@ -1,0 +1,83 @@
+| Concern | Object store (S3, GCS, Blob) | Relational database |
+|---|---|---|
+| Cost per GB per month | ~$0.023 | 10x to 20x more, on provisioned storage |
+| Max object size | 5 TiB | BYTEA and BLOB practical limits far lower |
+| Effect on backups | None, versioned separately | Backup and restore time explodes |
+| Streaming reads | Native, with byte-range requests | Awkward, buffers through the DB connection |
+| Direct client upload | Yes, presigned | No, must pass through your servers |
+| Replication cost | Cheap, built in | Every replica carries the blob |
+
+<KeyIdea>
+
+The database stores <Peach>metadata and results</Peach>. The object store holds <Peach>bytes</Peach>.
+Mixing them makes your most operationally sensitive component the one carrying
+the most dead weight.
+
+</KeyIdea>
+
+#### The layout
+
+```text
+s3://acme-ingest/
+├── uploads/
+│   ├── job-8f21/
+│   │   └── input.csv            (raw, immutable, written once)
+│   └── job-8f22/
+│       └── input.csv
+├── processed/
+│   ├── job-8f21/
+│   │   ├── part-00000.parquet
+│   │   └── part-00001.parquet
+│   └── job-8f21/errors.csv      (rejected rows, with reasons)
+└── tmp/                          (lifecycle: delete after 1 day)
+```
+
+Keying everything by `job-id` is deliberate. It makes cleanup, debugging,
+per-job access control and lifecycle rules trivial, and it means an operator
+with a job ID can find everything about that job in one place.
+
+#### The metadata row
+
+```sql
+CREATE TABLE jobs (
+  id               UUID PRIMARY KEY,
+  tenant_id        UUID NOT NULL,
+  status           TEXT NOT NULL,          -- see the state machine, section 21
+  input_key        TEXT,                   -- uploads/job-8f21/input.csv
+  input_bytes      BIGINT,
+  input_checksum   TEXT,
+  output_prefix    TEXT,
+  upload_id        TEXT,                   -- S3 multipart upload id
+  total_chunks     INT,
+  processed_chunks INT NOT NULL DEFAULT 0,
+  attempt          INT NOT NULL DEFAULT 0,
+  error_code       TEXT,
+  error_detail     TEXT,
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  started_at       TIMESTAMPTZ,
+  completed_at     TIMESTAMPTZ,
+  heartbeat_at     TIMESTAMPTZ             -- see section 18
+);
+
+CREATE INDEX jobs_tenant_created ON jobs (tenant_id, created_at DESC);
+CREATE INDEX jobs_active ON jobs (status) WHERE status IN ('QUEUED','PROCESSING');
+```
+
+<Signal>
+
+The partial index on active jobs is a small detail that reads as production
+experience. The table grows forever, but the set of running jobs stays small,
+and every operational query ("what is stuck?") hits only that set.
+
+</Signal>
+
+<Ask>
+
+Should the file ever go in the database?
+
+Yes, when it is small and transactional integrity with the row matters more than
+size: a 40 KB signed PDF that must appear and disappear atomically with its
+record is fine in the database. The rule is about size and access pattern, not
+dogma.
+
+</Ask>

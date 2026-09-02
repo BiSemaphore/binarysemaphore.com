@@ -1,0 +1,12 @@
+---
+number: "37"
+title: "Transactions, and what ACID buys"
+part: "VII"
+partTitle: "Correctness under concurrency"
+---
+```sql
+BEGIN;
+  UPDATE accounts SET balance = balance - 100 WHERE id = 'a';
+  UPDATE accounts SET balance = balance + 100 WHERE id = 'b';
+COMMIT;                      -- both, or neither. never one.
+```

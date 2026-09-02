@@ -1,0 +1,49 @@
+The reason this matters is that it makes the principle falsifiable in a
+conversation. His own example is an `Employee` class with three methods,
+`calculatePay`, `reportHours`, and `save`. Each is requested by a different part
+of the company:
+
+| Method | Actor | What goes wrong |
+|---|---|---|
+| `calculatePay` | Finance | |
+| `reportHours` | Human resources | |
+| `save` | The DBA / operations | |
+
+They share a class, so they share code. One day someone changes a shared helper
+used by `calculatePay` on finance's instruction, and ==HR's hours report silently
+changes too, because it called the same helper.== Nobody asked for that. Nobody
+reviewed it as a change to HR's reporting. The failure is not a bug in either
+feature; it is that two departments were coupled together by an accident of file
+layout.
+
+++The fix is to split by actor, and to let the shared code be duplicated or
+extracted deliberately, with a name, and an owner.++
+
+<Signal>
+
+"SRP is about actors, not about size. If two teams can send me contradictory
+change requests that both land in the same file, that file has more than one
+responsibility, however small it is."
+
+This answer is unusual enough that it reliably reads as first-hand knowledge,
+because the popular version of SRP does not mention actors at all.
+
+</Signal>
+
+<Ask>
+
+"Does SRP conflict with DRY?"
+
+Constantly, and section 15 is about it. The short version: two pieces of code
+that look identical but serve different actors are ==not duplication, they are
+coincidence.== Merging them couples two departments together, and you will find
+out when one of them asks for a change the other one does not want.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>Responsible to one actor.</Peach> The 2017 formulation is the one to quote, because
+it turns a vague aesthetic into a question about your organisation chart.
+
+</KeyIdea>

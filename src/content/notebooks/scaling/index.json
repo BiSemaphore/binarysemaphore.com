@@ -1,0 +1,425 @@
+[
+  {
+    "slug": "how-to-use-this-book",
+    "number": "",
+    "title": "How to use this book",
+    "part": "",
+    "partTitle": "",
+    "gated": true,
+    "teaser": "Performance means something different in a browser, in a compiler, in a game engine. This book stays where the lecture stays, in ==the backend you write and the infrastructure"
+  },
+  {
+    "slug": "1-slow-is-not-a-bug-report",
+    "number": "1",
+    "title": "\"Slow\" is not a bug report",
+    "part": "I",
+    "partTitle": "What \"fast\" means",
+    "gated": true,
+    "teaser": "Here is what \"the app is slow\" can mean, all of which have different fixes:"
+  },
+  {
+    "slug": "2-latency-is-a-distribution-not-a-number",
+    "number": "2",
+    "title": "Latency is a distribution, not a number",
+    "part": "I",
+    "partTitle": "What \"fast\" means",
+    "gated": true,
+    "teaser": "At a million requests a day, that 1% is ten thousand real people staring at a loading spinner for five seconds. The average hid all of them, and it will keep hiding them no matter"
+  },
+  {
+    "slug": "3-why-p99-is-your-most-valuable-customers",
+    "number": "3",
+    "title": "Why P99 is your most valuable customers",
+    "part": "I",
+    "partTitle": "What \"fast\" means",
+    "gated": true,
+    "teaser": "So the population sitting at P99 skews towards users doing the things you charge for. Optimising the median makes your marketing pages faster. Optimising the tail makes your"
+  },
+  {
+    "slug": "4-throughput-and-the-curve-that-bends",
+    "number": "4",
+    "title": "Throughput, and the curve that bends",
+    "part": "I",
+    "partTitle": "What \"fast\" means",
+    "gated": true,
+    "teaser": "You need both, because a latency number without a throughput number is meaningless. \"Our P99 is 150ms\" invites the question \"at what load?\" A system can be beautifully fast at 10"
+  },
+  {
+    "slug": "5-utilization-and-the-knee",
+    "number": "5",
+    "title": "Utilization and the knee",
+    "part": "I",
+    "partTitle": "What \"fast\" means",
+    "gated": true,
+    "teaser": "That is queueing, and it is the entire story of server latency under load. Your CPU does not get slower as it gets busier. Requests just start waiting behind other requests."
+  },
+  {
+    "slug": "6-headroom-and-why-traffic-arrives-in-bursts",
+    "number": "6",
+    "title": "Headroom, and why traffic arrives in bursts",
+    "part": "I",
+    "partTitle": "What \"fast\" means",
+    "gated": true,
+    "teaser": "Traffic comes in bursts. A push notification goes out and thirty thousand people open the app in the same four seconds. A cron job fires on the hour across every tenant at once."
+  },
+  {
+    "slug": "7-never-guess-the-week-spent-on-the-wrong-fix",
+    "number": "7",
+    "title": "Never guess. The week spent on the wrong fix",
+    "part": "II",
+    "partTitle": "Finding the bottleneck",
+    "gated": true,
+    "teaser": "There is an endpoint, GET /products/:id. It feels slow. What is the first thought? The database. It is always the database. So you do what everyone does: you add Redis, you put a"
+  },
+  {
+    "slug": "8-profiling-and-what-a-flame-graph-shows",
+    "number": "8",
+    "title": "Profiling, and what a flame graph shows",
+    "part": "II",
+    "partTitle": "Finding the bottleneck",
+    "gated": true,
+    "teaser": "And the first time you look at one of these for your own service, you will be wrong about something. The expectation is that the complex business logic dominates. The reality is"
+  },
+  {
+    "slug": "9-distributed-tracing-and-why-waiting-needs-it",
+    "number": "9",
+    "title": "Distributed tracing, and why waiting needs it",
+    "part": "II",
+    "partTitle": "Finding the bottleneck",
+    "gated": true,
+    "teaser": "That single picture answers the question the whole of Part II is about. The time is in two places, an N+1 and an external call, and neither of them is \"the database is slow\"."
+  },
+  {
+    "slug": "10-what-to-measure-in-what-order",
+    "number": "10",
+    "title": "What to measure, in what order",
+    "part": "II",
+    "partTitle": "Finding the bottleneck",
+    "gated": true,
+    "teaser": "That last step has a name worth knowing, because it is the formal version of the week wasted in section 7."
+  },
+  {
+    "slug": "11-n-1-the-shape-not-the-name",
+    "number": "11",
+    "title": "N+1: the shape, not the name",
+    "part": "III",
+    "partTitle": "The database",
+    "gated": true,
+    "teaser": "The obvious one is the linear relationship. ==The number of round trips should not scale with the number of rows on the page.== Any engineer feels that."
+  },
+  {
+    "slug": "12-indexes-the-catalogue-the-tree-and-the-cost",
+    "number": "12",
+    "title": "Indexes: the catalogue, the tree, and the cost",
+    "part": "III",
+    "partTitle": "The database",
+    "gated": true,
+    "teaser": "That walk is a sequential scan, also called a full table scan: read every row, test each one, keep the matches. For a large table it is the difference between a query taking 4"
+  },
+  {
+    "slug": "13-composite-and-covering-indexes",
+    "number": "13",
+    "title": "Composite and covering indexes",
+    "part": "III",
+    "partTitle": "The database",
+    "gated": true,
+    "teaser": "The rule is the leftmost prefix: an index on (a, b, c) serves queries on a, on a, b, and on a, b, c, and does nothing for a query on b alone. Think of a phone book sorted by"
+  },
+  {
+    "slug": "14-explain-analyze-deciding-instead-of-guessing",
+    "number": "14",
+    "title": "EXPLAIN ANALYZE: deciding instead of guessing",
+    "part": "III",
+    "partTitle": "The database",
+    "gated": true,
+    "teaser": "EXPLAIN shows the plan the planner chose. ANALYZE actually runs the query and shows what really happened, which is the part you want, because planner estimates and reality diverge"
+  },
+  {
+    "slug": "15-connections-are-not-free",
+    "number": "15",
+    "title": "Connections are not free",
+    "part": "III",
+    "partTitle": "The database",
+    "gated": true,
+    "teaser": "Here is what actually happens when your backend opens a connection:"
+  },
+  {
+    "slug": "16-pooling-and-the-autoscaler-that-killed-the-database",
+    "number": "16",
+    "title": "Pooling, and the autoscaler that killed the database",
+    "part": "III",
+    "partTitle": "The database",
+    "gated": true,
+    "teaser": "That solves both problems at once. But where the pool lives turns out to matter enormously, and this is the failure that catches people."
+  },
+  {
+    "slug": "17-what-caching-actually-buys",
+    "number": "17",
+    "title": "What caching actually buys",
+    "part": "IV",
+    "partTitle": "Caching",
+    "gated": true,
+    "teaser": "Sixteen times faster, for a lookup. That is the whole appeal, and it is real."
+  },
+  {
+    "slug": "18-invalidation-the-second-hard-problem",
+    "number": "18",
+    "title": "Invalidation: the second hard problem",
+    "part": "IV",
+    "partTitle": "Caching",
+    "gated": true,
+    "teaser": "Simple, self-healing, and requires no discipline anywhere else in the codebase. The cost is that you have chosen your staleness in advance and you will sometimes be wrong: too"
+  },
+  {
+    "slug": "19-where-the-cache-lives",
+    "number": "19",
+    "title": "Where the cache lives",
+    "part": "IV",
+    "partTitle": "Caching",
+    "gated": true,
+    "teaser": "One copy, so one truth. Invalidation works. Every instance sees the same value. The cost is a network round trip on every read, so you are trading roughly 2ms of in-process lookup"
+  },
+  {
+    "slug": "20-three-patterns-aside-through-behind",
+    "number": "20",
+    "title": "Three patterns: aside, through, behind",
+    "part": "IV",
+    "partTitle": "Caching",
+    "gated": true,
+    "teaser": "The cache is never stale and reads essentially never miss. Writes get slower, because you are doing two writes on the critical path, and you cache data that may never be read."
+  },
+  {
+    "slug": "21-hit-rate-and-the-four-things-that-move-it",
+    "number": "21",
+    "title": "Hit rate, and the four things that move it",
+    "part": "IV",
+    "partTitle": "Caching",
+    "gated": true,
+    "teaser": "A 20% hit rate is worse than no cache at all: you pay the lookup, miss, pay the query anyway, and pay the write to store a result that will expire before it is read again."
+  },
+  {
+    "slug": "22-vertical-scaling-and-its-three-ceilings",
+    "number": "22",
+    "title": "Vertical scaling, and its three ceilings",
+    "part": "V",
+    "partTitle": "More machines",
+    "gated": true,
+    "teaser": "The appeal is that nothing about your system has to be redesigned. No load balancer, no session store, no distributed state, no new failure modes. You click a bigger instance type"
+  },
+  {
+    "slug": "23-horizontal-scaling-and-the-bill-it-comes-with",
+    "number": "23",
+    "title": "Horizontal scaling, and the bill it comes with",
+    "part": "V",
+    "partTitle": "More machines",
+    "gated": true,
+    "teaser": "Now the bill, because every one of those wins is bought with a question you now have to answer:"
+  },
+  {
+    "slug": "24-statelessness-is-the-price-of-admission",
+    "number": "24",
+    "title": "Statelessness is the price of admission",
+    "part": "V",
+    "partTitle": "More machines",
+    "gated": true,
+    "teaser": "Nothing is broken. Every line of code works. The user is logged in and logged out at random depending on which machine answered, and it will be intermittent, which is the worst"
+  },
+  {
+    "slug": "25-the-load-balancer-and-five-algorithms",
+    "number": "25",
+    "title": "The load balancer, and five algorithms",
+    "part": "V",
+    "partTitle": "More machines",
+    "gated": true,
+    "teaser": "Same rotation, but a bigger server gets proportionally more. An instance with twice the CPU takes two requests per cycle instead of one. Fixes uneven hardware; does nothing about"
+  },
+  {
+    "slug": "26-health-checks-and-the-server-that-is-up-but-dead",
+    "number": "26",
+    "title": "Health checks, and the server that is up but dead",
+    "part": "V",
+    "partTitle": "More machines",
+    "gated": true,
+    "teaser": "The loop is self-healing in both directions, which is the important property: nobody has to notice the failure, and nobody has to remember to put the instance back."
+  },
+  {
+    "slug": "27-read-replicas",
+    "number": "27",
+    "title": "Read replicas",
+    "part": "VI",
+    "partTitle": "The stateful part",
+    "gated": true,
+    "teaser": "Two things this buys you."
+  },
+  {
+    "slug": "28-replication-lag-and-the-read-after-write-bug",
+    "number": "28",
+    "title": "Replication lag, and the read-after-write bug",
+    "part": "VI",
+    "partTitle": "The stateful part",
+    "gated": true,
+    "teaser": "The user pressed save, got a success message, and watched their change disappear. Nothing failed. Every component did exactly what it was designed to do, and the result is a bug"
+  },
+  {
+    "slug": "29-sharding-and-the-key-that-is-hard-to-choose",
+    "number": "29",
+    "title": "Sharding, and the key that is hard to choose",
+    "part": "VI",
+    "partTitle": "The stateful part",
+    "gated": true,
+    "teaser": "The lecture suggests sharding orders by date: January to June on one instance, July to December on the other. That is a clean way to explain the mechanism and a poor sharding key"
+  },
+  {
+    "slug": "30-distributed-databases-rent-do-not-build",
+    "number": "30",
+    "title": "Distributed databases: rent, do not build",
+    "part": "VI",
+    "partTitle": "The stateful part",
+    "gated": true,
+    "teaser": "The pitch is that sharding, replication, rebalancing and failover become configuration rather than architecture. You get a connection string. Behind it the system splits ranges,"
+  },
+  {
+    "slug": "31-the-speed-of-light-and-the-latency-budget",
+    "number": "31",
+    "title": "The speed of light, and the latency budget",
+    "part": "VII",
+    "partTitle": "Moving work in space and time",
+    "gated": true,
+    "teaser": "Light in fibre travels at roughly 200,000 km/s, about two thirds of its speed in vacuum, because the glass slows it. That number is a hard floor under every request that crosses a"
+  },
+  {
+    "slug": "32-cdns-what-goes-on-one",
+    "number": "32",
+    "title": "CDNs: what goes on one",
+    "part": "VII",
+    "partTitle": "Moving work in space and time",
+    "gated": true,
+    "teaser": "Latency is the obvious win. Two more come with it:"
+  },
+  {
+    "slug": "33-the-edge-and-what-it-cannot-do",
+    "number": "33",
+    "title": "The edge, and what it cannot do",
+    "part": "VII",
+    "partTitle": "Moving work in space and time",
+    "gated": true,
+    "teaser": "The reason it is fast is not that the computation is faster. It is the same computation. ==What changes is that the 100ms round trip is replaced by a 3ms one==, so a cheap"
+  },
+  {
+    "slug": "34-asynchronous-processing-the-queue-as-a-latency-tool",
+    "number": "34",
+    "title": "Asynchronous processing: the queue as a latency tool",
+    "part": "VII",
+    "partTitle": "Moving work in space and time",
+    "gated": true,
+    "teaser": "Now ask a question about that fourth line. Does the user need the email to have been sent before they see a confirmation? No. They need the invite to exist. The email is a"
+  },
+  {
+    "slug": "35-what-can-be-made-async-and-what-cannot",
+    "number": "35",
+    "title": "What can be made async, and what cannot",
+    "part": "VII",
+    "partTitle": "Moving work in space and time",
+    "gated": true,
+    "teaser": "The test is one question: ==does the user need the result of this operation to be true before they can sensibly continue?=="
+  },
+  {
+    "slug": "36-microservices-scale-teams-not-machines",
+    "number": "36",
+    "title": "Microservices scale teams, not machines",
+    "part": "VIII",
+    "partTitle": "Architecture decisions",
+    "gated": true,
+    "teaser": "So the reason to split is not throughput. Here is the actual reason:"
+  },
+  {
+    "slug": "37-what-a-network-boundary-costs",
+    "number": "37",
+    "title": "What a network boundary costs",
+    "part": "VIII",
+    "partTitle": "Architecture decisions",
+    "gated": true,
+    "teaser": "A function call does not time out. A network call does, and now every call site needs a decision about timeouts, retries and what to do when the answer never comes."
+  },
+  {
+    "slug": "38-serverless-the-pricing-model-is-the-point",
+    "number": "38",
+    "title": "Serverless: the pricing model is the point",
+    "part": "VIII",
+    "partTitle": "Architecture decisions",
+    "gated": true,
+    "teaser": "Guess low and a traffic spike crashes you or makes you unusably slow. Guess high and you pay for capacity you never used, twenty-four hours a day."
+  },
+  {
+    "slug": "39-cold-starts-limits-and-statelessness",
+    "number": "39",
+    "title": "Cold starts, limits, and statelessness",
+    "part": "VIII",
+    "partTitle": "Architecture decisions",
+    "gated": true,
+    "teaser": "Every platform caps execution time. Lambda's ceiling is 15 minutes; edge runtimes are far tighter, often measured in CPU milliseconds. ==A long-running job is not a serverless"
+  },
+  {
+    "slug": "40-when-serverless-fits-and-when-it-does-not",
+    "number": "40",
+    "title": "When serverless fits, and when it does not",
+    "part": "VIII",
+    "partTitle": "Architecture decisions",
+    "gated": true,
+    "teaser": ""
+  },
+  {
+    "slug": "41-how-to-answer-how-would-you-scale-this",
+    "number": "41",
+    "title": "How to answer \"how would you scale this?\"",
+    "part": "IX",
+    "partTitle": "The interview",
+    "gated": true,
+    "teaser": "Worked, in about ninety seconds:"
+  },
+  {
+    "slug": "42-five-traps",
+    "number": "42",
+    "title": "Five traps",
+    "part": "IX",
+    "partTitle": "The interview",
+    "gated": true,
+    "teaser": "Reaching for the most complex tool. Microservices, Kubernetes and sharding mentioned in the first thirty seconds signal that you have read about scaling rather than done it."
+  },
+  {
+    "slug": "43-the-five-rules",
+    "number": "43",
+    "title": "The five rules",
+    "part": "IX",
+    "partTitle": "The interview",
+    "gated": true,
+    "teaser": "They are worth memorising close to verbatim, because each one is a complete answer to a question you will be asked."
+  },
+  {
+    "slug": "appendix-a-numbers-worth-memorising",
+    "number": "",
+    "title": "Appendix A. Numbers worth memorising",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "The gap to internalise is the one between memory and network: ==a network round trip inside one datacenter costs five thousand times a memory reference==. That ratio is why N+1 is"
+  },
+  {
+    "slug": "appendix-b-glossary",
+    "number": "",
+    "title": "Appendix B. Glossary",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "Each entry links back to the page where it first appeared."
+  },
+  {
+    "slug": "appendix-c-final-review",
+    "number": "",
+    "title": "Appendix C. Final review",
+    "part": "X",
+    "partTitle": "Appendices",
+    "gated": true,
+    "teaser": "Work down the list. Anything you cannot answer in two sentences goes back to the section named beside it."
+  }
+]

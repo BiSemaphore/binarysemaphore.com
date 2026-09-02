@@ -1,0 +1,43 @@
+You need both, because a latency number without a throughput number is
+meaningless. "Our P99 is 150ms" invites the question "at what load?" A system
+can be beautifully fast at 10 requests per second and fall apart at 1,000.
+
+```text
+   10 rps  →  P99  150 ms
+  100 rps  →  P99  180 ms
+  500 rps  →  P99  400 ms
+ 1000 rps  →  P99  2000 ms    ← same code, same query, same machine
+```
+
+Nothing in your application changed between the first row and the last. What
+changed is that requests started waiting for each other.
+
+This is the relationship to internalise, and it is not linear:
+
+```text
+  latency
+    │                                          ╱
+    │                                        ╱
+    │                                      ╱
+    │                              ______╱
+    │        ______________──────
+    │───────
+    └───────────────────────────────────────── throughput
+```
+
+Flat, flat, flat, then a wall. ==Throughput does not degrade latency gradually.
+It degrades it slowly and then all at once.==
+
+<Ask>
+
+Can I trade latency for throughput?
+
+Yes, deliberately, and it is often the right call. Batching is the standard
+example: waiting 10ms to collect writes and flushing them in one round trip
+raises every individual request's latency by up to 10ms and can multiply total
+throughput several times over. The same trade sits behind connection pooling,
+group commit and the Nagle algorithm. ++State which one you are optimising for
+before you tune anything++, because a change that helps one usually hurts the
+other.
+
+</Ask>

@@ -1,0 +1,21 @@
+---
+number: "25"
+title: "Clickjacking"
+part: "V"
+partTitle: "The browser is a boundary too"
+---
+```text
+  the attacker's page:
+
+  ┌──────────────────────────────┐
+  │  "You have won! Click here"  │  ← what the victim sees
+  │        ┌──────────┐          │
+  │        │  CLAIM   │          │
+  │        └──────────┘          │
+  └──────────────────────────────┘
+             ▲
+             │ invisible iframe of yourapp.example, opacity 0,
+             │ positioned so "Delete account" sits under the cursor
+             ▼
+  the victim clicks your button, on your site, with their session.
+```

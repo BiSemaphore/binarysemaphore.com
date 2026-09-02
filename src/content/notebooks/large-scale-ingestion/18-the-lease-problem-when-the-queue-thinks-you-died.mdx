@@ -1,0 +1,35 @@
+---
+number: "18"
+title: "The lease problem: when the queue thinks you died"
+part: "V"
+partTitle: "Processing"
+---
+This is the failure most candidates never mention, and it is the one that
+actually bites in production.
+
+```text
+  SQS visibility timeout = 5 minutes (default is 30 seconds)
+  the job takes 90 minutes
+
+  t=0     worker A receives the message, starts work
+  t=5m    SQS: "no ack, A must be dead"  ──►  redelivers to worker B
+  t=5m    worker B starts the same job
+  t=10m   SQS redelivers to worker C
+  ...
+  t=90m   A finishes. So do B and C, eventually.
+
+  Result: N workers doing identical work, competing for the same rows,
+          and the queue is now a duplicate-generating machine.
+```
+
+#### Three fixes, used together
+
+**1. Heartbeat the lease.** While working, periodically extend the visibility
+timeout. The message stays invisible only as long as the worker is alive.
+
+```java
+// Every 60 s, push the deadline out by 5 minutes.
+scheduler.scheduleAtFixedRate(() ->
+    sqs.changeMessageVisibility(queueUrl, receiptHandle, 300),
+    60, 60, SECONDS);
+```

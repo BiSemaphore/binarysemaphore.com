@@ -1,0 +1,18 @@
+---
+number: "38"
+title: "The token that never expires"
+part: "VII"
+partTitle: "The parts the lecture left out"
+---
+Authentication happened once, at the handshake. The connection lives for hours.
+
+```text
+  10:00  handshake. token valid, expires 10:15
+  10:15  token expires                    ← nothing happens
+  10:20  admin revokes the user's access  ← nothing happens
+  14:00  connection still open, still receiving every event
+```
+
+<Peach>A long-lived connection outlives every credential that authorised it.</Peach> HTTP
+hid this, because re-authorising every request meant revocation took effect
+within one request. Three mechanisms; you want at least the first two:

@@ -1,0 +1,37 @@
+---
+number: "16"
+title: "The frame"
+part: "III"
+partTitle: "WebSocket: leaving HTTP behind"
+---
+Messages on a WebSocket are carried in <Pink>frames</Pink>, and the frame header is a bit
+diagram worth being able to draw. It explains the cost model in one picture.
+
+```text
+   0               1               2               3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-------+-+-------------+-------------------------------+
+  |F|R|R|R|opcode |M| payload len | extended payload length       |
+  |I|S|S|S| (4)   |A|     (7)     |    (16 or 64 bits, if needed) |
+  |N|1|2|3|       |S|             |                               |
+  +-+-+-+-+-------+-+-------------+-------------------------------+
+  |          masking key (4 bytes, only if MASK is set)           |
+  +---------------------------------------------------------------+
+  |                        payload data                           |
+  +---------------------------------------------------------------+
+
+  FIN     1 = last frame of this message. 0 = more coming
+  RSV1-3  reserved. RSV1 is used by the compression extension (section 26)
+  MASK    1 = payload is masked, and the 4-byte key follows
+```
+
+The opcodes:
+
+| Opcode | Meaning |
+|---|---|
+| `0x0` | Continuation of the previous message |
+| `0x1` | Text (UTF-8) |
+| `0x2` | Binary |
+| `0x8` | Close |
+| `0x9` | Ping |
+| `0xA` | Pong |

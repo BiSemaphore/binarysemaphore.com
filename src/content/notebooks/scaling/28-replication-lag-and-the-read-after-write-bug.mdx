@@ -1,0 +1,30 @@
+---
+number: "28"
+title: "Replication lag, and the read-after-write bug"
+part: "VI"
+partTitle: "The stateful part"
+---
+Replication is not instant. Data written to the primary takes time to reach a
+replica, and that time has a name.
+
+<Term name="Replication lag">
+
+The delay between a write committing on the primary and that write becoming
+visible on a replica. Typically milliseconds within one region and can be
+hundreds of milliseconds across continents, because it is bounded by the speed
+of light through undersea cable.
+
+</Term>
+
+Now here is what that does to a completely ordinary user interaction:
+
+```text
+  t=0ms     user in Mumbai edits their name: "Ana" → "Anaya"
+  t=0ms     PATCH /profile  → routed to the PRIMARY in Virginia. committed.
+  t=5ms     200 OK returns to the browser
+  t=6ms     the SPA immediately fires GET /profile to refresh the form
+  t=8ms     the read goes to the MUMBAI REPLICA
+  t=8ms     the replica has not received the change yet
+
+            the form redraws showing "Ana"
+```

@@ -1,0 +1,25 @@
+Plural versus singular is a convention with no technical winner, so follow the
+one the codebase already uses; plural is the more common industry default.
+
+Case is <Peach>not</Peach> a convention. Postgres folds unquoted identifiers to lower case,
+so `createdAt` is stored as `createdat`, and the only way to get the mixed-case
+name back is to quote it forever:
+
+```sql
+SELECT "createdAt" FROM "userProfiles";   -- every query. every time. forever.
+```
+
+<KeyIdea>
+
+Postgres lower-cases unquoted identifiers, so ==camelCase either silently becomes
+lowercase or forces double quotes into every query you will ever write==. Use
+snake_case and let the ORM or the serialisation layer present camelCase to the
+client, which is where that convention belongs.
+
+</KeyIdea>
+
+<Recall>
+
+Write the DDL for a linking table between `users` and `projects`, with the right key and the right delete behaviour. | 7
+
+</Recall>

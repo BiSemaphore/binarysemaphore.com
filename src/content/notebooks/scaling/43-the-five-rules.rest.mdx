@@ -1,0 +1,56 @@
+They are worth memorising close to verbatim,
+because each one is a complete answer to a question you will be asked.
+
+<KeyIdea>
+
+**1. Start with a problem, not a solution.** Every technique in this book is an
+answer. Before you pick one, know the question: which endpoint, which
+percentile, which segment of the request. <Peach>Measure, then act.</Peach>
+
+</KeyIdea>
+
+<KeyIdea>
+
+**2. Prefer the simple solution.** A monolith is simpler than microservices. A
+bigger machine is simpler than a cluster. An index is simpler than a cache.
+Complexity has an ongoing cost: another thing to monitor, understand, and be
+woken up by. <Peach>Accept it only when simplicity is genuinely insufficient.</Peach>
+
+</KeyIdea>
+
+<KeyIdea>
+
+**3. Scale for the problems you have.** You do not need to handle a million users
+on day one, and you probably never will have a million users. Build for your
+current scale with reasonable headroom. ==Your system's characteristics are your
+own==, and an engineering blog from a company a thousand times your size is
+describing a different problem.
+
+</KeyIdea>
+
+<KeyIdea>
+
+**4. Observability from day one.** This is the deliberate exception to rule 2.
+Logs, metrics and traces are the one piece of complexity worth having before you
+need it, because <Peach>every other rule here depends on being able to measure</Peach>, and
+retrofitting observability during an incident is the worst possible time.
+
+</KeyIdea>
+
+<KeyIdea>
+
+**5. It is a mindset, not a checklist.** Nobody predicts every failure. What you
+can build is the ability to see what is happening, diagnose it quickly, and
+recover gracefully. ==The job is not to prevent all problems. It is to build
+systems that handle problems when they arrive, and to be able to find out what
+happened.==
+
+</KeyIdea>
+
+<Signal>
+
+If you remember nothing else from this book, remember rule 1 and rule 4, because
+together they are one idea: ==you cannot fix what you cannot see, so make it
+visible first.== Every specific technique here is downstream of that.
+
+</Signal>

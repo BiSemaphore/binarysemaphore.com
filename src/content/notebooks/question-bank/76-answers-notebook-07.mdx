@@ -1,0 +1,33 @@
+---
+number: "76"
+title: "Answers, Notebook 07"
+part: "10"
+partTitle: "Answers"
+---
+**Q187** Why can the server not just open a TCP connection back to the browser?  *Notebook 07, section 2.*
+
+Because the browser has no reachable address. It sits behind at least one layer
+of NAT, usually several, and often a firewall that drops unsolicited inbound
+packets. Its address is only meaningful inside the connection it opened. This is
+also why peer-to-peer protocols need STUN, TURN and ICE: hole punching exists
+entirely to work around this. For a backend, the practical consequence is that
+the client always initiates, forever, and the only question is what it gets to
+keep afterwards.
+
+**Q188** If long polling is worse, why does it still appear in production stacks?  *Notebook 07, section 5.*
+
+Because it needs nothing from the network path. Every proxy, every corporate
+middlebox and every CDN understands a slow `GET`, and none of them need to
+understand an upgrade or an event stream. It is still the correct fallback tier
+in libraries that negotiate a transport, and it is what those libraries drop to
+when the environment refuses anything better.
+
+**Q191** What happens to events published while the client was disconnected?  *Notebook 07, section 9.*
+
+Nothing, unless you built the backlog. `Last-Event-ID` gives you the client's
+position; it does not give you the events. You still need somewhere to read
+"everything after 1842" from, which means a durable, ordered log per topic with
+a retention window. The browser hands you the question. Answering it is your
+design problem, and it is the same problem in section 32.
+
+**Q192** The stream works locally and delivers nothing in staging. Where do you look?  *Notebook 07, section 11.*

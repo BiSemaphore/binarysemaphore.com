@@ -1,0 +1,8 @@
+---
+number: "19"
+title: "Close codes, and the one you cannot send"
+part: "III"
+partTitle: "WebSocket: leaving HTTP behind"
+---
+A clean shutdown is a close frame, opcode `0x8`, carrying a two-byte code and an
+optional reason. Both sides send one and then the TCP connection closes.

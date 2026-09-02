@@ -1,0 +1,23 @@
+| Year | Who | What | The idea |
+|---|---|---|---|
+| 1968 to 1974 | Larry Constantine | Structured design | Cohesion and coupling |
+| 1974 | Edsger Dijkstra | *On the role of scientific thought* | Separation of concerns |
+| 1987 | Barbara Liskov | OOPSLA keynote | Substitutability |
+| 1987 | Ian Holland et al. | Northeastern University | The Law of Demeter |
+| 1988 | Bertrand Meyer | *Object-Oriented Software Construction* | Open-closed, by inheritance |
+| 1994 | Liskov and Wing | *A Behavioral Notion of Subtyping* | The four conditions |
+| 1996 | Robert Martin | *The Dependency Inversion Principle* | Inverting the arrow |
+| 1996 onward | Robert Martin | `C++ Report` columns | OCP restated polymorphically; ISP |
+| c. 2004 | Michael Feathers | | Coined the acronym SOLID |
+| 2017 | Robert Martin | *Clean Architecture* | SRP refined to actors |
+| 2021 | Dan North | *CUPID* | The case against the acronym |
+
+<Peach>Note the gap between 1996 and 2004.</Peach> The principles existed for nearly a decade
+before the acronym did, which is the clearest evidence that the acronym is a
+teaching device rather than a theory.
+
+**One principle that is not in SOLID and is asked about anyway.** The %%Law of
+Demeter%%, or "principle of least knowledge": a method should only call methods
+on itself, its own fields, its parameters, and objects it creates. The practical
+form is that ++a chain like `order.getCustomer().getAddress().getCity()` couples
+you to three classes' internal structure++, and any of the three can break you.

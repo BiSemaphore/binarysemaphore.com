@@ -1,0 +1,34 @@
+Growing a disk means a resize: detach, expand, reattach, sometimes copy, usually
+with downtime or at least a maintenance window. And every provider has a
+ceiling, so "just make it bigger" has a last iteration.
+
+Meanwhile user-uploaded content is typically the ==fastest growing data in the
+entire system==, and it is close to monotonic, because people delete far less
+than they upload.
+
+```text
+  1,000 users × 100 MB per month  =  100 GB / month, forever
+
+  month  1     6     12    24    36
+  size   0.1   0.6   1.2   2.4   3.6  TB   and it never shrinks
+```
+
+<KeyIdea>
+
+Capacity planning for user content is a losing game. The correct answer is a
+storage system where capacity is <Peach>not a number you provision at all</Peach>: you keep
+writing objects and there is nothing to resize.
+
+</KeyIdea>
+
+<Ask>
+
+Is capacity really infinite in object storage?
+
+Practically, yes, and precisely, no. There is no volume you size, no resize
+operation and no ceiling you will reach, but there are per-object limits (S3
+caps a single object at 5 TiB and a single PUT at 5 GiB, hence multipart), and
+account-level request rate limits per prefix. "Infinite capacity, finite request
+rate per partition" is the accurate sentence.
+
+</Ask>

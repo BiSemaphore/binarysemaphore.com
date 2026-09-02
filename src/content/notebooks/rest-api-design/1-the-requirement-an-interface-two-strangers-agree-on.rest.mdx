@@ -1,0 +1,66 @@
+Now consider what happens if you design it carelessly. Say you used `POST` where
+a `PUT` belonged, called one field `description` and another `desc`, returned
+`404` for an empty search result, and named one collection `/organizations` and
+another `/project`. Nothing here is a bug. Every endpoint works exactly as you
+intended.
+
+The lecture puts the consequence plainly at 48:30. Someone integrating that API
+has only two ways to discover how it behaves:
+
+```text
+  1. read your code            requires access, and the ability to read
+                               your language, and time you did not budget
+
+  2. call it and observe       requires guessing, and every guess that
+                               works becomes a permanent assumption
+```
+
+Both are expensive, and the second one is worse than it looks, because ==an
+assumption that happens to work is indistinguishable from documentation== until
+the day you change the behaviour it was resting on.
+
+<Term name="Consumer">
+
+Anyone who calls your API: another team's frontend, a mobile app, a partner's
+server, a script someone wrote once. The word is deliberate. They consume an
+interface, not a codebase, and the interface is the entire relationship.
+
+</Term>
+
+**The standard is the alternative to the conversation.** If you follow the same
+conventions everyone else follows, the consumer arrives already knowing most of
+your API. They know the collection is plural. They know `GET` will not change
+anything. They know `201` means something was created and `404` means it was not
+found. ++You spent none of your time and none of theirs establishing any of
+that.++
+
+That is the entire economic argument for standards, and it is worth stating in
+one line because interviews ask for it:
+
+<Signal>
+
+A standard is not about correctness. It is a mechanism for transferring
+knowledge to people you will never meet, at zero marginal cost, and the value of
+following one is proportional to how many strangers will read your interface.
+
+</Signal>
+
+<Trap>
+
+<Rose>"We are an internal API, so the standards do not really apply to us."</Rose>
+
+Internal is where this hurts most, because internal APIs get the least
+documentation and the most consumers over time. The frontend integrates it, then
+the mobile app, then the data team's export job, then the new hire who joins in
+a year and has nobody left to ask. ++The people you are designing for are mostly
+future colleagues, and they are strangers too.++
+
+</Trap>
+
+<KeyIdea>
+
+An API's real users are not programs. They are the engineers who have to predict
+what your program will do, and ==every convention you follow is a prediction
+they get to make correctly without asking.==
+
+</KeyIdea>

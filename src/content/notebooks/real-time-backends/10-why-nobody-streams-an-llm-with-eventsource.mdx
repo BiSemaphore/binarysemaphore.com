@@ -1,0 +1,18 @@
+---
+number: "10"
+title: "Why nobody streams an LLM with EventSource"
+part: "II"
+partTitle: "Server-sent events: the response that never ends"
+---
+A precise correction, because it comes up the moment someone connects "LLM APIs
+use SSE" with "SSE means `EventSource`".
+
+The wire format is SSE. The client is almost never `EventSource`, and cannot be,
+for two reasons:
+
+```text
+  EventSource                          what an LLM call needs
+  -----------                          ----------------------
+  GET only, no request body            POST with a prompt body
+  cannot set request headers           Authorization: Bearer sk-...
+```

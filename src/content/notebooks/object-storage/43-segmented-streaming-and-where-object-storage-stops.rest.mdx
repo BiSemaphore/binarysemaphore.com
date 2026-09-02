@@ -1,0 +1,42 @@
+No streaming platform does that. They serve a different file to every viewer,
+chosen continuously.
+
+```text
+  ORIGINAL  ──▶  transcode  ──▶  240p  480p  720p  1080p  4K
+                                  │     │     │     │      │
+                              chop each into ~4 second segments
+                                  │     │     │     │      │
+                                  ▼     ▼     ▼     ▼      ▼
+                              seg0 seg1 seg2 …   (each one an OBJECT)
+
+                              manifest.m3u8       (also an OBJECT)
+                              lists every rendition and segment
+
+  PLAYER   fetch manifest
+           fetch a segment, MEASURE how long it took
+           next segment: step up a rendition, or drop down
+           ──▶ ADAPTIVE BITRATE
+```
+
+That is HLS and DASH. And the point for this book:
+
+<KeyIdea>
+
+<Peach>Nothing changes on the storage side.</Peach> The segments are objects, the manifest
+is an object, and the CDN serves both. Object storage plus a CDN is the entire
+delivery half of a video platform. The hard engineering is the ==transcoding
+pipeline==: the upload event, the queue, the worker fleet, the retries. That is
+Notebook 01's territory, not this one.
+
+</KeyIdea>
+
+<DoThis>
+
+Build or buy
+
+If video is a <Peach>feature</Peach> of your product, buy it: Mux, Bunny Stream and
+Cloudflare Stream do the transcoding, packaging and delivery. If video <Peach>is</Peach>
+your product, build the pipeline, because at that volume the per-minute pricing
+of a hosted service stops making sense and the pipeline is your actual business.
+
+</DoThis>

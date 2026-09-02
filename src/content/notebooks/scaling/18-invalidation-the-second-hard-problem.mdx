@@ -1,0 +1,21 @@
+---
+number: "18"
+title: "Invalidation: the second hard problem"
+part: "IV"
+partTitle: "Caching"
+---
+There is a joke that the two hard problems in computer science are naming things
+and cache invalidation. It survives because it is accurate. The difficulty is
+structural: the cached copy and the real data are two things that must agree,
+and nothing in the system enforces that they do.
+
+Two strategies, and you will use both.
+
+#### Time-based expiry
+
+Set a <Pink>TTL</Pink>. After it elapses, the entry is gone and the next request
+recomputes it.
+
+```text
+  SET user:42 {...} EX 300        valid for five minutes
+```

@@ -1,0 +1,24 @@
+```text
+  USER INPUT ──▶ your code ──▶ another system that PARSES it
+                                       │
+                                       ├─ SQL          ──▶ SQL injection
+                                       ├─ a shell      ──▶ command injection
+                                       ├─ HTML in a    ──▶ XSS
+                                       │  browser
+                                       ├─ your auth    ──▶ broken authz
+                                       │  check
+                                       └─ a log, an    ──▶ leaks
+                                          error page
+```
+
+Three questions to ask of any handler you write, and they are the whole method:
+
+1. <Peach>Where is data crossing a boundary?</Peach>
+2. <Peach>What am I assuming about it?</Peach>
+3. <Peach>What happens if that assumption is wrong?</Peach>
+
+<Redraw>
+
+Your own application. Draw every arrow where data from outside enters, and mark what parses it on the far side. | Browser, database, shell, filesystem, third-party API, logs.
+
+</Redraw>

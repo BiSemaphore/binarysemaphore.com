@@ -1,0 +1,25 @@
+---
+number: "3"
+title: "Why P99 is your most valuable customers"
+part: "I"
+partTitle: "What \"fast\" means"
+---
+There is an obvious reason to care about the slow tail: those are real users
+having a bad time, and fairness alone says they count.
+
+There is a second reason that is less obvious and more useful in an interview.
+
+<Peach>The requests in your tail are not random.</Peach> They are slow for reasons, and the
+reasons correlate with value. The request that fans out to three services, hits
+a large join, calls the payment provider and waits on a webhook is slow *because*
+it is doing something important. The request that returns a cached marketing
+page is fast because it is doing nothing.
+
+```text
+  a fast request                     a slow request
+  ──────────────                     ──────────────
+  GET /health                        POST /checkout
+  GET /static/logo.svg               POST /orders/:id/refund
+  GET /products (cached)             GET /reports/annual
+  browsing                           paying
+```

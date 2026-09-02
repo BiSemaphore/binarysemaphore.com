@@ -1,0 +1,14 @@
+---
+number: "11"
+title: "Enums, and the argument that actually wins"
+part: "II"
+partTitle: "Types are the first constraint"
+---
+```sql
+CREATE TYPE project_status AS ENUM ('active', 'completed', 'archived');
+CREATE TYPE task_status    AS ENUM ('pending', 'in_progress', 'completed', 'cancelled');
+CREATE TYPE member_role    AS ENUM ('owner', 'admin', 'member');
+```
+
+Two reasons are usually given. The second is the stronger one, and most people
+lead with the weaker.

@@ -1,0 +1,43 @@
+---
+number: "75"
+title: "Answers, Notebook 06"
+part: "10"
+partTitle: "Answers"
+---
+**Q134** Where should latency be measured?  *Notebook 06, section 2.*
+
+<Peach>At the client, not in the handler.</Peach> A handler that reports 40ms tells you
+nothing about the 300ms the request spent queued in your load balancer, the
+150ms of TLS handshake, or the 200ms of network to a user in another continent.
+Server-side timings are for finding the bottleneck once you know there is one.
+Client-side or synthetic timings are for knowing whether there is one. Mature
+teams keep both and know they will not match.
+
+**Q135** Can I trade latency for throughput?  *Notebook 06, section 4.*
+
+Yes, deliberately, and it is often the right call. Batching is the standard
+example: waiting 10ms to collect writes and flushing them in one round trip
+raises every individual request's latency by up to 10ms and can multiply total
+throughput several times over. The same trade sits behind connection pooling,
+group commit and the Nagle algorithm. ++State which one you are optimising for
+before you tune anything++, because a change that helps one usually hurts the
+other.
+
+**Q136** We have 20 worker threads and P99 is climbing. Where do I start?  *Notebook 06, section 5.*
+
+Little's Law. At 500 rps and 200ms you need 100 concurrent slots to keep up, and
+you have 20. <Peach>The threads are not slow, there are not enough of them</Peach>, and
+every request beyond the twentieth is queueing before it starts. Either raise
+concurrency, cut W, or shed load. Adding CPU will not help, because the CPU is
+not what is scarce.
+
+**Q139** Is tracing every request too expensive?  *Notebook 06, section 9.*
+
+Yes, at volume, which is why nobody does it. You sample: typically 1% of normal
+traffic plus 100% of anything that errored or exceeded a latency threshold, a
+strategy called <Mint>tail-based sampling</Mint>. You keep the interesting traces and
+throw away the boring ones. The overhead of the instrumentation itself is
+usually a low single-digit percentage, which is cheap compared to a week spent
+guessing.
+
+**Q142** Is N+1 always bad?  *Notebook 06, section 11.*

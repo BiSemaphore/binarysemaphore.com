@@ -1,0 +1,15 @@
+---
+number: "28"
+title: "Sticky sessions are not the answer, and not for the reason you think"
+part: "V"
+partTitle: "The connection is state"
+---
+The reflex suggestion is sticky sessions: tell the load balancer to keep sending
+a given client back to the same instance.
+
+The lecture's verdict is right, and its reasoning is worth sharpening.
+
+**The usual objection.** Stickiness pins browser A to instance 1, but browser B is
+still on instance 2 and still knows nothing about A. ==The problem is two clients
+on two instances, and stickiness is about one client over many requests.== It
+solves a problem nobody has here.

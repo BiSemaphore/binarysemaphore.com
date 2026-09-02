@@ -1,0 +1,30 @@
+---
+number: "36"
+title: "Microservices scale teams, not machines"
+part: "VIII"
+partTitle: "Architecture decisions"
+---
+<Term name="Monolith">
+
+One application, one codebase, one deployable unit. Authentication, orders,
+payments and notifications are modules inside it that call each other as
+ordinary functions. It can still be horizontally scaled: you run many identical
+copies of the whole thing.
+
+</Term>
+
+<Term name="Microservices">
+
+An architecture where those modules are separate applications, deployed
+independently, communicating over the network rather than by function call. Each
+typically owns its own data.
+
+</Term>
+
+Start with the question nobody asks: what is wrong with a monolith?
+
+Nothing, for most systems. <Peach>A monolith horizontally scales perfectly well.</Peach> Ten
+copies behind a load balancer is ten times the capacity, and the whole of Part V
+applies unchanged. Monoliths are simpler to develop, simpler to test, simpler to
+deploy, and simpler to debug, because one request is one process and one stack
+trace.

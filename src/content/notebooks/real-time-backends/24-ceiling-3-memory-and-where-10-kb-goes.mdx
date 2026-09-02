@@ -1,0 +1,30 @@
+---
+number: "24"
+title: "Ceiling 3: memory, and where 10 KB goes"
+part: "IV"
+partTitle: "How many connections fit on one machine"
+---
+With descriptors and ports out of the way, the last ceiling is the real one.
+
+```text
+  server at rest, 0 connections            7.5 MB
+  server holding 75,000 connections      722   MB
+  ------------------------------------------------
+  difference / 75,000        ≈  9.5 to 10 KB per connection
+
+  measured three times:  9,751   9,752   9,881 bytes
+```
+
+<Mint>Measure three times and take the shape, not the digit.</Mint> Round it to ==10 KB
+per connection== and the arithmetic becomes something you can do in an interview:
+
+```text
+    100,000 connections  ──▶  ~1 GB
+  1,000,000 connections  ──▶  ~10 GB of heap
+```
+
+On a 61 GB box, ==a million idle connections is comfortably a memory question and
+nothing more==. That is the headline, and it is genuinely surprising the first
+time.
+
+Two qualifications the number needs.

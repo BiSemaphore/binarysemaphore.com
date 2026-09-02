@@ -1,0 +1,63 @@
+---
+number: "72"
+title: "Answers, Notebook 03"
+part: "10"
+partTitle: "Answers"
+---
+**Q62** Would you block a pull request for this?  *Notebook 03, section 1.*
+
+A good answer distinguishes severity. "The missing `return` I would block on,
+because it is a correctness bug that produces a crash under load. The
+`setInterval` handle I would raise as a comment with a suggested fix, because it
+only bites on shutdown, and the naming I would leave alone." Interviewers are
+checking whether you can calibrate, not whether you can find everything.
+
+**Q64** Why not just make the wrapper synchronous with readFileSync?  *Notebook 03, section 4.*
+
+Because it blocks the event loop. Node runs your JavaScript on one thread, so a
+synchronous read stalls every other request in the process for the duration of
+the disk IO. It is defensible exactly twice: at startup, when loading config
+before you begin serving, and in a CLI script that has no concurrency. Never in
+a request path.
+
+**Q65** What if the caller passes a callback that itself throws?  *Notebook 03, section 4.*
+
+In Fix A the throw happens inside the fs callback, on the callback's own stack.
+Nothing above it can catch it, so it becomes an `uncaughtException` and kills
+the process by default. This is one more argument for promises, where a throw
+in `.then` becomes a rejection rather than a process-level event.
+
+**Q66** Order the output: setTimeout(f,0), setImmediate(g), process.nextTick(h), Promise.resolve().then(k)  *Notebook 03, section 5.*
+
+`h` first (nextTick queue), then `k` (microtask queue), then `f` and `g`. The
+order of the last two is *not deterministic* from the main module, because it
+depends on whether the loop has already spent 1ms getting to the timers phase.
+Inside an I/O callback it is deterministic: `setImmediate` always wins, because
+the check phase comes immediately after poll. Saying "it is non-deterministic
+at top level and deterministic inside I/O" is the answer that ends the topic.
+
+**Q68** How would you make this task safe to run on three replicas?  *Notebook 03, section 7.*
+
+Take a lock with a TTL shorter than the period and only work if you win it. In
+Postgres, `SELECT pg_try_advisory_lock(key)` held for the transaction; in Redis,
+`SET job:refresh <uuid> NX PX 4000` and delete only if the value still matches
+yours. Both need the work to be idempotent anyway, because a lock can expire
+mid-run while the holder is paused in a GC pause.
+
+**Q69** The task is "every day at 02:00". Any new problems?  *Notebook 03, section 7.*
+
+Yes, three. `setInterval(fn, 86_400_000)` drifts and does not know about wall
+clock time at all; it silently misses the run if the process restarts at 01:59;
+and it ignores daylight saving, so twice a year "02:00" is either skipped or run
+twice. Use a cron expression with an explicit timezone, and make the job
+idempotent per calendar day, keyed on the date.
+
+**Q71** The endpoint takes 40 optional filters. Query string or POST body?  *Notebook 03, section 9.*
+
+Query string, until you hit a real limit. GET keeps the request idempotent,
+cacheable and safe to retry, and the URL stays shareable and greppable in logs.
+Move to POST when you exceed the ~8KB practical URL limit, or when the filter
+contains anything that must not be written to an access log. If you do, be
+explicit that you are trading away caching.
+
+**Q73** Where should the token go: response body or cookie?  *Notebook 03, section 11.*

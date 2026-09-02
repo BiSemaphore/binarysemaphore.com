@@ -1,0 +1,51 @@
+---
+number: ""
+title: "The whole system on one page"
+part: ""
+partTitle: ""
+---
+```text
+                     ┌───────────────┐
+                     │   FRONTEND    │
+                     └───────┬───────┘
+                             │ 1. POST /jobs        (metadata only)
+                             ▼
+                     ┌───────────────┐   2. create job row (status=CREATED)
+                     │  API SERVICE  │──────────────────────────────┐
+                     └───────┬───────┘   3. presigned upload URLs   │
+                             │                                      ▼
+                             │                              ┌──────────────┐
+        4. PUT part 1..N     │                              │   METADATA   │
+     (direct, parallel,      │                              │      DB      │
+      resumable, retried)    │                              └──────┬───────┘
+                             ▼                                     │
+                     ┌───────────────┐                             │
+                     │ OBJECT STORE  │  5. CompleteMultipartUpload │
+                     │     (S3)      │                             │
+                     └───────┬───────┘                             │
+                             │ 6. notify API / S3 event            │
+                             ▼                                     │
+                     ┌───────────────┐  7. outbox row + publish    │
+                     │  JOB QUEUE    │◀────────────────────────────┘
+                     │ SQS / Rabbit  │
+                     └───────┬───────┘
+                             │ 8. lease a message
+              ┌──────────────┼──────────────┐
+              ▼              ▼              ▼
+        ┌──────────┐   ┌──────────┐   ┌──────────┐
+        │ WORKER 1 │   │ WORKER 2 │   │ WORKER N │   9. stream, transform,
+        └────┬─────┘   └────┬─────┘   └────┬─────┘      checkpoint, batch
+             └──────────────┼──────────────┘
+                            ▼
+              ┌─────────────┴─────────────┐
+              ▼                           ▼
+        ┌──────────┐                ┌──────────┐
+        │ RESULT   │                │ RESULTS  │
+        │   DB     │                │  IN S3   │
+        └────┬─────┘                └──────────┘
+             │ 10. progress + terminal status
+             ▼
+        ┌──────────┐   11. GET /jobs/:id  (poll)  or  SSE stream
+        │ FRONTEND │
+        └──────────┘
+```

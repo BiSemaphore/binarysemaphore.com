@@ -1,0 +1,14 @@
+---
+number: "35"
+title: "The ETag trap"
+part: "VI"
+partTitle: "Large files"
+---
+A reasonable integrity check, which is wrong:
+
+```text
+  hash the file locally with MD5
+  upload
+  compare your hash to the ETag the service returned
+  ✓ they match, so the upload was clean
+```

@@ -1,0 +1,51 @@
+#### `If-Match: <etag>`, replace only if unchanged
+
+```text
+  client A                  S3                   client B
+  ─────────────────────────────────────────────────────────
+  GET key      ──────────▶
+               ◀────────── bytes, ETag "v1"
+  edit locally
+                                        ◀─── B PUTs, ETag becomes "v2"
+  PUT key
+   If-Match: "v1"  ──────▶
+               ◀────────── 412 Precondition Failed
+                           A's write is refused; B's data survives
+```
+
+Without `If-Match`, A's write would silently destroy B's. This is optimistic
+concurrency control, the same pattern as a `version` column in a relational
+table, now available on an object store.
+
+#### Why this matters beyond your upload endpoint
+
+Conditional write plus strong consistency gives you the two properties a
+write-ahead log needs: <Peach>exactly one writer wins</Peach>, and ==everyone sees the
+result immediately==. That is why there has been a wave of systems built
+directly on S3 with no separate coordination service: leader election,
+distributed locks, and databases putting their WAL in a bucket. It turns object
+storage from a place to park files into a coordination primitive.
+
+For your application the immediate value is smaller and still worth having:
+`If-None-Match: *` guarantees an upload can ==never silently destroy an existing
+object==, which closes the duplicate-key failure from section 15 at the storage
+layer rather than trusting your key generator.
+
+<Trap>
+
+"S3-compatible means it behaves like S3"
+
+"S3 compatible" means it speaks the same protocol so the AWS SDK works against
+it. It does <Rose>not</Rose> promise feature parity. Cloudflare R2 supports conditional
+writes; Backblaze B2, also S3-compatible, does not. If your design depends on
+`If-None-Match`, check the provider's documentation before you depend on it,
+because the failure mode is a silent overwrite in production rather than an
+error at compile time.
+
+</Trap>
+
+<Recall>
+
+Two clients edit the same object. Write the exact header sequence that stops one from destroying the other. | 6
+
+</Recall>

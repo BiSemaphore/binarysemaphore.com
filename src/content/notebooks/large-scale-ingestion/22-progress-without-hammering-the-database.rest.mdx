@@ -1,0 +1,30 @@
+For finer granularity without the write load, keep the hot counter in Redis and
+let the database hold the durable, coarse checkpoint:
+
+```text
+  Redis (fast, approximate, expendable)   DB (durable, coarse, authoritative)
+  ─────────────────────────────────────   ──────────────────────────────────
+  job:8f21:rows      INCRBY 1000          jobs.processed_chunks  += 1
+  job:8f21:pct       61                   jobs.status            = PROCESSING
+  TTL 24h                                 committed with the chunk's data
+```
+
+<KeyIdea>
+
+Progress is a <Peach>user experience feature</Peach>, not a correctness feature. It may be
+approximate, slightly stale, and lost on a Redis restart, so give it a cheap
+store and never let it share a transaction with the data path.
+
+</KeyIdea>
+
+#### Estimating what is left
+
+```text
+  rows_done = 6,400,000     elapsed = 320 s
+  rate      = 20,000 rows/s
+  remaining = (53,000,000 - 6,400,000) / 20,000 = 2,330 s = ~39 min
+```
+
+Use a moving average over the last few chunks rather than the whole run, so the
+estimate reacts to a slowdown instead of averaging it away, and round it
+generously. Users forgive an estimate that improves and remember one that slips.

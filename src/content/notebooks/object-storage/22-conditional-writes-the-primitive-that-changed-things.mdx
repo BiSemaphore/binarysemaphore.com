@@ -1,0 +1,24 @@
+---
+number: "22"
+title: "Conditional writes, the primitive that changed things"
+part: "IV"
+partTitle: "Inside the system"
+---
+For nearly twenty years a PUT always overwrote. Two processes writing the same
+key: one silently wins, the other silently loses, and ==there was no way to
+detect which==. Not a way to prevent it, a way to even find out.
+
+In 2024, S3 added conditional writes, and this is the most interesting thing in
+the lecture.
+
+#### `If-None-Match: *`, create only if absent
+
+```bash
+aws s3api put-object --bucket demo --key locks/leader \
+    --if-none-match '*' --body node-a.json
+# first call:   200 OK, returns an ETag
+# second call:  412 Precondition Failed
+```
+
+That 412 is a very big deal. It is a ==compare-and-set on a distributed
+namespace==: exactly one caller can win, and every loser is told it lost.

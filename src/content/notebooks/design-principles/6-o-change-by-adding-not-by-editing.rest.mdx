@@ -1,0 +1,60 @@
+The plain reading: ==you should be able to add behaviour without editing code
+that already works.== The reason is risk. Code that has been in production for a
+year and has never been touched is code that does not need to be retested. Every
+edit to it puts that back on the table.
+
+The classic shape of a violation is a conditional that grows:
+
+```text
+   function fee(payment) {
+     if (payment.type === "card")   return  amount * 0.029 + 30
+     if (payment.type === "bank")   return  50
+     if (payment.type === "wallet") return  amount * 0.015
+     ...                            ← every new method edits this function
+   }
+```
+
+Every new payment method reopens a function that already worked for the previous
+three. The closed version moves the varying part behind a shared shape, so that a
+new one is a new file:
+
+```text
+   interface PaymentMethod  { fee(amount) }
+
+   CardPayment    fee()  →  amount * 0.029 + 30
+   BankPayment    fee()  →  50
+   WalletPayment  fee()  →  amount * 0.015
+
+   adding a fourth touches nothing that already works
+```
+
+<Trap>
+
+<Rose>"Open-closed means you must never edit existing code."</Rose>
+
+Taken literally this is absurd, and it is how OCP earns its reputation for
+producing unreadable abstraction. ++OCP is a statement about which axis you
+expect variation on.++ You choose one axis, you make that one open, and you
+accept that variation on any other axis will mean editing. Adding a new payment
+method is cheap in the design above; ==adding a second parameter to every
+`fee()` is now expensive==, and that is a trade you made deliberately, not a
+failure.
+
+</Trap>
+
+<DoThis>
+
+Apply OCP on the third case, not the first. One conditional is not a design
+problem. Two might be a coincidence. ++By the third you have evidence about
+which axis actually varies++, and evidence is the only thing that makes this
+prediction better than a guess.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Open on the axis you have evidence varies, closed on everything else.</Peach> OCP
+applied without that evidence is section 16, and it is one of the most expensive
+mistakes in this book.
+
+</KeyIdea>

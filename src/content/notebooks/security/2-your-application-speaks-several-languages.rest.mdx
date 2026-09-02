@@ -1,0 +1,23 @@
+Your backend is one process, but it emits text into several very different
+interpreters, and ==each of them has its own grammar, its own special
+characters, and its own idea of where a command ends==.
+
+| Context | Language | Characters that mean "something else" |
+|---|---|---|
+| Database | SQL | `'` `"` `;` `--` `/* */` |
+| Browser | HTML, JS, CSS | `<` `>` `&` `"` `'` |
+| Operating system | Shell | `;` `&&` `\|` backtick `$()` `>` |
+| Filesystem | Paths | `..` `/` `\0` |
+| Templates, logs, CSV | Whatever parses them | `{{ }}` newlines, `=` `+` `@` |
+
+A user types in one of those languages, usually because they are in a browser.
+The vulnerability appears when their text <Peach>crosses into another one</Peach>.
+
+<KeyIdea>
+
+<Pink>Injection</Pink> is not a database problem. It is what happens whenever ==text
+supplied as data ends up being parsed as instructions== by anything downstream.
+Once you see it that way, SQL injection, command injection, XSS and template
+injection are one bug with four addresses.
+
+</KeyIdea>

@@ -1,0 +1,36 @@
+Three details carry the design.
+
+**The intent row is written before any bytes move.** The database knows the
+object's identity before the object exists. There is never a moment where bytes
+exist and you have no record of what they were meant to be.
+
+**The client sends the upload id, not the key.** If the client could name the
+key at completion time it could claim an object it does not own, and your
+completion endpoint would be an authorisation bypass. The id is a handle into a
+row you already wrote and already authorised.
+
+**Verification is `HEAD`, not `GET`.**
+
+```text
+  GET   bucket/key  ──▶  4 GB across the network into your server, to
+                         answer the question "does this exist?"
+  HEAD  bucket/key  ──▶  Content-Length: 4294967296
+                         Content-Type:   video/mp4
+                         ETag:           "9f3a…-64"
+                         one round trip. no bytes. answered from the
+                         metadata index, without touching a drive.
+```
+
+`HEAD` is the right call because of section 20: size, type and ETag live in the
+index, so the answer is free.
+
+<Trap>
+
+"Trust the client's completion call and mark it ready"
+
+Then a client can call `complete` without uploading anything, and you have a row
+claiming an object that does not exist, which fails later in a place with no
+useful context. <Rose>Always verify with HEAD</Rose>, and check the size and type against
+what you authorised, not just existence.
+
+</Trap>

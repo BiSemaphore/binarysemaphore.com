@@ -1,0 +1,48 @@
+You lose everything the type gives you: `now() - created_at`, `date_trunc`,
+range queries reading naturally, interval arithmetic, index-friendly comparisons
+against a literal, and any human being reading the row in psql understanding it.
+The integer is not more portable, it is just less legible. Store `timestamptz`
+and let the API layer serialise to whatever the client wants.
+
+**Q99** What is the downside of a Postgres enum?  *Notebook 04, section 11.*
+
+Changing it. `ALTER TYPE ... ADD VALUE` works and is cheap, but ==removing or
+renaming a value is genuinely awkward== and historically could not run inside a
+transaction block. So enums suit closed sets that change rarely: status,
+role, currency. For a set that grows with the product (categories, tags, plan
+names) prefer a <Peach>lookup table with a foreign key</Peach>: you get the same integrity,
+the same documentation, plus the ability to add rows without a migration and to
+attach a label and sort order.
+
+**Q101** Empty string or NULL for an optional text field?  *Notebook 04, section 16.*
+
+Pick one and enforce it, because <Peach>the failure is having both</Peach>: half the rows
+with `''` and half with `NULL`, and every query needing
+`WHERE bio IS NOT NULL AND bio <> ''`. My preference is `NULL` for absent, since
+it is what indexes, aggregates and `COALESCE` are designed for, plus a
+`CHECK (bio <> '')` to stop the empty string ever appearing.
+
+**Q102** Is this not premature optimisation?  *Notebook 04, section 18.*
+
+It is a modelling decision rather than an optimisation, and it is cheap now and
+expensive later, which is the correct time to make it. That said, do not split
+reflexively. ==Split when the two groups of columns have genuinely different
+lifetimes==, different access frequency, or different sensitivity. Two tables
+that are always read together, always written together and never grow should be
+one table.
+
+**Q104** Where should `updated_at` be set?  *Notebook 04, section 30.*
+
+Not in application code, because then every writer has to remember and one of
+them will not. Set it with a <Peach>trigger</Peach> (section 42) so it is maintained by the
+database for every writer including manual fixes and backfills. The lecture
+builds exactly this, and it is one of the few places a trigger clearly earns its
+keep.
+
+**Q106** Do you need a `DESC` index to sort descending?  *Notebook 04, section 32.*
+
+No, and this is worth correcting. Postgres can walk a B-tree <Peach>backwards</Peach>, so a
+plain ascending index serves `ORDER BY created_at DESC` perfectly well. Explicit
+direction only matters for <Peach>multi-column indexes with mixed directions</Peach>, for
+example `ORDER BY status ASC, created_at DESC`, where the index must be declared
+`(status, created_at DESC)` to be usable for that sort in one pass.

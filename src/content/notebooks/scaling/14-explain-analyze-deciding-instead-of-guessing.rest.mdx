@@ -1,0 +1,44 @@
+`EXPLAIN` shows the plan the planner chose. `ANALYZE` actually runs the query
+and shows what really happened, which is the part you want, because planner
+estimates and reality diverge and the divergence is usually the bug.
+
+What you are scanning the output for:
+
+```text
+  Seq Scan on posts                     ← reading the whole table
+    rows=1,240,000  actual time=980ms
+                                        after adding the index:
+  Index Scan using idx_posts_published  ← reading only what matches
+    rows=340  actual time=1.2ms
+```
+
+```text
+  read these, ignore the rest at first
+  ────────────────────────────────────
+  Seq Scan vs Index Scan     is it reading everything?
+  rows= estimated vs actual  a 100x gap means bad statistics
+  actual time=               where the milliseconds really are
+  Nested Loop with high      the N+1 in disguise, inside one query
+    loop count
+```
+
+<DoThis>
+
+The loop that ends the argument
+
+1. Run `EXPLAIN ANALYZE` on the slow query. Note the total and the scan type.
+2. Add the index the plan implies.
+3. Run it again. ==If the plan still says `Seq Scan`, the index is wrong, not the
+   database.== Fix the index rather than adding a second one.
+4. Check the write path did not regress, because you just added write cost.
+
+</DoThis>
+
+<Signal>
+
+"I would `EXPLAIN ANALYZE` it before adding an index, because the planner will
+tell me whether the index I am about to create would even be used." This closes
+the loop between measuring and fixing, and it is the exact discipline Part II
+was arguing for, applied to the one place where the tool is unambiguous.
+
+</Signal>

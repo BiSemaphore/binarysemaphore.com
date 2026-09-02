@@ -1,0 +1,19 @@
+---
+number: "6"
+title: "NoSQL injection"
+part: "II"
+partTitle: "Injection"
+---
+"I use MongoDB, so I do not write SQL, so I am safe." The language changed. The
+flaw did not.
+
+```js
+// the handler expects strings
+db.users.findOne({ email: req.body.email, password: req.body.password });
+
+// so the attacker sends objects
+{ "email": "alice@example.com", "password": { "$ne": null } }
+
+//  ──▶ { email: "alice@…", password: { $ne: null } }
+//  ──▶ "any password that is not null"   ──▶ logged in as Alice
+```

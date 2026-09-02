@@ -1,0 +1,15 @@
+---
+number: "38"
+title: "Isolation levels"
+part: "VII"
+partTitle: "Correctness under concurrency"
+---
+Isolation is a dial, and the anomalies it stops are named things you should be
+able to list.
+
+```text
+  DIRTY READ        you read a row another transaction has not committed
+  NON-REPEATABLE    you read the same row twice and get different values
+  PHANTOM READ      you run the same query twice and get different ROWS
+  LOST UPDATE       two read-modify-writes, one silently overwrites the other
+```

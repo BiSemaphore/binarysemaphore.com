@@ -1,0 +1,18 @@
+Equality, ranges, sorts, prefixes |
+| GIN | Index for `jsonb`, arrays, full text, trigrams |
+| Leftmost prefix | An index on (a,b,c) serves (a), (a,b), (a,b,c) |
+| Sequential scan | Reading every row. Fine on small tables, fatal on large |
+| `EXPLAIN ANALYZE` | Runs the query and reports the real plan and timings |
+| Parameterised query | Statement and values sent separately. Stops injection |
+| N+1 | One query for the list, then one per row |
+| Keyset pagination | Paging on the last row's sort key, not an offset |
+| Transaction | All statements or none |
+| Isolation level | How much concurrent transactions can see of each other |
+| Lost update | Two read-modify-writes; one silently overwrites |
+| `SKIP LOCKED` | Skip rows another transaction holds. Queue pattern |
+| Deadlock | Two transactions each holding what the other wants |
+| MVCC | Updates write a new row version; old ones are cleaned later |
+| Bloat | Dead tuples not yet reclaimed by vacuum |
+| Wraparound | Vacuum falls so far behind that Postgres stops writes |
+| PITR | Base backup plus WAL, restoring to any point in time |
+| Connection pooler | Reuses connections. PgBouncer, pgcat, RDS Proxy |

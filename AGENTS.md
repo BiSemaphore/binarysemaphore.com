@@ -37,7 +37,10 @@ Run `lint` and `typecheck` before committing; CI runs both.
 - `src/content/threads/*.mdx` — blog posts; frontmatter parsed by `src/lib/threads.ts`.
 - `src/lib/learn.ts` — **single source of truth** for the study notebook catalog
   served at `learn.binarysemaphore.com` (`src/app/learn/`). Access rules live in
-  `src/lib/learn/`; the PDFs live in Supabase Storage, not in git. Read
+  `src/lib/learn/`; the PDFs live in Supabase Storage, not in git.
+- `src/content/notebooks/*/*.mdx` — notebook sections, **generated** by
+  `scripts/sync-notebooks.mjs` from the `learnings` repo. Never hand-edit them,
+  and never let Prettier near them. Same MDX pattern as threads. Read
   [`docs/learn.md`](docs/learn.md) before touching the gate or adding a notebook.
 
 ## Design system — repo tokens (rationale and palette concept in `docs/brand.md`; see `globals.css`)

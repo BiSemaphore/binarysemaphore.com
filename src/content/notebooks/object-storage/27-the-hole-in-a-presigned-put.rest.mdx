@@ -1,0 +1,15 @@
+A demonstration from the lecture, and it is worth running yourself: sign a URL
+for an avatar, then PUT a 300 MB file to it. The bucket returns <Peach>200</Peach>. The
+object is stored. You are billed for it. Your server, which authorised "a
+profile picture", never learns any of this happened.
+
+The same hole applies to content type: you can sign for `image/jpeg` and receive
+an executable, because a signed header is only checked if the client sends it,
+and a client that omits it simply is not bound by it.
+
+<KeyIdea>
+
+A presigned PUT authorises <Peach>an operation on a key</Peach>. It does not constrain
+<Peach>what you may put there</Peach>. For anything a browser uploads, that is not enough.
+
+</KeyIdea>

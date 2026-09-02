@@ -1,0 +1,22 @@
+| The attacker appends | Gets |
+|---|---|
+| `UNION SELECT ... ` | Data from <Peach>other tables</Peach>, including password hashes |
+| `; UPDATE users SET role='admin' ...` | Privilege escalation, if the driver allows stacked statements |
+| `; DROP TABLE ...` | Destruction |
+| A slow condition, and times the response | <Peach>Blind extraction</Peach>, one bit at a time, with no output at all |
+
+That last row matters because it removes the usual comfort. An endpoint that
+returns nothing useful, only "invalid login", still leaks the whole database if
+the attacker can measure <Peach>how long it took to say no</Peach>.
+
+<Trap>
+
+"We escape quotes, so we are safe"
+
+Escaping is a blacklist, and blacklists lose. Different encodings, different
+character sets, numeric contexts where no quotes are needed at all
+(`WHERE id = 1 OR 1=1`), second-order injection where the value is stored
+cleanly and concatenated later by different code. ==You cannot enumerate every
+dangerous string. You can stop parsing user data as syntax.==
+
+</Trap>

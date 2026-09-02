@@ -1,0 +1,15 @@
+---
+number: "27"
+title: "The hole in a presigned PUT"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+You signed a URL for a profile picture. What stops the client uploading 5 GB
+to it?
+
+<Peach>Nothing.</Peach>
+
+```text
+  signature covers:   method ✓   bucket ✓   key ✓   expiry ✓
+  signature covers:   size ✗     content type ✗
+```

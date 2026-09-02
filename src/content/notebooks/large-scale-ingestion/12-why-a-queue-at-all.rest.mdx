@@ -1,0 +1,26 @@
+| Job | What breaks without it |
+|---|---|
+| **Decouple** the API from the workers | A worker outage becomes an API outage |
+| **Buffer** bursts (load levelling) | 500 simultaneous submissions overwhelm the workers |
+| **Distribute** work across consumers | You hand-roll assignment, and get it wrong |
+| **Retry** with visibility | A crashed worker's job vanishes |
+
+The API becomes trivially fast, because it only writes a row and an outbox
+entry:
+
+```json
+POST /jobs  ->  202 Accepted
+{
+  "jobId":  "8f21c0de-...",
+  "status": "QUEUED",
+  "statusUrl": "/jobs/8f21c0de-.../status"
+}
+```
+
+<KeyIdea>
+
+Returning a job ID instead of a result is the whole asynchronous pattern in one
+line. The HTTP request's job is to <Peach>durably accept responsibility</Peach> for the
+work, not to do it.
+
+</KeyIdea>

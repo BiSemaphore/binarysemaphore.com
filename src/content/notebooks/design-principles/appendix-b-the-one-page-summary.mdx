@@ -1,0 +1,31 @@
+---
+number: ""
+title: "Appendix B. The one-page summary"
+part: "V"
+partTitle: "Appendices"
+---
+```text
+   THE QUESTION      what has to change together?
+
+   S   one actor per module          who can ask for a change?
+   O   open on the varying axis      what has been added three times?
+   L   no surprises for callers      can it stand in for its parent?
+   I   narrow dependencies           which methods do you actually call?
+   D   arrow points at the stable    does the rule import the detail?
+
+   THE COUNTERWEIGHTS
+
+   YAGNI            wait for the third case before abstracting
+   coincidental     same code, different actors, keep both
+     duplication
+   the bet          say what you made cheap and what you made expensive
+
+   THE SMELLS
+
+   growing else-if chain      →  O
+   instanceof in a caller     →  L
+   UnsupportedOperation       →  L, I
+   boolean parameter          →  S
+   domain imports the ORM     →  D
+   six mocks in a test        →  I, D
+```

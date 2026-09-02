@@ -1,0 +1,31 @@
+And you cannot see it. The object does not exist, so it appears in no bucket
+listing and nowhere in the console.
+
+```bash
+# the console says: 1 object, 184 MB. that is the whole story, apparently.
+
+aws s3api list-multipart-uploads --bucket demo
+# three uploads, initiated days ago, ~460 MB of parts already pushed,
+# invisible to list-objects and to the console, and billed.
+```
+
+<DoThis>
+
+The one lifecycle rule to write before any feature code
+
+Abort incomplete multipart uploads after <Peach>7 days</Peach>, on every bucket, from day
+one. It costs nothing, it permanently closes the leak, and 7 days is long enough
+that no legitimate resume is ever cut off.
+
+</DoThis>
+
+<Trap>
+
+"I would notice, because the bucket size would grow"
+
+You would not. `ListObjectsV2` cannot see parts of an object that does not
+exist, and neither can the console. The only thing that shows them is
+`ListMultipartUploads`, which nobody runs unless they already suspect the
+problem. This is one of the most common silent cloud bills there is.
+
+</Trap>

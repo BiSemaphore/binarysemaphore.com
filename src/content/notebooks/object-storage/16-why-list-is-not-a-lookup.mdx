@@ -1,0 +1,15 @@
+---
+number: "16"
+title: "Why LIST is not a lookup"
+part: "III"
+partTitle: "Anatomy of an object"
+---
+The four verbs are not four equal verbs. Three of them are point operations on
+an index. One of them is a range scan.
+
+```text
+  GET / PUT / DELETE   ──▶  index lookup by exact key    ──▶  O(1)-ish, ms
+  LIST prefix          ──▶  range scan over a sorted,
+                            distributed index, paginated
+                            at 1,000 keys per call       ──▶  O(n), slow
+```

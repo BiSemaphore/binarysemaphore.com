@@ -1,0 +1,22 @@
+---
+number: "6"
+title: "Presigned URLs, keeping the bytes out of your backend"
+part: "II"
+partTitle: "Ingestion, getting the bytes in"
+---
+Do not proxy the payload.
+
+```text
+   PROXIED (bad)                        PRESIGNED (good)
+
+  Frontend                              Frontend
+     │ 10 GB                               │ 1. ask for URLs (bytes: ~0)
+     ▼                                     ▼
+  Backend   ◄── bandwidth, memory,      Backend  (authorises, signs, records)
+     │           timeouts, cost            │ 2. returns signed URLs
+     │ 10 GB                               ▼
+     ▼                                  Frontend
+    S3                                     │ 3. 10 GB, direct
+                                           ▼
+                                          S3
+```

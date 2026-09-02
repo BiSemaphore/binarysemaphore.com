@@ -1,0 +1,9 @@
+---
+number: "14"
+title: "Migrations that do not lock the table"
+part: "III"
+partTitle: "Migrations"
+---
+Not in the lecture, and the thing that actually causes incidents. Most `ALTER
+TABLE` variants take an `ACCESS EXCLUSIVE` lock, which blocks ==every read and
+write== on that table for the duration.

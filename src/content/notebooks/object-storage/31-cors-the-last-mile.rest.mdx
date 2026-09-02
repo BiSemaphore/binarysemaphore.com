@@ -1,0 +1,21 @@
+`ExposeHeaders: ["ETag"]` is the line people miss. Without it the browser
+receives the response but <Peach>JavaScript cannot read the ETag</Peach>, and multipart
+uploads (section 37) need the per-part ETags to complete the upload. The upload
+appears to succeed and the completion step fails with an empty value.
+
+<DoThis>
+
+The diagnostic
+
+If an upload works from curl or Postman and fails from the browser, it is CORS,
+essentially always. curl does not enforce CORS; the browser does. Check the
+bucket's CORS configuration before you debug anything else, and check the
+preflight `OPTIONS` response in the network panel rather than the PUT.
+
+</DoThis>
+
+<Redraw>
+
+The full two-phase upload: browser, server, bucket, database. Mark which arrow carries the file bytes. | Six numbered arrows, one HEAD, one status transition.
+
+</Redraw>

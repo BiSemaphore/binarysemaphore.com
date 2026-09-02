@@ -1,0 +1,19 @@
+| Never log | Because |
+|---|---|
+| Passwords, even wrong ones | A typo'd password is usually a real one |
+| Session ids, JWTs, API keys | Your log store is now credential storage |
+| Full card numbers, national ids | Compliance, and it will be exported |
+| Whole request bodies on error | The login body is a request body |
+| Authorization headers | The most commonly leaked secret in logs |
+
+<DoThis>
+
+Treat the log pipeline as a system with its own access control
+
+Scrub at the logger, with an allowlist of fields rather than a blocklist of
+secrets. Remember that <Peach>error reporters capture more than your logger does</Peach>:
+Sentry and its equivalents attach request bodies, headers and local variables
+by default, so configure the scrubbing there too. And apply retention: a log you
+no longer have cannot leak.
+
+</DoThis>

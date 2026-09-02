@@ -1,0 +1,27 @@
+---
+number: ""
+title: "How to use this book"
+part: ""
+partTitle: ""
+---
+Every backend you have written so far has one shape. The client asks, the server
+answers, and the connection closes. Authentication, routing, services,
+repositories, caching, background jobs, object storage: all of it hangs off that
+one exchange, and none of it needs the server to ever start a conversation.
+
+This book is about the moment that stops being enough. Two people have the same
+board open. One drags a task from *To Do* to *In Progress*. The other should see
+it move, live, without refreshing.
+
+The lecture behind this book is *Real-Time Backends*
+(`youtube.com/watch?v=wUQryt697cs`, 52 minutes), and its running order is the
+right spine: it does not start with WebSockets. It starts with a loop that asks
+the server "anything new?" every three seconds, and then measures what that
+costs until the cost forces the next design.
+
+#### The one question
+
+<Peach>The server can now speak first. What did that cost?</Peach>
+
+That question generates every part of this book, because the inversion is not
+free and the bill arrives in six different currencies:

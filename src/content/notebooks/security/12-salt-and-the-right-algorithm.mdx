@@ -1,0 +1,19 @@
+---
+number: "12"
+title: "Salt, and the right algorithm"
+part: "III"
+partTitle: "Authentication"
+---
+```text
+  salt = 16+ random bytes, UNIQUE PER USER, stored next to the hash
+         (it is not a secret. it does not need to be.)
+
+  stored:  argon2id$v=19$m=65536,t=3,p=4$<salt>$<hash>
+                                          ▲      ▲
+                                          │      └ hash(password + salt)
+                                          └ different for every single user
+```
+
+The salt does one job and does it completely: ==identical passwords now produce
+different hashes==, so a precomputed table is worthless and every password must
+be attacked individually.

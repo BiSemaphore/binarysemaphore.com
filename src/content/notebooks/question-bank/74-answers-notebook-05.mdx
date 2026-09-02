@@ -1,0 +1,16 @@
+---
+number: "74"
+title: "Answers, Notebook 05"
+part: "10"
+partTitle: "Answers"
+---
+**Q119** Does an ORM make me safe?  *Notebook 05, section 5.*
+
+Mostly, for the queries it generates, and <Peach>not at all for the escape hatches</Peach>.
+Every ORM has `raw()`, `query()`, `literal()` or a `WHERE` fragment that takes a
+string, and that is where the injection will be. Prisma's `$queryRawUnsafe`,
+Sequelize's `literal`, Django's `extra`, ActiveRecord's string conditions: the
+names all warn you, and people use them under deadline anyway. Grep your
+codebase for them; that grep is a five-minute audit with a high hit rate.
+
+**Q121** What is peppering, and do you need it?  *Notebook 05, section 12.*

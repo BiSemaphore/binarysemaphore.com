@@ -1,0 +1,39 @@
+The naive check ("count the DONE chunks, if it equals the total, finish the
+job") races: two workers finishing simultaneously both see the full count and
+both finalise. Make the counter atomic and let exactly one caller win:
+
+```sql
+UPDATE jobs
+   SET processed_chunks = processed_chunks + 1
+ WHERE id = $1
+RETURNING processed_chunks, total_chunks;
+-- the single caller whose returned counts are equal owns finalisation
+```
+
+`UPDATE ... RETURNING` is atomic, so exactly one worker can observe the moment
+the counts become equal. That worker, and only that worker, writes the manifest,
+flips the status, and fires the notification.
+
+<Signal>
+
+Prerequisites matter here, and naming them shows real understanding: fan-out
+requires that processing is <Peach>row-independent</Peach> and the format is
+<Peach>splittable</Peach>. If rows must be processed in order, or the job needs a global
+sort or aggregate, you cannot split freely. Then you either accept a single
+worker, or you build a two-phase map and reduce with an intermediate shuffle in
+S3.
+
+</Signal>
+
+<Ask>
+
+How do you pick the number of chunks?
+
+Target a chunk duration, not a chunk size. Aim for something like two to five
+minutes of work: short enough that a lease never expires and a retry is cheap,
+long enough that per-chunk overhead (leasing, connecting, committing) stays
+negligible. Work backwards from measured throughput to a byte size, and cap the
+total chunk count so the queue does not receive a hundred thousand messages for
+one job.
+
+</Ask>

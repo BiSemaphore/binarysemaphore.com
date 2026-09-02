@@ -1,0 +1,15 @@
+---
+number: "39"
+title: "Row locks and `SELECT FOR UPDATE`"
+part: "VII"
+partTitle: "Correctness under concurrency"
+---
+The concrete tool for read-modify-write:
+
+```sql
+BEGIN;
+  SELECT balance FROM accounts WHERE id = $1 FOR UPDATE;   -- ← locks the row
+  -- any other transaction doing the same now WAITS here
+  UPDATE accounts SET balance = $2 WHERE id = $1;
+COMMIT;                                                     -- ← lock released
+```

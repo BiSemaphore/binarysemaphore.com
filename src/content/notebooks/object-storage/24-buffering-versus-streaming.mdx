@@ -1,0 +1,16 @@
+---
+number: "24"
+title: "Buffering versus streaming"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+```text
+  BUFFERED                              STREAMING
+
+  read the entire body into RAM         read a chunk ──▶ write a chunk
+  then hand it to the handler           reuse the buffer, repeat
+
+  memory = file size                    memory = one buffer, ~32 KB
+  20 concurrent × 100 MB = 2 GB         20 concurrent × 100 MB = ~640 KB
+  ──▶ OOMKilled                         ──▶ fine
+```

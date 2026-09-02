@@ -1,0 +1,23 @@
+---
+number: "13"
+title: "What SSE cannot do"
+part: "II"
+partTitle: "Server-sent events: the response that never ends"
+---
+The limitation is in the name. <Peach>Server-sent events.</Peach> One direction.
+
+The server can write all day. The client cannot write anything back on that
+channel. When Aas drags a task, that goes to the server as a separate `POST` on a
+separate connection, and there is no way to send it through the stream.
+
+```text
+                 SSE                                WEBSOCKET
+
+  client ──── GET /events ────▶ server     client ◀══════════════▶ server
+  client ◀════ event ══════════ server              one connection
+  client ◀════ event ══════════ server              both directions
+  client ◀════ event ══════════ server
+
+  client ──── POST /tasks/9 ───▶ server     ← a second, ordinary
+                                              request. this is fine.
+```

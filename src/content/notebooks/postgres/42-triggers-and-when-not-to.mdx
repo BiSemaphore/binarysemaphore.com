@@ -1,0 +1,20 @@
+---
+number: "42"
+title: "Triggers, and when not to"
+part: "VIII"
+partTitle: "Living with it in production"
+---
+The lecture's use of a trigger is the canonical good one:
+
+```sql
+CREATE OR REPLACE FUNCTION set_updated_at() RETURNS trigger AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER users_updated_at
+  BEFORE UPDATE ON users
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+```

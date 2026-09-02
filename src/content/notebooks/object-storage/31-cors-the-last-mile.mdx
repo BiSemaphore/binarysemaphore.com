@@ -1,0 +1,18 @@
+---
+number: "31"
+title: "CORS, the last mile"
+part: "V"
+partTitle: "Getting the bytes in"
+---
+The browser is now posting to a different origin than your site, so it is a
+cross-origin request and CORS applies to it.
+
+```json
+[{
+  "AllowedOrigins": ["https://app.acme.com"],
+  "AllowedMethods": ["PUT", "POST", "GET", "HEAD"],
+  "AllowedHeaders": ["*"],
+  "ExposeHeaders": ["ETag"],
+  "MaxAgeSeconds": 3000
+}]
+```

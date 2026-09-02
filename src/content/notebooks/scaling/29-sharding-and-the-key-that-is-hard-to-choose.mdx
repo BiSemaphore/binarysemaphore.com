@@ -1,0 +1,39 @@
+---
+number: "29"
+title: "Sharding, and the key that is hard to choose"
+part: "VI"
+partTitle: "The stateful part"
+---
+Replicas scale reads. They do nothing for writes, because every write still goes
+to one primary, and they do nothing for a table that has become too large to
+query quickly. For those you need to split the data itself.
+
+<Term name="Sharding">
+
+Splitting one logical table across several physical databases, so that each one
+holds a different subset of the rows. Also called horizontal partitioning. Each
+piece is a shard, and no shard holds the whole table.
+
+</Term>
+
+<Term name="Shard key">
+
+The column whose value decides which shard a row lives in. Choosing it is the
+whole design, because it determines how evenly data spreads, which queries stay
+fast, and which queries become impossible.
+
+</Term>
+
+```text
+  one orders table, 10 billion rows
+                    │
+        ┌───────────┴───────────┐
+   shard 1                  shard 2
+   user_id 1..500M          user_id 500M..1B
+   5 billion rows           5 billion rows
+```
+
+Two wins at once. Each shard holds fewer rows, so queries against it are faster.
+And each shard is a separate machine, so total write capacity multiplied.
+
+#### Choosing the key, where the lecture is loose

@@ -1,0 +1,29 @@
+---
+number: "13"
+title: "Key, value, metadata, bucket"
+part: "III"
+partTitle: "Anatomy of an object"
+---
+An object has four parts.
+
+```text
+  ┌──────────────────────────────────────────────────────────┐
+  │ KEY        "u/8f21/a3c9d1e0.jpg"                          │
+  │            a string. the complete and entire identity.    │
+  ├──────────────────────────────────────────────────────────┤
+  │ VALUE      <binary blob>                                  │
+  │            an array of bytes. opaque to the store.        │
+  ├──────────────────────────────────────────────────────────┤
+  │ SYSTEM     Content-Length, Content-Type, Last-Modified,   │
+  │ METADATA   ETag, storage class                            │
+  ├──────────────────────────────────────────────────────────┤
+  │ USER       x-amz-meta-uploaded-by: 42                     │
+  │ METADATA   x-amz-meta-original-name: my trip.mov          │
+  │            arbitrary key/value pairs you attach           │
+  └──────────────────────────────────────────────────────────┘
+
+  all of it lives in a BUCKET: a named container.
+  bucket + key must be globally unique.
+```
+
+Two details worth holding on to.

@@ -1,0 +1,35 @@
+---
+number: "2"
+title: "Latency is a distribution, not a number"
+part: "I"
+partTitle: "What \"fast\" means"
+---
+<Pink>Latency</Pink> is the time from the user's action to the user's result. Not the
+time your handler took. The whole round trip: the click, the request across the
+network, your routing, your handler, your database, whatever external calls you
+made, the response back, and the render.
+
+Two requests to the same endpoint do not take the same time.
+
+```text
+  request A ──────  50 ms      hit the cache, server was idle
+  request B ──────────────────────────── 200 ms
+                               missed the cache, server was
+                               already handling 50 other requests
+
+  average    ─────────────── 125 ms      describes neither request
+```
+
+That average of 125ms is arithmetically correct and practically worthless. It
+describes a request that never happened.
+
+Now scale the same arithmetic up, because this is where it becomes dangerous.
+You measure a thousand requests and the average comes out at 100ms. Excellent
+number. Put it on a dashboard. But underneath it:
+
+```text
+  990 requests    completed under  50 ms
+   10 requests    took            5000 ms
+
+  average                          100 ms   ← looks healthy
+```

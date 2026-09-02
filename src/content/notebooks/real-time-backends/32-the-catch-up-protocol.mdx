@@ -1,0 +1,11 @@
+---
+number: "32"
+title: "The catch-up protocol"
+part: "VI"
+partTitle: "Delivery: gaps, storms and fan-out"
+---
+A connection drops: wifi to LTE, a lid closes, a proxy times out, a container
+restarts. <Peach>What happens to events published while the client was gone?</Peach>
+
+By default, nothing. They were delivered to whoever was connected and
+forgotten, so the user reconnects to a live stream and a stale board.

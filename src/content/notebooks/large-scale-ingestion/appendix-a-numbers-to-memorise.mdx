@@ -1,0 +1,36 @@
+---
+number: ""
+title: "Appendix A. Numbers to memorise"
+part: "IX"
+partTitle: "Appendices"
+---
+```text
+  S3
+    minimum part size                     5 MiB (last part exempt)
+    maximum part size                     5 GiB
+    maximum parts per upload             10,000
+    maximum object size                   5 TiB
+    maximum single PUT                    5 GiB
+    read-after-write consistency          strong, for all operations
+    durability                            11 nines (design goal)
+
+  SQS
+    default visibility timeout           30 seconds
+    maximum visibility timeout           12 hours
+    maximum message retention            14 days
+    maximum message size                256 KB (use an S3 pointer beyond that)
+    long poll maximum                    20 seconds
+
+  Kafka
+    default max.poll.interval.ms          5 minutes
+    default session.timeout.ms           45 seconds
+
+  Rules of thumb
+    100 Mbit/s                          ~12.5 MB/s  (10 GB in ~14 min)
+    1 Gbit/s                            ~125 MB/s   (10 GB in ~85 s)
+    CSV row                             ~100 to 200 bytes
+    single-worker parse + transform     ~20k rows/s
+    bulk insert, indexed table          ~10k to 50k rows/s
+    S3 GET first-byte latency           ~20 to 100 ms
+    S3 throughput per prefix            ~5,500 GET/s, ~3,500 PUT/s
+```

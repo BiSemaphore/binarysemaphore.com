@@ -1,0 +1,78 @@
+**Almost nobody does this.** The industry mostly stops one level short, and there
+is a standard vocabulary for how short, the Richardson Maturity Model:
+
+| Level | What it means | Who is here |
+|---|---|---|
+| 0 | One URL, one method, everything in the body | SOAP, most internal RPC |
+| 1 | Many URLs, still one method | Legacy APIs, `POST /getUser` |
+| 2 | URLs plus HTTP methods and status codes | <Peach>Essentially the entire industry</Peach> |
+| 3 | Level 2 plus hypermedia | GitHub, PayPal, and few others |
+
+++This book teaches level 2 without apology, because level 2 is what your
+colleagues, your interviewer and your consumers all mean by REST.++ But you
+should know two things about the gap.
+
+**First, Fielding does not accept the compromise.** In a 2008 post titled *REST
+APIs must be hypertext-driven*, he wrote that an API which does not use
+hypermedia to drive state transitions is not REST. By the definition of the man
+who coined the word, <Peach>almost nothing anyone calls a REST API is one.</Peach> Level 2
+is a useful, pragmatic, universal deviation, and it is still a deviation.
+
+**Second, the argument is worth understanding rather than dismissing.** The
+reason level 3 has not won is not that engineers are lazy. It is that its main
+benefit, clients that discover URLs at runtime, requires clients that are written
+to discover URLs at runtime, and nobody writes those, because a single-page
+application built against your API in React hard-codes the routes and ships. The
+constraint solves a coordination problem the browser has and your mobile app does
+not.
+
+<Signal>
+
+"We are at Richardson level 2, which is the industry norm and a conscious
+deviation from Fielding's definition. We use hypermedia in exactly one place:
+pagination links, because the cursor format is genuinely ours to change."
+
+Naming the level, calling it a deviation, and then pointing at the one place
+hypermedia actually pays is a complete senior answer to a question most people
+answer with a definition.
+
+</Signal>
+
+<Ask>
+
+"So is your API RESTful?"
+
+The honest answer is short. "It is level 2 on the Richardson model: resources as
+URLs, HTTP methods with their standard semantics, meaningful status codes. It is
+not hypertext-driven, so by Fielding's strict definition it is not REST. Neither
+is Stripe's." Confidence about the gap reads far better than a claim you cannot
+defend.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>Level 2 is the target, and you should be able to say why you stopped there.</Peach>
+The constraints in section 3 all pay for themselves in ordinary systems.
+Hypermedia pays for itself when clients outnumber the teams who write them, which
+is true of the web and untrue of most APIs.
+
+</KeyIdea>
+
+<Recall>
+
+Name the six constraints, and say what each one forbids. | 7
+
+</Recall>
+
+<Recall>
+
+A resource has many of them and one identity. Which is which, and which one does the URL name? | 4
+
+</Recall>
+
+<Recall>
+
+What is Richardson level 2, what is missing from it, and what did Fielding say about that in 2008? | 6
+
+</Recall>

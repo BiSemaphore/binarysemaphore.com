@@ -1,0 +1,37 @@
+```text
+  1. CreateMultipartUpload(bucket, key, content-type)
+         ──▶  uploadId
+
+     nothing exists at the key yet. a GET returns 404.
+     the uploadId names a STAGING AREA, in the git sense:
+     work accumulates there, uncommitted, and can be thrown away.
+
+  2. UploadPart(uploadId, partNumber, bytes)     × N
+         ──▶  ETag per part
+
+     each part is an INDEPENDENT HTTP request:
+       - they may go in parallel
+       - they may arrive in any order, part 7 before part 2
+       - any one may be retried alone, without touching the others
+
+  3. CompleteMultipartUpload(uploadId, [{partNumber, ETag}, …])
+         ──▶  the object appears at the key, atomically
+
+  4. AbortMultipartUpload(uploadId)
+         ──▶  the staging area is discarded      ← section 36
+```
+
+The property worth stating out loud in an interview:
+
+<Signal>
+
+"CompleteMultipartUpload takes the ==same time for a 50 GB object as for a 50 MB
+one==, because the service is not concatenating anything. It writes an index
+entry saying this key consists of these parts in this order. It is a metadata
+plane operation, not a data plane one, which is exactly the split from section
+17."
+
+</Signal>
+
+Until step 3, the key does not exist. A GET returns 404, a LIST does not show
+it, and the console shows nothing. That has a consequence, and it is section 36.

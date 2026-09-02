@@ -1,0 +1,53 @@
+The user pressed save, got a success message, and watched their change
+disappear. Nothing failed. Every component did exactly what it was designed to
+do, and the result is a bug report that says "saving does not work" and cannot
+be reproduced by anyone on the same continent as the primary.
+
+<Figure>
+
+The write goes east, the read comes back from the local replica, and the two
+cross in the middle. The window is small and the user interface is fast enough
+to land inside it every time.
+
+</Figure>
+
+This is the <Pink>read-after-write</Pink> problem, and it is the single most common way
+read replicas break an application.
+
+<DoThis>
+
+Four fixes, in the order to try them
+
+1. <Mint>Route reads to the primary for a short window after a write.</Mint> Sticky for
+   a few seconds, keyed on the user or session. Simplest, and it fixes the case
+   that actually occurs.
+2. <Mint>Return the written object in the write response.</Mint> The `PATCH` already
+   knows the new state, so `RETURNING` it means the client never needs the
+   follow-up read at all. <Peach>This deletes the problem instead of managing it</Peach>,
+   and it is usually the best answer.
+3. <Mint>Wait for the replica to catch up.</Mint> Track the write position and have the
+   read block until the replica has reached it. Correct, and it converts a
+   consistency bug into a latency cost.
+4. <Mint>Change the interface.</Mint> Optimistic UI: show what the user typed, since you
+   already know the write succeeded. Costs no backend work at all.
+
+</DoThis>
+
+<KeyIdea>
+
+==Every distributed system trades consistency for something, and the trade
+shows up in the user interface, not in the architecture diagram.== The right
+question is never "is this consistent?" but "which reads can tolerate being a
+few hundred milliseconds stale, and which cannot?" Profile pages can. Account
+balances cannot.
+
+</KeyIdea>
+
+<Signal>
+
+"Read replicas give you eventual consistency, so I would send read-after-write
+back to the primary for a few seconds, or return the object from the write and
+skip the read entirely." Naming the failure and giving two fixes with a
+preference is a complete senior answer to a very common question.
+
+</Signal>
