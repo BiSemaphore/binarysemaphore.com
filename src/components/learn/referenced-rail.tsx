@@ -77,7 +77,7 @@ export function ReferencedRail({
           return (
             <li key={ref}>
               <a
-                href={`${base}/${target}`}
+                href={`${base}/notebooks/${target}`}
                 className="block text-[13px] leading-5 text-muted transition-colors hover:text-foreground"
               >
                 <span className="block font-mono text-[0.6rem] uppercase tracking-[0.14em] text-subtle">

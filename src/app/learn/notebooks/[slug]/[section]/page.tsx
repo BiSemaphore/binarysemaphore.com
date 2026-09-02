@@ -6,11 +6,13 @@ import { learnBase } from "@/lib/learn/paths";
 type Params = { slug: string; section: string };
 
 /**
- * The oldest notebook URL: one page per section, before the reader became
- * continuous and before the books moved under `/notebooks`. Two moves on, so it
- * redirects straight to the anchor rather than hopping through the old path.
+ * The old one-page-per-section URL.
+ *
+ * A notebook is now read continuously at `/<slug>/read`, so these 387 URLs
+ * redirect to their anchor rather than 404ing. Permanent, because the section
+ * page is not coming back and search engines should follow the move.
  */
-export default async function SectionRootRedirect({
+export default async function SectionRedirect({
   params,
 }: {
   params: Promise<Params>;
@@ -20,5 +22,6 @@ export default async function SectionRootRedirect({
   if (!getNotebook(slug)) notFound();
   if (!getSections(slug).some((s) => s.slug === section)) notFound();
 
-  permanentRedirect(`${await learnBase()}/notebooks/${slug}/read#${section}`);
+  const base = await learnBase();
+  permanentRedirect(`${base}/notebooks/${slug}/read#${section}`);
 }
