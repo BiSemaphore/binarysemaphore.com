@@ -304,10 +304,12 @@ export const site: SiteConfig = {
       },
     ],
     // TODO(shahid): how long a session runs, and how often one is available.
-    // TODO(shahid): sign up at cal.com, connect Google Calendar, make a
-    // one-to-one event type, and add "which paper" and "where it stopped making
-    // sense" as booking questions. Then paste the link here.
-    bookingUrl: "",
+    // TODO(shahid): the page still offers Cal.com's default "15 Min Meeting"
+    // and "30 Min Meeting". Rename one to something a student recognises, and
+    // add "which paper" and "where it stopped making sense" as booking
+    // questions, so the hour starts with the actual problem rather than
+    // spending its first ten minutes finding it.
+    bookingUrl: "https://cal.com/shahid-raza-813bdo",
     bring: "Bring the assignment, the lab sheet, the past paper, or the error you cannot get past.",
     isThis: [
       "One person, on a call, working your actual question",
