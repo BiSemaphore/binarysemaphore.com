@@ -1,0 +1,83 @@
+---
+number: "27"
+title: "The lost update, and the two headers that prevent it"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+The lecture's `PATCH` demonstration contains a bug that never shows up in a demo
+and always shows up in production. It is worth walking slowly.
+
+```text
+   t0   Aas   GET /organizations/8f2a     → { name: "Acme", status: "active" }
+   t1   Leo   GET /organizations/8f2a     → { name: "Acme", status: "active" }
+
+   t2   Aas   PATCH { "name": "Acme Ltd" }        → 200
+   t3   Leo   PATCH { "status": "archived" }      → 200
+
+   both succeeded. and if Leo's form submitted every field it loaded at t1,
+   the name is "Acme" again, and nobody was told
+```
+
+<Peach>This is the lost update problem</Peach>, and with `PATCH` sending only changed fields
+it is often survivable, which is why partial updates are safer than they look.
+With `PUT`, or with a client that sends the whole form back, <Mint>the second write
+silently reverts the first</Mint>, and the only evidence is a confused user insisting
+they made a change.
+
+**The fix is optimistic concurrency, and HTTP has it built in.** The server sends
+a version identifier with the resource; the client sends it back with the write;
+the server refuses if it has moved on.
+
+```text
+   GET /organizations/8f2a
+   ──▶ 200,  ETag: "v8"
+
+   PATCH /organizations/8f2a
+       If-Match: "v8"
+
+   ──▶ 200          if the current version is still v8
+   ──▶ 412 Precondition Failed    if someone else wrote in the meantime
+```
+
+<Term name="ETag">
+
+An opaque validator for a specific version of a resource, sent by the server. It
+can be a hash of the body, a row version, or an updated-at timestamp. <Peach>The client
+never interprets it</Peach>, only echoes it back.
+
+</Term>
+
+The client receiving `412` knows exactly what happened and can do the one useful
+thing: re-fetch, show the user what changed, and let them decide. <Peach>That is
+strictly better than a silent overwrite</Peach>, which is what you have by default.
+
+**Two related codes.** `428 Precondition Required` lets you reject a write that
+did not send `If-Match` at all, which turns optimistic concurrency from optional
+into enforced. And `If-None-Match` on a `GET` gives you conditional reads: send
+back `304 Not Modified` with no body when the client's copy is current, which is
+the cheapest caching win in HTTP and is covered in <Ref to="/scaling">Notebook 06</Ref>.
+
+<Mint>If a full ETag is more machinery than you want, a `version` integer on the row
+and a `version` field in the request body achieves the same thing</Mint> with none of
+the header handling. The mechanism matters less than having one.
+
+<Ask>
+
+"Two users edit the same record at once. What happens?"
+
+The honest first answer is that by default the second write wins and the first is
+lost with no error. Then give the fix: optimistic concurrency with an `ETag` and
+`If-Match`, returning `412` when the version has moved, so the client can
+re-fetch and merge. <Mint>Mentioning that `PATCH` with only-changed-fields already
+avoids most of this</Mint> shows you understand why it is rarer than the theory
+suggests.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>Last write wins is a decision, even when you did not make it.</Peach> `ETag` plus
+`If-Match` plus `412` converts a silent data loss into an error the client can
+act on.
+
+</KeyIdea>

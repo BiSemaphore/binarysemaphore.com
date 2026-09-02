@@ -1,0 +1,58 @@
+---
+number: "21"
+title: "200, 201, and the Location header"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+The two success codes for something that produced a result.
+
+```text
+   200 OK          here is the thing you asked for, or the result of what
+                   you asked me to do
+   201 Created     a new resource now exists, and here it is
+```
+
+The lecture's demonstration is correct throughout: `201` for the create, `200`
+for reads and for updates, and `200` when a custom action succeeded without
+creating anything. <Peach>It also makes a point worth repeating, that you cannot infer
+the status from the method.</Peach> A `POST` that archives returns `200`; a `POST` that
+clones returns `201`, because a clone creates. The method says what kind of
+request it is; the status says what happened.
+
+**What the lecture omits is the header that belongs with `201`.** RFC 9110 says a
+`201` response should carry a `Location` header giving the URL of the thing that
+was created.
+
+```text
+   POST /v1/organizations
+   ──▶  201 Created
+        Location: /v1/organizations/8f2a       ← this line
+        { "id": "8f2a", "name": "Acme", ... }
+```
+
+The body tells a human what happened. <Mint>The `Location` header tells a program
+where the thing lives, in the one place every HTTP client already knows to
+look</Mint>, without having to know that your identifier field is called `id` rather
+than `uuid` or `organizationId`. It costs one line and it is the only part of a
+`201` that is machine-readable without prior knowledge of your schema.
+
+**Return the created representation in the body as well.** The specification does
+not require it and the lecture does it, correctly. <Peach>If you return only a
+`Location`, every client must immediately issue a `GET` to discover the
+server-assigned fields</Peach>, which is a guaranteed second round trip on the most
+common operation in your API.
+
+<DoThis>
+
+On `201`, send both: the `Location` header and the full created resource in the
+body. <Mint>The header serves programs, the body saves a round trip, and neither
+substitutes for the other.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>`201` plus `Location` plus the representation.</Peach> The status says a thing was
+made, the header says where it is, and the body means nobody has to ask again.
+
+</KeyIdea>

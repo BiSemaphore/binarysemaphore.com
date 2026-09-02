@@ -1,0 +1,60 @@
+---
+number: "45"
+title: "Design first: the interface before the code"
+part: "VII"
+partTitle: "Consistency is the whole product"
+---
+The lecture ends on this and it is the right place to end. <Peach>An API is designed
+before it is programmed</Peach>, and the design session should not involve a programming
+language.
+
+The workflow it demonstrates, building the whole interface in an HTTP client
+before writing a server, is genuinely good practice, and the reason is not
+discipline for its own sake:
+
+```text
+   DESIGN THE INTERFACE          in Insomnia, Postman, or an OpenAPI file
+        │                        no framework, no ORM, no language
+        ▼
+   REVIEW IT                     with the people who will consume it
+        │                        ← the step that pays for the whole approach
+        ▼
+   IMPLEMENT                     now the language matters
+```
+
+**The review step is the one that pays.** Changing a URL in a design tool costs
+nothing. <Mint>Changing it after a frontend team has integrated it costs a
+coordinated release</Mint>, and after a partner has integrated it costs a version. The
+cheapest moment to discover that your `organizationId` should have been nested,
+or that the client needs the owner's name inline, is before either exists.
+
+**Two things the lecture does not mention that make this concrete.**
+
+**A design can be a mock server.** An OpenAPI document can serve fake responses
+immediately, so the frontend team starts building against the real interface on
+day one rather than waiting for the backend. <Peach>The contract becomes the
+integration point, and both sides work in parallel against it.</Peach>
+
+**A design can be tested against.** Contract testing checks that your
+implementation still matches the document, so the specification cannot quietly
+drift from the code. That is <Ref to="#46-openapi-and-documentation-that-cannot-go-stale">section 46</Ref>'s problem, solved.
+
+<Trap>
+
+<Rose>"We will design the API as we build it, and document it afterwards."</Rose>
+
+Documenting afterwards means describing what you happened to write, which is how
+an API ends up with three date formats and two pagination styles: <Mint>each endpoint
+was locally reasonable and nobody ever saw them side by side.</Mint> The design session
+is the only moment they are all visible at once, and that visibility is the entire
+value.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Design the whole interface before writing any of it, and review it with a
+consumer.</Peach> Every fix is free before implementation and costs a coordinated
+release afterwards.
+
+</KeyIdea>

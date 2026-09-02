@@ -44,6 +44,32 @@ export const editions: Edition[] = [
   },
 ];
 
+/**
+ * The lecture series most of these notebooks are built from.
+ *
+ * Credit is not optional here. Six of the nine notebooks expand a lecture from
+ * this playlist, and a reader deserves to know whose work they are standing on
+ * and to be able to go and watch it.
+ *
+ * Verified against the playlist itself, not the books' own prose: two books
+ * cite the wrong video id in their text.
+ */
+export const lectureSeries = {
+  author: "Sriniously",
+  authorUrl: "https://www.youtube.com/@sriniously",
+  playlist: "Backend from first principles",
+  playlistUrl:
+    "https://www.youtube.com/playlist?list=PLui3EUkuMTPgZcV0QhQrOcwMPcBCcd_Q1",
+} as const;
+
+/** One lecture a notebook is built from. */
+export type SourceVideo = {
+  title: string;
+  url: string;
+  /** "2h45", as the notebooks write durations. */
+  duration: string;
+};
+
 export type EditionAsset = {
   /** File name inside the notebook's folder in the storage bucket. */
   file: string;
@@ -69,6 +95,9 @@ export type Notebook = {
   contents: string[];
   /** Which cuts exist. Not every notebook has all three. */
   assets: Partial<Record<EditionId, EditionAsset>>;
+  /** The lectures this notebook expands. Empty when it was written from
+   * scratch, which the page says rather than leaving the reader guessing. */
+  sources: SourceVideo[];
 };
 
 export const notebooks: Notebook[] = [
@@ -167,6 +196,7 @@ export const notebooks: Notebook[] = [
       print: { file: "Question-Bank-Print.pdf", bytes: 4080973 },
       tablet: { file: "Question-Bank-Tablet.pdf", bytes: 5905901 },
     },
+    sources: [],
   },
   {
     slug: "large-scale-ingestion",
@@ -220,6 +250,7 @@ export const notebooks: Notebook[] = [
       print: { file: "Large-Scale-Data-Ingestion-Print.pdf", bytes: 2585802 },
       tablet: { file: "Large-Scale-Data-Ingestion-Tablet.pdf", bytes: 3088390 },
     },
+    sources: [],
   },
   {
     slug: "object-storage",
@@ -292,6 +323,18 @@ export const notebooks: Notebook[] = [
       print: { file: "Object-Storage-Print.pdf", bytes: 3236643 },
       tablet: { file: "Object-Storage-Tablet.pdf", bytes: 4229404 },
     },
+    sources: [
+      {
+        title: "23. Object Storage, Everything You Need to Know: Part 1",
+        url: "https://www.youtube.com/watch?v=Ie0TjKI9cDI",
+        duration: "1h29",
+      },
+      {
+        title: "24. Object Storage, Everything You Need to Know: Part 2",
+        url: "https://www.youtube.com/watch?v=iWrVCxexUWY",
+        duration: "0h50",
+      },
+    ],
   },
   {
     slug: "postgres",
@@ -360,6 +403,13 @@ export const notebooks: Notebook[] = [
       print: { file: "Postgres-Print.pdf", bytes: 3139141 },
       tablet: { file: "Postgres-Tablet.pdf", bytes: 4021915 },
     },
+    sources: [
+      {
+        title: "12. Mastering Databases with Postgres",
+        url: "https://www.youtube.com/watch?v=F7Vwp2Xo5Do",
+        duration: "2h45",
+      },
+    ],
   },
   {
     slug: "security",
@@ -413,6 +463,13 @@ export const notebooks: Notebook[] = [
       print: { file: "Backend-Security-Print.pdf", bytes: 2293363 },
       tablet: { file: "Backend-Security-Tablet.pdf", bytes: 2648466 },
     },
+    sources: [
+      {
+        title: "20. Backend Security: Everything You Need to Know",
+        url: "https://www.youtube.com/watch?v=xB1C1xZZW4k",
+        duration: "2h50",
+      },
+    ],
   },
   {
     slug: "scaling",
@@ -477,6 +534,18 @@ export const notebooks: Notebook[] = [
       print: { file: "Scaling-and-Performance-Print.pdf", bytes: 3809134 },
       tablet: { file: "Scaling-and-Performance-Tablet.pdf", bytes: 5114928 },
     },
+    sources: [
+      {
+        title: "21.1. Backend Scaling and Performance Engineering: Part 1",
+        url: "https://www.youtube.com/watch?v=z7kt_p44rjs",
+        duration: "1h48",
+      },
+      {
+        title: "21.2. Backend Scaling and Performance Engineering: Part 2",
+        url: "https://www.youtube.com/watch?v=sOhAopEwjH4",
+        duration: "2h18",
+      },
+    ],
   },
   {
     slug: "real-time-backends",
@@ -544,6 +613,13 @@ export const notebooks: Notebook[] = [
       print: { file: "Real-Time-Backends-Print.pdf", bytes: 3382139 },
       tablet: { file: "Real-Time-Backends-Tablet.pdf", bytes: 4402860 },
     },
+    sources: [
+      {
+        title: "25. Real-Time Backends",
+        url: "https://www.youtube.com/watch?v=wUQryt697cs",
+        duration: "0h52",
+      },
+    ],
   },
   {
     slug: "rest-api-design",
@@ -568,6 +644,13 @@ export const notebooks: Notebook[] = [
       print: { file: "REST-API-Design-Print.pdf", bytes: 768301 },
       tablet: { file: "REST-API-Design-Tablet.pdf", bytes: 844054 },
     },
+    sources: [
+      {
+        title: "11. Complete REST API Design",
+        url: "https://www.youtube.com/watch?v=RG6q57DwV8Y",
+        duration: "2h04",
+      },
+    ],
   },
   {
     slug: "design-principles",
@@ -611,6 +694,7 @@ export const notebooks: Notebook[] = [
       print: { file: "Design-Principles-Print.pdf", bytes: 1538362 },
       tablet: { file: "Design-Principles-Tablet.pdf", bytes: 1908710 },
     },
+    sources: [],
   },
 ];
 

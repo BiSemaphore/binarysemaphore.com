@@ -1,0 +1,73 @@
+---
+number: "16"
+title: "PUT and PATCH: replace against modify"
+part: "III"
+partTitle: "The method is a promise about repeating"
+---
+Both update. The difference is what the body means.
+
+```text
+   PUT /organizations/8f2a                PATCH /organizations/8f2a
+   {                                      {
+     "name": "Acme",                        "status": "archived"
+     "status": "archived",                }
+     "description": "..."
+   }
+   the complete new representation        only what changes
+```
+
+`PUT` replaces the resource with what you sent. `PATCH` applies a change to it.
+The lecture states this correctly and then observes that developers use the two
+interchangeably, calling that "fine to some extent". <Peach>It is not fine, and the
+reason is a data-loss bug rather than a matter of taste.</Peach>
+
+If a client sends a partial body to `PUT` and your server honours `PUT`
+semantics, <Mint>every field the client omitted is now absent from the resource.</Mint>
+The description is gone. It was not edited to empty by anyone; it was replaced
+along with everything else, by a request that looked like a small update.
+
+```text
+   PUT /organizations/8f2a  {"status": "archived"}
+
+   before   { name: "Acme", status: "active", description: "The..." }
+   after    { name: null,   status: "archived", description: null   }
+             ─────────────                     ────────────────────
+             collateral damage, and no error was returned
+```
+
+In practice most servers that accept `PUT` quietly implement merge semantics,
+which prevents the data loss and means <Peach>they have implemented `PATCH` and named
+it `PUT`</Peach>, so the method no longer tells a consumer anything. That is the real
+cost of using them interchangeably: not that a specification was violated, but
+that a promise stopped being informative.
+
+**`PUT` has a capability the lecture never mentions: it can create.** If the
+client chooses the identifier, `PUT` to a URL that does not exist yet is a valid
+creation, and it is idempotent creation, which `POST` cannot offer.
+
+```text
+   PUT /files/user-avatars/8f2a.png     ← creates or replaces, repeatably
+   POST /files                          ← creates a new one every time
+```
+
+This is why object storage APIs are built on `PUT`. <Mint>If the client can supply
+the key, `PUT` gives you a create that is safe to retry with no extra
+machinery.</Mint> <Ref to="/object-storage">Notebook 02</Ref> covers the storage side.
+
+<DoThis>
+
+Pick one and enforce it. Most APIs should <Mint>accept `PATCH` for updates and not
+implement `PUT` at all</Mint>, because partial updates are what clients actually send
+and a `PUT` you have quietly made partial is worse than no `PUT`. If you do
+implement `PUT`, reject a body that omits required fields rather than nulling
+them.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>`PUT` replaces, `PATCH` modifies, and a `PUT` that merges is a `PATCH` wearing
+the wrong name.</Peach> `PUT` also gives you idempotent creation whenever the client
+can choose the identifier.
+
+</KeyIdea>

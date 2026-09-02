@@ -10,7 +10,7 @@ restarts. <Peach>What happens to events published while the client was gone?</Pe
 By default, nothing. They were delivered to whoever was connected and
 forgotten, so the user reconnects to a live stream and a stale board.
 
-The fix has one shape, and you saw it in section 9. <Peach>Name every message, and let
+The fix has one shape, and you saw it in <Ref to="#9-reconnection-you-did-not-write">section 9</Ref>. <Peach>Name every message, and let
 the client tell you where it got to.</Peach>
 
 ```text
@@ -32,7 +32,7 @@ Four things have to exist for it to work:
 
 | Requirement | Why |
 |---|---|
-| A monotonic sequence per topic | Section 31. The precondition |
+| A monotonic sequence per topic | <Ref to="#31-ordering-and-why-sequence-numbers-come-first">Section 31</Ref>. The precondition |
 | A durable log with retention | You cannot replay what you did not keep |
 | The client persisting its position | Across reconnects, ideally across reloads |
 | <Mint>A fallback when the gap is too large</Mint> | Below |

@@ -2,22 +2,22 @@
 
 import { revalidatePath } from "next/cache";
 import { getNotebook } from "@/lib/learn";
-import { canRead, getAccess, startTrial } from "@/lib/learn/access";
+import { canRead, getAccess, grantAccess } from "@/lib/learn/access";
 import { markRead } from "@/lib/learn/progress";
 
 /**
- * Start the free trial for one notebook.
+ * Open a notebook for the signed-in reader.
  *
  * Deliberately does nothing when signed out rather than redirecting: the form
- * is only rendered to signed-in users, and `start_learn_trial()` rejects an
+ * is only rendered to signed-in users, and `grant_learn_access()` rejects an
  * anonymous caller anyway. Keeping the action dumb means there is no second
  * place where access could be granted by mistake.
  */
-export async function startTrialAction(formData: FormData) {
+export async function openNotebookAction(formData: FormData) {
   const slug = String(formData.get("slug") ?? "");
   if (!getNotebook(slug)) return;
 
-  await startTrial(slug);
+  await grantAccess(slug);
 
   // Internal paths, not the subdomain-facing ones.
   revalidatePath(`/learn/${slug}`);

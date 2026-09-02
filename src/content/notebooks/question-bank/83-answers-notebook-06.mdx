@@ -1,0 +1,109 @@
+---
+number: "83"
+title: "Answers, Notebook 06"
+part: "10"
+partTitle: "Answers"
+---
+**Q134** Where should latency be measured?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#2-framing-the-problem">section 2</Ref>.*
+
+<Peach>At the client, not in the handler.</Peach> A handler that reports 40ms tells you
+nothing about the 300ms the request spent queued in your load balancer, the
+150ms of TLS handshake, or the 200ms of network to a user in another continent.
+Server-side timings are for finding the bottleneck once you know there is one.
+Client-side or synthetic timings are for knowing whether there is one. Mature
+teams keep both and know they will not match.
+
+**Q135** Can I trade latency for throughput?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#4-the-handoff">section 4</Ref>.*
+
+Yes, deliberately, and it is often the right call. Batching is the standard
+example: waiting 10ms to collect writes and flushing them in one round trip
+raises every individual request's latency by up to 10ms and can multiply total
+throughput several times over. The same trade sits behind connection pooling,
+group commit and the Nagle algorithm. <Mint>State which one you are optimising for
+before you tune anything</Mint>, because a change that helps one usually hurts the
+other.
+
+**Q136** We have 20 worker threads and P99 is climbing. Where do I start?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#5-the-queue">section 5</Ref>.*
+
+Little's Law. At 500 rps and 200ms you need 100 concurrent slots to keep up, and
+you have 20. <Peach>The threads are not slow, there are not enough of them</Peach>, and
+every request beyond the twentieth is queueing before it starts. Either raise
+concurrency, cut W, or shed load. Adding CPU will not help, because the CPU is
+not what is scarce.
+
+**Q139** Is tracing every request too expensive?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#9-the-interview-itself">section 9</Ref>.*
+
+Yes, at volume, which is why nobody does it. You sample: typically 1% of normal
+traffic plus 100% of anything that errored or exceeded a latency threshold, a
+strategy called <Mint>tail-based sampling</Mint>. You keep the interesting traces and
+throw away the boring ones. The overhead of the instrumentation itself is
+usually a low single-digit percentage, which is cheap compared to a week spent
+guessing.
+
+**Q142** Is N+1 always bad?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#11-opening">section 11</Ref>.*
+
+No, and saying so is a useful nuance. For N of three, on a warm connection, the
+extra round trips cost microseconds and the batched version is harder to read.
+<Mint>The problem is unbounded N.</Mint> If N is the size of a page and pages are capped
+at 50, you have a small constant. If N is "however many line items this order
+has", you have a bug waiting for your largest customer. Ask what bounds N; that
+is the real question.
+
+**Q143** Why did my index not get used?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#13-three-kinds-of-storage">section 13</Ref>.*
+
+Four common reasons, and having them ready is a strong answer. <Mint>The column is
+wrapped in a function</Mint> (`WHERE lower(email) = ?` will not use an index on
+`email`; index the expression instead). <Mint>A leading column is missing</Mint>, per the
+prefix rule above. <Mint>The planner thinks a scan is cheaper</Mint>, which is often
+correct on a small table or a low-selectivity predicate. <Mint>Statistics are
+stale</Mint>, so run `ANALYZE`. <Ref to="/postgres">Notebook 04</Ref> <Ref to="#29-delivery">section 29</Ref> works through each.
+
+**Q146** What happens when Redis goes down?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#19-final-review">section 19</Ref>.*
+
+The honest answer is what separates candidates. <Peach>A cache in front of a database
+that cannot survive a cache outage is not a cache, it is a load-bearing
+dependency you have not budgeted for.</Peach> If your steady-state hit rate is 95%,
+losing the cache means twenty times the query volume arriving at once, which
+will take the database with it. Plan for it: fail open with a circuit breaker,
+shed load while it recovers, and know from a load test whether your database can
+take the cold-start traffic. Many teams discover the answer is no during the
+incident.
+
+**Q150** What about sticky sessions?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#24-the-client-react-and-redux">section 24</Ref>.*
+
+They work and they are a trap. <Pink>Session affinity</Pink> pins a user to one instance
+so the local session keeps working, which lets you skip the refactor. The costs:
+load stops being balanced (one instance gets all the heavy users), an instance
+dying logs out everyone pinned to it, and <Peach>you cannot deploy without dropping
+sessions</Peach>. Autoscaling makes all three worse, because instances come and go by
+design. It is a legitimate short-term bridge and a bad destination, and saying
+exactly that is the answer.
+
+**Q154** What read-write ratio should I assume?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#27-kafka">section 27</Ref>.*
+
+Do not assume; measure it, and say so. The usual claim is 90/10 or 80/20, and it
+is true for content-heavy applications and false for plenty of others. An
+analytics ingest pipeline can be 95% writes. An internal admin tool can be
+50/50. <Peach>Read replicas only help in proportion to how read-heavy you actually
+are</Peach>, and quoting a measured ratio for your own system is a much better answer
+than quoting the industry average.
+
+**Q157** The queue is backed up and jobs are two hours old. What now?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#35-making-it-fast">section 35</Ref>.*
+
+Answer in the order you would act, because the order is the answer. <Peach>First,
+stop the bleeding</Peach>: is the arrival rate above the drain rate, or did workers
+die? Little's Law tells you which, since queue depth divided by drain rate is
+your current wait. Then decide whether to scale workers, which only helps if the
+downstream can take it, or shed work by dropping low-value job types. Then look
+for the poison message that is failing and retrying forever, because one of
+those can consume a whole worker pool. And afterwards, <Mint>alert on queue age
+rather than queue depth</Mint>, since depth without a drain rate tells you nothing.
+
+**Q163** The interviewer says "assume infinite budget". Does that change your answer?  *<Ref to="/scaling">Notebook 06</Ref>, <Ref to="#42-the-browser-is-a-boundary-too">section 42</Ref>.*
+
+Barely, and saying so is the point. <Peach>Money buys bigger machines and more of
+them; it does not buy consistency, it does not buy round trips back from the
+speed of light, and it does not buy away the coordination cost of a distributed
+system.</Peach> Infinite budget removes vertical scaling's ceiling and the cost
+argument against replicas. It leaves every hard problem in this book exactly
+where it was.

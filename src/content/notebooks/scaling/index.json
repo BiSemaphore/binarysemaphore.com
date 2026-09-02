@@ -5,7 +5,15 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 2495
+    "length": 2495,
+    "refs": [
+      "n:large-scale-ingestion",
+      "n:object-storage",
+      "n:postgres",
+      "n:question-bank",
+      "n:security"
+    ],
+    "backrefs": []
   },
   {
     "slug": "1-slow-is-not-a-bug-report",
@@ -13,7 +21,9 @@
     "title": "\"Slow\" is not a bug report",
     "part": "I",
     "partTitle": "What \"fast\" means",
-    "length": 581
+    "length": 581,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "2-latency-is-a-distribution-not-a-number",
@@ -21,7 +31,9 @@
     "title": "Latency is a distribution, not a number",
     "part": "I",
     "partTitle": "What \"fast\" means",
-    "length": 1420
+    "length": 1420,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "3-why-p99-is-your-most-valuable-customers",
@@ -29,7 +41,13 @@
     "title": "Why P99 is your most valuable customers",
     "part": "I",
     "partTitle": "What \"fast\" means",
-    "length": 938
+    "length": 938,
+    "refs": [
+      "s:37-what-a-network-boundary-costs"
+    ],
+    "backrefs": [
+      "37-what-a-network-boundary-costs"
+    ]
   },
   {
     "slug": "4-throughput-and-the-curve-that-bends",
@@ -37,7 +55,9 @@
     "title": "Throughput, and the curve that bends",
     "part": "I",
     "partTitle": "What \"fast\" means",
-    "length": 554
+    "length": 554,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "5-utilization-and-the-knee",
@@ -45,7 +65,11 @@
     "title": "Utilization and the knee",
     "part": "I",
     "partTitle": "What \"fast\" means",
-    "length": 1401
+    "length": 1401,
+    "refs": [],
+    "backrefs": [
+      "16-pooling-and-the-autoscaler-that-killed-the-database"
+    ]
   },
   {
     "slug": "6-headroom-and-why-traffic-arrives-in-bursts",
@@ -53,7 +77,9 @@
     "title": "Headroom, and why traffic arrives in bursts",
     "part": "I",
     "partTitle": "What \"fast\" means",
-    "length": 1408
+    "length": 1408,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "7-never-guess-the-week-spent-on-the-wrong-fix",
@@ -61,7 +87,12 @@
     "title": "Never guess. The week spent on the wrong fix",
     "part": "II",
     "partTitle": "Finding the bottleneck",
-    "length": 779
+    "length": 779,
+    "refs": [],
+    "backrefs": [
+      "10-what-to-measure-in-what-order",
+      "41-how-to-answer-how-would-you-scale-this"
+    ]
   },
   {
     "slug": "8-profiling-and-what-a-flame-graph-shows",
@@ -69,7 +100,9 @@
     "title": "Profiling, and what a flame graph shows",
     "part": "II",
     "partTitle": "Finding the bottleneck",
-    "length": 737
+    "length": 737,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "9-distributed-tracing-and-why-waiting-needs-it",
@@ -77,7 +110,9 @@
     "title": "Distributed tracing, and why waiting needs it",
     "part": "II",
     "partTitle": "Finding the bottleneck",
-    "length": 375
+    "length": 375,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "10-what-to-measure-in-what-order",
@@ -85,7 +120,13 @@
     "title": "What to measure, in what order",
     "part": "II",
     "partTitle": "Finding the bottleneck",
-    "length": 179
+    "length": 179,
+    "refs": [
+      "s:7-never-guess-the-week-spent-on-the-wrong-fix"
+    ],
+    "backrefs": [
+      "17-what-caching-actually-buys"
+    ]
   },
   {
     "slug": "11-n-1-the-shape-not-the-name",
@@ -93,7 +134,9 @@
     "title": "N+1: the shape, not the name",
     "part": "III",
     "partTitle": "The database",
-    "length": 1369
+    "length": 1369,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "12-indexes-the-catalogue-the-tree-and-the-cost",
@@ -101,7 +144,12 @@
     "title": "Indexes: the catalogue, the tree, and the cost",
     "part": "III",
     "partTitle": "The database",
-    "length": 1415
+    "length": 1415,
+    "refs": [
+      "n:postgres",
+      "s:14-explain-analyze-deciding-instead-of-guessing"
+    ],
+    "backrefs": []
   },
   {
     "slug": "13-composite-and-covering-indexes",
@@ -109,7 +157,12 @@
     "title": "Composite and covering indexes",
     "part": "III",
     "partTitle": "The database",
-    "length": 967
+    "length": 967,
+    "refs": [
+      "n:postgres",
+      "s:29-sharding-and-the-key-that-is-hard-to-choose"
+    ],
+    "backrefs": []
   },
   {
     "slug": "14-explain-analyze-deciding-instead-of-guessing",
@@ -117,7 +170,11 @@
     "title": "EXPLAIN ANALYZE: deciding instead of guessing",
     "part": "III",
     "partTitle": "The database",
-    "length": 368
+    "length": 368,
+    "refs": [],
+    "backrefs": [
+      "12-indexes-the-catalogue-the-tree-and-the-cost"
+    ]
   },
   {
     "slug": "15-connections-are-not-free",
@@ -125,7 +182,11 @@
     "title": "Connections are not free",
     "part": "III",
     "partTitle": "The database",
-    "length": 433
+    "length": 433,
+    "refs": [],
+    "backrefs": [
+      "39-cold-starts-limits-and-statelessness"
+    ]
   },
   {
     "slug": "16-pooling-and-the-autoscaler-that-killed-the-database",
@@ -133,7 +194,11 @@
     "title": "Pooling, and the autoscaler that killed the database",
     "part": "III",
     "partTitle": "The database",
-    "length": 1069
+    "length": 1069,
+    "refs": [
+      "s:5-utilization-and-the-knee"
+    ],
+    "backrefs": []
   },
   {
     "slug": "17-what-caching-actually-buys",
@@ -141,7 +206,11 @@
     "title": "What caching actually buys",
     "part": "IV",
     "partTitle": "Caching",
-    "length": 525
+    "length": 525,
+    "refs": [
+      "s:10-what-to-measure-in-what-order"
+    ],
+    "backrefs": []
   },
   {
     "slug": "18-invalidation-the-second-hard-problem",
@@ -149,7 +218,9 @@
     "title": "Invalidation: the second hard problem",
     "part": "IV",
     "partTitle": "Caching",
-    "length": 1676
+    "length": 1676,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "19-where-the-cache-lives",
@@ -157,7 +228,9 @@
     "title": "Where the cache lives",
     "part": "IV",
     "partTitle": "Caching",
-    "length": 1306
+    "length": 1306,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "20-three-patterns-aside-through-behind",
@@ -165,7 +238,9 @@
     "title": "Three patterns: aside, through, behind",
     "part": "IV",
     "partTitle": "Caching",
-    "length": 1237
+    "length": 1237,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "21-hit-rate-and-the-four-things-that-move-it",
@@ -173,7 +248,9 @@
     "title": "Hit rate, and the four things that move it",
     "part": "IV",
     "partTitle": "Caching",
-    "length": 216
+    "length": 216,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "22-vertical-scaling-and-its-three-ceilings",
@@ -181,7 +258,11 @@
     "title": "Vertical scaling, and its three ceilings",
     "part": "V",
     "partTitle": "More machines",
-    "length": 763
+    "length": 763,
+    "refs": [
+      "s:31-the-speed-of-light-and-the-latency-budget"
+    ],
+    "backrefs": []
   },
   {
     "slug": "23-horizontal-scaling-and-the-bill-it-comes-with",
@@ -189,7 +270,9 @@
     "title": "Horizontal scaling, and the bill it comes with",
     "part": "V",
     "partTitle": "More machines",
-    "length": 966
+    "length": 966,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "24-statelessness-is-the-price-of-admission",
@@ -197,7 +280,11 @@
     "title": "Statelessness is the price of admission",
     "part": "V",
     "partTitle": "More machines",
-    "length": 1188
+    "length": 1188,
+    "refs": [],
+    "backrefs": [
+      "39-cold-starts-limits-and-statelessness"
+    ]
   },
   {
     "slug": "25-the-load-balancer-and-five-algorithms",
@@ -205,7 +292,9 @@
     "title": "The load balancer, and five algorithms",
     "part": "V",
     "partTitle": "More machines",
-    "length": 1697
+    "length": 1697,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "26-health-checks-and-the-server-that-is-up-but-dead",
@@ -213,7 +302,9 @@
     "title": "Health checks, and the server that is up but dead",
     "part": "V",
     "partTitle": "More machines",
-    "length": 950
+    "length": 950,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "27-read-replicas",
@@ -221,7 +312,9 @@
     "title": "Read replicas",
     "part": "VI",
     "partTitle": "The stateful part",
-    "length": 634
+    "length": 634,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "28-replication-lag-and-the-read-after-write-bug",
@@ -229,7 +322,9 @@
     "title": "Replication lag, and the read-after-write bug",
     "part": "VI",
     "partTitle": "The stateful part",
-    "length": 594
+    "length": 594,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "29-sharding-and-the-key-that-is-hard-to-choose",
@@ -237,7 +332,11 @@
     "title": "Sharding, and the key that is hard to choose",
     "part": "VI",
     "partTitle": "The stateful part",
-    "length": 1283
+    "length": 1283,
+    "refs": [],
+    "backrefs": [
+      "13-composite-and-covering-indexes"
+    ]
   },
   {
     "slug": "30-distributed-databases-rent-do-not-build",
@@ -245,7 +344,9 @@
     "title": "Distributed databases: rent, do not build",
     "part": "VI",
     "partTitle": "The stateful part",
-    "length": 389
+    "length": 389,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "31-the-speed-of-light-and-the-latency-budget",
@@ -253,7 +354,11 @@
     "title": "The speed of light, and the latency budget",
     "part": "VII",
     "partTitle": "Moving work in space and time",
-    "length": 556
+    "length": 556,
+    "refs": [],
+    "backrefs": [
+      "22-vertical-scaling-and-its-three-ceilings"
+    ]
   },
   {
     "slug": "32-cdns-what-goes-on-one",
@@ -261,7 +366,11 @@
     "title": "CDNs: what goes on one",
     "part": "VII",
     "partTitle": "Moving work in space and time",
-    "length": 679
+    "length": 679,
+    "refs": [
+      "n:security"
+    ],
+    "backrefs": []
   },
   {
     "slug": "33-the-edge-and-what-it-cannot-do",
@@ -269,7 +378,9 @@
     "title": "The edge, and what it cannot do",
     "part": "VII",
     "partTitle": "Moving work in space and time",
-    "length": 842
+    "length": 842,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "34-asynchronous-processing-the-queue-as-a-latency-tool",
@@ -277,7 +388,11 @@
     "title": "Asynchronous processing: the queue as a latency tool",
     "part": "VII",
     "partTitle": "Moving work in space and time",
-    "length": 738
+    "length": 738,
+    "refs": [
+      "n:large-scale-ingestion"
+    ],
+    "backrefs": []
   },
   {
     "slug": "35-what-can-be-made-async-and-what-cannot",
@@ -285,7 +400,9 @@
     "title": "What can be made async, and what cannot",
     "part": "VII",
     "partTitle": "Moving work in space and time",
-    "length": 397
+    "length": 397,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "36-microservices-scale-teams-not-machines",
@@ -293,7 +410,9 @@
     "title": "Microservices scale teams, not machines",
     "part": "VIII",
     "partTitle": "Architecture decisions",
-    "length": 1254
+    "length": 1254,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "37-what-a-network-boundary-costs",
@@ -301,7 +420,13 @@
     "title": "What a network boundary costs",
     "part": "VIII",
     "partTitle": "Architecture decisions",
-    "length": 1232
+    "length": 1232,
+    "refs": [
+      "s:3-why-p99-is-your-most-valuable-customers"
+    ],
+    "backrefs": [
+      "3-why-p99-is-your-most-valuable-customers"
+    ]
   },
   {
     "slug": "38-serverless-the-pricing-model-is-the-point",
@@ -309,7 +434,9 @@
     "title": "Serverless: the pricing model is the point",
     "part": "VIII",
     "partTitle": "Architecture decisions",
-    "length": 436
+    "length": 436,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "39-cold-starts-limits-and-statelessness",
@@ -317,7 +444,12 @@
     "title": "Cold starts, limits, and statelessness",
     "part": "VIII",
     "partTitle": "Architecture decisions",
-    "length": 1223
+    "length": 1223,
+    "refs": [
+      "s:15-connections-are-not-free",
+      "s:24-statelessness-is-the-price-of-admission"
+    ],
+    "backrefs": []
   },
   {
     "slug": "40-when-serverless-fits-and-when-it-does-not",
@@ -325,7 +457,9 @@
     "title": "When serverless fits, and when it does not",
     "part": "VIII",
     "partTitle": "Architecture decisions",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "41-how-to-answer-how-would-you-scale-this",
@@ -333,7 +467,11 @@
     "title": "How to answer \"how would you scale this?\"",
     "part": "IX",
     "partTitle": "The interview",
-    "length": 1163
+    "length": 1163,
+    "refs": [
+      "s:7-never-guess-the-week-spent-on-the-wrong-fix"
+    ],
+    "backrefs": []
   },
   {
     "slug": "42-five-traps",
@@ -341,7 +479,9 @@
     "title": "Five traps",
     "part": "IX",
     "partTitle": "The interview",
-    "length": 1100
+    "length": 1100,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "43-the-five-rules",
@@ -349,7 +489,11 @@
     "title": "The five rules",
     "part": "IX",
     "partTitle": "The interview",
-    "length": 144
+    "length": 144,
+    "refs": [],
+    "backrefs": [
+      "appendix-c-final-review"
+    ]
   },
   {
     "slug": "appendix-a-numbers-worth-memorising",
@@ -357,7 +501,9 @@
     "title": "Appendix A. Numbers worth memorising",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 446
+    "length": 446,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-b-glossary",
@@ -365,7 +511,9 @@
     "title": "Appendix B. Glossary",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 105
+    "length": 105,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-c-final-review",
@@ -373,6 +521,10 @@
     "title": "Appendix C. Final review",
     "part": "X",
     "partTitle": "Appendices",
-    "length": 121
+    "length": 121,
+    "refs": [
+      "s:43-the-five-rules"
+    ],
+    "backrefs": []
   }
 ]

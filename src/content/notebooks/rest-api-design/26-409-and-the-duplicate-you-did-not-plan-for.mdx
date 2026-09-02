@@ -1,0 +1,64 @@
+---
+number: "26"
+title: "409, and the duplicate you did not plan for"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+`409 Conflict` means the request was valid and cannot be applied <Peach>because of the
+current state of the resource.</Peach> Not the syntax, not the values, the state.
+
+Three shapes cover almost every real use:
+
+```text
+   1. UNIQUENESS      POST /organizations {"slug": "acme"}
+                      a slug that is already taken
+
+   2. STATE MACHINE   POST /orders/44/ship
+                      the order is already cancelled
+
+   3. CONCURRENCY     PATCH with a stale version
+                      section 27, and 412 is often better
+```
+
+**The first is the one the lecture walks past.** It creates organisations named
+`org1` through `org6` and notes that duplicate names are usually acceptable. True
+for names; <Peach>false for anything you have put a unique constraint on</Peach>, and every
+real system has some: a slug, an email address, an external reference, an
+invoice number.
+
+When that constraint fires, you have a decision to make, and the default is
+wrong:
+
+| Response | Verdict |
+|---|---|
+| `500`, because a database exception escaped | <Rose>The common accident.</Rose> A client fault reported as a server fault |
+| `400` or `422` | Defensible. The value is unacceptable |
+| <Peach>`409`</Peach> | <Mint>Better.</Mint> The value is fine, it is the existing state that conflicts |
+
+`409` is the more precise answer because <Peach>the same request would have succeeded
+five minutes ago and might succeed again later</Peach>, which is exactly what
+distinguishes a conflict from a validation error. That difference is actionable:
+a client seeing `422` should change the value, and a client seeing `409` might
+reasonably offer "an organisation with that name exists, open it?".
+
+**The second shape is worth designing deliberately.** If your resource has a
+status field with rules about which transitions are legal, those rules are part of
+your interface. Attempting an illegal transition is a `409`, and <Mint>the response
+body should say what state the resource is actually in</Mint>, because that is the one
+piece of information the client needs and cannot infer.
+
+<DoThis>
+
+Never let a unique-constraint violation reach the client as a `500`. <Mint>Catch it
+at the boundary and translate it</Mint>, and include the conflicting field name in the
+error body. A `500` tells a consumer to retry and open a ticket; a `409` tells
+them to pick a different slug.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>`409` is a conflict with state, not with values.</Peach> The test is whether the same
+request could have succeeded at a different time. If yes, it is a conflict.
+
+</KeyIdea>

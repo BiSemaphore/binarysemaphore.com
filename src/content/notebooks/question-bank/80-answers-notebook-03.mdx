@@ -1,0 +1,170 @@
+---
+number: "80"
+title: "Answers, Notebook 03"
+part: "10"
+partTitle: "Answers"
+---
+**Q62** Would you block a pull request for this?  *Notebook 03, <Ref to="#1-opening">section 1</Ref>.*
+
+A good answer distinguishes severity. "The missing `return` I would block on,
+because it is a correctness bug that produces a crash under load. The
+`setInterval` handle I would raise as a comment with a suggested fix, because it
+only bites on shutdown, and the naming I would leave alone." Interviewers are
+checking whether you can calibrate, not whether you can find everything.
+
+**Q64** Why not just make the wrapper synchronous with readFileSync?  *Notebook 03, <Ref to="#4-the-handoff">section 4</Ref>.*
+
+Because it blocks the event loop. Node runs your JavaScript on one thread, so a
+synchronous read stalls every other request in the process for the duration of
+the disk IO. It is defensible exactly twice: at startup, when loading config
+before you begin serving, and in a CLI script that has no concurrency. Never in
+a request path.
+
+**Q65** What if the caller passes a callback that itself throws?  *Notebook 03, <Ref to="#4-the-handoff">section 4</Ref>.*
+
+In Fix A the throw happens inside the fs callback, on the callback's own stack.
+Nothing above it can catch it, so it becomes an `uncaughtException` and kills
+the process by default. This is one more argument for promises, where a throw
+in `.then` becomes a rejection rather than a process-level event.
+
+**Q66** Order the output: setTimeout(f,0), setImmediate(g), process.nextTick(h), Promise.resolve().then(k)  *Notebook 03, <Ref to="#5-the-queue">section 5</Ref>.*
+
+`h` first (nextTick queue), then `k` (microtask queue), then `f` and `g`. The
+order of the last two is *not deterministic* from the main module, because it
+depends on whether the loop has already spent 1ms getting to the timers phase.
+Inside an I/O callback it is deterministic: `setImmediate` always wins, because
+the check phase comes immediately after poll. Saying "it is non-deterministic
+at top level and deterministic inside I/O" is the answer that ends the topic.
+
+**Q68** How would you make this task safe to run on three replicas?  *Notebook 03, <Ref to="#7-state-and-visibility">section 7</Ref>.*
+
+Take a lock with a TTL shorter than the period and only work if you win it. In
+Postgres, `SELECT pg_try_advisory_lock(key)` held for the transaction; in Redis,
+`SET job:refresh <uuid> NX PX 4000` and delete only if the value still matches
+yours. Both need the work to be idempotent anyway, because a lock can expire
+mid-run while the holder is paused in a GC pause.
+
+**Q69** The task is "every day at 02:00". Any new problems?  *Notebook 03, <Ref to="#7-state-and-visibility">section 7</Ref>.*
+
+Yes, three. `setInterval(fn, 86_400_000)` drifts and does not know about wall
+clock time at all; it silently misses the run if the process restarts at 01:59;
+and it ignores daylight saving, so twice a year "02:00" is either skipped or run
+twice. Use a cron expression with an explicit timezone, and make the job
+idempotent per calendar day, keyed on the date.
+
+**Q71** The endpoint takes 40 optional filters. Query string or POST body?  *Notebook 03, <Ref to="#9-the-interview-itself">section 9</Ref>.*
+
+Query string, until you hit a real limit. GET keeps the request idempotent,
+cacheable and safe to retry, and the URL stays shareable and greppable in logs.
+Move to POST when you exceed the ~8KB practical URL limit, or when the filter
+contains anything that must not be written to an access log. If you do, be
+explicit that you are trading away caching.
+
+**Q73** Where should the token go: response body or cookie?  *Notebook 03, <Ref to="#11-opening">section 11</Ref>.*
+
+Body means the client stores it, and `localStorage` is readable by any XSS. A
+`HttpOnly; Secure; SameSite=Lax` cookie is not reachable from JavaScript, which
+removes the XSS token-theft path but adds CSRF exposure that you then handle
+with `SameSite` plus a CSRF token on state-changing requests. For a
+browser-first app, cookie. For a mobile or service client, body. Naming the
+trade rather than picking a side is the answer.
+
+**Q74** What is in the token, and how do you revoke it?  *Notebook 03, <Ref to="#11-opening">section 11</Ref>.*
+
+Short-lived access token (5 to 15 minutes) carrying `sub`, `iat`, `exp`, `aud`,
+`iss` and a token version, signed asymmetrically so verifiers need no secret.
+A long-lived refresh token, stored server-side, rotated on every use, with reuse
+detection that revokes the whole family. Revocation is the honest hard part: you
+either accept the access token window, or you check a deny list on every
+request, which reintroduces the state JWTs were meant to avoid.
+
+**Q76** A createSelector-memoised selector is used by 50 list rows and still recomputes constantly. Why?  *Notebook 03, <Ref to="#14-anatomy-of-an-object">section 14</Ref>.*
+
+Because `createSelector` memoises with a cache size of one, keyed on its inputs.
+If the selector takes a per-row argument (`selectTodoById(state, id)`), fifty
+rows with fifty different ids evict each other on every call and the memoisation
+never hits. The fix is a per-instance selector, created with `useMemo` inside
+the component, or RTK's `createEntityAdapter` plus a lookup by id, which is O(1)
+and needs no memoisation at all.
+
+**Q77** When would you not use Redux at all in 2026?  *Notebook 03, <Ref to="#14-anatomy-of-an-object">section 14</Ref>.*
+
+When the app has no cross-cutting client state. React Context plus `useState`
+covers theme and current user; RTK Query or React Query covers server data;
+Zustand or Jotai covers a small shared store with far less ceremony. Redux earns
+its keep on large apps that want one predictable action log, strict debugging
+through time travel, and middleware that can see every state transition.
+
+**Q79** The column must be NOT NULL DEFAULT false on 40M rows, today. What do you actually run?  *Notebook 03, <Ref to="#17-large-files">section 17</Ref>.*
+
+```sql
+SET lock_timeout = '3s';
+ALTER TABLE transactions ADD COLUMN processed boolean DEFAULT false;
+```
+On v11+ that is one fast catalog change and every existing row reads as `false`
+via the missing-value mechanism, so no backfill is needed. Then, separately,
+`ADD CONSTRAINT ... CHECK (processed IS NOT NULL) NOT VALID`, `VALIDATE
+CONSTRAINT`, `SET NOT NULL`, `DROP CONSTRAINT`. Four short locks instead of one
+long one.
+
+**Q80** How do you do the same on MySQL?  *Notebook 03, <Ref to="#17-large-files">section 17</Ref>.*
+
+The mechanism differs: InnoDB has `ALGORITHM=INSTANT` (8.0.12+) for adding a
+column at the end of a row, `INPLACE` for most index work, and `COPY` for the
+rest. The hazard shifts to the metadata lock, which behaves like the Postgres
+queue and is equally sensitive to long transactions. For anything that copies,
+teams use `gh-ost` or `pt-online-schema-change`, which build a shadow table and
+swap it. Knowing the parallel and the difference reads very well.
+
+**Q82** Someone proposes storing authors as a text[] column on books. Argue it.  *Notebook 03, <Ref to="#19-final-review">section 19</Ref>.*
+
+It is faster to read for the display case and needs no join, and Postgres can
+even index it with GIN. It fails everything else: no referential integrity, no
+way to correct a misspelled name in one place, no author page without scanning
+every book, and no way to attach an attribute to the authorship such as role or
+byline order. Use the array only for genuinely valueless tags, never for
+anything that is an entity elsewhere in the system.
+
+**Q83** Why not just enforce all of this in application code?  *Notebook 03, <Ref to="#19-final-review">section 19</Ref>.*
+
+Because the database outlives the application and has more than one client:
+migrations, admin scripts, the analytics job, the next service, and the engineer
+with `psql` open at 2am. Application checks also race: two concurrent requests
+both read "no active borrow" and both insert. A unique index is the only thing
+that resolves that, because it is evaluated at write time under the same lock.
+
+**Q85** Should purchases be embedded in the customer document at all?  *Notebook 03, <Ref to="#21-how-to-review-code-out-loud">section 21</Ref>.*
+
+It depends on growth and access. Embed when the array is bounded, always read
+with the parent, and updated with it: an address list, the last ten logins. Use
+a separate collection when the array grows without limit, because a document has
+a hard 16MB ceiling and every update rewrites the whole document, so a customer
+with 50,000 purchases makes every profile read expensive. Purchases grow
+forever, so they belong in their own collection with an index on `customer_id`.
+This is the <Peach>unbounded array anti-pattern</Peach>, and naming it is the answer.
+
+**Q86** How would you check whether this pipeline uses an index?  *Notebook 03, <Ref to="#21-how-to-review-code-out-loud">section 21</Ref>.*
+
+`db.customers.aggregate(pipeline, { explain: true })`, and look at the winning
+plan for the first stage. Only a leading `$match` or `$sort` can use an index;
+once a `$group` or `$unwind` has run, everything after it works on computed
+documents in memory. If the explain shows `COLLSCAN` where you expected `IXSCAN`,
+either the index is missing or a `$expr` or type mismatch has made it unusable.
+
+**Q88** A consumer takes 6 minutes on one message. What happens?  *Notebook 03, <Ref to="#23-express-and-the-http-boundary">section 23</Ref>.*
+
+It exceeds `max.poll.interval.ms` (default 5 minutes), so the broker decides the
+consumer is dead and <Peach>rebalances the group</Peach>. The partition is reassigned, the
+new owner starts from the last committed offset and reprocesses the same message,
+takes 6 minutes, and triggers another rebalance. The group live-locks and
+throughput goes to zero. Fix it by reducing `max_poll_records`, raising
+`max.poll.interval.ms`, or handing the slow work to a thread pool and pausing
+the partition while it runs.
+
+**Q89** Ten partitions, and you start the fifteenth consumer in the group. What happens?  *Notebook 03, <Ref to="#23-express-and-the-http-boundary">section 23</Ref>.*
+
+Five consumers sit idle with no assignment. Partitions are the unit of
+parallelism, so the consumer count is capped by the partition count. Adding
+consumers beyond that changes nothing except failover speed. This is the answer
+to "how do we scale the consumer": you cannot, past the partition count, which
+is why partition count is a capacity decision made at design time.

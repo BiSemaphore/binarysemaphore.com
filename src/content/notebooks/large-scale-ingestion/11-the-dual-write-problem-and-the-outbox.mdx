@@ -56,7 +56,7 @@ public void markUploaded(UUID jobId) {
 
 A separate relay reads unpublished rows, publishes them, and marks them
 published. If it dies mid-flight it republishes, which is fine, because the
-consumer is idempotent (section 17).
+consumer is idempotent (<Ref to="#17-idempotency">section 17</Ref>).
 
 ```text
   ┌────────────────── one ACID transaction ──────────────────┐

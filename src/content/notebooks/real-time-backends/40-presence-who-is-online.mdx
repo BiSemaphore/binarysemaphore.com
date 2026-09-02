@@ -8,8 +8,7 @@ The lecture names presence as out of scope. It is asked about constantly, and it
 is a genuinely hard problem hiding behind a trivial-sounding feature.
 
 **Naive design.** Set a flag on connect, clear it on disconnect. It fails
-immediately, because <Peach>disconnects are frequently not observed</Peach>: that is section
-18. A crashed client, a dead network or a killed container leaves users online
+immediately, because <Peach>disconnects are frequently not observed</Peach>: that is <Ref to="#18-ping-pong-and-the-connection-that-is-already-dead">section 18</Ref>. A crashed client, a dead network or a killed container leaves users online
 forever.
 
 **The correct primitive is a TTL that must be refreshed.**

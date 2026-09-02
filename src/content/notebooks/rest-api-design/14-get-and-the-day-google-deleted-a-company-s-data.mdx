@@ -1,0 +1,64 @@
+---
+number: "14"
+title: "GET, and the day Google deleted a company's data"
+part: "III"
+partTitle: "The method is a promise about repeating"
+---
+`GET` retrieves. It is safe, idempotent and cacheable, and it is the method you
+will get wrong in only one way: by letting it change something.
+
+**The cautionary tale is real, documented, and worth knowing.** In May 2005
+Google released Web Accelerator, a browser extension that prefetched the links on
+a page to make navigation feel instant. Within days, users of 37signals' Backpack
+began reporting that their pages were vanishing. Every one of them had installed
+the accelerator. The application had been built with delete actions as ordinary
+links:
+
+```text
+   <a href="/items/44/delete">delete</a>      ← a GET, triggered by a click
+```
+
+The accelerator did nothing wrong. <Peach>It fetched the links on the page, which is
+precisely what a safe method licenses anything to do.</Peach> The application had
+declared "this is safe to call unprompted" and then wired destruction to it.
+37signals ended up blocking the prefetcher outright, which treated the symptom.
+
+The same failure arrives today from a different direction: link preview bots in
+chat tools, security scanners, and email clients that fetch every URL in a
+message to check it. <Rose>Any URL you allow to be reached by `GET` will eventually
+be reached by something that was not a user and did not intend to act.</Rose>
+
+**Two practical constraints on `GET` the lecture does not mention.**
+
+**A `GET` body is not usable.** The specification has historically given it no
+defined meaning and many intermediaries drop it. <Mint>If you need to send a
+structure to retrieve something, it goes in the query string.</Mint>
+
+**Query strings have a length limit.** There is no value in the specification,
+but the practical ceiling is around 2,000 characters for broad browser
+compatibility, and servers commonly cap the whole request line between 4 and 8
+KB. A complex search with fifty filter values will hit it.
+
+The usual escape is `POST /searches` with the criteria in a body, and it is worth
+being honest that <Peach>this trades away caching and safety to buy request size</Peach>. If
+you do it, keep it to genuinely large queries and know what you gave up.
+
+<Trap>
+
+<Rose>"It is fine to use `GET` for an action as long as it requires authentication."</Rose>
+
+Authentication does not help, because the dangerous callers are authenticated:
+the user's own browser, their own prefetcher, their own chat client following a
+link they pasted. <Mint>The safety of a method is about what any component is
+permitted to do without asking, and being logged in makes a prefetcher more
+dangerous, not less.</Mint>
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>A `GET` is a licence for anything to call the URL at any time.</Peach> Prefetchers,
+scanners and preview bots take that licence literally. Nothing behind a `GET`
+may change state that matters.
+
+</KeyIdea>

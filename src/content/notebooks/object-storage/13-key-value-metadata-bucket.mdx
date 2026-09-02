@@ -29,7 +29,7 @@ An object has four parts.
 Two details worth holding on to.
 
 **The key is the identity.** Not a name, not a path, not a pointer: the string
-is the object's identity, which is why section 15 is about designing it.
+is the object's identity, which is why <Ref to="#15-designing-the-key">section 15</Ref> is about designing it.
 
 **User metadata is fixed at write time.** Because objects are immutable, you
 cannot change a metadata value without rewriting the object. Use it for facts
@@ -46,8 +46,8 @@ For a single-part PUT it is usually the MD5 of the body, which makes it a handy
 integrity check; for a multipart upload it is a hash of the part hashes with a
 `-N` suffix, so it is <Peach>not</Peach> the MD5 of the whole object and you should never
 present it as a content checksum. Its real job is conditional requests:
-`If-None-Match` for caching (section 42) and for the conditional writes in
-section 22. If you need a real content hash, ask for one explicitly with the
+`If-None-Match` for caching (<Ref to="#42-range-requests">section 42</Ref>) and for the conditional writes in
+<Ref to="#22-conditional-writes-the-primitive-that-changed-things">section 22</Ref>. If you need a real content hash, ask for one explicitly with the
 checksum headers.
 
 </Ask>

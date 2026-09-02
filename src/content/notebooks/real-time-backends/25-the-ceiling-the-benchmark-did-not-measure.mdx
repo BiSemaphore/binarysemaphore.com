@@ -35,7 +35,7 @@ what happens on overflow. There are exactly three useful answers:
 |---|---|
 | **Drop oldest** | Messages are state updates; the newest is the truth |
 | **Coalesce** | You can collapse N updates into one current-state frame. <Mint>Best for a board</Mint> |
-| **Close the connection** | Correctness needs every message. Let the client reconnect and use the catch-up path of section 32 |
+| **Close the connection** | Correctness needs every message. Let the client reconnect and use the catch-up path of <Ref to="#32-the-catch-up-protocol">section 32</Ref> |
 
 Closing looks brutal and is usually right. <Peach>A client that cannot keep up is
 already not seeing the truth</Peach>, and the resume protocol is the mechanism you

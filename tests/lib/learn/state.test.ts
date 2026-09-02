@@ -1,9 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
-  TRIAL_DAYS,
   accessLabel,
   canRead,
-  daysLeft,
   toAccess,
   type EntitlementRow,
 } from "@/lib/learn/state";
@@ -16,7 +14,7 @@ function row(over: Partial<EntitlementRow> = {}): EntitlementRow {
     product_id: "postgres",
     status: "active",
     source: "trial",
-    expires_at: inDays(TRIAL_DAYS),
+    expires_at: inDays(7),
     ...over,
   };
 }
@@ -30,7 +28,7 @@ describe("toAccess", () => {
   it("is 'active' for a live trial", () => {
     expect(toAccess(row(), NOW)).toEqual({
       state: "active",
-      expiresAt: inDays(TRIAL_DAYS),
+      expiresAt: inDays(7),
       source: "trial",
     });
   });
@@ -73,46 +71,21 @@ describe("canRead", () => {
   });
 });
 
-describe("daysLeft", () => {
-  it("rounds a part-day up, so a few hours still reads as a day", () => {
-    expect(daysLeft(new Date(NOW + 3_600_000).toISOString(), NOW)).toBe(1);
-  });
-
-  it("counts a full trial", () => {
-    expect(daysLeft(inDays(TRIAL_DAYS), NOW)).toBe(TRIAL_DAYS);
-  });
-
-  it("is 0 once lapsed", () => {
-    expect(daysLeft(inDays(-2), NOW)).toBe(0);
-  });
-});
-
 describe("accessLabel", () => {
-  it("counts down, then says 'last day'", () => {
-    const label = (days: number) =>
-      accessLabel(
-        { state: "active", expiresAt: inDays(days), source: "trial" },
-        NOW,
-      );
-    expect(label(6)).toBe("6 days left");
-    expect(label(2)).toBe("2 days left");
-    expect(label(0.5)).toBe("last day");
-  });
-
-  it("says 'yours' for a perpetual grant", () => {
+  // No countdown any more: access does not expire, and a clock ticking towards
+  // a payment prompt would be the wrong thing on someone else's teaching.
+  it("says 'yours' for a grant", () => {
     expect(
-      accessLabel({ state: "active", expiresAt: null, source: "stripe" }, NOW),
+      accessLabel({ state: "active", expiresAt: null, source: "account" }),
     ).toBe("yours");
   });
 
-  it("shows nothing for states with no badge to draw", () => {
-    expect(accessLabel({ state: "none" }, NOW)).toBeNull();
-    expect(accessLabel({ state: "anonymous" }, NOW)).toBeNull();
+  it("shows nothing for a reader without one", () => {
+    expect(accessLabel({ state: "none" })).toBeNull();
+    expect(accessLabel({ state: "anonymous" })).toBeNull();
   });
 
-  it("says 'expired' after the trial", () => {
-    expect(accessLabel({ state: "expired", expiresAt: inDays(-1) }, NOW)).toBe(
-      "expired",
-    );
+  it("shows nothing for an old expired row rather than nagging", () => {
+    expect(accessLabel({ state: "expired", expiresAt: inDays(-1) })).toBeNull();
   });
 });

@@ -47,7 +47,7 @@ The only way to distinguish the two is to send something and require an answer.
 
 <Mint>The common production setting is a ping every 20 to 30 seconds and a dead
 verdict after roughly 30 seconds with no pong.</Mint> That interval is not arbitrary:
-it has to be shorter than the shortest idle timeout in the path, which section 11
+it has to be shorter than the shortest idle timeout in the path, which <Ref to="#11-the-proxy-that-eats-your-stream">section 11</Ref>
 put at 60 seconds for an AWS ALB and for nginx by default. <Peach>The heartbeat is
 doing two jobs at once: detecting death, and proving liveness to every middlebox
 between you and the user.</Peach>

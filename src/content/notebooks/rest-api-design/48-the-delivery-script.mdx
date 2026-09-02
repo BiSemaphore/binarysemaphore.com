@@ -1,0 +1,64 @@
+---
+number: "48"
+title: "The delivery script"
+part: "VIII"
+partTitle: "The interview itself"
+---
+**When asked "what makes a good REST API", do not list the HTTP methods.**
+Everyone lists the methods. Answer the question underneath, in about forty
+seconds:
+
+> "A good API is one a consumer can predict without asking me. Resources as plural
+> nouns, methods that honestly reflect whether something is safe and repeatable,
+> status codes that say whose fault a failure was, and complete consistency in
+> naming, errors and pagination across every endpoint. The last one matters most:
+> a consumer who has integrated one endpoint has already guessed the rest, so
+> being uniformly unusual is cheaper for them than being occasionally standard."
+
+That answer names the unifying idea, covers the four areas, and ends on the point
+most candidates never reach.
+
+**Then expect one of these, and go straight to the concrete thing:**
+
+| Follow-up | Go to |
+|---|---|
+| "PUT or PATCH?" | 16, and mention the partial-body data loss |
+| "Is PATCH idempotent?" | <Peach>17.</Peach> Say no, give the array-append example |
+| "400 or 422? 401 or 403?" | 24, 25. The credentials test |
+| "How would you paginate?" | 32, 33. Lead with the page-2 bug |
+| "How do you handle retries on POST?" | 20. Idempotency keys, and the race |
+| "Two users edit the same record" | 27. ETag, If-Match, 412 |
+| "Is your API RESTful?" | 5. Richardson level 2, and say it is a deviation |
+| "How do you version?" | 12. What forces a bump, not where the number goes |
+
+**Four sentences that reliably read as senior**, because each one contains
+something a summary does not:
+
+```text
+   "PATCH is not idempotent per RFC 5789, though most patch bodies are."
+
+   "Offset pagination duplicates and skips rows under concurrent writes,
+    so we default to keyset."
+
+   "We return hasMore rather than total, because the count scans every
+    matching row and the extra row costs nothing."
+
+   "Custom actions are RPC over HTTP. It is a deliberate deviation and
+    Google standardises it in AIP-136."
+```
+
+<DoThis>
+
+Have one real endpoint you designed ready to describe, including something you
+got wrong and changed. <Mint>A specific story about a versioning mistake beats any
+amount of correct recitation</Mint>, because it is the only evidence that you have
+maintained an interface rather than only written one.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Lead with predictability, land on consistency.</Peach> The list of methods is table
+stakes and signals nothing on its own.
+
+</KeyIdea>

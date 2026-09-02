@@ -1,0 +1,89 @@
+---
+number: "29"
+title: "One error shape, everywhere"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+The lecture spends its final minutes arguing for consistency: consistent routes,
+consistent payloads, consistent naming. The argument is correct and it stops one
+field short of the place it matters most. <Peach>It never says anything about the
+shape of an error.</Peach>
+
+That is backwards, because success responses are the ones a consumer studies
+carefully while integrating. <Mint>Errors are met at three in the morning by someone
+who did not write the integration</Mint>, and they are the responses most likely to be
+handled by generic code that must work for every endpoint.
+
+**There is a standard.** RFC 9457, *Problem Details for HTTP APIs*, with content
+type `application/problem+json`:
+
+```text
+   HTTP/1.1 422 Unprocessable Content
+   Content-Type: application/problem+json
+
+   { "type":     "https://example.com/probs/validation",
+     "title":    "Validation failed",
+     "status":   422,
+     "detail":   "quantity must be greater than zero",
+     "instance": "/v1/orders/44",
+     "errors":   [ { "field": "quantity", "message": "must be > 0" } ] }
+```
+
+| Field | What it is for |
+|---|---|
+| `type` | A stable URI identifying the error class. <Peach>The thing clients branch on</Peach> |
+| `title` | A short human summary, constant for the type |
+| `status` | The HTTP code, repeated for clients that lost it |
+| `detail` | This occurrence, in human words. Safe to log, never to parse |
+| `instance` | Which request or resource it happened to |
+
+The field that earns its place is `type`. <Peach>A status code is too coarse to branch
+on</Peach>: a `422` might be six different validation problems, and clients otherwise
+end up matching on English text in `detail`, which breaks the day someone
+improves the wording.
+
+**Validation errors need the array.** A form with four bad fields should produce
+one response listing four problems, not four round trips. <Mint>The extension member,
+`errors` above, is where they go, and every entry needs a machine-readable field
+path.</Mint>
+
+**Two rules that are security rules.** <Rose>Never return a stack trace, a SQL
+fragment, or an internal hostname.</Rose> And keep authentication failures
+deliberately vague: "invalid credentials", never "no user with that email", which
+turns your login endpoint into a way to test whether an address is registered.
+<Ref to="/security">Notebook 05</Ref> covers both.
+
+<DoThis>
+
+Write the error shape once, in a middleware, before the second endpoint exists.
+<Mint>Retrofitting a consistent error format across forty endpoints is a breaking
+change for every consumer</Mint>, because they have all written code against whatever
+the old shape was.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Consistency applies to failure at least as much as to success.</Peach> One shape, a
+stable machine-readable `type`, an array for validation, and nothing internal
+ever in the body.
+
+</KeyIdea>
+
+<Recall>
+
+Place all eleven status codes from this part, with the question each one answers. | 9
+
+</Recall>
+
+<Recall>
+
+Walk the lost update scenario, then give the three headers and the code that prevent it. | 7
+
+</Recall>
+
+<Recall>
+
+Name the five RFC 9457 fields and say which one clients should branch on and why. | 6
+
+</Recall>

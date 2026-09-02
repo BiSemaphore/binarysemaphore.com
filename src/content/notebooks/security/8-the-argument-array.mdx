@@ -43,8 +43,8 @@ And still validate, because the array is not the whole job
 An argument array stops command <Peach>chaining</Peach>. It does not stop an argument
 being hostile in its own right: a filename beginning with `-` can be read as a
 flag, and `../../etc/passwd` is a perfectly valid single path.
-- <Mint>Generate filenames server-side</Mint>, never from user input. Notebook 02
-  section 15 makes the same argument for object keys.
+- <Mint>Generate filenames server-side</Mint>, never from user input. <Ref to="/object-storage">Notebook 02</Ref>
+  <Ref to="#15-jwt-what-you-gain-and-what-you-give-up">section 15</Ref> makes the same argument for object keys.
 - <Mint>Prefix user paths with `./`</Mint> or pass `--` before positional arguments so
   a leading dash cannot become an option.
 - <Mint>Prefer a library over a subprocess</Mint> where one exists. `sharp` beats

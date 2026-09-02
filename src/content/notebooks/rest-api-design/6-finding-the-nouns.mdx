@@ -1,0 +1,67 @@
+---
+number: "6"
+title: "Finding the nouns"
+part: "II"
+partTitle: "Resources, and the URL that names them"
+---
+The lecture is clear about where API design starts, and it is not where most
+people start it. It starts at the design file.
+
+```text
+   WIREFRAMES        what the user actually does, screen by screen
+        │
+        ▼
+   NOUNS             every distinct thing named on those screens
+        │
+        ▼
+   RESOURCES         the nouns that a client will need to address
+        │
+        ▼
+   DB SCHEMA         how you store them          ← Notebook 04
+        │
+        ▼
+   API INTERFACE     how they are reached        ← this book
+```
+
+For a project management platform, reading the screens gives you organisations,
+users, projects, tasks and tags. Five nouns, and they will become five families
+of endpoints. <Peach>The reason to start from the interface a human sees is that it is
+the only place the real requirements exist</Peach> in a form nobody has already
+translated into a table.
+
+**But the noun test is a heuristic, and it has three failure modes the lecture
+does not mention.**
+
+**Not every noun is a resource.** A wireframe mentions a "dashboard", a "summary"
+and a "notification badge". Those are <Mint>views assembled from other resources</Mint>,
+not things a client needs to address individually. The test is not "is it a
+noun". It is: __would a consumer ever need to refer to exactly this thing, by
+name, on its own?__
+
+**Not every resource is a table.** A resource can be a computed view over several
+tables: `/reports/revenue`, `/organizations/8f2a/activity`. Resources are part of
+your interface, tables are part of your storage, and <Mint>letting the second dictate
+the first is how internal schema decisions leak into a contract you cannot
+change.</Mint> <Ref to="/postgres">Notebook 04</Ref> covers the schema side; the two are designed in sequence,
+not merged.
+
+**Not every table is a resource.** Join tables, audit rows and internal
+bookkeeping have no business being addressable. <Rose>Exposing an endpoint for every
+table is the fastest way to make your storage layout permanent.</Rose>
+
+<Signal>
+
+"I design resources from the screens, not from the schema, because the schema is
+an implementation detail I want to be able to change and the resource names are a
+contract I cannot. They usually correspond, and where they diverge I follow the
+interface."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>A resource is anything a consumer needs to address by name.</Peach> That set overlaps
+your tables heavily and is not the same set, and the places it differs are
+exactly where your API stops being a database browser.
+
+</KeyIdea>

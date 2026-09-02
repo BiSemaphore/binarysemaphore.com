@@ -1,0 +1,65 @@
+---
+number: "28"
+title: "202, 429, and the responses that ask the client to wait"
+part: "IV"
+partTitle: "The response is the other half of the interface"
+---
+Three codes for the cases where the honest answer is "not now".
+
+**`202 Accepted`: I have taken this, and it has not happened yet.** The right
+response to any action you queue rather than perform.
+
+```text
+   POST /organizations/8f2a/archive
+   ──▶ 202 Accepted
+       Location: /v1/jobs/44           ← where to poll for the outcome
+       { "jobId": "44", "status": "queued" }
+```
+
+The lecture's own archive example is exactly this case. It observes that
+archiving may need to cascade through projects, tasks and notifications, and
+<Peach>once that work is measured in seconds, holding the connection open is the wrong
+design</Peach>. `202` says the request was valid and accepted, and points at somewhere
+to find out how it went. <Ref to="/large-scale-ingestion">Notebook 01</Ref> covers the queue behind it.
+
+<Mint>The important part is what `202` does not promise: it does not promise the work
+will succeed.</Mint> A client that treats `202` as success will report completion for
+jobs that later fail, so the job resource must carry a real terminal state.
+
+**`429 Too Many Requests`: you are going too fast.** Always with a `Retry-After`.
+
+```text
+   429 Too Many Requests
+   Retry-After: 30                 ← seconds, or an HTTP date
+   RateLimit-Limit: 1000
+   RateLimit-Remaining: 0
+   RateLimit-Reset: 30
+```
+
+<Peach>Without `Retry-After` you have told a client to back off without telling it how
+far</Peach>, and the usual result is a tight retry loop that makes the overload worse.
+The `RateLimit-*` family lets a well-behaved client slow down before it hits the
+wall, which is better for both sides. <Ref to="/scaling">Notebook 06</Ref> <Ref to="#29-one-error-shape-everywhere">section 29</Ref> covers the limiting
+algorithms; the interface obligation is simply to say the number.
+
+**`503 Service Unavailable`: I am not able to serve this now.** Also takes
+`Retry-After`. The distinction from `500` is worth being precise about:
+<Mint>`500` means something broke and retrying will probably break again; `503`
+means nothing is broken and retrying later will probably work.</Mint> Clients and
+proxies treat them differently, and returning `500` for a temporary overload
+suppresses the retry that would have succeeded.
+
+<DoThis>
+
+Any status that asks a client to come back later must say when. <Mint>`Retry-After`
+on every `429` and every `503`, without exception.</Mint> It is the difference between
+backpressure and a retry storm.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>`202` means accepted and unfinished, `429` and `503` mean come back later, and
+all three are useless without somewhere to look or a time to wait.</Peach>
+
+</KeyIdea>

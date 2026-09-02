@@ -5,7 +5,9 @@
     "title": "How to use this book",
     "part": "",
     "partTitle": "",
-    "length": 1725
+    "length": 1725,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "the-whole-book-in-one-question",
@@ -13,7 +15,9 @@
     "title": "The whole book in one question",
     "part": "",
     "partTitle": "",
-    "length": 366
+    "length": 366,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "1-assumptions-are-the-vulnerability",
@@ -21,7 +25,9 @@
     "title": "Assumptions are the vulnerability",
     "part": "I",
     "partTitle": "The attacker's question",
-    "length": 458
+    "length": 458,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "2-your-application-speaks-several-languages",
@@ -29,7 +35,9 @@
     "title": "Your application speaks several languages",
     "part": "I",
     "partTitle": "The attacker's question",
-    "length": 806
+    "length": 806,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "3-the-boundary-between-data-and-code",
@@ -37,7 +45,11 @@
     "title": "The boundary between data and code",
     "part": "I",
     "partTitle": "The attacker's question",
-    "length": 385
+    "length": 385,
+    "refs": [],
+    "backrefs": [
+      "22-cross-site-scripting"
+    ]
   },
   {
     "slug": "4-sql-injection",
@@ -45,7 +57,9 @@
     "title": "SQL injection",
     "part": "II",
     "partTitle": "Injection",
-    "length": 774
+    "length": 774,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "5-parameterised-queries-and-what-they-cannot-do",
@@ -53,7 +67,12 @@
     "title": "Parameterised queries, and what they cannot do",
     "part": "II",
     "partTitle": "Injection",
-    "length": 281
+    "length": 281,
+    "refs": [
+      "n:postgres",
+      "s:28-what-you-must-not-log"
+    ],
+    "backrefs": []
   },
   {
     "slug": "6-nosql-injection",
@@ -61,7 +80,9 @@
     "title": "NoSQL injection",
     "part": "II",
     "partTitle": "Injection",
-    "length": 288
+    "length": 288,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "7-command-injection",
@@ -69,7 +90,9 @@
     "title": "Command injection",
     "part": "II",
     "partTitle": "Injection",
-    "length": 398
+    "length": 398,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "8-the-argument-array",
@@ -77,7 +100,12 @@
     "title": "The argument array",
     "part": "II",
     "partTitle": "Injection",
-    "length": 515
+    "length": 515,
+    "refs": [
+      "n:object-storage",
+      "s:15-jwt-what-you-gain-and-what-you-give-up"
+    ],
+    "backrefs": []
   },
   {
     "slug": "9-build-it-only-if-you-have-a-reason",
@@ -85,7 +113,9 @@
     "title": "Build it only if you have a reason",
     "part": "III",
     "partTitle": "Authentication",
-    "length": 504
+    "length": 504,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "10-never-store-a-password",
@@ -93,7 +123,9 @@
     "title": "Never store a password",
     "part": "III",
     "partTitle": "Authentication",
-    "length": 498
+    "length": 498,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "11-why-hashing-alone-is-not-enough",
@@ -101,7 +133,9 @@
     "title": "Why hashing alone is not enough",
     "part": "III",
     "partTitle": "Authentication",
-    "length": 631
+    "length": 631,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "12-salt-and-the-right-algorithm",
@@ -109,7 +143,9 @@
     "title": "Salt, and the right algorithm",
     "part": "III",
     "partTitle": "Authentication",
-    "length": 603
+    "length": 603,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "13-sessions",
@@ -117,7 +153,9 @@
     "title": "Sessions",
     "part": "III",
     "partTitle": "Authentication",
-    "length": 910
+    "length": 910,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "14-cookie-flags",
@@ -125,7 +163,12 @@
     "title": "Cookie flags",
     "part": "III",
     "partTitle": "Authentication",
-    "length": 362
+    "length": 362,
+    "refs": [
+      "s:23-content-security-policy",
+      "s:25-clickjacking"
+    ],
+    "backrefs": []
   },
   {
     "slug": "15-jwt-what-you-gain-and-what-you-give-up",
@@ -133,7 +176,11 @@
     "title": "JWT: what you gain and what you give up",
     "part": "III",
     "partTitle": "Authentication",
-    "length": 943
+    "length": 943,
+    "refs": [],
+    "backrefs": [
+      "8-the-argument-array"
+    ]
   },
   {
     "slug": "16-rate-limiting",
@@ -141,7 +188,9 @@
     "title": "Rate limiting",
     "part": "III",
     "partTitle": "Authentication",
-    "length": 37
+    "length": 37,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "17-the-layer-where-the-check-belongs",
@@ -149,7 +198,9 @@
     "title": "The layer where the check belongs",
     "part": "IV",
     "partTitle": "Authorization",
-    "length": 330
+    "length": 330,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "18-broken-object-level-authorization",
@@ -157,7 +208,9 @@
     "title": "Broken object level authorization",
     "part": "IV",
     "partTitle": "Authorization",
-    "length": 381
+    "length": 381,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "19-what-the-status-code-leaks",
@@ -165,7 +218,9 @@
     "title": "What the status code leaks",
     "part": "IV",
     "partTitle": "Authorization",
-    "length": 219
+    "length": 219,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "20-deny-by-default",
@@ -173,7 +228,9 @@
     "title": "Deny by default",
     "part": "IV",
     "partTitle": "Authorization",
-    "length": 325
+    "length": 325,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "21-audit-logging",
@@ -181,7 +238,9 @@
     "title": "Audit logging",
     "part": "IV",
     "partTitle": "Authorization",
-    "length": 210
+    "length": 210,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "22-cross-site-scripting",
@@ -189,7 +248,11 @@
     "title": "Cross-site scripting",
     "part": "V",
     "partTitle": "The browser is a boundary too",
-    "length": 826
+    "length": 826,
+    "refs": [
+      "s:3-the-boundary-between-data-and-code"
+    ],
+    "backrefs": []
   },
   {
     "slug": "23-content-security-policy",
@@ -197,7 +260,11 @@
     "title": "Content Security Policy",
     "part": "V",
     "partTitle": "The browser is a boundary too",
-    "length": 67
+    "length": 67,
+    "refs": [],
+    "backrefs": [
+      "14-cookie-flags"
+    ]
   },
   {
     "slug": "24-cross-site-request-forgery",
@@ -205,7 +272,9 @@
     "title": "Cross-site request forgery",
     "part": "V",
     "partTitle": "The browser is a boundary too",
-    "length": 221
+    "length": 221,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "25-clickjacking",
@@ -213,7 +282,11 @@
     "title": "Clickjacking",
     "part": "V",
     "partTitle": "The browser is a boundary too",
-    "length": 0
+    "length": 0,
+    "refs": [],
+    "backrefs": [
+      "14-cookie-flags"
+    ]
   },
   {
     "slug": "26-secrets",
@@ -221,7 +294,9 @@
     "title": "Secrets",
     "part": "VI",
     "partTitle": "The things that leak",
-    "length": 271
+    "length": 271,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "27-error-messages-and-debug-output",
@@ -229,7 +304,9 @@
     "title": "Error messages and debug output",
     "part": "VI",
     "partTitle": "The things that leak",
-    "length": 214
+    "length": 214,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "28-what-you-must-not-log",
@@ -237,7 +314,11 @@
     "title": "What you must not log",
     "part": "VI",
     "partTitle": "The things that leak",
-    "length": 488
+    "length": 488,
+    "refs": [],
+    "backrefs": [
+      "5-parameterised-queries-and-what-they-cannot-do"
+    ]
   },
   {
     "slug": "29-dependencies",
@@ -245,7 +326,9 @@
     "title": "Dependencies",
     "part": "VI",
     "partTitle": "The things that leak",
-    "length": 85
+    "length": 85,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "30-reviewing-an-endpoint",
@@ -253,7 +336,11 @@
     "title": "Reviewing an endpoint",
     "part": "VII",
     "partTitle": "The interview itself",
-    "length": 76
+    "length": 76,
+    "refs": [],
+    "backrefs": [
+      "appendix-c-self-test"
+    ]
   },
   {
     "slug": "31-follow-up-question-bank",
@@ -261,7 +348,9 @@
     "title": "Follow-up question bank",
     "part": "VII",
     "partTitle": "The interview itself",
-    "length": 1228
+    "length": 1228,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-a-the-response-headers",
@@ -269,7 +358,9 @@
     "title": "Appendix A. The response headers",
     "part": "VIII",
     "partTitle": "Appendices",
-    "length": 670
+    "length": 670,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-b-glossary",
@@ -277,7 +368,9 @@
     "title": "Appendix B. Glossary",
     "part": "VIII",
     "partTitle": "Appendices",
-    "length": 1339
+    "length": 1339,
+    "refs": [],
+    "backrefs": []
   },
   {
     "slug": "appendix-c-self-test",
@@ -285,6 +378,10 @@
     "title": "Appendix C. Self-test",
     "part": "VIII",
     "partTitle": "Appendices",
-    "length": 15
+    "length": 15,
+    "refs": [
+      "s:30-reviewing-an-endpoint"
+    ],
+    "backrefs": []
   }
 ]

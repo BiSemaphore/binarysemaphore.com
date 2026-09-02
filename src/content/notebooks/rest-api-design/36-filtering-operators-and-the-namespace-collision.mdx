@@ -1,0 +1,71 @@
+---
+number: "36"
+title: "Filtering, operators, and the namespace collision"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+The lecture's filtering is flat equality: `?status=archived&name=org1`. Simple,
+readable, and it runs out quickly.
+
+**Real filters need operators.** "Created after March", "amount over a hundred",
+"status is any of these three" cannot be expressed by equality. Three conventions
+exist and you should pick one:
+
+```text
+   bracket      ?createdAt[gte]=2026-03-01&amount[gt]=100
+   suffix       ?createdAt_gte=2026-03-01&amount_gt=100
+   RHS          ?createdAt=gte:2026-03-01&amount=gt:100
+```
+
+<Mint>None is standard, all are readable, and the bracket form is the most common.</Mint>
+What matters is choosing once and applying it to every endpoint, because a
+consumer who learns your date filtering on one resource will assume it on the
+next.
+
+**The collision the lecture walks into.** Flat filter parameters share a namespace
+with your control parameters, and the moment a resource has a field named `page`,
+`limit`, `sort` or `filter`, the URL becomes ambiguous:
+
+```text
+   GET /books?page=3
+              ────────
+              the third page of results?
+              or books whose `page` field is 3?
+```
+
+That is not hypothetical for a books API, a magazines API, or anything with a
+`status` field where you also wanted a `status` control parameter. <Peach>The fix is to
+namespace the filters</Peach>, which is what JSON:API standardises:
+
+```text
+   GET /books?filter[page]=3&page[number]=2
+```
+
+It is uglier and it is unambiguous forever. <Mint>If you keep flat filters, at
+minimum reserve your control parameter names and refuse to expose a filter that
+collides with one.</Mint>
+
+**Filterable fields need the same whitelist and index treatment as sortable ones,**
+for exactly the reasons in <Ref to="#35-sorting-and-the-index-underneath-it">section 35</Ref>. A filter on an unindexed column is a table
+scan wearing a query string.
+
+<Trap>
+
+<Rose>"We will let clients pass arbitrary field names and operators so the API is
+flexible."</Rose>
+
+You have built a query language, and now you own its problems: every field is
+public and permanent, every combination must be indexed or slow, and a caller can
+compose a query that takes thirty seconds. <Mint>If you genuinely need arbitrary
+querying, that is the case for GraphQL or a reporting endpoint</Mint>, made
+deliberately, with its own cost controls. <Ref to="#42-the-api-level-n-1-and-why-graphql-exists">Section 42</Ref> covers the choice.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Choose one operator convention, namespace filters away from control parameters,
+and whitelist every filterable field.</Peach> An open filter interface is a query
+language you did not plan to maintain.
+
+</KeyIdea>

@@ -78,7 +78,7 @@ What if the user closes the laptop for two days mid-upload?
 
 The `uploadId` stays valid, S3 has no built-in expiry on it, so the upload can
 resume. That is also the problem: the accepted parts are billed as storage
-indefinitely. This is section 27's abandoned-upload cost bug, and the fix is a
+indefinitely. This is <Ref to="#27-cost-the-bill-nobody-mentions">section 27</Ref>'s abandoned-upload cost bug, and the fix is a
 lifecycle rule.
 
 </Ask>

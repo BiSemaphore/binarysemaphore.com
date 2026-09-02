@@ -4,9 +4,10 @@ title: "L: what Liskov actually said"
 part: "II"
 partTitle: "The five"
 ---
-Barbara Liskov stated it in a 1987 conference keynote, and formalised it with
-Jeannette Wing in 1994 as *A Behavioral Notion of Subtyping*. The often-quoted
-form:
+Barbara Liskov stated it in her OOPSLA 1987 keynote, *Data Abstraction and
+Hierarchy*, published in SIGPLAN Notices the following year, and formalised it
+with Jeannette Wing in 1994 as *A Behavioral Notion of Subtyping*. The
+often-quoted form:
 
 > If S is a subtype of T, then objects of type T may be replaced with objects of
 > type S without altering any of the desirable properties of the program.
@@ -31,7 +32,7 @@ and nothing enforces it but review.
 
 Once a caller checks the concrete type, you have all the cost of the abstraction
 and none of the benefit: you still have the interface, and you still edit the
-caller every time a new subtype appears, which also breaks section 6.
+caller every time a new subtype appears, which also breaks <Ref to="#6-o-change-by-adding-not-by-editing">section 6</Ref>.
 
 <Term name="Substitutability">
 

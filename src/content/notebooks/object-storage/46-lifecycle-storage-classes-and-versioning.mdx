@@ -23,8 +23,8 @@ than leaving them in Standard</Peach>. Check the size distribution first.
 
 Lifecycle rules to write on day one
 
-- <Mint>Abort incomplete multipart uploads after 7 days.</Mint> (Section 36. Non-negotiable.)
-- <Mint>Delete anything under `pending/` or `tmp/` after 24 hours.</Mint> (Section 30.)
+- <Mint>Abort incomplete multipart uploads after 7 days.</Mint> (<Ref to="#36-abandoned-uploads-the-invisible-bill">Section 36</Ref>. Non-negotiable.)
+- <Mint>Delete anything under `pending/` or `tmp/` after 24 hours.</Mint> (<Ref to="#30-reconciliation-pending-expired-orphaned">Section 30</Ref>.)
 - <Mint>Expire non-current versions after 30 to 90 days</Mint>, so versioning stays a
   safety net rather than an unbounded cost.
 - Only then consider cold-tier transitions.

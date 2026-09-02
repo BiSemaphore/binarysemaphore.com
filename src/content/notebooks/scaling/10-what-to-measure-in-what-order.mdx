@@ -18,7 +18,7 @@ The order to work in
 3. <Mint>Get one slow trace.</Mint> Not an aggregate. One real request that was slow, with
    its spans. This usually ends the investigation.
 4. <Mint>Attribute the time.</Mint> Write down the segments and their milliseconds, like
-   the table in section 7. Anything under 5% of the total is not your problem, no
+   the table in <Ref to="#7-never-guess-the-week-spent-on-the-wrong-fix">section 7</Ref>. Anything under 5% of the total is not your problem, no
    matter how ugly the code is.
 5. <Mint>Only now choose a technique.</Mint> And check the arithmetic before you build:
    if the segment is 10% of the request, the best possible outcome of fixing it
@@ -27,7 +27,7 @@ The order to work in
 </DoThis>
 
 That last step has a name worth knowing, because it is the formal version of the
-week wasted in section 7.
+week wasted in <Ref to="#7-never-guess-the-week-spent-on-the-wrong-fix">section 7</Ref>.
 
 ```text
   Amdahl's law:   the most a fix can help is bounded by
@@ -41,7 +41,7 @@ week wasted in section 7.
 <KeyIdea>
 
 <Peach>Fixing a 2% segment perfectly gives you a 2% improvement.</Peach> The cache in
-section 7 worked exactly as designed and was still a waste of a week, because
+<Ref to="#7-never-guess-the-week-spent-on-the-wrong-fix">section 7</Ref> worked exactly as designed and was still a waste of a week, because
 the segment it targeted was worth 10ms out of 520. Do this multiplication before
 you start, not after you deploy.
 
@@ -64,6 +64,6 @@ Name the four measurement tools and the question each one answers. Then give the
 
 <Redraw>
 
-The measured request from section 7, with milliseconds on every segment. | Then mark which segment the team optimised, and calculate the improvement that fix could possibly have produced.
+The measured request from <Ref to="#7-never-guess-the-week-spent-on-the-wrong-fix">section 7</Ref>, with milliseconds on every segment. | Then mark which segment the team optimised, and calculate the improvement that fix could possibly have produced.
 
 </Redraw>

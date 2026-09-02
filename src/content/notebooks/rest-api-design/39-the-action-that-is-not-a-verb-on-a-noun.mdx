@@ -1,0 +1,50 @@
+---
+number: "39"
+title: "The action that is not a verb on a noun"
+part: "VI"
+partTitle: "When CRUD runs out"
+---
+You want to archive an organisation. There is a `status` field, and `archived` is
+one of its values, so the obvious design is already available:
+
+```text
+   PATCH /organizations/8f2a   { "status": "archived" }
+```
+
+The lecture argues this is wrong, and the argument is the strongest reasoning in
+the two hours. Archiving is not the same as writing `archived` into a column.
+Archiving an organisation may also need to:
+
+```text
+   ├── archive every project inside it
+   ├── archive every task inside those projects
+   ├── revoke or downgrade member access
+   ├── notify the owner and the billing system
+   └── stop scheduled jobs that reference it
+```
+
+<Peach>A `PATCH` says "make this field have this value". It does not say "and do the
+other eleven things".</Peach> A client that sends the `PATCH` has expressed an intent
+to edit a field; the server doing five other things in response is a surprise, and
+a client that wanted only the field edit has no way to ask for that instead.
+
+**The test is one question:** <Mint>is the effect of this operation exactly the effect
+of writing the fields in the request body?</Mint> If yes, it is an update, and `PATCH`
+is right. If the server does anything the client could not have expressed as
+field values, it is an action, and the interface should say so.
+
+Two more consequences follow, and they are what make this a design decision rather
+than a preference. <Peach>An action has its own authorisation</Peach>: being allowed to
+rename an organisation is not the same permission as being allowed to archive one,
+and if both are `PATCH` on the same resource you are checking permissions on
+field names. And an action has its own audit trail: "user X archived
+organisation Y" is a meaningful log line in a way that "user X set status to
+archived" is not.
+
+<KeyIdea>
+
+<Peach>If the operation does more than write the fields you sent, it is an action, not
+an update.</Peach> Actions get their own endpoint, their own permission, and their own
+place in the audit log.
+
+</KeyIdea>

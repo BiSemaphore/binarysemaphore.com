@@ -1,0 +1,85 @@
+---
+number: "85"
+title: "Answers, Notebook 08"
+part: "10"
+partTitle: "Answers"
+---
+**Q236**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#3-ingestion-getting-the-bytes-in">section 3</Ref>.*
+
+"Which REST constraint does a JWT in an `Authorization` header serve, and which
+one does a server-side session table break?"
+
+The token serves statelessness: it travels with every request, so any instance
+can validate it without shared memory. A session table breaks statelessness,
+because the server now remembers something between calls, and the fix people
+reach for first, sticky sessions, actually breaks the layered-system constraint
+too by making the load balancer care which instance you spoke to last. <Ref to="/security">Notebook
+05</Ref> <Ref to="#22-the-node-js-runtime">section 22</Ref> covers the token side properly.
+
+**Q237**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#5-the-queue">section 5</Ref>.*
+
+"So is your API RESTful?"
+
+The honest answer is short. "It is level 2 on the Richardson model: resources as
+URLs, HTTP methods with their standard semantics, meaningful status codes. It is
+not hypertext-driven, so by Fielding's strict definition it is not REST. Neither
+is Stripe's." Confidence about the gap reads far better than a claim you cannot
+defend.
+
+**Q241**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#9-the-interview-itself">section 9</Ref>.*
+
+"Should `/projects/91b/tasks/44` return a 404 if task 44 exists but belongs to a
+different project?"
+
+Yes, and the reasoning matters more than the answer. If you accept the URL and
+return the task anyway, the path segment `91b` is decorative, and consumers will
+build URLs with the wrong parent and never find out. <Mint>A hierarchical URL is a
+claim about containment, and a claim your server does not check is a claim your
+consumers will break.</Mint> This is also an authorisation trap: if the parent is
+where your permission check lives and you do not verify the child belongs to it,
+you have built an access control bug. <Ref to="/security">Notebook 05</Ref> <Ref to="#18-getting-the-bytes-out">section 18</Ref> covers it as an
+insecure direct object reference.
+
+**Q245**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#15-inside-the-system">section 15</Ref>.*
+
+"If `POST` is not idempotent, how does anything survive a mobile network?"
+
+It does not, by default, and this is the practical reason the question matters.
+A client that sends a `POST`, loses the connection, and never sees the response
+has no way to know whether the order was placed. Its choices are to retry and
+risk duplicating, or not retry and risk losing. <Mint><Ref to="#20-opening">Section 20</Ref>'s idempotency keys
+exist precisely to give the client a third option</Mint>, and "we would add an
+idempotency key" is the answer this question is fishing for.
+
+**Q246**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#19-final-review">section 19</Ref>.*
+
+"Is `DELETE` idempotent if the second call returns 404?"
+
+Yes. Idempotence is defined over the effect on server state, not over the
+response, and after either one call or five the resource is equally gone. The
+follow-up worth volunteering is that <Peach>a retrying client cannot use the `404` to
+tell success from error</Peach>, which is why some APIs return `204` on a repeated
+delete, and why the two schools exist.
+
+**Q250**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#23-express-and-the-http-boundary">section 23</Ref>.*
+
+"Should `GET /organizations/8f2a/projects` return `404` if organisation 8f2a does
+not exist?"
+
+Yes, and this is the case that trips people who learned the rule as "lists never
+`404`". The list is scoped to a parent you named by identity, and <Peach>that parent
+does not exist</Peach>, so the `404` is about the organisation rather than about the
+projects. If the organisation exists and has no projects, it is a `200` with an
+empty array. Both rules are consistent once you see that the `404` refers to the
+part of the URL that names a specific thing.
+
+**Q251**   *<Ref to="/rest-api-design">Notebook 08</Ref>, <Ref to="#27-kafka">section 27</Ref>.*
+
+"Two users edit the same record at once. What happens?"
+
+The honest first answer is that by default the second write wins and the first is
+lost with no error. Then give the fix: optimistic concurrency with an `ETag` and
+`If-Match`, returning `412` when the version has moved, so the client can
+re-fetch and merge. <Mint>Mentioning that `PATCH` with only-changed-fields already
+avoids most of this</Mint> shows you understand why it is rarer than the theory
+suggests.

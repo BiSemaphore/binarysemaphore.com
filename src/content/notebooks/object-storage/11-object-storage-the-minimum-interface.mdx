@@ -28,9 +28,9 @@ either a variant of these four, an administrative operation, or metadata.
 |---|---|
 | Modify an object in place | Objects are <Pink>immutable</Pink>; you replace the whole thing |
 | `seek()` and overwrite bytes 4,000 to 4,004 | No partial write. Download, edit, re-upload the whole object |
-| Have real folders | Keys are flat strings; hierarchy is an illusion (section 14) |
+| Have real folders | Keys are flat strings; hierarchy is an illusion (<Ref to="#14-there-are-no-folders">section 14</Ref>) |
 | Rename | Copy to the new key, delete the old. Costs the <Peach>full size</Peach> of the object |
-| Lock a file | There is no lock. There is now a conditional write (section 22) |
+| Lock a file | There is no lock. There is now a conditional write (<Ref to="#22-conditional-writes-the-primitive-that-changed-things">section 22</Ref>) |
 | Expect microseconds | Every operation is an <Peach>HTTP request over a network</Peach>: milliseconds to tens of milliseconds |
 
 #### What you get
@@ -44,7 +44,7 @@ either a variant of these four, an administrative operation, or metadata.
   authenticated HTTP request, so a fleet of stateless front-end nodes scales
   horizontally without limit.
 - <Peach>No capacity planning.</Peach> Nothing to provision, nothing to resize.
-- <Peach>Durability as a product.</Peach> 11 nines from the provider, section 19.
+- <Peach>Durability as a product.</Peach> 11 nines from the provider, <Ref to="#19-eleven-nines-read-carefully">section 19</Ref>.
 - <Peach>Directly addressable over HTTP.</Peach> Browsers, mobile apps, video players, curl,
   a CDN: anything that speaks HTTP can talk to an object without going through
   your server at all. This is what makes presigned URLs possible, and it is the

@@ -1,0 +1,76 @@
+---
+number: "18"
+title: "What a PATCH body actually is"
+part: "III"
+partTitle: "The method is a promise about repeating"
+---
+The lecture sends `{"status": "active"}` to a `PATCH` endpoint and moves on. That
+is a reasonable thing to send, and it leaves a question the consumer cannot
+answer from the interface: <Peach>what dialect is that, and what would it mean to send
+`null`?</Peach>
+
+There are two standardised answers.
+
+**JSON Merge Patch**, RFC 7386, content type `application/merge-patch+json`. The
+body looks like the resource. Fields present are set, fields absent are left
+alone.
+
+```text
+   { "status": "archived" }        ← set status, leave everything else
+```
+
+It is simple, it is what everyone informally does, and <Mint>it has one sharp
+edge: `null` means "remove this field".</Mint>
+
+```text
+   { "description": null }         ← deletes description
+
+   so there is no way, in merge patch, to SET a field to null
+```
+
+<Peach>If any field of yours is legitimately nullable, merge patch cannot express
+setting it.</Peach> That is a genuine limitation, not a subtlety, and it is the usual
+reason teams move to the other dialect.
+
+**JSON Patch**, RFC 6902, content type `application/json-patch+json`. The body is
+an array of operations.
+
+```text
+   [ { "op": "replace", "path": "/status", "value": "archived" },
+     { "op": "remove",  "path": "/description" },
+     { "op": "add",     "path": "/tags/-", "value": "beta" } ]
+```
+
+More verbose, and unambiguous: setting to null and removing are different
+operations, arrays can be appended to and indexed, and a `test` operation lets you
+make the whole patch conditional on current state.
+
+| | Merge patch | JSON Patch |
+|---|---|---|
+| Readability | <Peach>High</Peach>, looks like the resource | Low, looks like a script |
+| Set a field to null | <Peach>Impossible</Peach> | `replace` with `null` |
+| Array element operations | Whole array only | Full support |
+| Idempotent | Usually | Depends on the ops used |
+| What clients expect | <Peach>This one</Peach> | Rare outside specialist APIs |
+
+<Mint>Default to merge patch, and declare it.</Mint> Send and require
+`Content-Type: application/merge-patch+json` rather than plain
+`application/json`, because that header is the only place the dialect is stated,
+and a consumer who does not know the dialect does not know what `null` does.
+
+<DoThis>
+
+Whichever you choose, write down what happens for three cases: a field present
+with a value, a field present with `null`, and a field absent. <Mint>Those three
+answers are the entire semantics of your update endpoint, and they are the most
+common source of "the API deleted my data" tickets.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>A patch body is a document in a dialect, and the content type is where you name
+it.</Peach> Merge patch for almost everyone, with the null limitation understood before
+you commit to it.
+
+</KeyIdea>

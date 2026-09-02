@@ -25,8 +25,7 @@ Bucket defaults for anything holding user content
 - Bucket owner enforced, ACLs disabled.
 - Default encryption on, versioning on.
 - Deny non-TLS requests via a condition on `aws:SecureTransport`.
-- Scope every role to a <Peach>prefix</Peach>, using the ownership structure from section
-  15, never to the whole bucket.
+- Scope every role to a <Peach>prefix</Peach>, using the ownership structure from <Ref to="#15-designing-the-key">section 15</Ref>, never to the whole bucket.
 - Access logs or CloudTrail data events to a <Peach>different bucket in a different
   account</Peach>.
 

@@ -1,0 +1,67 @@
+---
+number: "41"
+title: "Custom actions are not REST, and that is fine"
+part: "VI"
+partTitle: "When CRUD runs out"
+---
+The lecture presents custom actions as licensed by the standard: `POST` is
+open-ended in the specification, so putting an action behind it is within the
+rules. <Peach>The first half is true and the conclusion is a little too comfortable.</Peach>
+
+`POST` is genuinely open-ended. RFC 9110 defines it as asking the target resource
+to process the enclosed representation according to the resource's own semantics,
+which permits nearly anything. What that licenses is `POST` doing arbitrary work.
+It does not make `/organizations/8f2a/archive` a resource, and by the uniform
+interface constraint from <Ref to="#3-fielding-s-six-constraints">section 3</Ref>, <Peach>a URL is supposed to identify a thing
+rather than name a procedure.</Peach>
+
+`POST /organizations/8f2a/archive` is a remote procedure call. It has a target, a
+verb and arguments. That is RPC over HTTP, wearing REST's URL conventions.
+
+**This is fine, and you should be able to say why.**
+
+- It is universal. Google's own API design guidance blesses it as "custom
+  methods" in AIP-136, using a colon rather than a slash:
+  `POST /v1/organizations/8f2a:archive`. The colon is a deliberate signal that
+  <Peach>the segment is not part of the resource hierarchy</Peach>, which is tidier than the
+  slash and much rarer in the wild.
+- The alternative is worse. Modelling every action as a resource gives you
+  `POST /archivals {"organizationId": "8f2a"}`, which is more RESTful and reads
+  like an accountant designed it. Sometimes that resource is genuinely useful,
+  which is <Ref to="#40-designing-a-custom-action">section 40</Ref>'s noun test. Often it is ceremony.
+- Nobody is confused. <Mint>A consumer reading `/organizations/8f2a/archive` knows
+  exactly what it does</Mint>, which is the actual goal from the first page of this
+  book.
+
+So: use custom actions, keep them a small minority of your endpoints, and know
+that they are a deviation. <Peach>If more than about a fifth of your endpoints are
+verbs, that is a signal your resources are modelled wrongly</Peach>, and the missing
+nouns are usually state transitions that deserve to be resources.
+
+<Signal>
+
+"Custom actions are RPC over HTTP. They are pragmatic and near-universal, and
+Google's AIP-136 standardises them with a colon separator. I use them where a
+state transition has side effects beyond the fields, and I keep an eye on the
+ratio, because a lot of verbs usually means a missing noun."
+
+</Signal>
+
+<Trap>
+
+<Rose>"`POST` is open-ended in the spec, so custom actions are RESTful."</Rose>
+
+The premise is right and the conclusion does not follow. <Mint>The specification
+permits `POST` to do arbitrary work; the uniform interface constraint still wants
+URLs to identify resources.</Mint> The precise position is that custom actions are
+permitted by HTTP and are a deviation from REST, and saying so is what separates
+someone who read Fielding from someone who read a summary.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Custom actions are RPC, they are the right answer anyway, and you should say
+both.</Peach> Watch the ratio: many verbs means missing nouns.
+
+</KeyIdea>

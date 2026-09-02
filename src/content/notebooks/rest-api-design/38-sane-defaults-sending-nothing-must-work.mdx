@@ -1,0 +1,82 @@
+---
+number: "38"
+title: "Sane defaults: sending nothing must work"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+This is the lecture's best practical advice and it deserves the last section of
+the part. <Peach>A request with no parameters at all must return something sensible.</Peach>
+
+```text
+   GET /organizations
+
+   page      → 1
+   limit     → 20
+   sortBy    → createdAt
+   sortOrder → desc
+   filters   → none
+```
+
+Nothing was sent and something correct came back. The alternative, refusing the
+request until the client supplies pagination, is the interface equivalent of a
+form that will not submit until you fill in fields you did not know existed.
+
+**The sort default is doing more work than it appears to.** Without an explicit
+`ORDER BY`, the database is free to return rows in any order at all, and it will
+happily return them differently between two identical queries. <Peach>Paginating an
+unordered set is not slightly wrong, it is meaningless</Peach>, so the default sort is
+not a courtesy but a correctness requirement for every other feature in this part.
+
+**Defaults apply to writes too.** The lecture makes this point with `status`: if a
+new organisation is obviously active, do not force the client to say so.
+
+```text
+   POST /organizations  { "name": "Acme" }
+
+   status      → "active"        obvious from the business rules
+   description → null            genuinely optional
+   createdAt   → now             server-owned, never accepted from a client
+```
+
+<Mint>Require only what you genuinely cannot infer.</Mint> Every required field is a
+decision the consumer must make, and most of them have one obvious answer that
+you already know.
+
+**One rule about defaults that is easy to get wrong: changing one is a breaking
+change.** <Ref to="#12-versioning-what-actually-forces-a-v2">Section 12</Ref> listed it and it is worth repeating here, because it looks
+harmless. Raising the default `limit` from 20 to 50 alters every response to
+every client that never sent the parameter, which is most of them.
+
+<Signal>
+
+"Defaults are part of the contract. A client that sends no parameters is relying
+on our defaults whether it knows it or not, so we treat changing one as a version
+bump rather than a tuning change."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Sending nothing must work, and what comes back when they send nothing is a
+promise.</Peach> Sane defaults on reads, minimal required fields on writes, and neither
+changes without a version.
+
+</KeyIdea>
+
+<Recall>
+
+Walk the page-2 duplicate and the page-2 skip, then give the fix and what it costs. | 8
+
+</Recall>
+
+<Recall>
+
+Why is `total` expensive, and what is the one-row-cheaper alternative? | 5
+
+</Recall>
+
+<Recall>
+
+Give the three caps every list endpoint needs, and why clamping beats erroring. | 6
+
+</Recall>

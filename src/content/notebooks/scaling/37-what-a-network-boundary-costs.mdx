@@ -20,7 +20,7 @@ sells you four things.
 #### Latency
 
 Sub-microsecond becomes single-digit milliseconds, at best. That is fine once and
-ruinous in a loop, and it is where the tail amplification from section 3 arrives
+ruinous in a loop, and it is where the tail amplification from <Ref to="#3-why-p99-is-your-most-valuable-customers">section 3</Ref> arrives
 in force: five hops, each with a P99 of 50ms, and your request's own P99 is
 worse than any of them.
 

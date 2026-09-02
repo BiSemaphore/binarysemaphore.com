@@ -1,0 +1,80 @@
+---
+number: "13"
+title: "Safe, idempotent, and the difference nobody draws"
+part: "III"
+partTitle: "The method is a promise about repeating"
+---
+Two properties, defined in RFC 9110, and almost every candidate collapses them
+into one.
+
+<Term name="Safe">
+
+A method is safe if it is read-only: the client does not request any change to
+server state. `GET`, `HEAD` and `OPTIONS` are safe.
+
+</Term>
+
+<Term name="Idempotent">
+
+A method is idempotent if the <Peach>intended effect on the server of several
+identical requests is the same as for a single one.</Peach> `GET`, `HEAD`, `OPTIONS`,
+`PUT` and `DELETE` are idempotent.
+
+</Term>
+
+Safety implies idempotence, because a method that changes nothing trivially
+changes nothing twice. The reverse is false, and that gap is the whole point:
+
+| Method | Safe | Idempotent | What that means for you |
+|---|---|---|---|
+| `GET` | yes | yes | Anything may call it, at any time, without asking |
+| `HEAD` | yes | yes | As `GET`, headers only |
+| `OPTIONS` | yes | yes | Used by the browser's preflight, not by you |
+| `PUT` | no | yes | Changes things, but repeating is harmless |
+| `DELETE` | no | yes | Changes things, but repeating is harmless |
+| `POST` | no | no | <Peach>The only method with no promise at all</Peach> |
+| `PATCH` | no | no | <Ref to="#17-patch-is-not-idempotent-and-the-lecture-says-it-is">Section 17</Ref>. This surprises people |
+
+**Two clarifications that separate a precise answer from an approximate one.**
+
+**"Intended effect", not "identical response".** A second `DELETE` returning
+`404` where the first returned `204` does not break idempotence. The
+__server state__ is the same either way, and that is what the definition covers.
+The response may legitimately differ.
+
+**"Intended", not "observed".** A `GET` that increments a view counter is still
+safe by the specification, because the counter is not what the client asked for.
+<Mint>The rule is about what the client requested, not about whether your handler
+happens to write to a database.</Mint> This is a licence for logging and analytics,
+and it is not a licence for a `GET` that deletes something.
+
+**Why any of this matters.** These properties are contracts with machinery:
+
+```text
+   browsers and link prefetchers   will fetch safe URLs unprompted
+   proxies and gateways            may retry idempotent requests on timeout
+   HTTP client libraries           retry idempotent methods by default
+   load balancers                  replay idempotent requests to a new backend
+   caches                          may store responses to safe requests
+```
+
+<Peach>Every one of those behaves correctly only if your methods mean what the
+specification says they mean.</Peach> Get it wrong and you have not made a
+documentation mistake, you have misconfigured infrastructure you do not own.
+
+<Signal>
+
+"Safe and idempotent are different properties. Safe means read-only; idempotent
+means repeating it lands the server in the same state. `PUT` and `DELETE` are
+idempotent without being safe, and that distinction is what lets a proxy retry
+them but not cache them."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Safe means nothing changes. Idempotent means repeating changes nothing more.</Peach>
+`POST` is the only common method that promises neither, which is exactly why it
+is the fallback for everything that fits nowhere else.
+
+</KeyIdea>

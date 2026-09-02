@@ -28,7 +28,7 @@ Read it bottom-up and inside-out. What to look for, in order:
 |---|---|
 | `Seq Scan` on a large table | <Peach>No usable index</Peach>, or the planner chose not to |
 | `rows=` estimate far from `actual rows` | Stats are stale. `ANALYZE` the table |
-| `Nested Loop` with a big inner `loops=` | The join is running N times. Section 31 |
+| `Nested Loop` with a big inner `loops=` | The join is running N times. <Ref to="#31-the-n-1-problem">Section 31</Ref> |
 | `Sort` before a `Limit` | An index could have provided the order |
 | `Filter:` removing many rows | The index found too much; the condition is not indexed |
 | `Heap Fetches` high on an index-only scan | Vacuum is behind |

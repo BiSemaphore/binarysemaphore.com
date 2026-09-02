@@ -16,7 +16,7 @@ Treat the bucket as hostile input
 - Set `Content-Disposition: attachment` and `X-Content-Type-Options: nosniff`
   for anything not deliberately rendered inline.
 - Derive the content type <Peach>server-side from magic bytes</Peach> after upload, never
-  from the extension or the client's declared type. Section 42's eight-byte
+  from the extension or the client's declared type. <Ref to="#42-range-requests">Section 42</Ref>'s eight-byte
   range read is how you do it cheaply.
 - Re-encode images rather than serving originals: it strips EXIF (which carries
   GPS coordinates), removes polyglot payloads and normalises the format.
@@ -27,9 +27,9 @@ Treat the bucket as hostile input
 
 | Watch | Because |
 |---|---|
-| `pending` rows older than the window | Section 30. Uploads are failing |
-| Incomplete multipart uploads | Section 36. Invisible in a listing, and billed |
-| <Peach>503 SlowDown</Peach> | Hot partition. Section 15 |
+| `pending` rows older than the window | <Ref to="#30-reconciliation-pending-expired-orphaned">Section 30</Ref>. Uploads are failing |
+| Incomplete multipart uploads | <Ref to="#36-abandoned-uploads-the-invisible-bill">Section 36</Ref>. Invisible in a listing, and billed |
+| <Peach>503 SlowDown</Peach> | Hot partition. <Ref to="#15-designing-the-key">Section 15</Ref> |
 | 4xx rate on the bucket | Policy violations, expired signatures, CORS |
-| <Peach>CDN cache hit ratio</Peach> | The single biggest lever on the bill. Section 41 |
+| <Peach>CDN cache hit ratio</Peach> | The single biggest lever on the bill. <Ref to="#41-why-a-presigned-get-destroys-your-cache">Section 41</Ref> |
 | Bucket size and object count by prefix | Lifecycle rules not firing |

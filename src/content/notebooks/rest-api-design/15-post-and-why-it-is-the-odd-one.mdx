@@ -1,0 +1,55 @@
+---
+number: "15"
+title: "POST, and why it is the odd one"
+part: "III"
+partTitle: "The method is a promise about repeating"
+---
+`POST` creates, and it is the only method that promises nothing. Neither safe nor
+idempotent: two identical `POST` requests are two distinct requests, and the
+server is expected to act on both.
+
+```text
+   POST /organizations   {"name": "Acme"}   ──▶  201, id 8f2a
+   POST /organizations   {"name": "Acme"}   ──▶  201, id 3d10
+
+   the same bytes, twice, and now you have two organisations
+```
+
+The lecture makes exactly the right observation about why this happens: the
+identifier is assigned by the server, usually by the database, so <Peach>the second
+request cannot be recognised as a repeat of the first because it does not carry
+anything that identifies the first.</Peach> There is nothing in the payload to collide
+on unless you have imposed a uniqueness constraint yourself.
+
+**And `POST` is deliberately open-ended.** The specification defines it as
+requesting that the target resource process the enclosed representation according
+to its own semantics, which is close to saying "whatever this endpoint means".
+That vagueness is a feature: it is the escape hatch for every operation that is
+not a create, read, update or delete, and Part VI is about using it well.
+
+<Mint>The consequence to hold on to is that `POST` is the method you choose when you
+cannot make a promise.</Mint> If an operation genuinely is repeatable without harm,
+`PUT` says so and buys you retries for free. Reach for `POST` when it is not, and
+then read <Ref to="#20-making-post-retryable-idempotency-keys">section 20</Ref>, because "not idempotent" is a problem to solve rather than
+a label to apply.
+
+<Ask>
+
+"If `POST` is not idempotent, how does anything survive a mobile network?"
+
+It does not, by default, and this is the practical reason the question matters.
+A client that sends a `POST`, loses the connection, and never sees the response
+has no way to know whether the order was placed. Its choices are to retry and
+risk duplicating, or not retry and risk losing. <Mint><Ref to="#20-making-post-retryable-idempotency-keys">Section 20</Ref>'s idempotency keys
+exist precisely to give the client a third option</Mint>, and "we would add an
+idempotency key" is the answer this question is fishing for.
+
+</Ask>
+
+<KeyIdea>
+
+<Peach>`POST` means "I cannot promise anything about repeating this".</Peach> That is why it
+creates, why it absorbs every custom action, and why it is the only method that
+needs extra machinery to be safely retried.
+
+</KeyIdea>

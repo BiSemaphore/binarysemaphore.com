@@ -1,0 +1,63 @@
+---
+number: "11"
+title: "Path or query, and what an id should look like"
+part: "II"
+partTitle: "Resources, and the URL that names them"
+---
+Two questions that decide most of a URL.
+
+**Where does a parameter go?** The test is one sentence: <Peach>if changing it changes
+which resource you are talking about, it belongs in the path. If it changes which
+subset you get back, or how it is shaped, it belongs in the query.</Peach>
+
+```text
+   /organizations/8f2a          8f2a changes WHICH one        path
+   /organizations?status=active status changes HOW MANY       query
+   /organizations?page=2        page changes WHICH SLICE      query
+   /organizations?fields=id,name  changes the SHAPE           query
+```
+
+Query parameters have three properties worth knowing. They are unordered, so
+`?a=1&b=2` and `?b=2&a=1` are the same request and <Mint>your cache key must treat
+them as such or you will store the same response twice.</Mint> They are optional by
+convention, which is why <Ref to="#38-sane-defaults-sending-nothing-must-work">section 38</Ref>'s defaults matter. And they are <Peach>logged
+everywhere</Peach>: your access logs, the CDN's logs, the browser's history, and
+historically the `Referer` header sent to third parties.
+
+That last property is a security rule, not a style one: <Rose>never put a token, a
+password or a password reset code in a query string.</Rose> Those belong in a header
+or a body. <Ref to="/security">Notebook 05</Ref> <Ref to="#9-the-slash-means-containment">section 9</Ref> covers where credentials leak.
+
+**What should an id look like?** The lecture uses database ids without comment.
+Two things follow from putting one in a URL.
+
+<Peach>An id in a URL is public and permanent, so its format is a promise.</Peach> If you
+expose sequential integers, you have told every consumer that ids are numbers,
+and you cannot later move to something else without a version bump.
+
+<Mint>Sequential integers also leak and invite.</Mint> `/organizations/847` tells a
+competitor you have roughly 847 organisations, and tells an attacker that 846 and
+848 exist and are worth trying. Testing whether your authorisation actually stops
+that is the object-level check in <Ref to="/security">Notebook 05</Ref> <Ref to="#18-what-a-patch-body-actually-is">section 18</Ref>.
+
+| Choice | Good for | Cost |
+|---|---|---|
+| Sequential integer | Small, readable, natural key ordering | Leaks volume, invites enumeration |
+| UUIDv4 | Reveals nothing, generated anywhere | 36 characters, random index inserts |
+| UUIDv7 or ULID | Reveals little, sorts by creation time | Newer, slightly less tool support |
+
+<Signal>
+
+"We treat ids as opaque strings in the interface even where they are integers in
+the database, so that the storage choice is not part of the contract. Consumers
+are told never to parse them."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Path for identity, query for selection, headers for credentials.</Peach> And an id in
+a URL is a permanent public commitment to a format, so make it one you are
+willing to keep.
+
+</KeyIdea>

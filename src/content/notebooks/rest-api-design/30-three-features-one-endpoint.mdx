@@ -1,0 +1,41 @@
+---
+number: "30"
+title: "Three features, one endpoint"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+A list endpoint is never just a list. Three concerns arrive together, and each one
+is a set of query parameters:
+
+```text
+   GET /organizations?status=active&sortBy=name&sortOrder=asc&page=2&limit=20
+                      ─────────────  ──────────────────────── ──────────────
+                       FILTERING           SORTING              PAGINATION
+                       which rows          in what order        how many, from where
+```
+
+They are separable in the interface and coupled in the implementation, which is
+the source of most list-endpoint bugs. <Peach>Pagination is meaningless without a
+deterministic sort</Peach>, filtering changes which index the sort can use, and a
+`total` count has to respect the filter but ignore the pagination.
+
+The order they must be applied in is fixed:
+
+```text
+   1. FILTER    reduce the set
+   2. SORT      order what remains, deterministically
+   3. COUNT     how many are in the filtered set    ← section 34
+   4. PAGINATE  take a slice of the ordered set
+```
+
+Getting that order wrong produces the classic bug where `total` reports the
+number of rows on the current page rather than in the whole filtered set, and the
+client's page count is always one.
+
+<KeyIdea>
+
+<Peach>Filter, sort, count, paginate, in that order.</Peach> The three features look
+independent in the URL and are entangled underneath, and every entanglement in
+this part comes from that.
+
+</KeyIdea>

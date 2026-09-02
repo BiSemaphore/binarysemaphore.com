@@ -23,13 +23,13 @@ Three lines, and knowing their relative sizes changes architectures. Rates move;
 | Driver | The mistake | The fix |
 |---|---|---|
 | Egress | Serving from the bucket | CDN in front, and <Peach>measure the hit rate</Peach> |
-| Egress | Presigned GETs behind a CDN | Section 41 |
+| Egress | Presigned GETs behind a CDN | <Ref to="#41-why-a-presigned-get-destroys-your-cache">Section 41</Ref> |
 | Egress | Compute in a different region from the bucket | Co-locate |
-| Operations | LIST in the request path | Section 16 |
+| Operations | LIST in the request path | <Ref to="#16-why-list-is-not-a-lookup">Section 16</Ref> |
 | Operations | Millions of tiny objects | Aggregate; mind the 128 KB minimum billable size on cold classes |
-| Storage | Abandoned multipart uploads | Section 36 |
+| Storage | Abandoned multipart uploads | <Ref to="#36-abandoned-uploads-the-invisible-bill">Section 36</Ref> |
 | Storage | Every version kept forever | Expire non-current versions |
-| Storage | Nothing ever expires | Lifecycle rules, section 46 |
+| Storage | Nothing ever expires | Lifecycle rules, <Ref to="#46-lifecycle-storage-classes-and-versioning">section 46</Ref> |
 
 <Signal>
 

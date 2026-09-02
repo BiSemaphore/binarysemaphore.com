@@ -26,7 +26,7 @@ blocking writers, and it means dead rows accumulate.
 
 Autovacuum handles this by default. It falls behind under heavy update or delete
 load, and <Peach>a long-running transaction blocks it entirely</Peach>, because rows visible
-to that transaction cannot be reclaimed. This is one more reason section 37's
+to that transaction cannot be reclaimed. This is one more reason <Ref to="#37-transactions-and-what-acid-buys">section 37</Ref>'s
 rule about short transactions is not stylistic.
 
 <DoThis>

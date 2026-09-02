@@ -8,10 +8,9 @@ import {
 // From state, not access: this component decides nothing, it only draws a
 // state, so it has no reason to pull the server-only data layer into its module
 // graph.
-import { TRIAL_DAYS, daysLeft, type Access } from "@/lib/learn/state";
-import { startTrialAction } from "@/app/learn/actions";
-import { DiscordIcon, DownloadIcon, LockIcon } from "@/components/icons";
-import { site } from "@/lib/site";
+import { type Access } from "@/lib/learn/state";
+import { openNotebookAction } from "@/app/learn/actions";
+import { DownloadIcon, LockIcon } from "@/components/icons";
 
 /** The one edition offered first. The others sit under it. */
 const PRIMARY: EditionId = "reading";
@@ -72,8 +71,6 @@ export function AccessPanel({
   base: string;
 }) {
   if (access.state === "active") {
-    const left = access.expiresAt ? daysLeft(access.expiresAt) : null;
-
     return (
       <section
         aria-labelledby="access-heading"
@@ -86,11 +83,6 @@ export function AccessPanel({
           >
             Yours to download
           </h2>
-          {left === null ? null : (
-            <p className="font-mono text-xs text-accent-strong">
-              {left <= 1 ? "last day" : `${left} days left`}
-            </p>
-          )}
         </div>
 
         <p className="mt-1.5 text-sm leading-6 text-muted">
@@ -99,45 +91,7 @@ export function AccessPanel({
 
         <Downloads notebook={notebook} />
 
-        {left === null ? null : (
-          <p className="mt-5 border-t border-border pt-4 text-xs leading-5 text-subtle">
-            Download the files while you have them. They are yours to keep
-            offline once saved.
-          </p>
-        )}
-      </section>
-    );
-  }
 
-  if (access.state === "expired") {
-    return (
-      <section
-        aria-labelledby="access-heading"
-        className="rounded-panel border border-border bg-card p-6 shadow-soft sm:p-7"
-      >
-        <h2
-          id="access-heading"
-          className="font-display text-lg font-semibold tracking-tight text-foreground"
-        >
-          Your {TRIAL_DAYS} days are up
-        </h2>
-        <p className="mt-2 text-sm leading-6 text-muted">
-          Paid access is not open yet, so there is nothing to buy today. Join the
-          Discord and we will say when it is. Anything you already downloaded is
-          still yours.
-        </p>
-
-        {site.discord ? (
-          <a
-            href="/discord"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
-          >
-            <DiscordIcon className="h-4 w-4" />
-            Join the Discord
-          </a>
-        ) : null}
       </section>
     );
   }
@@ -158,8 +112,8 @@ export function AccessPanel({
           </h2>
         </div>
         <p className="mt-2 text-sm leading-6 text-muted">
-          The whole notebook is free for {TRIAL_DAYS} days. No card, no payment.
-          We ask for an account so the download link belongs to someone.
+          Sign in and the whole notebook opens, all three editions with it. An
+          account is what makes a download belong to someone.
         </p>
 
         <Link
@@ -182,21 +136,20 @@ export function AccessPanel({
         id="access-heading"
         className="font-display text-lg font-semibold tracking-tight text-foreground"
       >
-        Open it free for {TRIAL_DAYS} days
+        Open this notebook
       </h2>
       <p className="mt-2 text-sm leading-6 text-muted">
-        All {notebook.pages} pages, every edition, nothing withheld. The clock
-        starts when you click, and it only runs once for this notebook, so start
-        it when you have time to read.
+        All {notebook.pages} pages, every edition, nothing withheld. It stays
+        open: there is no clock on it.
       </p>
 
-      <form action={startTrialAction} className="mt-5">
+      <form action={openNotebookAction} className="mt-5">
         <input type="hidden" name="slug" value={notebook.slug} />
         <button
           type="submit"
           className="inline-flex items-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
         >
-          Start reading
+          Open the notebook
         </button>
       </form>
     </section>

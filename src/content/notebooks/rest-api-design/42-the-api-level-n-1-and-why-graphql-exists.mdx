@@ -1,0 +1,96 @@
+---
+number: "42"
+title: "The API-level N+1, and why GraphQL exists"
+part: "VI"
+partTitle: "When CRUD runs out"
+---
+The lecture opens by naming GraphQL and RPC as alternatives, says it will focus on
+REST, and never returns. This section is the return, because the reason GraphQL
+exists is a problem that resource-shaped APIs create by design.
+
+**Design your endpoints correctly and a client still has a problem.** A screen
+shows twenty projects, each with its organisation's name and its owner's avatar:
+
+```text
+   GET /projects?limit=20                    1 request
+   GET /organizations/{id}   × 20            20 requests
+   GET /users/{id}           × 20            20 requests
+                                             ────────────
+                                             41 round trips for one screen
+```
+
+<Peach>Nothing is wrong with any individual endpoint.</Peach> Each is a well-modelled
+resource returning exactly its own data. The problem is emergent: <Mint>resource
+granularity that is right for the server is wrong for the screen</Mint>, and on a
+mobile connection at 100ms per round trip this screen takes four seconds.
+
+This is the same shape as the database N+1 in <Ref to="/postgres">Notebook 04</Ref>, moved up a layer, and
+it is the single strongest argument for GraphQL: the client describes the graph it
+wants and gets it in one request.
+
+**Three fixes inside REST, in the order to try them.**
+
+**Compound documents.** Let the client ask for related resources to be included.
+
+```text
+   GET /projects?limit=20&include=organization,owner
+
+   { "data": [ ... ],
+     "included": [ { "type": "organization", ... }, ... ] }
+```
+
+<Mint>This is the standard answer</Mint>, it is what JSON:API specifies, and it solves the
+majority of real cases. The cost is that your server must now resolve those joins
+efficiently, and an `include` that is not implemented with a batched query has
+simply moved the N+1 from the client to your database.
+
+**Sparse fieldsets.** Let the client ask for fewer fields.
+
+```text
+   GET /projects?fields=id,name,organizationId
+```
+
+Cheap to implement, and it addresses payload size rather than round trips, so it
+is a complement rather than an alternative.
+
+**A purpose-built endpoint.** For one important screen, one endpoint that returns
+exactly what it needs. <Peach>Unfashionable, unambiguous, and frequently correct.</Peach> It
+violates resource purity and it makes the most important screen in your product
+fast, which is a trade most teams should take once and not thirty times.
+
+| | REST plus `include` | GraphQL |
+|---|---|---|
+| Round trips | One, for known shapes | One, for any shape |
+| Caching | <Peach>HTTP caching works</Peach> | Mostly your own problem |
+| Cost control | Bounded by what you implemented | <Peach>A client can ask for something enormous</Peach> |
+| Complexity | A query parameter | A type system, a resolver layer, a new set of failure modes |
+
+<Mint>Reach for `include` first.</Mint> GraphQL solves this problem completely and brings
+its own: caching, rate limiting by query cost, and the fact that a naive resolver
+tree is an N+1 generator unless every level is batched.
+
+<KeyIdea>
+
+<Peach>Correct resources plus a real screen equals forty requests.</Peach> `include` fixes
+most of it, a purpose-built endpoint fixes the important one, and GraphQL fixes
+all of it in exchange for the problems in the right-hand column.
+
+</KeyIdea>
+
+<Recall>
+
+What is the test for whether something is a custom action rather than an update? | 5
+
+</Recall>
+
+<Recall>
+
+Why are custom actions not REST, and what does AIP-136 do differently? | 6
+
+</Recall>
+
+<Recall>
+
+Describe the API-level N+1 and the three fixes inside REST. | 7
+
+</Recall>

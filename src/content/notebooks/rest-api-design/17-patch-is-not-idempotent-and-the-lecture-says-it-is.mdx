@@ -1,0 +1,71 @@
+---
+number: "17"
+title: "PATCH is not idempotent, and the lecture says it is"
+part: "III"
+partTitle: "The method is a promise about repeating"
+---
+The lecture states twice, confidently, that `PATCH` is idempotent. <Peach>It is not,
+and RFC 5789, the specification that defines `PATCH`, says so explicitly.</Peach>
+
+The lecture's reasoning is sound for its own example. Setting `name` to `"B"`
+repeatedly leaves the name as `"B"`, so that particular patch is idempotent. The
+error is generalising from one patch document to the method. <Mint>Idempotence is a
+property the method must guarantee for every request, because infrastructure
+applies it without inspecting bodies.</Mint>
+
+**A counter-example is one line.** Under JSON Patch, appending to an array:
+
+```text
+   PATCH /organizations/8f2a
+   [ { "op": "add", "path": "/tags/-", "value": "beta" } ]
+
+   once     tags: ["beta"]
+   twice    tags: ["beta", "beta"]
+   ten times ...
+```
+
+Nothing unusual is happening. That is the standard append operation from RFC
+6902, and it is not idempotent. The same is true of any patch expressing a
+relative change: increment a counter, add to a total, push onto a list.
+
+**Why the distinction has teeth.** A retrying HTTP client library decides whether
+to repeat a failed request by looking at the method. If `PATCH` were idempotent,
+those libraries would retry it on a timeout. <Peach>Because it is not, they do not,
+and that is the correct behaviour</Peach>, since the library cannot know whether your
+patch document is a literal assignment or an append.
+
+| Patch body | Idempotent? |
+|---|---|
+| `{"status": "archived"}` | Yes, as it happens |
+| `[{"op":"replace","path":"/status","value":"archived"}]` | Yes, as it happens |
+| `[{"op":"add","path":"/tags/-","value":"beta"}]` | <Peach>No</Peach> |
+| `[{"op":"test",...},{"op":"replace",...}]` | Conditionally, and that is the point |
+
+<Trap>
+
+<Rose>"`PATCH` is idempotent because updating a field to the same value twice leaves
+the same value."</Rose>
+
+This is the lecture's claim and it is the most common wrong answer to a
+frequently asked question. <Mint>A particular patch may be idempotent; the method is
+not, because the method must hold for every possible patch document, including
+appends and increments.</Mint> The precise version: "`PUT` and `DELETE` are
+idempotent, `PATCH` is not, though most patches in practice happen to be."
+
+</Trap>
+
+<Signal>
+
+"`PATCH` is not idempotent per RFC 5789, even though most patch bodies are. That
+is why retry libraries repeat `PUT` and `DELETE` on a timeout but not `PATCH`. If
+I need a retryable partial update, I make the patch conditional with `If-Match`."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>The method's promise must hold for every body, not for the body you had in
+mind.</Peach> `PATCH` fails that test, which is why it sits with `POST` and not with
+`PUT`.
+
+</KeyIdea>

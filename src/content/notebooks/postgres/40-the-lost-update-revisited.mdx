@@ -4,7 +4,7 @@ title: "The lost update, revisited"
 part: "VII"
 partTitle: "Correctness under concurrency"
 ---
-Section 2's bug, now with a real database, because <Peach>a transaction alone does not
+<Ref to="#2-what-a-text-file-cannot-do">Section 2</Ref>'s bug, now with a real database, because <Peach>a transaction alone does not
 fix it</Peach>.
 
 ```text
@@ -49,7 +49,7 @@ are actually "we wrote it as two statements".
 
 "Optimistic concurrency is the same pattern as `If-Match` and an ETag on an
 object store, or a `version` column in an ORM: <Peach>read a version, write
-conditionally on it, and fail loudly if you lost</Peach>. Notebook 02 section 22 is the
+conditionally on it, and fail loudly if you lost</Peach>. <Ref to="/object-storage">Notebook 02</Ref> <Ref to="#22-check-unique-and-pushing-rules-down">section 22</Ref> is the
 identical idea at the storage layer."
 
 </Signal>

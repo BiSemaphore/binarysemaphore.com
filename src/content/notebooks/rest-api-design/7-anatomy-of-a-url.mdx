@@ -1,0 +1,60 @@
+---
+number: "7"
+title: "Anatomy of a URL"
+part: "II"
+partTitle: "Resources, and the URL that names them"
+---
+Six parts, and each one is a decision.
+
+```text
+   https://api.example.com/v1/organizations/8f2a?status=active#notes
+   ─────   ─────────────── ── ───────────────── ────────────── ─────
+     1            2         3          4               5         6
+
+   1  scheme       always https. there is no design decision left here
+   2  authority    the host, usually an api. subdomain
+   3  version      section 12
+   4  path         identity and containment. sections 8 and 9
+   5  query        selection and shaping. section 11
+   6  fragment     never sent to your server at all
+```
+
+**Two of those deserve more than a line.**
+
+**The `api.` subdomain is not only tidiness.** It buys real separation: the API
+can be deployed, scaled and cached independently, it can have its own TLS
+certificate and its own CDN rules, and <Peach>cookies scoped to `www.example.com` are
+not sent to `api.example.com` by default.</Peach> That last one matters more than it
+sounds. An API that does not receive browser cookies cannot be attacked by a
+class of cross-site request forgery that depends on the browser attaching
+credentials automatically. <Ref to="/security">Notebook 05</Ref> <Ref to="#31-the-envelope-what-wraps-your-data">section 31</Ref> covers the attack; the
+subdomain is one of the reasons token authentication is the norm for APIs.
+
+**The fragment never reaches you.** `#notes` is stripped by the client and used
+only in the browser. The lecture describes it as scrolling you to part of a page,
+which is what it does, but the design consequence is the part worth carrying:
+<Rose>a fragment cannot be a parameter to your API, because your server will never
+see it.</Rose> It is occasionally used deliberately for exactly that reason, to keep a
+value out of server logs.
+
+<Trap>
+
+<Rose>"The version, the format and the identifier can all live in the path in any
+order, as long as we are consistent."</Rose>
+
+Consistency is necessary and not sufficient here. <Mint>The path is read
+hierarchically, left to right, as containment</Mint>, so anything in it makes a claim
+about what contains what. `/organizations/8f2a/v1` is consistent and says that
+version 1 is a thing inside organisation 8f2a, which is nonsense. The version is
+a property of the whole interface, so it sits above everything, and the format is
+not identity at all, so it does not belong in the path.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>The path is for identity and containment. The query is for selection and
+shaping.</Peach> Every URL argument in this book reduces to deciding which of those two
+a given piece of information is.
+
+</KeyIdea>

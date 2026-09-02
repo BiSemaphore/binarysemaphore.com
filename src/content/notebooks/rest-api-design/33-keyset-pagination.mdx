@@ -1,0 +1,66 @@
+---
+number: "33"
+title: "Keyset pagination"
+part: "V"
+partTitle: "The list endpoint is where APIs go wrong"
+---
+Also called cursor or seek pagination. Instead of "skip 20 rows", it says "give me
+what comes after this specific row".
+
+```text
+   SELECT * FROM organizations
+   WHERE  (created_at, id) < ('2026-08-30 10:14:22', '8f2a')
+   ORDER  BY created_at DESC, id DESC
+   LIMIT  20
+```
+
+The client sends back a <Pink>cursor</Pink> encoding the last row it saw, and the server
+resumes from there.
+
+```text
+   { "data": [ ... ],
+     "page": { "next": "eyJjIjoiMjAyNi0wOC0zMFQxMDoxNDoyMloiLCJpIjoiOGYyYSJ9" } }
+
+   base64 of  { "c": "2026-08-30T10:14:22Z", "i": "8f2a" }
+```
+
+**Both problems disappear.** New rows inserted above your position do not shift
+anything, because your position is a value rather than a count: you asked for what
+comes after organisation `8f2a`, and that is still well-defined. And the query
+uses the index directly, so <Peach>page 5,000 costs the same as page one</Peach>.
+
+| | Offset | Keyset |
+|---|---|---|
+| Stable under writes | <Peach>No</Peach> | Yes |
+| Cost at depth | Grows linearly | <Peach>Constant</Peach> |
+| Jump to page 7 | Yes | <Peach>No</Peach> |
+| Show "page 3 of 40" | Yes | Needs a separate count |
+| Backwards paging | Free | Needs a reversed query |
+
+**The cursor must be opaque.** Base64 the values, and document that clients must
+not decode or construct one. <Peach>The moment a consumer parses your cursor, its
+internal format is part of your contract</Peach> and you can never add the tie-breaker
+column you will eventually need. Some APIs sign the cursor to enforce this.
+
+**The real trade is the user interface, not the database.** Keyset gives you
+"next" and "previous" and nothing else. Infinite scroll and "load more" fit it
+exactly; numbered page links do not. <Mint>If the product requires jumping to page 7
+you are keeping offset, and the correct engineering answer is to cap how deep
+offsets are allowed to go.</Mint>
+
+<DoThis>
+
+Default new list endpoints to keyset with an opaque cursor. <Mint>Offer offset only
+where a product requirement needs numbered pages, and cap the maximum offset</Mint>,
+because an uncapped deep offset is both a performance cliff and the denial of
+service in <Ref to="#37-the-unbounded-limit">section 37</Ref>.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Keyset pagination asks "what comes after this row" instead of "skip this many".</Peach>
+That one change makes it correct under concurrent writes and constant-cost at any
+depth, at the price of random page access.
+
+</KeyIdea>

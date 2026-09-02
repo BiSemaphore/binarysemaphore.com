@@ -18,13 +18,27 @@ import { createClient, isSupabaseConfigured } from "@/utils/supabase/server";
 import { getCurrentUser } from "@/utils/supabase/auth";
 import { toAccess, type Access, type EntitlementRow } from "@/lib/learn/state";
 
-export {
-  TRIAL_DAYS,
-  canRead,
-  daysLeft,
-  accessLabel,
-  type Access,
-} from "@/lib/learn/state";
+export { canRead, accessLabel, type Access } from "@/lib/learn/state";
+
+/**
+ * Development unlock.
+ *
+ * Working on the reading view means looking at the gated part constantly, and
+ * signing in on every restart to do it is friction with no benefit.
+ *
+ * Two conditions, not one, because this is the paywall. `NODE_ENV` is
+ * `production` for every Vercel build, so the flag alone can never take effect
+ * there, and `LEARN_UNLOCK` lives in `.env.local`, which is git-ignored and
+ * never deployed. Both have to be wrong at once for this to leak.
+ *
+ * It only affects what the app believes. The bucket's RLS policy is unchanged,
+ * so PDF downloads still need a real entitlement even with this on.
+ */
+export function isDevUnlocked(): boolean {
+  return (
+    process.env.NODE_ENV !== "production" && process.env.LEARN_UNLOCK === "1"
+  );
+}
 
 const COLUMNS = "product_id, status, source, expires_at";
 
@@ -51,6 +65,12 @@ export async function getAllAccess(): Promise<Map<string, Access>> {
 
 /** Access to one notebook for the current user. */
 export async function getAccess(productId: string): Promise<Access> {
+  // Applied here so every caller agrees: the reader, the landing page and the
+  // download route all ask this one question.
+  if (isDevUnlocked()) {
+    return { state: "active", expiresAt: null, source: "dev-unlock" };
+  }
+
   if (!isSupabaseConfigured()) return { state: "anonymous" };
 
   const user = await getCurrentUser();
@@ -67,24 +87,22 @@ export async function getAccess(productId: string): Promise<Access> {
 }
 
 /**
- * Start the free trial for one notebook.
+ * Give the signed-in reader access to one notebook.
  *
- * Calls the security-definer function rather than inserting, so the expiry is
- * computed in Postgres. It is idempotent and non-renewable: a second call
- * returns the existing row, including an expired one, so a lapsed trial cannot
- * be restarted by clicking the button again.
+ * Calls the security-definer function rather than inserting, so a client cannot
+ * write its own row. Idempotent: a second call returns the existing grant.
  */
-export async function startTrial(productId: string): Promise<Access> {
+export async function grantAccess(productId: string): Promise<Access> {
   if (!isSupabaseConfigured()) return { state: "anonymous" };
 
   const user = await getCurrentUser();
   if (!user) return { state: "anonymous" };
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("start_learn_trial", {
+  const { data, error } = await supabase.rpc("grant_learn_access", {
     p_product_id: productId,
   });
 
-  if (error) throw new Error(`Could not start the trial: ${error.message}`);
+  if (error) throw new Error(`Could not open the notebook: ${error.message}`);
   return toAccess(data as EntitlementRow | null);
 }

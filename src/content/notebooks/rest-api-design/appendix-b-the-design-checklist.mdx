@@ -1,0 +1,42 @@
+---
+number: ""
+title: "Appendix B. The design checklist"
+part: "IX"
+partTitle: "Appendices"
+---
+Run this before an endpoint ships.
+
+```text
+   THE URL
+   □  collection is plural, lowercase, hyphenated
+   □  nesting is at most one level
+   □  identity in the path, selection in the query
+   □  no credentials, tokens or secrets in the query string
+   □  ids are opaque, and their format is one you will keep
+
+   THE METHOD
+   □  safe methods change nothing that matters
+   □  idempotency is honest, and POST has a key where it needs one
+   □  PATCH declares its dialect in Content-Type
+   □  PUT, if implemented, actually replaces
+
+   THE RESPONSE
+   □  201 carries Location and the representation
+   □  202 carries somewhere to poll
+   □  every failure is a deliberate code, not an escaped exception
+   □  the error body matches the house shape, with a stable type
+   □  nothing internal appears in any error
+
+   THE LIST
+   □  default limit AND maximum limit
+   □  offset depth capped, or keyset used
+   □  sort fields whitelisted, indexed, tie-broken by a unique column
+   □  total is affordable, or replaced by hasMore
+   □  sending no parameters at all returns something sensible
+
+   THE CONTRACT
+   □  naming, dates, money and enums match every other endpoint
+   □  nothing here is a breaking change without a version
+   □  it is in the OpenAPI document
+   □  a consumer could predict it from any other endpoint
+```

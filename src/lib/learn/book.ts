@@ -25,6 +25,11 @@ export type SectionEntry = {
   partTitle: string;
   /** Prose length in characters, used to find where the free part ends. */
   length: number;
+  /** What this section points at: "s:<section-slug>" in this book, or
+   * "n:<notebook-slug>" for another one. */
+  refs: string[];
+  /** Sections in this book that point at this one. */
+  backrefs: string[];
 };
 
 /** Every section of a notebook, in reading order. */

@@ -1,0 +1,80 @@
+---
+number: "47"
+title: "Reviewing an API diff"
+part: "VII"
+partTitle: "Consistency is the whole product"
+---
+An API change is the one kind of pull request where <Peach>the cost of being wrong
+outlives the release</Peach>, because a shipped interface has consumers and a shipped
+mistake needs a version to fix. It deserves a different reading than ordinary
+code. Notebook 03 covers reviewing code; this is the API-specific overlay.
+
+Fourteen questions, in the order they are worth asking:
+
+```text
+   THE SHAPE
+   1  plural collection, nesting at most one level?               8, 9
+   2  is the verb a custom action, and does it need to be?        39
+   3  does anything in the path change identity rather
+      than selection?                                             11
+
+   THE PROMISE
+   4  is the method's safety and idempotency honest?              13
+   5  can this be retried? if not, does it need a key?            20
+   6  does a 201 carry Location? does a 202 carry a job?          21, 28
+
+   THE FAILURES
+   7  every failure mapped to a code deliberately, no 500s
+      escaping from constraint violations?                        24, 26
+   8  does the error body match the house shape?                  29
+   9  does anything internal appear in an error?                  29
+
+   THE LIST
+   10 default AND maximum limit? offset depth capped?             37
+   11 sort fields whitelisted, indexed, and tie-broken?           35
+   12 does it return total, and can it afford to?                 34
+
+   THE CONTRACT
+   13 is this a breaking change? does it need a version?          12
+   14 does it match the naming, dates and money rules?            44
+```
+
+**Question 13 is the one to slow down on.** It is easy to miss because breaking
+changes rarely look dramatic in a diff. <Peach>Adding `required` to an existing
+optional field is one line and breaks every existing client.</Peach> So is tightening a
+validation rule, renaming a field, or changing a default. <Ref to="#12-versioning-what-actually-forces-a-v2">Section 12</Ref> has the full
+list, and it is worth having open during review rather than in your memory.
+
+<DoThis>
+
+Put questions 10, 11 and 13 in your pull request template for any change touching
+an endpoint. <Mint>Those three are the ones that are invisible in a diff and expensive
+in production</Mint>: an uncapped limit, an unindexed sort, and a breaking change
+nobody labelled.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Review an API diff for what it promises, not for what it does.</Peach> The code can
+be fixed next week; the interface has consumers by then.
+
+</KeyIdea>
+
+<Recall>
+
+Why is being uniformly unusual cheaper for a consumer than being occasionally standard? | 5
+
+</Recall>
+
+<Recall>
+
+Give the six naming decisions to write down before the second endpoint exists. | 6
+
+</Recall>
+
+<Recall>
+
+Name the three review questions that are invisible in a diff and expensive in production. | 5
+
+</Recall>

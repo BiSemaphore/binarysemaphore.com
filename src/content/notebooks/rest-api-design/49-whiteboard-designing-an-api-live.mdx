@@ -1,0 +1,64 @@
+---
+number: "49"
+title: "Whiteboard: designing an API live"
+part: "VIII"
+partTitle: "The interview itself"
+---
+"Design the API for a project management tool." Forty minutes. The failure mode is
+to start writing endpoints immediately; the endpoints are the easy part and doing
+them first means doing them without information.
+
+Work in this order, out loud:
+
+```text
+   1. NOUNS               "what are the resources? organisations, projects,
+        │                  tasks, users, tags"                              6
+        ▼                  two minutes, and it frames everything after
+   2. ONE FULL CRUD       list, create, get, update, delete for ONE resource
+        │                  establishes plural, nesting, codes, envelope     8, 21
+        ▼                  then say: "the others follow this pattern"
+   3. THE LIST ENDPOINT   pagination, sorting, filtering, and the caps
+        │                  ← where they will probe. spend time here      30 to 38
+        ▼
+   4. THE CUSTOM ACTION   archive, or clone. name it, justify it            39
+        │                  admit it is RPC before they ask                  41
+        ▼
+   5. THE FAILURES        401 vs 403, 404 vs empty list, 409, the
+        │                  error shape                                  23 to 29
+        ▼
+   6. THE HARD PARTS      retries and idempotency keys, concurrent
+                          edits and ETags, versioning policy         20, 27, 12
+```
+
+**Step 2 is the one to be disciplined about.** <Peach>Design one resource completely
+rather than five resources partially.</Peach> A complete `organizations` family
+demonstrates every convention you have, and "projects and tasks follow the same
+pattern" is a sentence an interviewer will accept immediately, because in a real
+codebase it is also the correct answer.
+
+**Step 3 is where the interview actually happens.** Anyone can produce five CRUD
+routes. The list endpoint is where pagination correctness, index awareness, cost
+control and defaults all live, and it is where a senior answer separates itself.
+<Mint>Volunteer the page-2 bug before you are asked.</Mint>
+
+**Step 6 is what most candidates never reach**, usually because they spent twenty
+minutes on steps 1 and 2. <Peach>Getting to retries, concurrency and versioning is
+worth more than a complete endpoint list</Peach>, so move briskly through the parts you
+know are routine and say that you are doing so.
+
+<DoThis>
+
+Say the trade-off out loud every time you make one. "I am using keyset here, which
+means no jump-to-page-7; if the product needs numbered pages I would use offset
+with a depth cap." <Mint>A named trade is the difference between someone recalling a
+rule and someone designing.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Nouns, one full CRUD, the list endpoint, the action, the failures, the hard
+parts.</Peach> Depth on one resource beats breadth across five, and the last step is
+worth the most.
+
+</KeyIdea>

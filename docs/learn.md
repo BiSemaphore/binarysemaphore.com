@@ -21,33 +21,33 @@ Storage.
 
 ## Access model
 
-A user gets an `entitlements` row per notebook. Today the only source is a free
-trial; the row is what matters, not how it was created.
+A reader gets an `entitlements` row per notebook. Signing in and opening a
+notebook grants it, and **it does not expire**.
 
-| State       | Means                                                            |
-| ----------- | ---------------------------------------------------------------- |
-| `anonymous` | Not signed in.                                                   |
-| `none`      | Signed in, has never opened this notebook.                       |
-| `active`    | May download. `expires_at` in the future, or null for perpetual. |
-| `expired`   | Had a trial, and it ran out.                                     |
+| State       | Means                                                                                                          |
+| ----------- | -------------------------------------------------------------------------------------------------------------- |
+| `anonymous` | Not signed in.                                                                                                 |
+| `none`      | Signed in, has never opened this notebook.                                                                     |
+| `active`    | May read it.                                                                                                   |
+| `expired`   | A row from before access became permanent. Kept so an old row cannot read as active; nothing produces one now. |
 
-**The trial is 7 days, once per notebook.** It starts when the user clicks, not
-when they sign up, so opening the library does not burn anything. It is
-non-renewable: `start_learn_trial()` uses `on conflict do nothing`, so clicking
-again after it lapses returns the expired row rather than extending it.
+### Why there is no clock and no price
 
-`TRIAL_DAYS` in `src/lib/learn/state.ts` is **copy only**. The authoritative
-value is the `interval '7 days'` inside `public.start_learn_trial()`, because a
-client must not be able to choose its own expiry. Change both together.
+These notebooks expand lectures by other people, credited on every notebook page
+with a link to the lecture and the channel. Charging for that, or running a
+countdown that ends at a payment prompt, is not a thing to do with someone
+else's teaching.
 
-### Why payments are not here yet
+The gate stays, because an account is what makes a download belong to somebody
+and it is what reading progress hangs off. `0007` removed the expiry, cleared it
+from existing rows so nobody mid-notebook was cut off, and replaced
+`start_learn_trial()` with `grant_learn_access()`.
 
-They are deliberately absent, and the shape above is what makes adding them
-cheap. A paid grant is the same row with `source = 'stripe'` and
-`expires_at = null`, written by a Stripe webhook. `getAccess`, the storage
-policy, the pages and the download route do not change. When that lands, the
-only new rules are: grant **only** from the signed webhook (never from the
-success redirect), and keep an event-id table for idempotency.
+### If this ever changes
+
+The shape still supports it: a paid grant would be the same row with a different
+`source`, written by a webhook. But it should not be Binary Semaphore charging
+for a notebook built on someone else's lecture.
 
 ## Where authorization actually lives
 

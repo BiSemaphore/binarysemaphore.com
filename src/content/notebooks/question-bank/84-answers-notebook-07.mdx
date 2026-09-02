@@ -1,0 +1,99 @@
+---
+number: "84"
+title: "Answers, Notebook 07"
+part: "10"
+partTitle: "Answers"
+---
+**Q187** Why can the server not just open a TCP connection back to the browser?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#2-framing-the-problem">section 2</Ref>.*
+
+Because the browser has no reachable address. It sits behind at least one layer
+of NAT, usually several, and often a firewall that drops unsolicited inbound
+packets. Its address is only meaningful inside the connection it opened. This is
+also why peer-to-peer protocols need STUN, TURN and ICE: hole punching exists
+entirely to work around this. For a backend, the practical consequence is that
+the client always initiates, forever, and the only question is what it gets to
+keep afterwards.
+
+**Q188** If long polling is worse, why does it still appear in production stacks?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#5-the-queue">section 5</Ref>.*
+
+Because it needs nothing from the network path. Every proxy, every corporate
+middlebox and every CDN understands a slow `GET`, and none of them need to
+understand an upgrade or an event stream. It is still the correct fallback tier
+in libraries that negotiate a transport, and it is what those libraries drop to
+when the environment refuses anything better.
+
+**Q191** What happens to events published while the client was disconnected?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#9-the-interview-itself">section 9</Ref>.*
+
+Nothing, unless you built the backlog. `Last-Event-ID` gives you the client's
+position; it does not give you the events. You still need somewhere to read
+"everything after 1842" from, which means a durable, ordered log per topic with
+a retention window. The browser hands you the question. Answering it is your
+design problem, and it is the same problem in <Ref to="#32-types-are-the-first-constraint">section 32</Ref>.
+
+**Q192** The stream works locally and delivers nothing in staging. Where do you look?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#11-opening">section 11</Ref>.*
+
+Buffering first, then timeouts. Curl the endpoint directly against the app,
+bypassing the proxy: if events arrive there and not through the proxy, it is
+buffering. If both work but the connection dies at a suspiciously round number of
+seconds, it is an idle timeout, and the round number tells you which hop. <Peach>A
+stream that dies at exactly 60 seconds is a configuration value, not a bug.</Peach>
+
+**Q195** Why are there separate text and binary opcodes if both carry bytes?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#16-getting-the-bytes-in">section 16</Ref>.*
+
+Because text frames are required to be valid UTF-8 and a conforming endpoint must
+fail the connection if they are not. That validation is not free at high message
+rates, and it is why protocols carrying binary payloads use `0x2` rather than
+base64 inside `0x1`, which would also inflate the payload by a third.
+
+**Q196** Why do servers not mask their frames?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#17-large-files">section 17</Ref>.*
+
+Because the attack only works in one direction. The threat was a browser being
+used as a confused deputy to write attacker-chosen bytes into an intermediary
+that misreads them as an HTTP exchange. A server writing to a client has no
+equivalent leverage, so the RFC requires masking from client to server and
+forbids it from server to client. A server that masks its frames is failing the
+protocol, and a client that does not mask must be rejected.
+
+**Q197** A client sees 1006 constantly. Where do you start?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#19-final-review">section 19</Ref>.*
+
+Look at the timing distribution before the code. If closures cluster at a round
+number of seconds after connect, it is an idle timeout and the number names the
+hop: 60 seconds says ALB or nginx defaults. If they are spread out and correlate
+with mobile clients, it is normal network churn and the answer is a good
+reconnect path, not a fix. If they spike at deploys, it is <Ref to="#36-correctness-under-concurrency">section 36</Ref>.
+
+**Q201** Why not just set the limit to a million everywhere?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#22-the-node-js-runtime">section 22</Ref>.*
+
+Because the descriptor limit is the only thing standing between a leak and the
+machine. It is a circuit breaker, not an obstacle. Raise it deliberately to a
+number you have sized against your memory budget from <Ref to="#24-the-client-react-and-redux">section 24</Ref>, and alert on
+approaching it. A million descriptors on a box that runs out of memory at 200,000
+connections has converted a clean, immediate `too many open files` into an OOM
+kill that takes every connection with it.
+
+**Q202** You said 10 KB. Why do people report 30 KB or 100 KB in production?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#24-the-client-react-and-redux">section 24</Ref>.*
+
+Because a real connection is not the benchmark's connection. This server had no
+application logic. Add TLS session state, a per-connection outbound queue, the
+compression context from <Ref to="#26-mongodb">section 26</Ref>, a JSON decoder, and whatever your
+application hangs off a session, and the figure moves by an order of magnitude.
+<Peach>10 KB is a floor established by an empty program</Peach>, not a budget. Measure your
+own with a heap profile at a realistic connection count.
+
+**Q206** Redis Cluster broadcasts pub/sub messages to every node. Does that matter?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#29-delivery">section 29</Ref>.*
+
+Yes, and it is a real scaling wall. Classic Redis pub/sub in cluster mode
+propagates every published message to every node so that a subscriber on any node
+receives it, which means your bus does `messages × nodes` of work regardless of
+where subscribers actually are. <Peach>Redis 7 added sharded pub/sub, `SSUBSCRIBE` and
+`SPUBLISH`, which confines a channel to the shard owning its key slot.</Peach> If you
+are running clustered Redis for this, use the sharded commands, or you have
+rebuilt the fan-out problem inside the thing that was supposed to solve it.
+
+**Q210** 30,000 people are watching. Do they all need every event?  *<Ref to="/real-time-backends">Notebook 07</Ref>, <Ref to="#33-designing-the-schema">section 33</Ref>.*
+
+Usually not, and this is the question that removes the most work. Subscription
+should be scoped to what is actually rendered: the visible column, the open
+thread, the current viewport. A user scrolled to the bottom of a board does not
+need cursor movements at the top of it. <Peach>Narrowing the topic is cheaper than
+optimising the fan-out</Peach>, and it is the first thing to look at.
