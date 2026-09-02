@@ -1,0 +1,60 @@
+---
+number: "5"
+title: "What must never be cached"
+part: "I"
+partTitle: "Caching is a bet about staleness"
+---
+A short section, and the one that prevents an incident.
+
+**Anything scoped to one user, in a shared cache, without the user in the key.**
+This is the most damaging caching bug there is, and <Ref to="#24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data">section 24</Ref> covers the
+mechanism. The symptom is one customer seeing another customer's data, and it is
+a reportable breach rather than a bug.
+
+**Authorisation decisions, for longer than they are true.** Caching "user 44 may
+read organisation 8f2a" is reasonable. <Peach>Caching it for an hour means a revoked
+user keeps their access for an hour</Peach>, and "we removed them but they could still
+see everything until lunchtime" is a sentence you do not want to write in an
+incident review. Cache the permission with a short TTL and invalidate on
+revocation, or do not cache it.
+
+**Anything you are legally obliged to be able to delete.** If a user exercises a
+right to erasure and your caches hold copies with an eight-hour TTL, <Mint>the
+deletion is not complete when your database says it is</Mint>. This needs to be an
+explicit invalidation path, not a wait.
+
+**Values whose staleness compounds.** A cached account balance used to authorise
+a spend is not a display concern. <Peach>Anything read in order to make a decision
+about writing needs to be read from the authoritative source</Peach>, or protected by
+the concurrency mechanism in <Ref to="/rest-api-design">Notebook 08</Ref> <Ref to="#27-penetration-and-caching-the-miss">section 27</Ref>.
+
+**Rapidly changing values with low read rates.** <Ref to="#1-the-requirement-the-query-that-runs-a-million-times">Section 1</Ref>'s ratio, inverted. All
+cost, no benefit.
+
+<DoThis>
+
+Write the staleness window next to every cache in your codebase, as a comment or
+a constant with a name. <Mint>`PROFILE_CACHE_TTL_SECONDS = 300` is a documented
+decision; `redis.set(key, val, 300)` is a number somebody typed.</Mint>
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Never cache identity, permission, or anything you must be able to delete on
+demand, beyond a window you can defend out loud.</Peach> The failure mode for these is
+not a slow page, it is an incident report.
+
+</KeyIdea>
+
+<Recall>
+
+Give the average latency formula, and explain why 90% to 99% barely helps latency but matters enormously. | 7
+
+</Recall>
+
+<Recall>
+
+Name the five costs a cache adds, and the two things to try before adding one. | 6
+
+</Recall>

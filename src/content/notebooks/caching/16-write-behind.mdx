@@ -1,0 +1,42 @@
+---
+number: "16"
+title: "Write-behind"
+part: "III"
+partTitle: "The strategies"
+---
+The write goes to the cache, and the database is updated later, asynchronously.
+
+```text
+   1. write the cache            ← the request returns HERE
+   2. queue the change
+   3. some time later, write the database
+```
+
+<Peach>Writes become as fast as the cache</Peach>, which is the point, and batching means
+many updates to the same key can collapse into one database write. For a counter
+incremented ten thousand times a minute, this is the difference between ten
+thousand writes and one.
+
+**And you have made the cache authoritative for a window**, which is a much
+bigger step than it looks. Everything in this book so far assumed the database
+held the truth and the cache held a guess. Now the newest data exists <Peach>only in a
+volatile, in-memory store</Peach>, and if that process dies the writes are gone. Not
+stale. Gone.
+
+| Use it for | Never use it for |
+|---|---|
+| View counts, likes, analytics events | Orders, payments, anything financial |
+| Rate limit counters | Anything a user is told succeeded |
+| Last-seen timestamps | Anything you cannot recompute |
+
+<Mint>The test is whether losing the last few seconds of writes is an inconvenience
+or an incident.</Mint> A view count that loses thirty increments is not worth a durable
+write per increment. An order is.
+
+<KeyIdea>
+
+<Peach>Write-behind makes the cache the source of truth for a window, and volatile
+storage holding the only copy of a write is a data loss risk you must accept
+deliberately.</Peach> Fine for counters, never for money.
+
+</KeyIdea>

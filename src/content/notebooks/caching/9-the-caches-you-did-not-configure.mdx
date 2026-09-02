@@ -1,0 +1,37 @@
+---
+number: "9"
+title: "The caches you did not configure"
+part: "II"
+partTitle: "Where caches live"
+---
+Before a request reaches your infrastructure it has already passed through
+several caches, <Peach>all of which can serve a stale answer and none of which you can
+reach into.</Peach>
+
+```text
+   the browser's memory cache      this session, very fast
+   the browser's disk cache        survives a restart
+   the OS DNS cache                name to address
+   the browser's own DNS cache     Chrome and Firefox keep their own
+   a corporate or ISP proxy        you may not know it exists
+```
+
+**The rule that follows is the important one.** <Peach>Once a response has left your
+server, you cannot recall it.</Peach> The only control you had was the `Cache-Control`
+header you sent with it, and whatever number you put there is now the upper bound
+on how long a user may see the old thing. Part VI is entirely about that header,
+because it is the only lever you get.
+
+This is why <Mint>static assets are served with long lifetimes and content-hashed
+filenames</Mint>: `app.4f2a91.js` can be cached for a year, because a change produces a
+different filename rather than a different body at the same URL. The invalidation
+problem is sidestepped by never reusing a name, which is the same idea as the
+versioned keys in <Ref to="#23-versioned-keys">section 23</Ref>.
+
+<KeyIdea>
+
+<Peach>A response you have sent is out of your control until the lifetime you gave it
+expires.</Peach> Hash the filename when you want long caching and instant updates,
+because renaming is the only invalidation that reaches a browser.
+
+</KeyIdea>

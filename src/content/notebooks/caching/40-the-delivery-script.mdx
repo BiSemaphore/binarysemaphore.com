@@ -1,0 +1,57 @@
+---
+number: "40"
+title: "The delivery script"
+part: "VIII"
+partTitle: "The interview itself"
+---
+**When told "the read path is too slow", do not say "add Redis".** Say what you
+would check first, in about forty seconds:
+
+> "First I would check whether it needs a cache. If it is a slow query, an index
+> or a materialised view fixes it with no consistency cost. If the work is
+> genuinely expensive and read far more often than it changes, then I would cache
+> it. I would use cache-aside with a TTL, put every input that varies the answer
+> into the key including the tenant id, delete rather than update on writes,
+> writing the database first, and coalesce misses so a hot key expiring does not
+> stampede the database. And I would decide explicitly what happens when Redis is
+> unavailable, which for reads should usually be failing open with a short
+> timeout."
+
+That answer covers the decision, the strategy, key design, invalidation, the
+stampede and the failure mode. <Peach>Most candidates cover the first sentence.</Peach>
+
+**Then expect these, and go straight to the concrete thing:**
+
+| Follow-up | Go to |
+|---|---|
+| "What TTL would you use?" | 20. Ask what staleness the product tolerates |
+| "How do you invalidate?" | 21, 22. Delete not update, database first |
+| "What if Redis goes down?" | <Peach>29.</Peach> Fail open, timeouts, circuit breaker |
+| "A hot key expires. What happens?" | 25. Herd, then single-flight |
+| "Why not cache everything?" | 4, 5. Consistency cost, and the breach case |
+| "Cache-aside or write-through?" | 15. Dual writes have no transaction |
+| "How would you cache at the edge?" | 31, 35. `s-maxage`, `private`, `Vary` |
+| "LRU or LFU?" | 30. Scans kill LRU, popularity shifts kill LFU |
+
+**Four sentences that reliably read as senior:**
+
+```text
+   "Caching converts smooth load into spikes, which is why the stampede
+    matters more than the hit ratio."
+
+   "There is no transaction across a database and a cache, so write-through
+    still needs a TTL."
+
+   "If the database cannot serve 100% of traffic, the cache is not an
+    optimisation, it is a dependency."
+
+   "Going from 90% to 99% barely moves latency and removes nine tenths of
+    the remaining database load."
+```
+
+<KeyIdea>
+
+<Peach>Lead with whether to cache at all, then key, TTL, invalidation, failure.</Peach> The
+words "add a cache" are the question, not the answer.
+
+</KeyIdea>

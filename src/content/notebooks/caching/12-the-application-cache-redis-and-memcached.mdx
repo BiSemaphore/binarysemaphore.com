@@ -1,0 +1,68 @@
+---
+number: "12"
+title: "The application cache: Redis and Memcached"
+part: "II"
+partTitle: "Where caches live"
+---
+The layer you actually write code against. Both are <Peach>in-memory key-value
+stores</Peach>, reached over the network, shared by every instance of your application.
+
+The lecture's explanation of why they are fast is correct: the data is in RAM
+rather than on disk. <Ref to="#6-the-hierarchy-end-to-end">Section 6</Ref> adds the qualification that matters, which is that
+<Peach>you still pay a network round trip to reach them</Peach>, so the win against a
+well-indexed database query is real but smaller than "RAM versus disk" suggests.
+Postgres serving a primary-key lookup from its own shared buffers is also reading
+from memory.
+
+**So what does Redis actually buy over a tuned database?**
+
+```text
+   1. it removes work, not just latency     the 400ms aggregate in
+                                            section 1 is never computed
+   2. it is a different resource pool       load moves off the database,
+                                            which is the hardest tier
+                                            to scale        ← Notebook 06
+   3. it is shared across instances         unlike in-process memory,
+                                            all servers see one answer
+   4. it has data structures for the job    counters, sets, sorted sets,
+                                            with atomic operations
+```
+
+<Mint>Point 1 is the strongest argument and the one people forget.</Mint> Caching a
+lookup that was already 2ms is optimisation. Caching an aggregate that took 400ms
+of database CPU is capacity, and capacity is why the lecture's examples all
+involve expensive computation rather than slow reads.
+
+Point 3 is the reason to prefer a shared cache over in-process memory despite
+in-process being a thousand times faster: <Peach>four instances with their own memory
+caches give four different answers to the same question</Peach>, and which one a user
+receives depends on the load balancer. <Ref to="#29-when-the-cache-goes-down">Section 29</Ref> covers when that is acceptable.
+
+Part VII covers Redis specifically: how it executes commands, what its
+persistence does and does not promise, and how it differs from Memcached.
+
+<KeyIdea>
+
+<Peach>A shared in-memory cache buys removed work and a separate resource pool, not
+simply "RAM instead of disk".</Peach> Its most underrated property is that every
+instance sees the same answer.
+
+</KeyIdea>
+
+<Recall>
+
+Give the three latency numbers to memorise, and say which one is physics. | 5
+
+</Recall>
+
+<Recall>
+
+Why is a linked list slower than an array at identical work? Name the unit of transfer. | 5
+
+</Recall>
+
+<Recall>
+
+Why is DNS-based failover never instant, and what do you do before a planned migration? | 6
+
+</Recall>

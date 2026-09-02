@@ -1,0 +1,53 @@
+---
+number: "21"
+title: "Delete, do not update"
+part: "IV"
+partTitle: "Invalidation"
+---
+When data changes, you can write the new value into the cache or you can remove
+the entry and let the next read repopulate it. <Peach>Removing is almost always
+correct</Peach>, and the reasoning is the same concurrency argument as <Ref to="#15-write-through-and-the-claim-that-it-is-always-fresh">section 15</Ref>.
+
+**Updating races. Deleting does not.**
+
+```text
+   UPDATE the cache                       DELETE the key
+
+   writer A: db ← A                       writer A: db ← A, del key
+   writer B: db ← B  (db now holds B)     writer B: db ← B, del key
+   cache ← B                              next read: miss → reads db → B
+   cache ← A   ← arrived second               ✓ correct, whatever the
+   ✗ cache holds A, database holds B            interleaving
+```
+
+The database serialises the writes and the cache updates race independently, so
+<Peach>the cache can settle on a value the database has already superseded, with
+nothing to detect it.</Peach> Deleting cannot produce this, because the repopulation
+reads the database after both writes are committed.
+
+**Three further arguments for deleting:**
+
+<Mint>It is lazy in the useful sense.</Mint> If nobody reads the key again, you never
+compute the value. Updating means computing a new value on every write whether or
+not anyone wants it, which for write-heavy data is pure waste.
+
+<Mint>It is simpler.</Mint> The write path does not need to know how to construct the
+cached representation, which is often a different shape from the row that
+changed. A denormalised dashboard blob is not something your task-update endpoint
+should be able to build.
+
+<Mint>It fails safely.</Mint> A failed delete leaves a stale entry that the TTL will clear.
+A failed update can leave a wrong entry that looks fresh.
+
+**The exception.** For a hot key where a miss is expensive, deleting hands the
+next reader a 400ms recompute and possibly a stampede. There, <Mint>refresh-ahead
+from <Ref to="#17-refresh-ahead-and-stale-while-revalidate">section 17</Ref> is the better shape</Mint>: recompute deliberately, then set. That is
+an update, chosen knowingly, for a key you have identified as hot.
+
+<KeyIdea>
+
+<Peach>Delete on write, do not update.</Peach> Concurrent updates can leave the cache holding
+a superseded value permanently; a delete cannot, because repopulation happens
+after the writes.
+
+</KeyIdea>

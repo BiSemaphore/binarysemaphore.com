@@ -1,0 +1,99 @@
+---
+number: "24"
+title: "Cache key design, and the day you serve the wrong user's data"
+part: "IV"
+partTitle: "Invalidation"
+---
+The most damaging caching bug there is, and it is a key design mistake rather than
+a strategy mistake.
+
+```text
+   cache.set("dashboard", render(currentUser))
+                ─────────
+                no user in the key
+```
+
+<Peach>The first user's dashboard is now served to every user.</Peach> It is a data breach,
+it will be reported by a customer rather than by monitoring, and the code that
+causes it looks completely reasonable in review.
+
+**The rule that prevents it is absolute:**
+
+> <Mint>The cache key must contain every input that can change the answer.</Mint>
+
+Every one. If it changes the response and is not in the key, you will eventually
+serve the wrong response. The checklist:
+
+| Input | Include when |
+|---|---|
+| <Peach>User or tenant id</Peach> | <Mint>Always, for anything user-scoped. This is the breach case</Mint> |
+| Role or permission set | The response varies by what they may see |
+| Locale, currency, timezone | You render any of them |
+| Feature flags | A flag changes the output |
+| API version | <Ref to="#12-the-application-cache-redis-and-memcached">Section 12</Ref> of <Ref to="/rest-api-design">Notebook 08</Ref> |
+| Query parameters | Filters, sort, pagination. All of them |
+| Content version | <Ref to="#23-versioned-keys">Section 23</Ref> |
+
+**A shape that makes mistakes visible:**
+
+```text
+   v3:dashboard:org=8f2a:user=44:role=admin:locale=en-GB:page=1
+   ──  ───────── ─────── ─────── ────────── ─────────── ──────
+   │      │         │       │        │           │        └ params
+   │      │         │       │        │           └ rendering inputs
+   │      │         │       │        └ authorisation input
+   │      │         │       └ identity
+   │      │         └ tenant
+   │      └ what it is
+   └ schema version, bumped when the shape changes
+```
+
+Verbose and self-describing. <Peach>You can read a key in `redis-cli` and know exactly
+what it should contain</Peach>, and a missing segment is visible rather than implied.
+
+**Two further rules.**
+
+<Mint>Prefix with a schema version.</Mint> When you change the shape of a cached object,
+old entries deserialise into the new code and fail in creative ways. Bumping `v3`
+to `v4` makes every old entry unreachable instantly, and it is far cheaper than a
+migration.
+
+<Mint>Never put unbounded user input in a key without hashing and bounding it.</Mint> A
+key built from a raw search string lets a caller fill your keyspace with garbage,
+which is an eviction attack: they push your real entries out. Hash it, and cap
+what you will cache.
+
+<DoThis>
+
+Write one function that builds cache keys and forbid string concatenation
+anywhere else. <Mint>A single `cacheKey(namespace, {...inputs})` helper that requires
+the tenant id as a parameter</Mint> turns the breach in this section from a
+possibility into a compile error.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Every input that changes the answer belongs in the key, and the user or tenant
+id belongs in it always.</Peach> This is the one caching mistake whose consequence is an
+incident report rather than a slow page.
+
+</KeyIdea>
+
+<Recall>
+
+Why is invalidation hard? Give the three things you would need to know. | 6
+
+</Recall>
+
+<Recall>
+
+Give the correct write ordering and explain the race in the wrong one. | 7
+
+</Recall>
+
+<Recall>
+
+List six inputs that must appear in a cache key, and the one whose absence is a breach. | 6
+
+</Recall>

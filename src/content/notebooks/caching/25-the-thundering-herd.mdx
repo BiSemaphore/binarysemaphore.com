@@ -1,0 +1,84 @@
+---
+number: "25"
+title: "The thundering herd"
+part: "V"
+partTitle: "The failure modes"
+---
+The classic, and the one to volunteer before you are asked.
+
+A popular key expires. Between that moment and the moment a new value is written,
+<Peach>every request for it misses</Peach>, and every one of them independently starts the
+expensive recompute.
+
+```text
+   t=0.000   key expires
+   t=0.001   request 1  → miss → starts the 400ms query
+   t=0.002   request 2  → miss → starts the 400ms query
+   t=0.003   request 3  → miss → starts the 400ms query
+     ...
+   t=0.400   request 400 → miss → starts the 400ms query
+   t=0.401   all 400 finish, all 400 write the same value
+
+   400 identical queries. the database that was handling
+   25 requests per second just received 1,000
+```
+
+<Term name="Thundering herd">
+
+Many concurrent requests for the same missing cache entry, each independently
+performing the same expensive work. Also called a cache stampede. <Peach>The cache
+made the system fast enough to attract the traffic that kills it when the cache
+blinks.</Peach>
+
+</Term>
+
+**This is worse than having no cache at all**, which is the part that surprises
+people. Without a cache, load arrives smoothly at 25 requests per second. With
+one, the database sees nothing for five minutes and then a thousand queries in
+one second. <Peach>Caching converts steady load into spikes</Peach>, and databases fail on
+spikes.
+
+**The fix is that only one request should do the work.**
+
+```text
+   SINGLE FLIGHT (also called request coalescing)
+
+   request 1 → miss → acquires lock → does the work → writes → returns
+   request 2 → miss → lock held    → waits          → reads it → returns
+   request 3 → miss → lock held    → waits          → reads it → returns
+
+   one query. the other 399 wait a few hundred milliseconds
+```
+
+In Redis this is `SET lock:key <id> NX EX 10`: <Mint>the `NX` makes it succeed only if
+the key does not exist</Mint>, so exactly one caller wins. Losers either wait and re-read,
+or return the stale value if <Ref to="#17-refresh-ahead-and-stale-while-revalidate">section 17</Ref>'s mechanism is available.
+
+**Three ways to prevent it, in increasing order of quality:**
+
+| Approach | |
+|---|---|
+| A lock, as above | Simple, correct, and the waiters still wait |
+| <Peach>Stale-while-revalidate</Peach> | <Mint>Best. Nobody waits: serve stale, one refreshes</Mint> |
+| Refresh-ahead | Best for a known-hot key. It never expires |
+
+<Mint>Combine the lock with serving stale and no user waits at all</Mint>, which is the
+production answer: the first caller takes the lock and recomputes, everyone else
+is handed the slightly stale value immediately.
+
+<Signal>
+
+"A cache stampede is the failure mode that matters most, because caching converts
+smooth load into spikes. We coalesce with a Redis `SET NX` lock and serve stale
+while one caller refreshes, so a hot key expiring costs one query rather than
+several hundred."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>When a hot key expires, every concurrent request repeats the same expensive
+work.</Peach> One request should do it. Serving the stale value to the others is
+strictly better than making them wait.
+
+</KeyIdea>

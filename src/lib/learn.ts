@@ -110,7 +110,7 @@ export const notebooks: Notebook[] = [
       "253 prompts pulled from notebooks 01 to 09, answers at the back",
     blurb:
       "Work in pen. A prompt you can only half answer is the whole point of the exercise: mark it, and go back to the section it names. Regenerated from every other notebook, so it stays in step with them.",
-    pages: 163,
+    pages: 179,
     contents: [
       "1. Opening",
       "2. Framing the problem",
@@ -191,10 +191,10 @@ export const notebooks: Notebook[] = [
       "77. Answers, Notebook 08",
       "78. Answers, Notebook 09",
     ],
-    // Print and Tablet are withdrawn until they are rebuilt: the Reading
-    // edition has been rewritten and those two are still the old draft.
     assets: {
-      reading: { file: "Question-Bank-Reading.pdf", bytes: 3316017 },
+      reading: { file: "Question-Bank-Reading.pdf", bytes: 3717210 },
+      print: { file: "Question-Bank-Print.pdf", bytes: 5014696 },
+      tablet: { file: "Question-Bank-Tablet.pdf", bytes: 7695122 },
     },
     sources: [],
   },
@@ -399,8 +399,8 @@ export const notebooks: Notebook[] = [
       "Appendix C. Self-test",
     ],
     assets: {
-      reading: { file: "Postgres-Reading.pdf", bytes: 2095920 },
-      print: { file: "Postgres-Print.pdf", bytes: 3139141 },
+      reading: { file: "Postgres-Reading.pdf", bytes: 2095918 },
+      print: { file: "Postgres-Print.pdf", bytes: 3139136 },
       tablet: { file: "Postgres-Tablet.pdf", bytes: 4021915 },
     },
     sources: [
@@ -459,9 +459,9 @@ export const notebooks: Notebook[] = [
       "Appendix C. Self-test",
     ],
     assets: {
-      reading: { file: "Backend-Security-Reading.pdf", bytes: 1634760 },
-      print: { file: "Backend-Security-Print.pdf", bytes: 2293363 },
-      tablet: { file: "Backend-Security-Tablet.pdf", bytes: 2648466 },
+      reading: { file: "Backend-Security-Reading.pdf", bytes: 1634767 },
+      print: { file: "Backend-Security-Print.pdf", bytes: 2293446 },
+      tablet: { file: "Backend-Security-Tablet.pdf", bytes: 2648548 },
     },
     sources: [
       {
@@ -639,10 +639,10 @@ export const notebooks: Notebook[] = [
       "4. Why it is called REST",
       "5. The constraint nobody implements",
     ],
-    // Print and Tablet are withdrawn until they are rebuilt: the Reading
-    // edition has been rewritten and those two are still the old draft.
     assets: {
       reading: { file: "REST-API-Design-Reading.pdf", bytes: 2891344 },
+      print: { file: "REST-API-Design-Print.pdf", bytes: 4081932 },
+      tablet: { file: "REST-API-Design-Tablet.pdf", bytes: 4939485 },
     },
     sources: [
       {
@@ -695,6 +695,78 @@ export const notebooks: Notebook[] = [
       tablet: { file: "Design-Principles-Tablet.pdf", bytes: 1911872 },
     },
     sources: [],
+  },
+  {
+    slug: "caching",
+    series: "System Design Notebook",
+    number: "10",
+    title: "Caching",
+    subtitle:
+      "How wrong you are willing to be, and for how long",
+    blurb:
+      "Where a cache goes and what it costs you when it is stale. The hit ratio arithmetic, the stampede that turns smooth load into spikes, and the invalidation nobody gets right the first time.",
+    pages: 77,
+    contents: [
+      "The whole picture on one page",
+      "1. The requirement: the query that runs a million times",
+      "2. What a cache actually is",
+      "3. The arithmetic of a hit ratio",
+      "4. The cost you just took on",
+      "5. What must never be cached",
+      "6. The hierarchy, end to end",
+      "7. Hardware caching, and the numbers worth memorising",
+      "8. Why RAM is fast, and why sequential is faster still",
+      "9. The caches you did not configure",
+      "10. DNS, and caching at five levels",
+      "11. CDN: the edge, the PoP, and the origin",
+      "12. The application cache: Redis and Memcached",
+      "13. Cache-aside, and the race inside it",
+      "14. Read-through",
+      "15. Write-through, and the claim that it is always fresh",
+      "16. Write-behind",
+      "17. Refresh-ahead and stale-while-revalidate",
+      "18. Choosing",
+      "19. Why invalidation is the hard part",
+      "20. TTL is the honest answer",
+      "21. Delete, do not update",
+      "22. The ordering problem",
+      "23. Versioned keys",
+      "24. Cache key design, and the day you serve the wrong user's data",
+      "25. The thundering herd",
+      "26. Avalanche, and the one line that prevents it",
+      "27. Penetration, and caching the miss",
+      "28. Hot keys",
+      "29. When the cache goes down",
+      "30. Eviction: what to drop when you run out",
+      "31. Cache-Control, and the directive everybody misreads",
+      "32. max-age, s-maxage, and who obeys which",
+      "33. ETag and conditional requests",
+      "34. stale-while-revalidate",
+      "35. Vary, and the cache key you did not know you had",
+      "36. Single-threaded, and the command that kills production",
+      "37. Persistence, and what durable means here",
+      "38. Sessions and rate limits, and the bug in the counter",
+      "39. Redis or Memcached",
+      "40. The delivery script",
+      "41. Whiteboard: adding a cache live",
+      "42. Follow-up question bank",
+      "Appendix A. Numbers worth memorising",
+      "Appendix B. The caching checklist",
+      "Appendix C. Glossary",
+      "Appendix D. Self-test",
+    ],
+    assets: {
+      reading: { file: "Caching-Reading.pdf", bytes: 2074050 },
+      print: { file: "Caching-Print.pdf", bytes: 2958992 },
+      tablet: { file: "Caching-Tablet.pdf", bytes: 3916455 },
+    },
+    sources: [
+      {
+        title: "13. Caching, the secret behind it all",
+        url: "https://www.youtube.com/watch?v=estH64OkwxU",
+        duration: "1h04",
+      },
+    ],
   },
 ];
 

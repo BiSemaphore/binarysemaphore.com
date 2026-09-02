@@ -1,0 +1,59 @@
+---
+number: "33"
+title: "ETag and conditional requests"
+part: "VI"
+partTitle: "Telling someone else's cache what to do"
+---
+`max-age` decides how long a copy is used without asking. <Peach>When it expires, the
+question is not "fetch it again", it is "has it actually changed?"</Peach> Usually it
+has not, and revalidation makes that cheap.
+
+```text
+   first response
+        200 OK
+        ETag: "a9f3c1"
+        [ 40 KB of body ]
+
+   later, once stale
+        GET /organizations/8f2a
+        If-None-Match: "a9f3c1"
+
+        304 Not Modified              ← no body at all
+        ETag: "a9f3c1"
+```
+
+<Peach>A `304` is a few hundred bytes and no body.</Peach> For a large response that changes
+rarely, this is most of the benefit of caching for none of the staleness risk: the
+client is always current, and almost never transfers anything.
+
+<Term name="Conditional request">
+
+A request carrying a validator, such as `If-None-Match` with an ETag, that asks
+the server to send the body only if it has changed. The alternative validator is
+`If-Modified-Since` with a `Last-Modified` date.
+
+</Term>
+
+**ETag against Last-Modified.** <Mint>Prefer the ETag.</Mint> `Last-Modified` has one
+second of resolution, so two changes within one second are indistinguishable, and
+a file rewritten with identical content gets a new timestamp and forces a
+pointless transfer. An ETag can be a hash of the body, which handles both.
+
+**Strong and weak.** `"a9f3c1"` asserts byte-for-byte identity. `W/"a9f3c1"` is
+weak and asserts only that the two are semantically equivalent, which is what you
+want when the body may differ in whitespace or field order. <Mint>Weak is fine for
+most APIs and required if you compress or reformat between requests.</Mint>
+
+**And this is the same header used for writes.** <Ref to="/rest-api-design">Notebook 08</Ref> <Ref to="#27-penetration-and-caching-the-miss">section 27</Ref> uses the
+same ETag with `If-Match` to prevent a lost update, returning `412` when the
+version has moved. <Peach>The identical validator serves caching on reads and
+optimistic concurrency on writes</Peach>, which is one of the tidier pieces of design in
+HTTP and worth pointing out in an interview.
+
+<KeyIdea>
+
+<Peach>Revalidation makes "unchanged" nearly free.</Peach> An ETag plus `If-None-Match`
+yields a bodyless `304`, and the same validator with `If-Match` prevents lost
+updates on writes.
+
+</KeyIdea>

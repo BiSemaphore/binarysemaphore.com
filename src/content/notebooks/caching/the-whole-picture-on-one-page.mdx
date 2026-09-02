@@ -1,0 +1,65 @@
+---
+number: ""
+title: "The whole picture on one page"
+part: ""
+partTitle: ""
+---
+One request for one user's profile, and every cache it passes through.
+
+```text
+   BROWSER                                              staleness window
+     │
+     ├─ memory + disk cache ─────────────────────────    minutes to days
+     │      obeys Cache-Control. you do not control
+     │      when it is cleared                     ← section 31
+     │
+     ├─ OS + browser DNS cache ─────────────────────    seconds to hours
+     │      name to address                        ← section 10
+     ▼
+   CDN EDGE (nearest PoP)
+     │
+     ├─ edge cache ─────────────────────────────────    your s-maxage
+     │      hit: never reaches you at all          ← section 11
+     ▼
+   LOAD BALANCER
+     ▼
+   APPLICATION
+     │
+     ├─ in-process memory ──────────────────────────    seconds
+     │      per instance, so N instances = N        ← section 29
+     │      different answers
+     │
+     ├─ REDIS ──────────────────────────────────────    your TTL
+     │      shared, so all instances agree          ← sections 12, 36
+     ▼
+   POSTGRES
+     │
+     ├─ shared buffers ─────────────────────────────    none: coherent
+     │      the only cache here that cannot be stale
+     ▼
+   DISK
+```
+
+<Peach>Five of those caches can be serving a different answer to the same question at
+the same moment.</Peach> A profile edit that updates Postgres and deletes the Redis key
+has changed two of the seven boxes. The browser, the edge and the in-process
+memory of three other instances are all still confidently wrong.
+
+Four rules are encoded in that picture, and they are the whole book.
+
+- <Peach>Every layer has a staleness window, and you own the number or you inherited
+  it.</Peach> A default TTL is still a decision, made by someone who did not know your
+  system.
+- <Peach>A cache you cannot invalidate is a cache with a TTL, whatever you call it.</Peach>
+  The browser cache is the clearest case: once the response has left, the only
+  bound on its wrongness is the number you already sent.
+- <Peach>Caching moves load, it does not remove it.</Peach> Every miss still costs the full
+  path plus the cache lookup you added.
+- <Peach>The cache is a new dependency and a new failure mode.</Peach> <Ref to="#29-when-the-cache-goes-down">Section 29</Ref> is about
+  the day it is not there, and it is the part most systems have never tested.
+
+<Redraw>
+
+The seven caches between a browser and a disk, with the staleness window of each. | Mark the two you control directly, and the one that cannot be stale.
+
+</Redraw>

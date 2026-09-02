@@ -18,8 +18,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "80-answers-notebook-03",
-      "81-answers-notebook-04"
+      "90-answers-notebook-03",
+      "91-answers-notebook-04"
     ]
   },
   {
@@ -31,10 +31,10 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "78-answers-notebook-01",
-      "79-answers-notebook-02",
-      "83-answers-notebook-06",
-      "84-answers-notebook-07"
+      "88-answers-notebook-01",
+      "89-answers-notebook-02",
+      "93-answers-notebook-06",
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -50,9 +50,9 @@
       "s:9-the-interview-itself"
     ],
     "backrefs": [
-      "78-answers-notebook-01",
-      "85-answers-notebook-08",
-      "86-answers-notebook-09"
+      "88-answers-notebook-01",
+      "95-answers-notebook-08",
+      "96-answers-notebook-09"
     ]
   },
   {
@@ -64,9 +64,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "79-answers-notebook-02",
-      "80-answers-notebook-03",
-      "83-answers-notebook-06"
+      "89-answers-notebook-02",
+      "90-answers-notebook-03",
+      "93-answers-notebook-06"
     ]
   },
   {
@@ -78,15 +78,15 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "78-answers-notebook-01",
-      "79-answers-notebook-02",
-      "80-answers-notebook-03",
-      "81-answers-notebook-04",
-      "82-answers-notebook-05",
-      "83-answers-notebook-06",
-      "84-answers-notebook-07",
-      "85-answers-notebook-08",
-      "86-answers-notebook-09"
+      "88-answers-notebook-01",
+      "89-answers-notebook-02",
+      "90-answers-notebook-03",
+      "91-answers-notebook-04",
+      "92-answers-notebook-05",
+      "93-answers-notebook-06",
+      "94-answers-notebook-07",
+      "95-answers-notebook-08",
+      "96-answers-notebook-09"
     ]
   },
   {
@@ -101,8 +101,8 @@
       "s:20-opening"
     ],
     "backrefs": [
-      "78-answers-notebook-01",
-      "79-answers-notebook-02"
+      "88-answers-notebook-01",
+      "89-answers-notebook-02"
     ]
   },
   {
@@ -116,8 +116,9 @@
     "backrefs": [
       "3-ingestion-getting-the-bytes-in",
       "45-finding-the-bottleneck",
-      "78-answers-notebook-01",
-      "80-answers-notebook-03"
+      "88-answers-notebook-01",
+      "90-answers-notebook-03",
+      "97-answers-notebook-10"
     ]
   },
   {
@@ -129,8 +130,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "79-answers-notebook-02",
-      "81-answers-notebook-04"
+      "89-answers-notebook-02",
+      "91-answers-notebook-04"
     ]
   },
   {
@@ -146,12 +147,12 @@
     ],
     "backrefs": [
       "3-ingestion-getting-the-bytes-in",
-      "78-answers-notebook-01",
-      "80-answers-notebook-03",
-      "83-answers-notebook-06",
-      "84-answers-notebook-07",
-      "85-answers-notebook-08",
-      "86-answers-notebook-09"
+      "88-answers-notebook-01",
+      "90-answers-notebook-03",
+      "93-answers-notebook-06",
+      "94-answers-notebook-07",
+      "95-answers-notebook-08",
+      "96-answers-notebook-09"
     ]
   },
   {
@@ -166,7 +167,7 @@
     ],
     "backrefs": [
       "45-finding-the-bottleneck",
-      "79-answers-notebook-02"
+      "89-answers-notebook-02"
     ]
   },
   {
@@ -180,12 +181,12 @@
       "n:object-storage"
     ],
     "backrefs": [
-      "78-answers-notebook-01",
-      "79-answers-notebook-02",
-      "80-answers-notebook-03",
-      "81-answers-notebook-04",
-      "83-answers-notebook-06",
-      "84-answers-notebook-07"
+      "88-answers-notebook-01",
+      "89-answers-notebook-02",
+      "90-answers-notebook-03",
+      "91-answers-notebook-04",
+      "93-answers-notebook-06",
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -197,8 +198,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "79-answers-notebook-02",
-      "82-answers-notebook-05"
+      "89-answers-notebook-02",
+      "92-answers-notebook-05"
     ]
   },
   {
@@ -210,8 +211,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "79-answers-notebook-02",
-      "83-answers-notebook-06"
+      "89-answers-notebook-02",
+      "93-answers-notebook-06"
     ]
   },
   {
@@ -223,8 +224,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "80-answers-notebook-03",
-      "82-answers-notebook-05"
+      "90-answers-notebook-03",
+      "92-answers-notebook-05"
     ]
   },
   {
@@ -237,9 +238,9 @@
     "refs": [],
     "backrefs": [
       "76-using-them-without-being-used-by-them",
-      "78-answers-notebook-01",
-      "85-answers-notebook-08",
-      "86-answers-notebook-09"
+      "88-answers-notebook-01",
+      "95-answers-notebook-08",
+      "96-answers-notebook-09"
     ]
   },
   {
@@ -254,10 +255,10 @@
       "s:31-why-a-database-at-all"
     ],
     "backrefs": [
-      "78-answers-notebook-01",
-      "79-answers-notebook-02",
-      "81-answers-notebook-04",
-      "84-answers-notebook-07"
+      "88-answers-notebook-01",
+      "89-answers-notebook-02",
+      "91-answers-notebook-04",
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -269,9 +270,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "78-answers-notebook-01",
-      "80-answers-notebook-03",
-      "84-answers-notebook-07"
+      "88-answers-notebook-01",
+      "90-answers-notebook-03",
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -284,10 +285,10 @@
     "refs": [],
     "backrefs": [
       "77-the-interview-itself",
-      "78-answers-notebook-01",
-      "79-answers-notebook-02",
-      "81-answers-notebook-04",
-      "85-answers-notebook-08"
+      "88-answers-notebook-01",
+      "89-answers-notebook-02",
+      "91-answers-notebook-04",
+      "95-answers-notebook-08"
     ]
   },
   {
@@ -301,11 +302,11 @@
       "n:object-storage"
     ],
     "backrefs": [
-      "78-answers-notebook-01",
-      "80-answers-notebook-03",
-      "83-answers-notebook-06",
-      "84-answers-notebook-07",
-      "85-answers-notebook-08"
+      "88-answers-notebook-01",
+      "90-answers-notebook-03",
+      "93-answers-notebook-06",
+      "94-answers-notebook-07",
+      "95-answers-notebook-08"
     ]
   },
   {
@@ -318,8 +319,8 @@
     "refs": [],
     "backrefs": [
       "6-processing",
-      "78-answers-notebook-01",
-      "85-answers-notebook-08"
+      "88-answers-notebook-01",
+      "95-answers-notebook-08"
     ]
   },
   {
@@ -332,9 +333,9 @@
     "refs": [],
     "backrefs": [
       "47-caching",
-      "78-answers-notebook-01",
-      "79-answers-notebook-02",
-      "80-answers-notebook-03"
+      "88-answers-notebook-01",
+      "89-answers-notebook-02",
+      "90-answers-notebook-03"
     ]
   },
   {
@@ -346,9 +347,10 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "79-answers-notebook-02",
-      "84-answers-notebook-07",
-      "85-answers-notebook-08"
+      "89-answers-notebook-02",
+      "94-answers-notebook-07",
+      "95-answers-notebook-08",
+      "97-answers-notebook-10"
     ]
   },
   {
@@ -360,9 +362,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "78-answers-notebook-01",
-      "80-answers-notebook-03",
-      "85-answers-notebook-08"
+      "88-answers-notebook-01",
+      "90-answers-notebook-03",
+      "95-answers-notebook-08"
     ]
   },
   {
@@ -374,10 +376,10 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "79-answers-notebook-02",
-      "82-answers-notebook-05",
-      "83-answers-notebook-06",
-      "84-answers-notebook-07"
+      "89-answers-notebook-02",
+      "92-answers-notebook-05",
+      "93-answers-notebook-06",
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -389,7 +391,7 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "78-answers-notebook-01"
+      "88-answers-notebook-01"
     ]
   },
   {
@@ -402,8 +404,8 @@
     "refs": [],
     "backrefs": [
       "48-more-machines",
-      "78-answers-notebook-01",
-      "84-answers-notebook-07"
+      "88-answers-notebook-01",
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -415,9 +417,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "78-answers-notebook-01",
-      "83-answers-notebook-06",
-      "85-answers-notebook-08"
+      "88-answers-notebook-01",
+      "93-answers-notebook-06",
+      "95-answers-notebook-08"
     ]
   },
   {
@@ -429,7 +431,7 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "79-answers-notebook-02"
+      "89-answers-notebook-02"
     ]
   },
   {
@@ -443,8 +445,8 @@
       "s:31-why-a-database-at-all"
     ],
     "backrefs": [
-      "83-answers-notebook-06",
-      "84-answers-notebook-07"
+      "93-answers-notebook-06",
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -459,8 +461,8 @@
     ],
     "backrefs": [
       "43-final-review",
-      "79-answers-notebook-02",
-      "81-answers-notebook-04"
+      "89-answers-notebook-02",
+      "91-answers-notebook-04"
     ]
   },
   {
@@ -486,8 +488,8 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "81-answers-notebook-04",
-      "84-answers-notebook-07"
+      "91-answers-notebook-04",
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -499,7 +501,7 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "84-answers-notebook-07"
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -522,7 +524,7 @@
     "refs": [],
     "backrefs": [
       "50-moving-work-in-space-and-time",
-      "83-answers-notebook-06"
+      "93-answers-notebook-06"
     ]
   },
   {
@@ -534,7 +536,7 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "84-answers-notebook-07"
+      "94-answers-notebook-07"
     ]
   },
   {
@@ -560,7 +562,7 @@
       "n:security"
     ],
     "backrefs": [
-      "79-answers-notebook-02"
+      "89-answers-notebook-02"
     ]
   },
   {
@@ -581,7 +583,9 @@
     "partTitle": "Backend Security",
     "length": 0,
     "refs": [],
-    "backrefs": []
+    "backrefs": [
+      "86-the-interview-itself"
+    ]
   },
   {
     "slug": "41-authorization",
@@ -602,9 +606,9 @@
     "length": 0,
     "refs": [],
     "backrefs": [
-      "79-answers-notebook-02",
-      "81-answers-notebook-04",
-      "83-answers-notebook-06"
+      "89-answers-notebook-02",
+      "91-answers-notebook-04",
+      "93-answers-notebook-06"
     ]
   },
   {
@@ -997,10 +1001,116 @@
     "backrefs": []
   },
   {
-    "slug": "78-answers-notebook-01",
+    "slug": "78-opening",
     "number": "78",
-    "title": "Answers, Notebook 01",
+    "title": "Opening",
     "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [
+      "n:caching"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "79-caching-is-a-bet-about-staleness",
+    "number": "79",
+    "title": "Caching is a bet about staleness",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "80-where-caches-live",
+    "number": "80",
+    "title": "Where caches live",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "81-the-strategies",
+    "number": "81",
+    "title": "The strategies",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "82-invalidation",
+    "number": "82",
+    "title": "Invalidation",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "83-the-failure-modes",
+    "number": "83",
+    "title": "The failure modes",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "84-telling-someone-else-s-cache-what-to-do",
+    "number": "84",
+    "title": "Telling someone else's cache what to do",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "85-redis-in-practice",
+    "number": "85",
+    "title": "Redis in practice",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "86-the-interview-itself",
+    "number": "86",
+    "title": "The interview itself",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [
+      "s:40-authentication"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "87-final-review",
+    "number": "87",
+    "title": "Final review",
+    "part": "10",
+    "partTitle": "Caching",
+    "length": 0,
+    "refs": [
+      "n:caching"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "88-answers-notebook-01",
+    "number": "88",
+    "title": "Answers, Notebook 01",
+    "part": "11",
     "partTitle": "Answers",
     "length": 7498,
     "refs": [
@@ -1027,10 +1137,10 @@
     "backrefs": []
   },
   {
-    "slug": "79-answers-notebook-02",
-    "number": "79",
+    "slug": "89-answers-notebook-02",
+    "number": "89",
     "title": "Answers, Notebook 02",
-    "part": "10",
+    "part": "11",
     "partTitle": "Answers",
     "length": 7681,
     "refs": [
@@ -1058,10 +1168,10 @@
     "backrefs": []
   },
   {
-    "slug": "80-answers-notebook-03",
-    "number": "80",
+    "slug": "90-answers-notebook-03",
+    "number": "90",
     "title": "Answers, Notebook 03",
-    "part": "10",
+    "part": "11",
     "partTitle": "Answers",
     "length": 9534,
     "refs": [
@@ -1080,10 +1190,10 @@
     "backrefs": []
   },
   {
-    "slug": "81-answers-notebook-04",
-    "number": "81",
+    "slug": "91-answers-notebook-04",
+    "number": "91",
     "title": "Answers, Notebook 04",
-    "part": "10",
+    "part": "11",
     "partTitle": "Answers",
     "length": 4027,
     "refs": [
@@ -1101,10 +1211,10 @@
     "backrefs": []
   },
   {
-    "slug": "82-answers-notebook-05",
-    "number": "82",
+    "slug": "92-answers-notebook-05",
+    "number": "92",
     "title": "Answers, Notebook 05",
-    "part": "10",
+    "part": "11",
     "partTitle": "Answers",
     "length": 2072,
     "refs": [
@@ -1117,10 +1227,10 @@
     "backrefs": []
   },
   {
-    "slug": "83-answers-notebook-06",
-    "number": "83",
+    "slug": "93-answers-notebook-06",
+    "number": "93",
     "title": "Answers, Notebook 06",
-    "part": "10",
+    "part": "11",
     "partTitle": "Answers",
     "length": 5582,
     "refs": [
@@ -1142,10 +1252,10 @@
     "backrefs": []
   },
   {
-    "slug": "84-answers-notebook-07",
-    "number": "84",
+    "slug": "94-answers-notebook-07",
+    "number": "94",
     "title": "Answers, Notebook 07",
-    "part": "10",
+    "part": "11",
     "partTitle": "Answers",
     "length": 5692,
     "refs": [
@@ -1168,10 +1278,10 @@
     "backrefs": []
   },
   {
-    "slug": "85-answers-notebook-08",
-    "number": "85",
+    "slug": "95-answers-notebook-08",
+    "number": "95",
     "title": "Answers, Notebook 08",
-    "part": "10",
+    "part": "11",
     "partTitle": "Answers",
     "length": 3832,
     "refs": [
@@ -1191,10 +1301,10 @@
     "backrefs": []
   },
   {
-    "slug": "86-answers-notebook-09",
-    "number": "86",
+    "slug": "96-answers-notebook-09",
+    "number": "96",
     "title": "Answers, Notebook 09",
-    "part": "10",
+    "part": "11",
     "partTitle": "Answers",
     "length": 1553,
     "refs": [
@@ -1203,6 +1313,20 @@
       "s:3-ingestion-getting-the-bytes-in",
       "s:5-the-queue",
       "s:9-the-interview-itself"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "97-answers-notebook-10",
+    "number": "97",
+    "title": "Answers, Notebook 10",
+    "part": "11",
+    "partTitle": "Answers",
+    "length": 1113,
+    "refs": [
+      "n:caching",
+      "s:22-the-node-js-runtime",
+      "s:7-state-and-visibility"
     ],
     "backrefs": []
   }

@@ -1,0 +1,64 @@
+---
+number: "13"
+title: "Cache-aside, and the race inside it"
+part: "III"
+partTitle: "The strategies"
+---
+The default, and the one you will write most often. The lecture calls it lazy
+caching, which is a good name: nothing is cached until somebody asks for it.
+
+```text
+   READ
+     1. look in the cache
+     2. HIT  → return it
+     3. MISS → read the database
+        4.   → write it into the cache
+        5.   → return it
+
+   WRITE
+     1. write the database
+     2. delete the cache key          ← section 21 on why delete
+```
+
+<Mint>The application owns the cache.</Mint> The cache does not know your database exists,
+which makes this trivial to add to a running system and easy to reason about.
+Its properties are good: only requested data is ever cached, and a cache failure
+degrades you to a slow system rather than a broken one, because a miss and an
+unreachable cache follow the same code path.
+
+**It has a race, and it is worth knowing precisely.**
+
+```text
+   reader                            writer
+
+   1. miss on key "org:8f2a"
+   2. SELECT ... → gets value A
+                                     3. UPDATE ... → value B committed
+                                     4. DELETE cache key   (nothing there)
+   5. SET key = A                    ← writes the OLD value, after the
+                                       delete, and it now persists
+```
+
+<Peach>The reader repopulates the cache with a value it read before the write, after
+the invalidation has already happened.</Peach> The cache now holds A while the database
+holds B, and nothing will correct it until the TTL expires.
+
+**How worried to be.** The window requires a read to be slower than an entire
+write transaction plus an invalidation, which is uncommon but not rare under load
+or with a slow query. <Mint>The standard mitigations, in order of how often they are
+right:</Mint>
+
+| Mitigation | |
+|---|---|
+| <Peach>Always set a TTL</Peach> | Bounds the damage to the TTL, whatever else goes wrong |
+| Delayed double delete | Delete, write, wait a beat, delete again |
+| Single-flight on miss | <Ref to="#25-the-thundering-herd">Section 25</Ref>'s lock also closes most of this window |
+| Versioned keys | <Ref to="#23-versioned-keys">Section 23</Ref>. The stale write lands on a key nobody reads |
+
+<KeyIdea>
+
+<Peach>Cache-aside is the default and its race is real but bounded.</Peach> A TTL on every
+key is the backstop that turns a permanent inconsistency into a temporary one,
+which is why "always set a TTL" is the single most valuable habit in this book.
+
+</KeyIdea>

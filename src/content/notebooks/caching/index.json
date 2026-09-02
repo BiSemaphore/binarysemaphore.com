@@ -1,0 +1,644 @@
+[
+  {
+    "slug": "how-to-use-this-book",
+    "number": "",
+    "title": "How to use this book",
+    "part": "",
+    "partTitle": "",
+    "length": 3400,
+    "refs": [
+      "s:3-the-arithmetic-of-a-hit-ratio"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "the-whole-picture-on-one-page",
+    "number": "",
+    "title": "The whole picture on one page",
+    "part": "",
+    "partTitle": "",
+    "length": 848,
+    "refs": [
+      "s:29-when-the-cache-goes-down"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "1-the-requirement-the-query-that-runs-a-million-times",
+    "number": "1",
+    "title": "The requirement: the query that runs a million times",
+    "part": "I",
+    "partTitle": "Caching is a bet about staleness",
+    "length": 1305,
+    "refs": [],
+    "backrefs": [
+      "3-the-arithmetic-of-a-hit-ratio",
+      "5-what-must-never-be-cached"
+    ]
+  },
+  {
+    "slug": "2-what-a-cache-actually-is",
+    "number": "2",
+    "title": "What a cache actually is",
+    "part": "I",
+    "partTitle": "Caching is a bet about staleness",
+    "length": 988,
+    "refs": [
+      "s:7-hardware-caching-and-the-numbers-worth-memorising"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "3-the-arithmetic-of-a-hit-ratio",
+    "number": "3",
+    "title": "The arithmetic of a hit ratio",
+    "part": "I",
+    "partTitle": "Caching is a bet about staleness",
+    "length": 1023,
+    "refs": [
+      "n:scaling",
+      "s:1-the-requirement-the-query-that-runs-a-million-times",
+      "s:4-the-cost-you-just-took-on"
+    ],
+    "backrefs": [
+      "38-sessions-and-rate-limits-and-the-bug-in-the-counter",
+      "how-to-use-this-book"
+    ]
+  },
+  {
+    "slug": "4-the-cost-you-just-took-on",
+    "number": "4",
+    "title": "The cost you just took on",
+    "part": "I",
+    "partTitle": "Caching is a bet about staleness",
+    "length": 1414,
+    "refs": [
+      "n:postgres",
+      "n:scaling",
+      "s:29-when-the-cache-goes-down"
+    ],
+    "backrefs": [
+      "3-the-arithmetic-of-a-hit-ratio"
+    ]
+  },
+  {
+    "slug": "5-what-must-never-be-cached",
+    "number": "5",
+    "title": "What must never be cached",
+    "part": "I",
+    "partTitle": "Caching is a bet about staleness",
+    "length": 1446,
+    "refs": [
+      "n:rest-api-design",
+      "s:1-the-requirement-the-query-that-runs-a-million-times",
+      "s:24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data",
+      "s:27-penetration-and-caching-the-miss"
+    ],
+    "backrefs": [
+      "20-ttl-is-the-honest-answer"
+    ]
+  },
+  {
+    "slug": "6-the-hierarchy-end-to-end",
+    "number": "6",
+    "title": "The hierarchy, end to end",
+    "part": "II",
+    "partTitle": "Where caches live",
+    "length": 910,
+    "refs": [
+      "s:29-when-the-cache-goes-down"
+    ],
+    "backrefs": [
+      "12-the-application-cache-redis-and-memcached"
+    ]
+  },
+  {
+    "slug": "7-hardware-caching-and-the-numbers-worth-memorising",
+    "number": "7",
+    "title": "Hardware caching, and the numbers worth memorising",
+    "part": "II",
+    "partTitle": "Where caches live",
+    "length": 935,
+    "refs": [],
+    "backrefs": [
+      "2-what-a-cache-actually-is"
+    ]
+  },
+  {
+    "slug": "8-why-ram-is-fast-and-why-sequential-is-faster-still",
+    "number": "8",
+    "title": "Why RAM is fast, and why sequential is faster still",
+    "part": "II",
+    "partTitle": "Where caches live",
+    "length": 1421,
+    "refs": [
+      "s:24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "9-the-caches-you-did-not-configure",
+    "number": "9",
+    "title": "The caches you did not configure",
+    "part": "II",
+    "partTitle": "Where caches live",
+    "length": 912,
+    "refs": [
+      "s:23-versioned-keys"
+    ],
+    "backrefs": [
+      "20-ttl-is-the-honest-answer",
+      "32-max-age-s-maxage-and-who-obeys-which"
+    ]
+  },
+  {
+    "slug": "10-dns-and-caching-at-five-levels",
+    "number": "10",
+    "title": "DNS, and caching at five levels",
+    "part": "II",
+    "partTitle": "Where caches live",
+    "length": 405,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "11-cdn-the-edge-the-pop-and-the-origin",
+    "number": "11",
+    "title": "CDN: the edge, the PoP, and the origin",
+    "part": "II",
+    "partTitle": "Where caches live",
+    "length": 1108,
+    "refs": [
+      "s:24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data",
+      "s:25-the-thundering-herd",
+      "s:35-vary-and-the-cache-key-you-did-not-know-you-had"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "12-the-application-cache-redis-and-memcached",
+    "number": "12",
+    "title": "The application cache: Redis and Memcached",
+    "part": "II",
+    "partTitle": "Where caches live",
+    "length": 1120,
+    "refs": [
+      "s:29-when-the-cache-goes-down",
+      "s:6-the-hierarchy-end-to-end"
+    ],
+    "backrefs": [
+      "24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data",
+      "29-when-the-cache-goes-down"
+    ]
+  },
+  {
+    "slug": "13-cache-aside-and-the-race-inside-it",
+    "number": "13",
+    "title": "Cache-aside, and the race inside it",
+    "part": "III",
+    "partTitle": "The strategies",
+    "length": 808,
+    "refs": [
+      "s:23-versioned-keys",
+      "s:25-the-thundering-herd"
+    ],
+    "backrefs": [
+      "22-the-ordering-problem"
+    ]
+  },
+  {
+    "slug": "14-read-through",
+    "number": "14",
+    "title": "Read-through",
+    "part": "III",
+    "partTitle": "The strategies",
+    "length": 1097,
+    "refs": [
+      "s:25-the-thundering-herd"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "15-write-through-and-the-claim-that-it-is-always-fresh",
+    "number": "15",
+    "title": "Write-through, and the claim that it is always fresh",
+    "part": "III",
+    "partTitle": "The strategies",
+    "length": 1206,
+    "refs": [],
+    "backrefs": [
+      "21-delete-do-not-update"
+    ]
+  },
+  {
+    "slug": "16-write-behind",
+    "number": "16",
+    "title": "Write-behind",
+    "part": "III",
+    "partTitle": "The strategies",
+    "length": 658,
+    "refs": [],
+    "backrefs": [
+      "37-persistence-and-what-durable-means-here"
+    ]
+  },
+  {
+    "slug": "17-refresh-ahead-and-stale-while-revalidate",
+    "number": "17",
+    "title": "Refresh-ahead and stale-while-revalidate",
+    "part": "III",
+    "partTitle": "The strategies",
+    "length": 708,
+    "refs": [
+      "s:34-stale-while-revalidate"
+    ],
+    "backrefs": [
+      "21-delete-do-not-update",
+      "25-the-thundering-herd",
+      "34-stale-while-revalidate"
+    ]
+  },
+  {
+    "slug": "18-choosing",
+    "number": "18",
+    "title": "Choosing",
+    "part": "III",
+    "partTitle": "The strategies",
+    "length": 816,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "19-why-invalidation-is-the-hard-part",
+    "number": "19",
+    "title": "Why invalidation is the hard part",
+    "part": "IV",
+    "partTitle": "Invalidation",
+    "length": 1028,
+    "refs": [
+      "s:20-ttl-is-the-honest-answer"
+    ],
+    "backrefs": [
+      "23-versioned-keys"
+    ]
+  },
+  {
+    "slug": "20-ttl-is-the-honest-answer",
+    "number": "20",
+    "title": "TTL is the honest answer",
+    "part": "IV",
+    "partTitle": "Invalidation",
+    "length": 1043,
+    "refs": [
+      "s:26-avalanche-and-the-one-line-that-prevents-it",
+      "s:5-what-must-never-be-cached",
+      "s:9-the-caches-you-did-not-configure"
+    ],
+    "backrefs": [
+      "19-why-invalidation-is-the-hard-part"
+    ]
+  },
+  {
+    "slug": "21-delete-do-not-update",
+    "number": "21",
+    "title": "Delete, do not update",
+    "part": "IV",
+    "partTitle": "Invalidation",
+    "length": 931,
+    "refs": [
+      "s:15-write-through-and-the-claim-that-it-is-always-fresh",
+      "s:17-refresh-ahead-and-stale-while-revalidate"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "22-the-ordering-problem",
+    "number": "22",
+    "title": "The ordering problem",
+    "part": "IV",
+    "partTitle": "Invalidation",
+    "length": 867,
+    "refs": [
+      "s:13-cache-aside-and-the-race-inside-it",
+      "s:25-the-thundering-herd"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "23-versioned-keys",
+    "number": "23",
+    "title": "Versioned keys",
+    "part": "IV",
+    "partTitle": "Invalidation",
+    "length": 1408,
+    "refs": [
+      "s:19-why-invalidation-is-the-hard-part",
+      "s:30-eviction-what-to-drop-when-you-run-out"
+    ],
+    "backrefs": [
+      "13-cache-aside-and-the-race-inside-it",
+      "24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data",
+      "9-the-caches-you-did-not-configure"
+    ]
+  },
+  {
+    "slug": "24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data",
+    "number": "24",
+    "title": "Cache key design, and the day you serve the wrong user's data",
+    "part": "IV",
+    "partTitle": "Invalidation",
+    "length": 1035,
+    "refs": [
+      "n:rest-api-design",
+      "s:12-the-application-cache-redis-and-memcached",
+      "s:23-versioned-keys"
+    ],
+    "backrefs": [
+      "11-cdn-the-edge-the-pop-and-the-origin",
+      "31-cache-control-and-the-directive-everybody-misreads",
+      "35-vary-and-the-cache-key-you-did-not-know-you-had",
+      "5-what-must-never-be-cached",
+      "8-why-ram-is-fast-and-why-sequential-is-faster-still"
+    ]
+  },
+  {
+    "slug": "25-the-thundering-herd",
+    "number": "25",
+    "title": "The thundering herd",
+    "part": "V",
+    "partTitle": "The failure modes",
+    "length": 1206,
+    "refs": [
+      "s:17-refresh-ahead-and-stale-while-revalidate"
+    ],
+    "backrefs": [
+      "11-cdn-the-edge-the-pop-and-the-origin",
+      "13-cache-aside-and-the-race-inside-it",
+      "14-read-through",
+      "22-the-ordering-problem",
+      "34-stale-while-revalidate"
+    ]
+  },
+  {
+    "slug": "26-avalanche-and-the-one-line-that-prevents-it",
+    "number": "26",
+    "title": "Avalanche, and the one line that prevents it",
+    "part": "V",
+    "partTitle": "The failure modes",
+    "length": 1009,
+    "refs": [
+      "n:scaling"
+    ],
+    "backrefs": [
+      "20-ttl-is-the-honest-answer"
+    ]
+  },
+  {
+    "slug": "27-penetration-and-caching-the-miss",
+    "number": "27",
+    "title": "Penetration, and caching the miss",
+    "part": "V",
+    "partTitle": "The failure modes",
+    "length": 783,
+    "refs": [],
+    "backrefs": [
+      "33-etag-and-conditional-requests",
+      "5-what-must-never-be-cached"
+    ]
+  },
+  {
+    "slug": "28-hot-keys",
+    "number": "28",
+    "title": "Hot keys",
+    "part": "V",
+    "partTitle": "The failure modes",
+    "length": 427,
+    "refs": [
+      "n:postgres",
+      "s:29-when-the-cache-goes-down"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "29-when-the-cache-goes-down",
+    "number": "29",
+    "title": "When the cache goes down",
+    "part": "V",
+    "partTitle": "The failure modes",
+    "length": 1129,
+    "refs": [
+      "s:12-the-application-cache-redis-and-memcached"
+    ],
+    "backrefs": [
+      "12-the-application-cache-redis-and-memcached",
+      "28-hot-keys",
+      "38-sessions-and-rate-limits-and-the-bug-in-the-counter",
+      "4-the-cost-you-just-took-on",
+      "6-the-hierarchy-end-to-end",
+      "the-whole-picture-on-one-page"
+    ]
+  },
+  {
+    "slug": "30-eviction-what-to-drop-when-you-run-out",
+    "number": "30",
+    "title": "Eviction: what to drop when you run out",
+    "part": "V",
+    "partTitle": "The failure modes",
+    "length": 860,
+    "refs": [],
+    "backrefs": [
+      "23-versioned-keys"
+    ]
+  },
+  {
+    "slug": "31-cache-control-and-the-directive-everybody-misreads",
+    "number": "31",
+    "title": "Cache-Control, and the directive everybody misreads",
+    "part": "VI",
+    "partTitle": "Telling someone else's cache what to do",
+    "length": 1214,
+    "refs": [
+      "n:security",
+      "s:24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data",
+      "s:34-stale-while-revalidate"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "32-max-age-s-maxage-and-who-obeys-which",
+    "number": "32",
+    "title": "max-age, s-maxage, and who obeys which",
+    "part": "VI",
+    "partTitle": "Telling someone else's cache what to do",
+    "length": 1196,
+    "refs": [
+      "s:9-the-caches-you-did-not-configure"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "33-etag-and-conditional-requests",
+    "number": "33",
+    "title": "ETag and conditional requests",
+    "part": "VI",
+    "partTitle": "Telling someone else's cache what to do",
+    "length": 1220,
+    "refs": [
+      "n:rest-api-design",
+      "s:27-penetration-and-caching-the-miss"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "34-stale-while-revalidate",
+    "number": "34",
+    "title": "stale-while-revalidate",
+    "part": "VI",
+    "partTitle": "Telling someone else's cache what to do",
+    "length": 447,
+    "refs": [
+      "s:17-refresh-ahead-and-stale-while-revalidate",
+      "s:25-the-thundering-herd"
+    ],
+    "backrefs": [
+      "17-refresh-ahead-and-stale-while-revalidate",
+      "31-cache-control-and-the-directive-everybody-misreads"
+    ]
+  },
+  {
+    "slug": "35-vary-and-the-cache-key-you-did-not-know-you-had",
+    "number": "35",
+    "title": "Vary, and the cache key you did not know you had",
+    "part": "VI",
+    "partTitle": "Telling someone else's cache what to do",
+    "length": 833,
+    "refs": [
+      "s:24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data"
+    ],
+    "backrefs": [
+      "11-cdn-the-edge-the-pop-and-the-origin"
+    ]
+  },
+  {
+    "slug": "36-single-threaded-and-the-command-that-kills-production",
+    "number": "36",
+    "title": "Single-threaded, and the command that kills production",
+    "part": "VII",
+    "partTitle": "Redis in practice",
+    "length": 751,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "37-persistence-and-what-durable-means-here",
+    "number": "37",
+    "title": "Persistence, and what durable means here",
+    "part": "VII",
+    "partTitle": "Redis in practice",
+    "length": 609,
+    "refs": [
+      "s:16-write-behind"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "38-sessions-and-rate-limits-and-the-bug-in-the-counter",
+    "number": "38",
+    "title": "Sessions and rate limits, and the bug in the counter",
+    "part": "VII",
+    "partTitle": "Redis in practice",
+    "length": 1297,
+    "refs": [
+      "n:rest-api-design",
+      "n:scaling",
+      "n:security",
+      "s:29-when-the-cache-goes-down",
+      "s:3-the-arithmetic-of-a-hit-ratio"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "39-redis-or-memcached",
+    "number": "39",
+    "title": "Redis or Memcached",
+    "part": "VII",
+    "partTitle": "Redis in practice",
+    "length": 1472,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "40-the-delivery-script",
+    "number": "40",
+    "title": "The delivery script",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "length": 1678,
+    "refs": [],
+    "backrefs": [
+      "42-follow-up-question-bank"
+    ]
+  },
+  {
+    "slug": "41-whiteboard-adding-a-cache-live",
+    "number": "41",
+    "title": "Whiteboard: adding a cache live",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "length": 507,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "42-follow-up-question-bank",
+    "number": "42",
+    "title": "Follow-up question bank",
+    "part": "VIII",
+    "partTitle": "The interview itself",
+    "length": 1370,
+    "refs": [
+      "s:40-the-delivery-script"
+    ],
+    "backrefs": []
+  },
+  {
+    "slug": "appendix-a-numbers-worth-memorising",
+    "number": "",
+    "title": "Appendix A. Numbers worth memorising",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "appendix-b-the-caching-checklist",
+    "number": "",
+    "title": "Appendix B. The caching checklist",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "appendix-c-glossary",
+    "number": "",
+    "title": "Appendix C. Glossary",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  },
+  {
+    "slug": "appendix-d-self-test",
+    "number": "",
+    "title": "Appendix D. Self-test",
+    "part": "IX",
+    "partTitle": "Appendices",
+    "length": 0,
+    "refs": [],
+    "backrefs": []
+  }
+]

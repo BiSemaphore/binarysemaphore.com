@@ -1,0 +1,71 @@
+---
+number: "31"
+title: "Cache-Control, and the directive everybody misreads"
+part: "VI"
+partTitle: "Telling someone else's cache what to do"
+---
+One header, a list of directives, and it governs every cache between your server
+and the user's screen.
+
+```text
+   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+                  ──────  ────────────  ──────────────────────────
+                  who may  how long it   what to do once it is
+                  store it  stays fresh   stale
+```
+
+**Start with the pair that is confused constantly.**
+
+```text
+   no-store    do not write this down anywhere. no disk, no memory,
+               no CDN. for anything genuinely secret
+
+   no-cache    STORE IT, but never use it without asking me first
+               a conditional request every time. section 33
+```
+
+<Rose>`no-cache` does not mean "do not cache".</Rose> It means "do not serve this without
+revalidating", and the entry is still stored so that revalidation can return a
+cheap `304`. <Mint>The directive that means what people think `no-cache` means is
+`no-store`.</Mint> Choosing `no-cache` when you meant `no-store` leaves copies of a
+sensitive response in shared caches; choosing `no-store` when you meant
+`no-cache` throws away a nearly free optimisation.
+
+**The full set worth knowing:**
+
+| Directive | Meaning |
+|---|---|
+| `public` | Any cache may store it, including shared ones |
+| `private` | <Peach>Only the user's own browser.</Peach> Never a CDN or proxy |
+| `no-store` | Store nothing, anywhere |
+| `no-cache` | Store, but revalidate before every use |
+| `max-age=N` | Fresh for N seconds |
+| `s-maxage=N` | Fresh for N seconds, <Peach>shared caches only</Peach> |
+| `must-revalidate` | Once stale, never serve it. Revalidate or fail |
+| `immutable` | This will never change. Do not revalidate, even on reload |
+| `stale-while-revalidate=N` | <Ref to="#34-stale-while-revalidate">Section 34</Ref> |
+| `stale-if-error=N` | Serve stale if the origin is failing |
+
+**`private` is a security control, not a performance one.** <Peach>Any authenticated,
+user-specific response must carry `private` or `no-store`</Peach>, because without one
+of them a shared cache is permitted to store it and serve it to the next person
+who asks for that URL. That is <Ref to="#24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data">section 24</Ref>'s breach, occurring in a cache you do
+not own and cannot purge. <Ref to="/security">Notebook 05</Ref> covers the exposure.
+
+<Trap>
+
+<Rose>"We set `Cache-Control: no-cache` so the response is not cached."</Rose>
+
+It is cached. `no-cache` requires revalidation before reuse, which is a useful
+setting and not a privacy one. <Mint>For a response nobody should retain, the
+directive is `no-store`.</Mint> <Peach>A user's bank balance behind `no-cache` may sit in a
+proxy's storage indefinitely</Peach>, revalidated politely each time.
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>`no-store` means do not keep it, `no-cache` means keep it and always ask.</Peach> And
+`private` is what stops a shared cache serving one user's response to another.
+
+</KeyIdea>

@@ -1,0 +1,53 @@
+---
+number: "6"
+title: "The hierarchy, end to end"
+part: "II"
+partTitle: "Where caches live"
+---
+Every cache in computing sits somewhere on one axis. Faster is smaller, more
+expensive per byte, and usually more volatile.
+
+```text
+             FASTER, SMALLER, MORE EXPENSIVE PER BYTE
+                            ▲
+   L1 cache          ~1 ns          64 KB           per core
+   L2 cache          ~4 ns          1 MB            per core
+   L3 cache        ~30 ns           32 MB           shared
+   main memory    ~100 ns           64 GB           volatile
+   Redis, same DC ~0.5 ms           100 GB          volatile, shared
+   SSD            ~100 µs           4 TB            durable
+   spinning disk    ~10 ms          16 TB           durable, cheap
+   another region  ~150 ms          unbounded       the origin
+                            ▼
+             SLOWER, LARGER, CHEAPER PER BYTE
+```
+
+Read the orders of magnitude rather than the digits. <Peach>L1 to main memory is a
+factor of one hundred. Main memory to a network round trip is another five
+thousand.</Peach> Those two gaps are why the hierarchy exists at all, and they are
+stable across decades even as the absolute numbers improve.
+
+**One thing the diagram makes obvious and the lecture does not state.** Redis
+sits *below* main memory in this list even though Redis is main memory, because
+<Peach>reaching it costs a network round trip and the memory access is the cheap part.</Peach>
+A local in-process cache is roughly a thousand times faster than the same value in
+Redis. That is the entire argument for in-process caching, and <Ref to="#29-when-the-cache-goes-down">section 29</Ref> is the
+argument against it.
+
+**The same three questions apply at every level:**
+
+```text
+   what do I keep?          eviction, section 30
+   how do I know it is      invalidation, part IV
+     still true?
+   what if it is not        the failure modes, part V
+     there?
+```
+
+<KeyIdea>
+
+<Peach>The hierarchy is one idea repeated at seven scales.</Peach> Speed costs capacity and
+durability, and a network hop costs more than any memory access, which is why
+"it is in RAM" says nothing about how fast it is to reach.
+
+</KeyIdea>

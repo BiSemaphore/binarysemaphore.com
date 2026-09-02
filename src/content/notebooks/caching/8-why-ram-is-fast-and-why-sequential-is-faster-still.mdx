@@ -1,0 +1,65 @@
+---
+number: "8"
+title: "Why RAM is fast, and why sequential is faster still"
+part: "II"
+partTitle: "Where caches live"
+---
+The lecture explains that RAM is random access, meaning any address costs the
+same to reach, unlike a disk where a head must physically move. <Peach>That is right
+about the contrast with disk and misleading about RAM itself</Peach>, and the
+correction is worth a page because it explains a fact every engineer has met.
+
+**Memory is not accessed one byte at a time.** When the processor reads an
+address, it fetches an entire <Pink>cache line</Pink>, typically 64 bytes, into L1. Asking
+for one byte brings its 63 neighbours along at no additional cost.
+
+```text
+   int array[16]              one cache line, 64 bytes
+
+   ┌────┬────┬────┬────┬────┬────┬────┬────┬ ...
+   │ [0]│ [1]│ [2]│ [3]│ [4]│ [5]│ [6]│ [7]│
+   └────┴────┴────┴────┴────┴────┴────┴────┴ ...
+      ▲
+      read array[0]:  a miss, ~100ns, fetches the whole line
+      read array[1]:  already in L1,  ~1 ns
+      ...
+      read array[15]: already in L1,  ~1 ns
+
+      sixteen reads, one trip to memory
+```
+
+Add the hardware prefetcher, which detects a sequential pattern and fetches the
+next lines before they are asked for, and a linear scan runs at close to memory
+bandwidth.
+
+**So access patterns matter enormously**, and the lecture's own example is the
+proof. It says arrays are fast to traverse because of predictive algorithms,
+which is the right conclusion. <Peach>The mechanism is that array elements are
+adjacent in memory, so one fetch serves many reads.</Peach> A linked list holding the
+same integers, with nodes scattered across the heap, gets a cache miss on nearly
+every element and can run an order of magnitude slower doing identical work.
+
+That is the practical form of the whole idea: <Mint>data that is used together should
+be stored together</Mint>, which is a rule that reappears at every level of this book,
+including how you shape a Redis key in <Ref to="#24-cache-key-design-and-the-day-you-serve-the-wrong-user-s-data">section 24</Ref>.
+
+<Trap>
+
+<Rose>"RAM is random access, so it does not matter how you traverse a data
+structure."</Rose>
+
+It is random access relative to a spinning disk, where a seek costs milliseconds.
+<Peach>Within memory, locality still changes performance by ten times or more</Peach>,
+because the unit of transfer is a 64-byte line and the prefetcher rewards
+predictable patterns. <Mint>"Random access" means any address is reachable in
+constant time, not that every access pattern costs the same.</Mint>
+
+</Trap>
+
+<KeyIdea>
+
+<Peach>Memory moves in 64-byte lines, and a prefetcher rewards sequential access.</Peach>
+This is why arrays beat linked lists at identical work, and it is the smallest
+version of the principle that things used together should live together.
+
+</KeyIdea>

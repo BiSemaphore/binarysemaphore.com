@@ -1,0 +1,38 @@
+---
+number: ""
+title: "Appendix B. The caching checklist"
+part: "IX"
+partTitle: "Appendices"
+---
+```text
+   BEFORE
+   □  is it read much more often than it changes?
+   □  would an index or a materialised view fix it instead?
+   □  what is the worst thing that happens if it is stale?
+   □  is anyone allowed to be told this answer? (identity, permissions)
+
+   THE KEY
+   □  tenant or user id, if the answer is scoped to one
+   □  role, locale, feature flags, all query parameters
+   □  a schema version prefix
+   □  built by one helper function, never concatenated by hand
+
+   THE LIFETIME
+   □  a TTL on every key, without exception
+   □  jitter of about 10%
+   □  delete on write, not update
+   □  database written first, cache deleted second
+
+   THE FAILURE MODES
+   □  single-flight or stale-while-revalidate on expensive keys
+   □  negative caching for the not-found path
+   □  a plan for a hot key
+   □  short connect and command timeouts
+   □  fail open, and the origin can survive it, or sheds
+
+   THE EDGE
+   □  Cache-Control on every response, including no-store
+   □  private on anything authenticated
+   □  short max-age, long s-maxage, purge on change
+   □  Vary: Accept-Encoding, and nothing high-cardinality
+```

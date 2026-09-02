@@ -1,0 +1,70 @@
+---
+number: "3"
+title: "The arithmetic of a hit ratio"
+part: "I"
+partTitle: "Caching is a bet about staleness"
+---
+This is the section to work with a pen, because the result contradicts most
+people's intuition about when a cache is "good enough".
+
+**Average latency.** You pay the cache lookup on every request. On a miss you pay
+it and then pay the origin as well:
+
+```text
+   T_avg  =  h · T_cache  +  (1 - h) · (T_cache + T_origin)
+
+          =  T_cache  +  (1 - h) · T_origin
+             ───────     ─────────────────
+             always      only on misses
+```
+
+With the dashboard from <Ref to="#1-the-requirement-the-query-that-runs-a-million-times">section 1</Ref>, a Redis lookup at 1ms and a query at 400ms:
+
+```text
+   h = 0.50   →  1 + 0.50 × 400  =  201 ms
+   h = 0.90   →  1 + 0.10 × 400  =   41 ms
+   h = 0.99   →  1 + 0.01 × 400  =    5 ms
+   h = 0.999  →  1 + 0.001 × 400 =  1.4 ms
+```
+
+**Now look at what each step bought.** Going from 50% to 90% removed 160ms.
+Going from 90% to 99% removed 36ms. In latency terms the returns are obviously
+diminishing, and this is where most people stop and declare 90% good.
+
+**Load tells the opposite story.** The origin sees `(1 - h)` of your traffic:
+
+```text
+   h = 0.90   →  10% reaches the database
+   h = 0.99   →   1%
+   h = 0.999  →   0.1%
+
+   so 90% → 99% is a TEN-FOLD reduction in database load,
+   and it barely moved the average latency
+```
+
+<Peach>The last few percent of hit ratio are nearly worthless for latency and are
+exactly where the capacity is.</Peach> At 10,000 requests per second, a 90% hit ratio
+leaves 1,000 queries per second hitting Postgres; 99% leaves 100. That is the
+difference between needing a read replica and not.
+
+**And the average hides the shape.** <Peach>A 90% hit ratio means one request in ten
+is slow</Peach>, and it is not the same user every time. Every user of a page making
+ten requests has a good chance of hitting at least one miss, so your p99 is
+roughly your uncached latency no matter how good the average looks. <Ref to="/scaling">Notebook 06</Ref>
+<Ref to="#4-the-cost-you-just-took-on">section 4</Ref> covers why the tail is the number users actually experience.
+
+<DoThis>
+
+Instrument hit ratio per cache key prefix, not globally. <Mint>A global 95% can hide
+a critical key family sitting at 40%</Mint>, and the aggregate is the number least
+likely to tell you where the problem is.
+
+</DoThis>
+
+<KeyIdea>
+
+<Peach>Hit ratio buys latency early and capacity late.</Peach> The move from 90% to 99% does
+almost nothing to average latency and removes nine tenths of the remaining load
+on your origin, which is usually the reason you were caching at all.
+
+</KeyIdea>

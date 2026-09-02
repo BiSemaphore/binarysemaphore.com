@@ -1,0 +1,41 @@
+---
+number: "42"
+title: "Follow-up question bank"
+part: "VIII"
+partTitle: "The interview itself"
+---
+Twenty-five questions, in rough order of how often they come up.
+
+| # | Question | Section |
+|---|---|---|
+| 1 | What would you cache, and how do you decide? | 1, 4 |
+| 2 | What TTL, and how do you choose it? | 20 |
+| 3 | How do you invalidate? | 21, 22 |
+| 4 | Update the cache or delete it? | <Peach>21</Peach> |
+| 5 | Database first or cache first? | 22 |
+| 6 | What happens when Redis goes down? | <Peach>29</Peach> |
+| 7 | A hot key expires and 500 requests arrive | 25 |
+| 8 | Why is a cache stampede worse than no cache? | 25 |
+| 9 | What is cache penetration? | 27 |
+| 10 | Everything expires at once. Why, and what fixes it? | 26 |
+| 11 | Cache-aside or write-through? | 15, 18 |
+| 12 | Is write-through always fresh? | <Peach>15</Peach> |
+| 13 | When would you use write-behind? | 16 |
+| 14 | LRU or LFU, and how does each fail? | 30 |
+| 15 | Eviction and invalidation: the difference | 30 |
+| 16 | What goes in a cache key? | <Peach>24</Peach> |
+| 17 | How do you cache per-user data safely? | 24, 35 |
+| 18 | What hit ratio is good enough? | 3 |
+| 19 | Why is 99% much better than 90%? | 3 |
+| 20 | `no-cache` or `no-store`? | 31 |
+| 21 | How do you cache at the CDN but not the browser? | 32 |
+| 22 | What does `Vary` do, and when is it a trap? | 35 |
+| 23 | What is an ETag for? | 33 |
+| 24 | Why is `KEYS` dangerous? | 36 |
+| 25 | Redis or Memcached? | 39 |
+
+<Recall>
+
+Deliver the forty-second answer from <Ref to="#40-the-delivery-script">section 40</Ref> from memory, out loud. | 8
+
+</Recall>

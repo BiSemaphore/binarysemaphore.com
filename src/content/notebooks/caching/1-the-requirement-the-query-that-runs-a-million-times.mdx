@@ -1,0 +1,67 @@
+---
+number: "1"
+title: "The requirement: the query that runs a million times"
+part: "I"
+partTitle: "Caching is a bet about staleness"
+---
+You have a dashboard. It shows each organisation its project count, its most
+active members, and a chart of tasks completed per week. The query behind it
+joins four tables, aggregates over a few million rows, and takes 400ms.
+
+That is acceptable. One user, once, is fine.
+
+Then the product succeeds. Ten thousand users open the dashboard each morning
+within the same twenty minutes, and the arithmetic changes:
+
+```text
+   10,000 users  ×  400ms of database work
+   ────────────────────────────────────────
+   =  4,000 seconds of query time, in a 20 minute window
+
+   20 minutes = 1,200 seconds of wall clock
+   so you need  4,000 / 1,200  ≈  3.3 cores of pure database CPU
+   doing nothing but this one query
+```
+
+<Peach>And almost every one of those ten thousand answers is identical.</Peach> The
+underlying tasks changed a handful of times during the window. You computed the
+same aggregate ten thousand times because nobody told the system it had already
+done it.
+
+This is the shape the lecture identifies correctly across all three of its
+examples. Google recomputing rankings for the same query, Netflix streaming the
+same film from Oregon to Mumbai, Twitter recalculating trends for every viewer
+of the trending page. <Mint>Expensive work, repeated, with the same answer.</Mint>
+
+**But notice what makes it cacheable, because it is not "it is expensive".** It
+is that <Peach>the answer changes far more slowly than it is requested.</Peach> Trending
+topics shift over hours and are read every second. A film does not change at all.
+A dashboard aggregate moves a few times an hour and is read ten thousand times.
+
+That ratio is the whole decision:
+
+```text
+   read rate                 how often the answer is requested
+   ─────────────      the higher this is, the more a cache buys
+   change rate               how often the answer is different
+```
+
+A value read a thousand times a second and written a thousand times a second is
+<Peach>a terrible caching candidate</Peach> no matter how expensive it is to compute,
+because every cached copy is wrong almost immediately.
+
+<Signal>
+
+"I do not decide what to cache by looking at what is slow. I look at the ratio of
+read rate to change rate, because that ratio is what determines whether a cache
+will be right often enough to be worth its consistency cost."
+
+</Signal>
+
+<KeyIdea>
+
+<Peach>Cache what is read far more often than it changes.</Peach> Expense is what makes a
+cache worth building; the read-to-write ratio is what makes it correct often
+enough to be worth having.
+
+</KeyIdea>

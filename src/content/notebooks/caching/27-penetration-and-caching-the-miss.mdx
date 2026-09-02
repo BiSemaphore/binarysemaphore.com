@@ -1,0 +1,65 @@
+---
+number: "27"
+title: "Penetration, and caching the miss"
+part: "V"
+partTitle: "The failure modes"
+---
+Both previous failures involved a key that exists. This one is about keys that do
+not.
+
+```text
+   GET /users/99999999      does not exist
+
+   1. check the cache   → miss (correctly, there is nothing to cache)
+   2. query the database → no rows
+   3. return 404
+   4. cache nothing         ← because there was nothing to cache
+
+   every single request repeats all of that
+```
+
+<Peach>The cache provides no protection at all for requests whose answer is "there is
+nothing here."</Peach> Ordinarily that is a small waste. It becomes an attack when
+someone loops over random identifiers: every request bypasses your cache by
+construction and reaches the database, and your cache hit ratio is irrelevant
+because none of the traffic is cacheable. This is <Pink>cache penetration</Pink>.
+
+**Fix one: cache the miss.** A negative entry, with a deliberately short TTL.
+
+```text
+   cache.set("user:99999999", NOT_FOUND, ttl=60)
+
+   the second request for a nonexistent id is served from cache
+```
+
+<Mint>Keep negative TTLs short</Mint>, typically seconds to a minute, because the entity
+may be created shortly afterwards and a long negative cache means a newly created
+resource appears to not exist. <Peach>That confusing bug is worse than the load you
+saved</Peach>, so the short TTL is not a detail.
+
+**Fix two: a Bloom filter**, when the keyspace is large and the attack is real.
+
+<Term name="Bloom filter">
+
+A compact probabilistic structure that answers "have I seen this?" with <Peach>either
+"definitely not" or "possibly yes"</Peach>. It can produce false positives and never
+false negatives, and it holds millions of members in a few megabytes.
+
+</Term>
+
+Check the filter before touching the database. "Definitely not" is answered from
+memory. <Mint>"Possibly yes" falls through to the normal path</Mint>, so a false positive
+costs one wasted query and never a wrong answer. Deletions are the awkward part,
+since a standard Bloom filter cannot remove members.
+
+**Fix three: validate the shape.** If your ids are UUIDs, a request for `999` is
+not a cache problem, it is a `400`. <Mint>Rejecting malformed identifiers before any
+lookup is free and removes the crudest version of this entirely.</Mint>
+
+<KeyIdea>
+
+<Peach>Requests for things that do not exist bypass the cache by construction.</Peach> Cache
+the miss with a short TTL, validate identifier shapes, and reach for a Bloom
+filter only when the keyspace makes the first two insufficient.
+
+</KeyIdea>

@@ -70,6 +70,7 @@ const SOURCE_DIRS = {
   "real-time-backends": "07-real-time",
   "rest-api-design": "08-rest-api",
   "design-principles": "09-design-principles",
+  caching: "10-caching",
 };
 
 const dryRun = process.argv.includes("--dry-run");

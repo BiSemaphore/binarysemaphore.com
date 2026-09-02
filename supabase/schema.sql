@@ -446,3 +446,8 @@ create policy "Anyone can ask for mentorship"
     and char_length(paper) between 1 and 200
     and char_length(stuck) between 1 and 5000
   );
+
+-- Caching: mirrors supabase/migrations/0009_add_caching_notebook.sql.
+insert into public.learn_products (id, title) values
+  ('caching', 'Caching')
+on conflict (id) do update set title = excluded.title, active = true;
