@@ -630,6 +630,23 @@ html:not(.dark) .learn-canvas {
   }
 }
 
+/* A photo stuck into the notebook rather than a banner sitting on top of it:
+   a white paper margin, a tilt, tape, and the colour pulled most of the way
+   out so it sits with the ink instead of shouting over it. Hovering restores
+   the colour, the way you would pick a photo up to look properly. */
+.photo-print {
+  filter: grayscale(0.3) sepia(0.08) contrast(1.03);
+  transition: filter 0.5s ease;
+}
+.group:hover .photo-print {
+  filter: grayscale(0) sepia(0) contrast(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-print {
+    transition: none;
+  }
+}
+
 /* A tear-off line between blocks. Two dashes, so it reads as perforation and
    not as a table border. */
 .perforation {

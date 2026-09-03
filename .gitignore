@@ -51,3 +51,8 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Raw Unsplash downloads. The three we actually use are resized into
+# src/images/ and credited in src/images/CREDITS.md; the originals are 45MB
+# and do not belong in git.
+unplash/

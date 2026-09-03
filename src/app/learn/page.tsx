@@ -7,6 +7,9 @@ import { Reveal } from "@/components/reveal";
 import { Circle, Underline } from "@/components/annotate";
 import { Arrow, Squiggle } from "@/components/doodle";
 import { DiscordIcon, MailIcon, ArrowRightIcon } from "@/components/icons";
+import learnLettering from "@/images/learn-lettering.jpg";
+import emptyLectureHall from "@/images/empty-lecture-hall.jpg";
+import blankStickies from "@/images/blank-stickies.jpg";
 import {
   DrawnBox,
   IndexCard,
@@ -15,6 +18,7 @@ import {
   Perforation,
   StickyNote,
   StuckChip,
+  TapedPhoto,
   type Tilt,
   type Tone,
 } from "@/components/learn/paper";
@@ -49,41 +53,57 @@ export default async function MentorshipPage() {
       {/* Masthead. The plain statement, then the annotation, the way you would
           write a heading and come back to it with a pen. */}
       <NotesBlock margin="pg 1" className="pt-16 sm:pt-24">
-        <p className="font-mono text-[0.7rem] uppercase tracking-[0.28em] text-accent-strong">
-          {mentorship.eyebrow}
-        </p>
+        {/* Two columns from lg, because the right-hand side of the masthead was
+            empty and a taped snapshot is a better answer than more type. */}
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_14rem] lg:items-start lg:gap-8">
+          <div>
+            <p className="font-mono text-[0.7rem] uppercase tracking-[0.28em] text-accent-strong">
+              {mentorship.eyebrow}
+            </p>
 
-        <h1 className="mt-4 font-display text-6xl font-bold leading-[0.9] tracking-[-0.04em] text-foreground sm:text-8xl">
-          {mentorship.headline}
-          <span className="text-accent">.</span>
-        </h1>
-        <p className="mt-3 font-hand text-3xl leading-tight text-muted sm:text-4xl">
-          <Underline className="text-accent">
-            {mentorship.headlineHand}
-          </Underline>
-        </p>
+            <h1 className="mt-4 font-display text-6xl font-bold leading-[0.9] tracking-[-0.04em] text-foreground sm:text-8xl">
+              {mentorship.headline}
+              <span className="text-accent">.</span>
+            </h1>
+            <p className="mt-3 font-hand text-3xl leading-tight text-muted sm:text-4xl">
+              <Underline className="text-accent">
+                {mentorship.headlineHand}
+              </Underline>
+            </p>
 
-        <p className="mt-8 max-w-2xl text-lg leading-8 text-muted">
-          {mentorship.lead}
-        </p>
+            <p className="mt-8 max-w-2xl text-lg leading-8 text-muted">
+              {mentorship.lead}
+            </p>
 
-        <div className="mt-8 flex flex-wrap items-center gap-4">
-          <a
-            href={mentorship.bookingUrl || "#ask"}
-            {...(mentorship.bookingUrl
-              ? { target: "_blank", rel: "noopener noreferrer" }
-              : {})}
-            className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
-          >
-            {mentorship.bookingUrl ? "Book a slot" : "Ask for a session"}
-            <ArrowRightIcon className="h-4 w-4" />
-          </a>
-          <span aria-hidden className="hidden w-16 text-subtle sm:block">
-            <Arrow />
-          </span>
-          <span className="font-hand text-xl text-subtle">
-            {mentorship.bring}
-          </span>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <a
+                href={mentorship.bookingUrl || "#ask"}
+                {...(mentorship.bookingUrl
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+                className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
+              >
+                {mentorship.bookingUrl ? "Book a slot" : "Ask for a session"}
+                <ArrowRightIcon className="h-4 w-4" />
+              </a>
+              <span aria-hidden className="hidden w-16 text-subtle sm:block">
+                <Arrow />
+              </span>
+              <span className="font-hand text-xl text-subtle">
+                {mentorship.bring}
+              </span>
+            </div>
+          </div>
+
+          <TapedPhoto
+            src={learnLettering}
+            alt="Hands lettering the word Learn into an open notebook, with a ruler."
+            tilt={1}
+            aspect="aspect-[2/3]"
+            sizes="(min-width: 1024px) 14rem, 15rem"
+            priority
+            className="mx-auto mt-4 w-[15rem] lg:mx-0 lg:mt-2 lg:w-full"
+          />
         </div>
       </NotesBlock>
 
@@ -382,8 +402,17 @@ export default async function MentorshipPage() {
           branch that is giving you trouble.
         </p>
 
-        <div className="mt-10">
+        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
           <SyllabusTree />
+          <TapedPhoto
+            src={blankStickies}
+            alt="Three blank yellow sticky notes in a row, with a marker below them."
+            caption="one idea per note"
+            tilt={2}
+            aspect="aspect-[3/2]"
+            sizes="(min-width: 1024px) 16rem, 14rem"
+            className="mx-auto w-[15rem] lg:mx-0 lg:w-full"
+          />
         </div>
       </NotesBlock>
 
@@ -463,6 +492,16 @@ export default async function MentorshipPage() {
       </NotesBlock>
 
       <Perforation className="my-20" />
+
+      <TapedPhoto
+        src={emptyLectureHall}
+        alt="One student sitting alone reading in an otherwise empty lecture hall."
+        caption="everyone moved on. you did not."
+        tilt={0}
+        aspect="aspect-[3/2]"
+        sizes="(min-width: 1024px) 48rem, 100vw"
+        className="mx-auto mb-20 max-w-2xl"
+      />
 
       {/* Booking is the way in. The form is kept for someone who is not ready
           to pick a time, but it is no longer the centre of the page. */}

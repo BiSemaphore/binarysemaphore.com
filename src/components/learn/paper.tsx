@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import type { StaticImageData } from "next/image";
 import { DotGrid } from "@/components/decoration";
+import { Photo } from "@/components/photo";
 
 /**
  * The notes-paper vocabulary for the learn landing page.
@@ -173,4 +175,60 @@ export function DrawnBox({
   className?: string;
 }) {
   return <div className={`drawn-box ${className}`}>{children}</div>;
+}
+
+/**
+ * A photograph stuck into the notebook.
+ *
+ * Not a hero image and not a banner: a white paper margin (deeper at the foot,
+ * the way a print is), a degree or two of tilt, tape at the top, and the colour
+ * pulled most of the way out by `.photo-print` so it sits with the ink rather
+ * than shouting over it. Hovering restores the colour, the way you would pick a
+ * photo up to look at it properly.
+ *
+ * The caption is optional and set in the handwritten face, because a photo in
+ * someone's notes is captioned by hand or not at all.
+ */
+export function TapedPhoto({
+  src,
+  alt,
+  caption,
+  tilt = 0,
+  className = "",
+  /** Aspect ratio of the print itself, as a Tailwind class. */
+  aspect = "aspect-[3/4]",
+  sizes = "(min-width: 1024px) 24rem, 100vw",
+  priority = false,
+}: {
+  src: StaticImageData;
+  alt: string;
+  caption?: string;
+  tilt?: Tilt;
+  className?: string;
+  aspect?: string;
+  sizes?: string;
+  priority?: boolean;
+}) {
+  return (
+    <figure
+      className={`group relative ${TILT[tilt]} bg-card p-3 pb-4 shadow-soft ring-1 ring-black/5 transition-transform duration-500 hover:rotate-0 ${className}`}
+    >
+      <span
+        aria-hidden
+        className="tape left-1/2 -top-2 -translate-x-1/2 rotate-2"
+      />
+      <Photo
+        src={src}
+        alt={alt}
+        sizes={sizes}
+        priority={priority}
+        className={`photo-print w-full ${aspect}`}
+      />
+      {caption ? (
+        <figcaption className="pt-3 text-center font-hand text-lg leading-none text-subtle">
+          {caption}
+        </figcaption>
+      ) : null}
+    </figure>
+  );
 }
