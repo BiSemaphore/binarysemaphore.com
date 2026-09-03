@@ -31,7 +31,7 @@ export default async function LearnLayout({
   const [user, base] = await Promise.all([getCurrentUser(), learnBase()]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="learn-canvas flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-3 px-6">
           <div className="flex min-w-0 items-center gap-2.5">
@@ -104,13 +104,14 @@ export default async function LearnLayout({
 
       <footer className="border-t border-border">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-8">
+          {/* The same sign-off the marketing site uses, so the two agree. */}
           <p className="font-mono text-xs text-subtle">
-            {"// study notebooks · by "}
+            &copy; {new Date().getFullYear()}{" "}
             <a
               href={APEX}
               className="underline-offset-4 transition-colors hover:text-foreground hover:underline"
             >
-              binary semaphore
+              {site.wordmark}
             </a>
           </p>
 
