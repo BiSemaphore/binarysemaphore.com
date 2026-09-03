@@ -41,12 +41,7 @@ const TILTS: Tilt[] = [0, 1, 2, 3];
 const HEADING =
   "font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl";
 /** The four highlighters, for the FAQ notes. */
-const FAQ_BG = [
-  "bg-[#ffe0d2] dark:bg-[#4a2f26]",
-  "bg-[#d6f3e6] dark:bg-[#1f4036]",
-  "bg-[#d9ecff] dark:bg-[#22384d]",
-  "bg-[#eddcff] dark:bg-[#38294a]",
-];
+const FAQ_BG = ["note-peach", "note-mint", "note-sky", "note-pink"];
 
 const EYEBROW =
   "font-mono text-[0.7rem] uppercase tracking-[0.28em] text-subtle";

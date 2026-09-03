@@ -17,12 +17,7 @@ import { DrawnBox, type Tone } from "@/components/learn/paper";
 const TONES: Tone[] = ["peach", "mint", "sky", "pink"];
 
 /** The same four highlighters, at chip strength. */
-const LEAF_BG = [
-  "bg-[#ffe0d2] dark:bg-[#4a2f26]",
-  "bg-[#d6f3e6] dark:bg-[#1f4036]",
-  "bg-[#d9ecff] dark:bg-[#22384d]",
-  "bg-[#eddcff] dark:bg-[#38294a]",
-];
+const LEAF_BG = ["note-peach", "note-mint", "note-sky", "note-pink"];
 
 export function AiPipeline() {
   const { stages } = site.mentorship.ai;

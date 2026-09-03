@@ -647,6 +647,39 @@ html:not(.dark) .learn-canvas {
   }
 }
 
+/* The four highlighters, as surfaces.
+   These do not change between themes. A sticky note is a physical object: the
+   paper is the colour it is whether the room is lit or not, and swapping it for
+   a muddy dark equivalent made the same page read as two different designs.
+   Because the tint stays light, the ink on it has to stay dark too, so each
+   surface re-pins the text tokens to their light-mode values. Every
+   `text-foreground/70`, `text-muted`, `text-subtle` and `text-accent` inside
+   then resolves correctly in both themes with no per-utility overrides. */
+.note-peach,
+.note-mint,
+.note-sky,
+.note-pink {
+  --foreground: #111111;
+  --muted: #525252;
+  --subtle: #6f6f6f;
+  --border: #00000014;
+  --accent: #a80000;
+  --accent-strong: #a80000;
+  color: var(--foreground);
+}
+.note-peach {
+  background-color: #ffe0d2;
+}
+.note-mint {
+  background-color: #d6f3e6;
+}
+.note-sky {
+  background-color: #d9ecff;
+}
+.note-pink {
+  background-color: #eddcff;
+}
+
 /* A tear-off line between blocks. Two dashes, so it reads as perforation and
    not as a table border. */
 .perforation {
@@ -664,9 +697,15 @@ html:not(.dark) .learn-canvas {
 /* An index card: lined, with a red rule under the term the way a real one has
    a heading line. */
 .index-card {
+  --foreground: #111111;
+  --muted: #525252;
+  --subtle: #6f6f6f;
+  --accent: #a80000;
+  --accent-strong: #a80000;
+  color: var(--foreground);
   border-radius: 3px;
   border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
-  background: var(--card);
+  background: #ffffff;
   box-shadow:
     0 1px 1px rgb(0 0 0 / 0.05),
     0 8px 16px -14px rgb(0 0 0 / 0.35);

@@ -19,10 +19,10 @@ import { Photo } from "@/components/photo";
 export type Tone = "peach" | "mint" | "sky" | "pink";
 
 const NOTE_BG: Record<Tone, string> = {
-  peach: "bg-[#ffe0d2] dark:bg-[#4a2f26]",
-  mint: "bg-[#d6f3e6] dark:bg-[#1f4036]",
-  sky: "bg-[#d9ecff] dark:bg-[#22384d]",
-  pink: "bg-[#eddcff] dark:bg-[#38294a]",
+  peach: "note-peach",
+  mint: "note-mint",
+  sky: "note-sky",
+  pink: "note-pink",
 };
 
 const TILT = ["-rotate-1", "rotate-1", "-rotate-2", "rotate-2"] as const;
