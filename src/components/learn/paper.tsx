@@ -42,7 +42,10 @@ export function PaperSheet({
     >
       <DotGrid className="text-foreground/[0.07]" gap={24} size={1.2} />
       {tape ? (
-        <span aria-hidden className="tape left-1/2 top-0 -translate-x-1/2 -rotate-1" />
+        <span
+          aria-hidden
+          className="tape left-1/2 top-0 -translate-x-1/2 -rotate-1"
+        />
       ) : null}
       {children}
     </div>
@@ -90,4 +93,84 @@ export function StuckChip({
       {label}
     </span>
   );
+}
+
+/**
+ * One block of the page, sitting on the ruled sheet.
+ *
+ * The margin note is the thing you would scribble beside a paragraph: a page
+ * number, a date, "!!". It lives in the gutter next to the red rule, and it
+ * disappears below `lg`, where there is no gutter to put it in. Decorative, so
+ * it is hidden from assistive tech rather than read out as stray words.
+ */
+export function NotesBlock({
+  id,
+  margin,
+  children,
+  className = "",
+  labelledBy,
+}: {
+  id?: string;
+  margin?: ReactNode;
+  children: ReactNode;
+  className?: string;
+  labelledBy?: string;
+}) {
+  return (
+    <section
+      id={id}
+      aria-labelledby={labelledBy}
+      className={`relative scroll-mt-24 ${className}`}
+    >
+      {margin ? (
+        <span
+          aria-hidden
+          className="margin-note font-hand text-base leading-tight text-subtle"
+        >
+          {margin}
+        </span>
+      ) : null}
+      {children}
+    </section>
+  );
+}
+
+/** A tear-off line between blocks. */
+export function Perforation({ className = "" }: { className?: string }) {
+  return <div aria-hidden className={`perforation ${className}`} />;
+}
+
+/** A lined index card: one term, one honest sentence. */
+export function IndexCard({
+  term,
+  children,
+  tilt = 0,
+}: {
+  term: string;
+  children: ReactNode;
+  tilt?: Tilt;
+}) {
+  return (
+    <div
+      className={`index-card ${TILT[tilt]} px-4 py-4 transition-transform duration-300 hover:rotate-0`}
+    >
+      <p className="font-hand text-2xl leading-none text-accent-strong">
+        {term}
+      </p>
+      <p className="mt-3 text-sm leading-[1.6rem] text-foreground/75">
+        {children}
+      </p>
+    </div>
+  );
+}
+
+/** A box drawn round something by hand, corners and all. */
+export function DrawnBox({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={`drawn-box ${className}`}>{children}</div>;
 }

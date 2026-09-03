@@ -586,6 +586,69 @@ body {
   );
 }
 
+/* The page as one continuous sheet rather than a stack of cards: a ruled
+   margin down the left, with room beside it for the things you write in a
+   margin. Below `lg` there is no room for a gutter, so the rule and the notes
+   both go away rather than crowding the text. */
+.notes-rule {
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .notes-rule::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 5.5rem;
+    width: 1px;
+    background: color-mix(in srgb, #e2624a 40%, transparent);
+  }
+}
+
+/* Something written in that margin: a page number, a date, an arrow, "!!". */
+.margin-note {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .margin-note {
+    display: block;
+    position: absolute;
+    left: -8rem;
+    width: 5.25rem;
+    text-align: right;
+    line-height: 1.15;
+  }
+}
+
+/* A tear-off line between blocks. Two dashes, so it reads as perforation and
+   not as a table border. */
+.perforation {
+  height: 0;
+  border-top: 2px dashed color-mix(in srgb, var(--border) 90%, transparent);
+}
+
+/* A drawn box, the way you would ring something on paper: the corners are
+   uneven on purpose. */
+.drawn-box {
+  border: 1.5px solid color-mix(in srgb, var(--foreground) 32%, transparent);
+  border-radius: 14px 6px 16px 8px / 8px 16px 6px 14px;
+}
+
+/* An index card: lined, with a red rule under the term the way a real one has
+   a heading line. */
+.index-card {
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: var(--card);
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.05),
+    0 8px 16px -14px rgb(0 0 0 / 0.35);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 1.55rem,
+    color-mix(in srgb, #6ec6ff 22%, transparent) 1.55rem 1.6rem
+  );
+}
+
 /* --- Study notebook reader ----------------------------------------------- */
 /* The notebooks have their own typography, set in the `learnings` repo's
    engine/theme.css and visible in the PDFs: a serif body, handwritten section

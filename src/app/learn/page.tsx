@@ -1,25 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { notebooks, totalPages } from "@/lib/learn";
+import { notebooks, totalPages, totalSections } from "@/lib/learn";
 import { learnBase } from "@/lib/learn/paths";
 import { Reveal } from "@/components/reveal";
 import { Circle, Underline } from "@/components/annotate";
 import { Arrow, Squiggle } from "@/components/doodle";
 import { DiscordIcon, MailIcon, ArrowRightIcon } from "@/components/icons";
 import {
+  DrawnBox,
+  IndexCard,
+  NotesBlock,
   PaperSheet,
+  Perforation,
   StickyNote,
   StuckChip,
   type Tilt,
   type Tone,
 } from "@/components/learn/paper";
+import { AiPipeline, SyllabusTree } from "@/components/learn/diagrams";
+import { NotebookStrip } from "@/components/learn/notebook-strip";
+import { SelfCheck } from "@/components/learn/self-check";
 import { MentorshipForm } from "@/components/learn/mentorship-form";
 
 export const metadata: Metadata = {
   title: "Mentorship",
   description:
-    "One to one mentorship for college students stuck in a computer science paper. Tell us which paper and where it stopped making sense.",
+    "One to one mentorship for college students stuck in a computer science paper. Core papers, JavaScript, and what AI is actually doing underneath.",
   alternates: { canonical: "https://learn.binarysemaphore.com" },
 };
 
@@ -27,15 +34,21 @@ export const metadata: Metadata = {
 const TONES: Tone[] = ["peach", "mint", "sky", "pink"];
 const TILTS: Tilt[] = [0, 1, 2, 3];
 
+/** Shared by every section heading, so they all read as the same hand. */
+const HEADING =
+  "font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl";
+const EYEBROW =
+  "font-mono text-[0.7rem] uppercase tracking-[0.28em] text-subtle";
+
 export default async function MentorshipPage() {
   const base = await learnBase();
   const { mentorship } = site;
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 pb-24 lg:px-10">
+    <div className="notes-rule mx-auto w-full max-w-5xl px-6 pb-24 lg:pl-32 lg:pr-10">
       {/* Masthead. The plain statement, then the annotation, the way you would
           write a heading and come back to it with a pen. */}
-      <header className="pt-16 sm:pt-24">
+      <NotesBlock margin="pg 1" className="pt-16 sm:pt-24">
         <p className="font-mono text-[0.7rem] uppercase tracking-[0.28em] text-accent-strong">
           {mentorship.eyebrow}
         </p>
@@ -45,7 +58,9 @@ export default async function MentorshipPage() {
           <span className="text-accent">.</span>
         </h1>
         <p className="mt-3 font-hand text-3xl leading-tight text-muted sm:text-4xl">
-          <Underline className="text-accent">{mentorship.headlineHand}</Underline>
+          <Underline className="text-accent">
+            {mentorship.headlineHand}
+          </Underline>
         </p>
 
         <p className="mt-8 max-w-2xl text-lg leading-8 text-muted">
@@ -70,16 +85,13 @@ export default async function MentorshipPage() {
             {mentorship.bring}
           </span>
         </div>
-      </header>
+      </NotesBlock>
 
       <Squiggle className="my-14 text-border" />
 
       {/* What a student might actually be here for, in their words. */}
-      <section aria-labelledby="stuck-heading">
-        <h2
-          id="stuck-heading"
-          className="font-mono text-[0.7rem] uppercase tracking-[0.28em] text-subtle"
-        >
+      <NotesBlock margin="in their words" labelledBy="stuck-heading">
+        <h2 id="stuck-heading" className={EYEBROW}>
           You might be here because of
         </h2>
 
@@ -93,14 +105,98 @@ export default async function MentorshipPage() {
             />
           ))}
         </div>
-      </section>
+      </NotesBlock>
+
+      {/* Three students, described closely enough that one of them is you. */}
+      <NotesBlock
+        margin="which one?"
+        labelledBy="profiles-heading"
+        className="mt-20"
+      >
+        <h2 id="profiles-heading" className={HEADING}>
+          Which one are you?
+        </h2>
+
+        <ul className="mt-8 grid gap-6 lg:grid-cols-3">
+          {mentorship.profiles.map((profile, i) => (
+            <li key={profile.tag}>
+              <Reveal delay={i * 80}>
+                <PaperSheet className="h-full px-6 py-7">
+                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-subtle">
+                    {profile.tag}
+                  </p>
+                  <p className="mt-4 font-hand text-2xl leading-tight text-accent-strong">
+                    &#8220;{profile.said}&#8221;
+                  </p>
+                  <p className="mt-5 font-display text-lg font-semibold leading-snug tracking-tight text-foreground">
+                    {profile.title}
+                  </p>
+                  <p className="mt-3 text-sm leading-6 text-muted">
+                    {profile.body}
+                  </p>
+                </PaperSheet>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+      </NotesBlock>
+
+      <Perforation className="my-20" />
+
+      {/* One question taken apart in public. Showing the reasoning is worth
+          more than any number of claims about it, so this gets real room. */}
+      <NotesBlock
+        margin="work it through"
+        labelledBy="worked-heading"
+        className="scroll-mt-24"
+        id="worked"
+      >
+        <p className={EYEBROW}>{mentorship.workedExample.label}</p>
+        <h2 id="worked-heading" className={`mt-3 ${HEADING}`}>
+          Someone asked us this
+        </h2>
+
+        <PaperSheet tape className="mt-8 px-6 py-10 sm:px-10">
+          <p className="max-w-3xl font-hand text-2xl leading-snug text-foreground sm:text-3xl">
+            {mentorship.workedExample.asked}
+          </p>
+
+          <ol className="mt-10 space-y-8 border-t border-dashed border-border pt-8">
+            {mentorship.workedExample.steps.map((step, i) => (
+              <li key={step.title} className="flex gap-5">
+                <span
+                  aria-hidden
+                  className="mt-0.5 font-hand text-3xl leading-none text-accent/70"
+                >
+                  {i + 1}
+                </span>
+                <div>
+                  <p className="font-display text-lg font-semibold tracking-tight text-foreground">
+                    {step.title}
+                  </p>
+                  <p className="mt-2 max-w-2xl leading-7 text-muted">
+                    {step.body}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <DrawnBox className="mt-10 px-6 py-5">
+            <p className="max-w-3xl leading-7 text-foreground">
+              {mentorship.workedExample.verdict}
+            </p>
+          </DrawnBox>
+        </PaperSheet>
+      </NotesBlock>
 
       {/* Three steps, on sticky notes. */}
-      <section aria-labelledby="how-heading" className="mt-20">
-        <h2
-          id="how-heading"
-          className="font-display text-3xl font-semibold tracking-tight text-foreground"
-        >
+      <NotesBlock
+        margin="the shape of it"
+        labelledBy="how-heading"
+        className="mt-20"
+      >
+        <h2 id="how-heading" className={HEADING}>
           How it works
         </h2>
 
@@ -123,15 +219,32 @@ export default async function MentorshipPage() {
             </li>
           ))}
         </ol>
-      </section>
+      </NotesBlock>
+
+      <Perforation className="my-20" />
+
+      {/* The ten questions. Scored in the browser, kept by nobody. */}
+      <NotesBlock
+        margin="say it out loud"
+        labelledBy="check-heading"
+        id="check"
+      >
+        <h2 id="check-heading" className={HEADING}>
+          {mentorship.selfCheck.title}
+        </h2>
+        <p className="mt-3 max-w-2xl leading-7 text-muted">
+          {mentorship.selfCheck.lead}
+        </p>
+
+        <div className="mt-8">
+          <SelfCheck />
+        </div>
+      </NotesBlock>
 
       {/* What this is, answered plainly, because it is the first thing anyone
           wants to know and vagueness reads as evasion. */}
-      <section aria-labelledby="what-heading" className="mt-20">
-        <h2
-          id="what-heading"
-          className="font-display text-3xl font-semibold tracking-tight text-foreground"
-        >
+      <NotesBlock margin="plainly" labelledBy="what-heading" className="mt-20">
+        <h2 id="what-heading" className={HEADING}>
           What this is
         </h2>
 
@@ -174,16 +287,64 @@ export default async function MentorshipPage() {
             </ul>
           </StickyNote>
         </div>
-      </section>
+      </NotesBlock>
+
+      <Perforation className="my-20" />
+
+      {/* AI, taught the same way as everything else here: what is actually
+          happening, not what to type. */}
+      <NotesBlock margin="press enter" labelledBy="ai-heading" id="ai">
+        <p className={EYEBROW}>{mentorship.ai.label}</p>
+        <h2 id="ai-heading" className={`mt-3 ${HEADING}`}>
+          <Circle className="text-accent">{mentorship.ai.title}</Circle>
+        </h2>
+        <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
+          {mentorship.ai.lead}
+        </p>
+
+        <div className="mt-10">
+          <AiPipeline />
+        </div>
+
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {mentorship.ai.glossary.map((entry, i) => (
+            <li key={entry.term}>
+              <Reveal delay={i * 60}>
+                <IndexCard term={entry.term} tilt={TILTS[i % TILTS.length]}>
+                  {entry.body}
+                </IndexCard>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-10 max-w-2xl font-hand text-2xl leading-snug text-foreground">
+          {mentorship.ai.honest}
+        </p>
+
+        <PaperSheet className="mt-8 px-6 py-7 sm:px-8">
+          <p className="max-w-3xl leading-7 text-muted">
+            {mentorship.ai.proof.body}
+          </p>
+          <a
+            href={mentorship.ai.proof.href}
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-foreground underline decoration-accent/40 underline-offset-4 transition-colors hover:decoration-accent"
+          >
+            {mentorship.ai.proof.label}
+            <ArrowRightIcon className="h-4 w-4" />
+          </a>
+        </PaperSheet>
+      </NotesBlock>
 
       {/* Real prompts from our own Question Bank, not written for this page.
           A question you either can answer out loud or cannot is the clearest
           way to show what an hour is spent on. */}
-      <section aria-labelledby="questions-heading" className="mt-20">
-        <h2
-          id="questions-heading"
-          className="font-display text-3xl font-semibold tracking-tight text-foreground"
-        >
+      <NotesBlock
+        margin="from the book"
+        labelledBy="questions-heading"
+        className="mt-20"
+      >
+        <h2 id="questions-heading" className={HEADING}>
           The kind of question we sit with
         </h2>
         <p className="mt-3 max-w-2xl leading-7 text-muted">
@@ -207,12 +368,106 @@ export default async function MentorshipPage() {
             </li>
           ))}
         </ul>
-      </section>
+      </NotesBlock>
+
+      <Perforation className="my-20" />
+
+      {/* The subjects, drawn as a map. Doubles as a way into the library. */}
+      <NotesBlock margin="the map" labelledBy="syllabus-heading">
+        <h2 id="syllabus-heading" className={HEADING}>
+          What we can actually sit with
+        </h2>
+        <p className="mt-3 max-w-2xl leading-7 text-muted">
+          Not a syllabus, and nothing has to be taken in order. Point at the
+          branch that is giving you trouble.
+        </p>
+
+        <div className="mt-10">
+          <SyllabusTree />
+        </div>
+      </NotesBlock>
+
+      {/* The library, shown rather than counted. */}
+      <NotesBlock margin="or just read" className="mt-20">
+        <p className={EYEBROW}>The notebooks</p>
+        <h2 className={`mt-3 ${HEADING}`}>
+          {notebooks.length} of them, {totalSections()} sections,{" "}
+          {totalPages().toLocaleString("en-GB")} pages
+        </h2>
+        <p className="mt-3 max-w-2xl leading-7 text-muted">
+          Long-form manuals on backend and systems work, built to be printed and
+          written on. The contents pages are open to everyone. Sign in and the
+          rest opens too.
+        </p>
+
+        <div className="mt-8">
+          <NotebookStrip base={base} />
+        </div>
+
+        <Link
+          href={`${base}/notebooks`}
+          className="mt-4 inline-flex items-center gap-2 rounded-full border border-foreground px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background"
+        >
+          Open the library
+          <ArrowRightIcon className="h-4 w-4" />
+        </Link>
+      </NotesBlock>
+
+      <Perforation className="my-20" />
+
+      {/* Logistics. These reassure more than encouragement does. */}
+      <NotesBlock margin="the hour itself" labelledBy="session-heading">
+        <h2 id="session-heading" className={HEADING}>
+          What an hour is
+        </h2>
+
+        <dl className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2">
+          {mentorship.session.map((item) => (
+            <div key={item.label} className="border-t border-border pt-4">
+              <dt className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-subtle">
+                {item.label}
+              </dt>
+              <dd className="mt-2 leading-7 text-muted">{item.body}</dd>
+            </div>
+          ))}
+        </dl>
+      </NotesBlock>
+
+      {/* The questions people actually send before booking. */}
+      <NotesBlock
+        margin="asked a lot"
+        labelledBy="faq-heading"
+        className="mt-20"
+      >
+        <h2 id="faq-heading" className={HEADING}>
+          Before you ask
+        </h2>
+
+        <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+          {mentorship.faq.map((item) => (
+            <li key={item.q}>
+              <details className="group h-full rounded-card border border-border bg-card px-5 py-4 transition-colors hover:border-foreground/25">
+                <summary className="flex cursor-pointer list-none items-start gap-3 font-hand text-xl leading-snug text-foreground">
+                  <span aria-hidden className="text-accent">
+                    Q
+                  </span>
+                  {item.q}
+                </summary>
+                <p className="mt-3 border-t border-dashed border-border pt-3 text-sm leading-6 text-muted">
+                  {item.a}
+                </p>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </NotesBlock>
+
+      <Perforation className="my-20" />
 
       {/* Booking is the way in. The form is kept for someone who is not ready
           to pick a time, but it is no longer the centre of the page. */}
-      <section id="ask" className="mt-20 scroll-mt-24">
-        <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground">
+      <NotesBlock id="ask" margin="!!">
+        <h2 className={HEADING}>
           Pick a time you are <Circle className="text-accent">free</Circle>
         </h2>
         <p className="mt-3 max-w-xl leading-7 text-muted">
@@ -245,10 +500,7 @@ export default async function MentorshipPage() {
               <span aria-hidden className="ml-2 inline-block group-open:hidden">
                 +
               </span>
-              <span
-                aria-hidden
-                className="ml-2 hidden group-open:inline-block"
-              >
+              <span aria-hidden className="ml-2 hidden group-open:inline-block">
                 &minus;
               </span>
             </summary>
@@ -258,30 +510,7 @@ export default async function MentorshipPage() {
             </div>
           </details>
         </PaperSheet>
-      </section>
-
-      {/* The notebooks, for someone who would rather read than talk. */}
-      <section className="mt-20">
-        <PaperSheet className="px-6 py-8 sm:px-10 sm:py-10">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.28em] text-subtle">
-            Or just read
-          </p>
-          <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            {notebooks.length} study notebooks, {totalPages().toLocaleString("en-GB")} pages
-          </h2>
-          <p className="mt-3 max-w-xl leading-7 text-muted">
-            Long-form manuals on backend and systems work, built to be printed
-            and written on. Sign in and they open.
-          </p>
-          <Link
-            href={`${base}/notebooks`}
-            className="mt-6 inline-flex items-center gap-2 rounded-full border border-foreground px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background"
-          >
-            Open the library
-            <ArrowRightIcon className="h-4 w-4" />
-          </Link>
-        </PaperSheet>
-      </section>
+      </NotesBlock>
 
       {/* The other ways in. */}
       <section className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-border pt-10">
