@@ -153,6 +153,56 @@ export type Mentorship = {
    * you either can answer out loud or cannot.
    */
   sampleQuestions: { question: string; from: string }[];
+  /**
+   * Three students, described so one of them is recognisably you. The third is
+   * the newest and the least written about anywhere: the assignment works, an
+   * agent wrote it, and there is nothing behind it to say in a viva.
+   */
+  profiles: { tag: string; said: string; title: string; body: string }[];
+  /**
+   * One question taken apart in public. Showing the reasoning is worth more
+   * than any number of claims about the reasoning, so this gets real space on
+   * the page.
+   */
+  workedExample: {
+    label: string;
+    asked: string;
+    steps: { title: string; body: string }[];
+    verdict: string;
+  };
+  /**
+   * Ten questions you can either answer out loud or cannot. Scored in the
+   * browser and never sent anywhere: the point is the reader finding out, not
+   * us finding out.
+   */
+  selfCheck: {
+    title: string;
+    lead: string;
+    questions: { question: string; tag: string }[];
+    note: string;
+  };
+  /**
+   * The AI section. Not prompt tips: what is actually happening between the
+   * question and the answer, in the same register as the rest of the page.
+   */
+  ai: {
+    label: string;
+    title: string;
+    lead: string;
+    /** The pipeline, drawn left to right. Four stages, because five is a lecture. */
+    stages: { name: string; body: string }[];
+    /** Index cards. One honest sentence each, no hedging. */
+    glossary: { term: string; body: string }[];
+    /** What it cannot do, said plainly, because everyone else skips it. */
+    honest: string;
+    /** Our own shipped proof, linked rather than described. */
+    proof: { body: string; href: string; label: string };
+  };
+  /** The subjects, drawn as a tree rather than listed as a syllabus. */
+  syllabus: { branch: string; leaves: string[] }[];
+  /** What an hour actually consists of. Logistics reassure more than pep talk. */
+  session: { label: string; body: string }[];
+  faq: { q: string; a: string }[];
 };
 
 export type SiteConfig = {
@@ -310,12 +360,13 @@ export const site: SiteConfig = {
     // questions, so the hour starts with the actual problem rather than
     // spending its first ten minutes finding it.
     bookingUrl: "https://cal.com/shahid-raza-813bdo",
-    bring: "Bring the assignment, the lab sheet, the past paper, or the error you cannot get past.",
+    bring:
+      "Bring the assignment, the lab sheet, the past paper, or the error you cannot get past.",
     isThis: [
       "One person, on a call, working your actual question",
       "Your paper, your lab sheet, your error, not a generic example",
       "Notes afterwards, so it survives the call",
-      "Saying \"I still do not get it\" as many times as it takes",
+      'Saying "I still do not get it" as many times as it takes',
     ],
     isNotThis: [
       "A course with a syllabus and a completion certificate",
@@ -330,7 +381,8 @@ export const site: SiteConfig = {
         from: "Postgres",
       },
       {
-        question: "We have 20 worker threads and P99 is climbing. Where do I start?",
+        question:
+          "We have 20 worker threads and P99 is climbing. Where do I start?",
         from: "Scaling and Performance",
       },
       {
@@ -341,6 +393,226 @@ export const site: SiteConfig = {
         question:
           "Three injection contexts, the character that breaks each, and the one structural fix they share.",
         from: "Backend Security",
+      },
+    ],
+    profiles: [
+      {
+        tag: "the backlog",
+        said: "I never really got it in second year",
+        title: "You have papers you did not clear",
+        body: "The semester moved on without you and every new topic sits on top of the one you missed. We go back and find the actual floor, then build up from there. It is usually one idea, not twenty.",
+      },
+      {
+        tag: "placement season",
+        said: "I can write it, but I freeze when they ask",
+        title: "You can do the work, not the interview",
+        body: "Writing code and explaining code are different skills, and only one of them gets tested in a room. We practise saying it out loud, on your own projects, until the answer is yours.",
+      },
+      {
+        tag: "the agent wrote it",
+        said: "it works, I just cannot explain any of it",
+        title: "You shipped it with AI and there is nothing behind it",
+        body: "The assignment runs. Then the examiner asks why you used a hash map and the page is blank. We take your own code apart together until you can defend every decision in it, including the ones you did not make.",
+      },
+    ],
+    workedExample: {
+      label: "One question, taken apart",
+      asked:
+        "I built a chatbot over my college notes for my final year project. It answers confidently and it is wrong. Is the model bad?",
+      steps: [
+        {
+          title: "Your question never meets your notes",
+          body: "Both get turned into embeddings first: long lists of numbers positioned so that similar meanings sit near each other. What gets compared is the numbers, not the words.",
+        },
+        {
+          title: "Closest is not the same as correct",
+          body: "Retrieval hands back the chunk that sits nearest your question in that space. Nearest usually means worded alike. The chunk that actually answers you can be further away, and it loses.",
+        },
+        {
+          title: "The model answers from what it was handed",
+          body: "It never sees the rest of your notes. It writes a fluent answer from the wrong three paragraphs, and fluency is not a signal of anything.",
+        },
+      ],
+      verdict:
+        "So it is almost never the model. It is your chunking or your retrieval, and you can find out which in ten minutes by printing what got retrieved before you blame anything else. That printout is what we would open first.",
+    },
+    selfCheck: {
+      title: "Ten questions, out loud",
+      lead: "Not multiple choice. Say the answer aloud, properly, the way you would to an examiner. Tick it only if you actually could. Nothing here is sent anywhere.",
+      questions: [
+        {
+          question: "What happens between typing a URL and the page appearing?",
+          tag: "networks",
+        },
+        {
+          question: "Why does an index make reads fast and writes slower?",
+          tag: "databases",
+        },
+        {
+          question:
+            "What is the difference between a process and a thread, without saying \u201clightweight\u201d?",
+          tag: "operating systems",
+        },
+        {
+          question: "What does static actually mean in Java?",
+          tag: "core java",
+        },
+        {
+          question: "Why does the meaning of this change in JavaScript?",
+          tag: "javascript",
+        },
+        {
+          question:
+            "Your service got slow. Name the first three things you would measure.",
+          tag: "systems",
+        },
+        {
+          question:
+            "An agent wrote your code. Why did it choose that data structure?",
+          tag: "ai",
+        },
+        {
+          question:
+            "What is an embedding, in one sentence, without the word vector?",
+          tag: "ai",
+        },
+        {
+          question:
+            "What does MCP let a model do that handing it an API key does not?",
+          tag: "ai",
+        },
+        {
+          question:
+            "Defend one design decision in your project for two minutes.",
+          tag: "viva",
+        },
+      ],
+      note: "The ones you left blank are the session.",
+    },
+    ai: {
+      label: "AI, underneath",
+      title: "Not prompt tips",
+      lead: "Everyone will teach you what to type. Almost nobody will tell you what happens after you press enter, which is the part that decides whether you can debug it, defend it, or trust it.",
+      stages: [
+        {
+          name: "Your question",
+          body: "Split into tokens. Pieces of words, not words.",
+        },
+        {
+          name: "Retrieval",
+          body: "If there are documents, the nearest few get pulled in. This is where most projects break.",
+        },
+        {
+          name: "Context",
+          body: "Everything the model can see at once. It is not memory. Close the chat and it is gone.",
+        },
+        {
+          name: "The answer",
+          body: "Predicted a token at a time from what it was given. Confidence is not a signal.",
+        },
+      ],
+      glossary: [
+        {
+          term: "embedding",
+          body: "Text turned into a long list of numbers, arranged so that things meaning similar things end up near each other.",
+        },
+        {
+          term: "context window",
+          body: "How much the model can hold in view at once. Not a database, not memory, and it forgets completely.",
+        },
+        {
+          term: "MCP",
+          body: "A protocol. Your tool exposes functions the model is allowed to call, and describes them in a way it can read. The rest is plumbing.",
+        },
+        {
+          term: "agent",
+          body: "A loop. Pick a tool, look at the result, pick again, stop when done. That is the whole trick.",
+        },
+      ],
+      honest:
+        "What it cannot do is know whether it is right. That part is still yours, and it is the part a viva asks about.",
+      proof: {
+        body: "We are not teaching this from a blog post. We built inode, a knowledge base in Go with a real retrieval pipeline, pgvector, on-device models, and an MCP server that editors query directly. The notebooks come out of building it.",
+        href: "https://binarysemaphore.com/projects/inode",
+        label: "See inode",
+      },
+    },
+    syllabus: [
+      {
+        branch: "core java",
+        leaves: [
+          "objects, properly",
+          "collections",
+          "memory and the GC",
+          "threads",
+        ],
+      },
+      {
+        branch: "databases",
+        leaves: ["SQL that runs", "indexes", "transactions", "postgres"],
+      },
+      {
+        branch: "systems",
+        leaves: ["operating systems", "networks", "caching", "scale"],
+      },
+      {
+        branch: "javascript",
+        leaves: ["the language", "async, honestly", "the browser", "node"],
+      },
+      {
+        branch: "ai",
+        leaves: [
+          "what an LLM does",
+          "embeddings and retrieval",
+          "MCP",
+          "agents",
+        ],
+      },
+    ],
+    // TODO(shahid): how long a session runs and how often one is available
+    // still belongs here, once you decide.
+    session: [
+      {
+        label: "where",
+        body: "A call, one to one. Screens shared both ways, so we are looking at the same thing.",
+      },
+      {
+        label: "what we open",
+        body: "Your code, your lab sheet, your past paper, and whichever notebook covers it.",
+      },
+      {
+        label: "what you keep",
+        body: "The notes from the hour, written up, so it survives the call.",
+      },
+      {
+        label: "what we never do",
+        body: "Type the assignment for you. We will sit there while you do, and argue about it.",
+      },
+    ],
+    faq: [
+      {
+        q: "Do I need to know something first?",
+        a: "No. Turning up knowing nothing about the topic is the ordinary case, not the embarrassing one.",
+      },
+      {
+        q: "What if I cannot even explain the problem?",
+        a: "Then working out what the question is becomes the first half of the hour. Bring the error message and we start there.",
+      },
+      {
+        q: "Is this only backend?",
+        a: "No. Core papers, JavaScript, and the AI topics above. The notebooks lean backend because that is what is written down so far.",
+      },
+      {
+        q: "Will you do my assignment?",
+        a: "No. You will do it, with someone next to you who has done it before.",
+      },
+      {
+        q: "One hour was not enough.",
+        a: "Then book another. There is no package to finish and nothing expires.",
+      },
+      {
+        q: "Where do the notebooks come from?",
+        a: "Most expand a lecture series by Sriniously on YouTube, credited on every notebook, and are free to read. The AI ones are written by us.",
       },
     ],
   },
@@ -582,10 +854,21 @@ export const site: SiteConfig = {
     subhead:
       "We build on the fundamentals: correct concurrency, honest abstractions, and systems that stay reliable as they scale.",
     primary: { label: "See our work", href: "/#projects" },
-    secondary: { label: "View on GitHub", href: "https://github.com/BiSemaphore" },
+    secondary: {
+      label: "View on GitHub",
+      href: "https://github.com/BiSemaphore",
+    },
   },
 
-  builtWith: ["Go", "Python", "TypeScript", "PostgreSQL", "Kafka", "Kubernetes", "LLMs"],
+  builtWith: [
+    "Go",
+    "Python",
+    "TypeScript",
+    "PostgreSQL",
+    "Kafka",
+    "Kubernetes",
+    "LLMs",
+  ],
 
   // What we work on, shown as quick cards in the hero.
   capabilities: [
@@ -698,7 +981,10 @@ export const site: SiteConfig = {
         { label: "Get in touch", href: "/contact" },
         { label: "Discord", href: "/discord" },
         { label: "GitHub", href: "https://github.com/BiSemaphore" },
-        { label: "Instagram", href: "https://www.instagram.com/binary.semaphore/" },
+        {
+          label: "Instagram",
+          href: "https://www.instagram.com/binary.semaphore/",
+        },
       ],
     },
   ],
@@ -1053,7 +1339,13 @@ export const team: TeamMember[] = [
       "Anand sits between the code and the problem. He builds features while shaping requirements, translating what a business actually needs into something the team can design and ship.",
       "He keeps projects honest about scope and trade-offs, and helps steer the decisions that decide whether a system ages well or not.",
     ],
-    skills: ["Business analysis", "Requirements", "Project planning", "Backend", "Stakeholder comms"],
+    skills: [
+      "Business analysis",
+      "Requirements",
+      "Project planning",
+      "Backend",
+      "Stakeholder comms",
+    ],
     email: "anandmevaparajitah04@gmail.com",
     linkedin: "https://www.linkedin.com/in/anand-singh-03ab70201",
     github: "https://github.com/hawkeyemehawk",
@@ -1069,7 +1361,13 @@ export const team: TeamMember[] = [
       "Sanjita turns fuzzy business problems into clear plans the team can act on. She works closely with Anand on requirements and keeps delivery moving without losing sight of the goal.",
       "As a data analyst she reads what the numbers are actually saying, so decisions about what to build next come from evidence rather than hunches.",
     ],
-    skills: ["Product management", "Data analysis", "Roadmapping", "SQL", "Delivery"],
+    skills: [
+      "Product management",
+      "Data analysis",
+      "Roadmapping",
+      "SQL",
+      "Delivery",
+    ],
     email: "sahusanjita4@gmail.com",
     linkedin: "https://www.linkedin.com/in/sanjitasahu/",
     github: "https://github.com/sahu130",
@@ -1224,40 +1522,52 @@ export const projects: Project[] = [
       usage: [
         {
           command: 'inode add "My Stripe test key is sk_test_xxxxx"',
-          description: "Save anything. The LLM auto-detects the category (credentials), adds tags, and flags it sensitive, then encrypts it at rest.",
+          description:
+            "Save anything. The LLM auto-detects the category (credentials), adds tags, and flags it sensitive, then encrypts it at rest.",
         },
         {
           command: 'inode get "stripe test key"',
-          description: "Ask in plain English. inode embeds the query, finds the closest notes by meaning, and answers from them. Aliases: ask, find, search.",
+          description:
+            "Ask in plain English. inode embeds the query, finds the closest notes by meaning, and answers from them. Aliases: ask, find, search.",
         },
         {
           command: 'inode get "stripe test key" --reveal',
-          description: "Sensitive values are masked by default. --reveal prompts for confirmation, then prints the plaintext.",
+          description:
+            "Sensitive values are masked by default. --reveal prompts for confirmation, then prints the plaintext.",
         },
         {
           command: "inode list --category credentials",
-          description: "Browse by category or tag. inode sorts everything into nine strict categories.",
+          description:
+            "Browse by category or tag. inode sorts everything into nine strict categories.",
         },
         {
           command: "inode mcp",
-          description: "Run the read-only MCP server over stdio so Claude Code or Cursor can read your knowledge base.",
+          description:
+            "Run the read-only MCP server over stdio so Claude Code or Cursor can read your knowledge base.",
         },
       ],
       facts: [
         { label: "Language", value: "Go" },
         { label: "Default storage", value: "SQLite + sqlite-vec" },
-        { label: "Optional backends", value: "PostgreSQL/pgvector · Claude · Voyage AI" },
+        {
+          label: "Optional backends",
+          value: "PostgreSQL/pgvector · Claude · Voyage AI",
+        },
         { label: "Embeddings", value: "Ollama (local) · Voyage AI" },
         { label: "Security", value: "AES-256-GCM, on-device" },
         { label: "Integrations", value: "MCP (Claude Code, Cursor)" },
-        { label: "Categories", value: "9 (credentials, commands, runbooks, …)" },
+        {
+          label: "Categories",
+          value: "9 (credentials, commands, runbooks, …)",
+        },
         { label: "Platforms", value: "macOS · Linux · Windows" },
       ],
     },
   },
   {
     name: "Ascent",
-    tagline: "A cohort-based learning platform, built as a real distributed system.",
+    tagline:
+      "A cohort-based learning platform, built as a real distributed system.",
     description:
       "An LMS where instructors author curricula, admins open cohorts with limited seats, and learners move through the content together. Five NestJS services, one database each, Kafka between them, with deliberate depth on the hard parts: seat concurrency, event-driven consistency, and payments.",
     tags: ["NestJS", "TypeScript", "PostgreSQL", "Kafka", "Microservices"],
@@ -1325,8 +1635,14 @@ export const projects: Project[] = [
       ],
       facts: [
         { label: "Type", value: "Cohort-based LMS, microservices" },
-        { label: "Services", value: "auth · content · cohort · payment · progress" },
-        { label: "Data", value: "PostgreSQL (one per service) · MongoDB · Redis" },
+        {
+          label: "Services",
+          value: "auth · content · cohort · payment · progress",
+        },
+        {
+          label: "Data",
+          value: "PostgreSQL (one per service) · MongoDB · Redis",
+        },
         { label: "Async", value: "Kafka (KRaft), transactional outbox" },
         { label: "Gateway", value: "Nginx (routing, rate limiting)" },
         { label: "Frontend", value: "Angular (standalone, signals)" },
@@ -1409,7 +1725,10 @@ export const projects: Project[] = [
         { label: "Appearance", value: "Follows system light or dark mode" },
         { label: "Privacy", value: "Runs on your machine, no account" },
         { label: "Permissions", value: "Camera only, on open" },
-        { label: "Distribution", value: "Direct download, outside the Mac App Store" },
+        {
+          label: "Distribution",
+          value: "Direct download, outside the Mac App Store",
+        },
         { label: "License", value: "MIT" },
         { label: "Version", value: "0.2.0" },
       ],
@@ -1431,7 +1750,8 @@ export const projects: Project[] = [
   },
   {
     name: "Booking.go",
-    tagline: "Slot-based booking for small businesses, multi-tenant from the start.",
+    tagline:
+      "Slot-based booking for small businesses, multi-tenant from the start.",
     description:
       "A scheduling platform for salons, clinics, gyms, and independent consultants. One backend serves many businesses, each with its own services, hours, and bookable slots. In active development.",
     tags: ["TypeScript", "Node.js", "Next.js", "PostgreSQL", "Redis", "SaaS"],

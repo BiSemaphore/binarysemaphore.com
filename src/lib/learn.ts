@@ -106,8 +106,7 @@ export const notebooks: Notebook[] = [
     series: "Study Notebook",
     number: "00",
     title: "Question Bank",
-    subtitle:
-      "253 prompts pulled from notebooks 01 to 09, answers at the back",
+    subtitle: "253 prompts pulled from notebooks 01 to 09, answers at the back",
     blurb:
       "Work in pen. A prompt you can only half answer is the whole point of the exercise: mark it, and go back to the section it names. Regenerated from every other notebook, so it stays in step with them.",
     pages: 179,
@@ -155,7 +154,7 @@ export const notebooks: Notebook[] = [
       "41. Authorization",
       "42. The browser is a boundary too",
       "43. Final review",
-      "44. What \"fast\" means",
+      '44. What "fast" means',
       "45. Finding the bottleneck",
       "46. The database",
       "47. Caching",
@@ -176,20 +175,39 @@ export const notebooks: Notebook[] = [
       "62. Final review",
       "63. Opening",
       "64. The standard exists so you do not have to negotiate",
-      "65. Opening",
-      "66. The words that came before the acronym",
-      "67. The five",
-      "68. Using them without being used by them",
-      "69. The interview itself",
-      "70. Answers, Notebook 01",
-      "71. Answers, Notebook 02",
-      "72. Answers, Notebook 03",
-      "73. Answers, Notebook 04",
-      "74. Answers, Notebook 05",
-      "75. Answers, Notebook 06",
-      "76. Answers, Notebook 07",
-      "77. Answers, Notebook 08",
-      "78. Answers, Notebook 09",
+      "65. Resources, and the URL that names them",
+      "66. The method is a promise about repeating",
+      "67. The response is the other half of the interface",
+      "68. The list endpoint is where APIs go wrong",
+      "69. When CRUD runs out",
+      "70. Consistency is the whole product",
+      "71. The interview itself",
+      "72. Final review",
+      "73. Opening",
+      "74. The words that came before the acronym",
+      "75. The five",
+      "76. Using them without being used by them",
+      "77. The interview itself",
+      "78. Opening",
+      "79. Caching is a bet about staleness",
+      "80. Where caches live",
+      "81. The strategies",
+      "82. Invalidation",
+      "83. The failure modes",
+      "84. Telling someone else's cache what to do",
+      "85. Redis in practice",
+      "86. The interview itself",
+      "87. Final review",
+      "88. Answers, Notebook 01",
+      "89. Answers, Notebook 02",
+      "90. Answers, Notebook 03",
+      "91. Answers, Notebook 04",
+      "92. Answers, Notebook 05",
+      "93. Answers, Notebook 06",
+      "94. Answers, Notebook 07",
+      "95. Answers, Notebook 08",
+      "96. Answers, Notebook 09",
+      "97. Answers, Notebook 10",
     ],
     assets: {
       reading: { file: "Question-Bank-Reading.pdf", bytes: 3717210 },
@@ -235,7 +253,7 @@ export const notebooks: Notebook[] = [
       "23. Telling the frontend",
       "24. Scaling: workers, backpressure and queue depth",
       "25. Multi-tenancy and fairness",
-      "26. Partial failure: what \"failed\" means",
+      '26. Partial failure: what "failed" means',
       "27. Cost, the bill nobody mentions",
       "28. Observability and security",
       "29. The seven-step delivery script",
@@ -246,7 +264,10 @@ export const notebooks: Notebook[] = [
       "Appendix C. Self-test",
     ],
     assets: {
-      reading: { file: "Large-Scale-Data-Ingestion-Reading.pdf", bytes: 1812365 },
+      reading: {
+        file: "Large-Scale-Data-Ingestion-Reading.pdf",
+        bytes: 1812365,
+      },
       print: { file: "Large-Scale-Data-Ingestion-Print.pdf", bytes: 2585802 },
       tablet: { file: "Large-Scale-Data-Ingestion-Tablet.pdf", bytes: 3088390 },
     },
@@ -416,8 +437,7 @@ export const notebooks: Notebook[] = [
     series: "Study Notebook",
     number: "05",
     title: "Backend Security",
-    subtitle:
-      "Where you made an assumption, and who is going to find it",
+    subtitle: "Where you made an assumption, and who is going to find it",
     blurb:
       "Every vulnerability is an assumption someone else found first. Injection across SQL, NoSQL and the shell, password storage done properly, sessions and tokens, and the boundaries where data turns into code.",
     pages: 55,
@@ -476,13 +496,12 @@ export const notebooks: Notebook[] = [
     series: "Study Notebook",
     number: "06",
     title: "Scaling and Performance",
-    subtitle:
-      "Where the time actually goes, and how you know",
+    subtitle: "Where the time actually goes, and how you know",
     blurb:
       "Latency is a distribution, not a number. Measure before you fix: percentiles, utilization and the knee, flame graphs, distributed tracing. Then the fixes, in the order they pay off.",
     pages: 100,
     contents: [
-      "1. \"Slow\" is not a bug report",
+      '1. "Slow" is not a bug report',
       "2. Latency is a distribution, not a number",
       "3. Why P99 is your most valuable customers",
       "4. Throughput, and the curve that bends",
@@ -522,7 +541,7 @@ export const notebooks: Notebook[] = [
       "38. Serverless: the pricing model is the point",
       "39. Cold starts, limits, and statelessness",
       "40. When serverless fits, and when it does not",
-      "41. How to answer \"how would you scale this?\"",
+      '41. How to answer "how would you scale this?"',
       "42. Five traps",
       "43. The five rules",
       "Appendix A. Numbers worth memorising",
@@ -552,8 +571,7 @@ export const notebooks: Notebook[] = [
     series: "System Design Notebook",
     number: "07",
     title: "Real-Time Backends",
-    subtitle:
-      "What it costs to let the server speak first",
+    subtitle: "What it costs to let the server speak first",
     blurb:
       "Polling, long polling, SSE and WebSockets, priced honestly. The proxies that eat your stream, the six-connections-per-origin limit, and what any of it does to a server you have to keep running.",
     pages: 90,
@@ -626,8 +644,7 @@ export const notebooks: Notebook[] = [
     series: "System Design Notebook",
     number: "08",
     title: "REST API Design",
-    subtitle:
-      "Designing an interface for someone you will never meet",
+    subtitle: "Designing an interface for someone you will never meet",
     blurb:
       "An interface is a promise to someone you will never meet. Fielding's constraints and which one nobody implements, resources and the methods that act on them, status codes a client can act on, and what a well-behaved error looks like.",
     pages: 99,
@@ -638,6 +655,55 @@ export const notebooks: Notebook[] = [
       "3. Fielding's six constraints",
       "4. Why it is called REST",
       "5. The constraint nobody implements",
+      "6. Finding the nouns",
+      "7. Anatomy of a URL",
+      "8. Plural nouns, and where the rule breaks",
+      "9. The slash means containment",
+      "10. Slugs, and the two problems the lecture skips",
+      "11. Path or query, and what an id should look like",
+      "12. Versioning: what actually forces a v2",
+      "13. Safe, idempotent, and the difference nobody draws",
+      "14. GET, and the day Google deleted a company's data",
+      "15. POST, and why it is the odd one",
+      "16. PUT and PATCH: replace against modify",
+      "17. PATCH is not idempotent, and the lecture says it is",
+      "18. What a PATCH body actually is",
+      "19. DELETE, and the 404 on the second call",
+      "20. Making POST retryable: idempotency keys",
+      "21. 200, 201, and the Location header",
+      "22. 204, and when an empty body is wrong",
+      "23. 404, and the collection that is empty",
+      "24. 400 against 422: which kind of wrong",
+      "25. 401 against 403, and the misleading name",
+      "26. 409, and the duplicate you did not plan for",
+      "27. The lost update, and the two headers that prevent it",
+      "28. 202, 429, and the responses that ask the client to wait",
+      "29. One error shape, everywhere",
+      "30. Three features, one endpoint",
+      "31. The envelope: what wraps your data",
+      "32. Offset pagination, and the page-2 bug",
+      "33. Keyset pagination",
+      "34. `total` costs a second query",
+      "35. Sorting, and the index underneath it",
+      "36. Filtering, operators, and the namespace collision",
+      "37. The unbounded limit",
+      "38. Sane defaults: sending nothing must work",
+      "39. The action that is not a verb on a noun",
+      "40. Designing a custom action",
+      "41. Custom actions are not REST, and that is fine",
+      "42. The API-level N+1, and why GraphQL exists",
+      "43. The second endpoint should cost nothing to learn",
+      "44. Naming, and the standard that does not exist",
+      "45. Design first: the interface before the code",
+      "46. OpenAPI, and documentation that cannot go stale",
+      "47. Reviewing an API diff",
+      "48. The delivery script",
+      "49. Whiteboard: designing an API live",
+      "50. Follow-up question bank",
+      "Appendix A. Status codes to memorise",
+      "Appendix B. The design checklist",
+      "Appendix C. Glossary",
+      "Appendix D. Self-test",
     ],
     assets: {
       reading: { file: "REST-API-Design-Reading.pdf", bytes: 2891344 },
@@ -657,8 +723,7 @@ export const notebooks: Notebook[] = [
     series: "System Design Notebook",
     number: "09",
     title: "Design Principles",
-    subtitle:
-      "SOLID, and the question underneath it",
+    subtitle: "SOLID, and the question underneath it",
     blurb:
       "SOLID is the answer. The question underneath it is which changes a design makes cheap and which it makes expensive, so each letter is taken back to the coupling it is really about, including where two of them disagree.",
     pages: 42,
@@ -701,8 +766,7 @@ export const notebooks: Notebook[] = [
     series: "System Design Notebook",
     number: "10",
     title: "Caching",
-    subtitle:
-      "How wrong you are willing to be, and for how long",
+    subtitle: "How wrong you are willing to be, and for how long",
     blurb:
       "Where a cache goes and what it costs you when it is stale. The hit ratio arithmetic, the stampede that turns smooth load into spikes, and the invalidation nobody gets right the first time.",
     pages: 77,
@@ -777,7 +841,10 @@ export function getNotebook(slug: string): Notebook | undefined {
 
 /** Storage object key for one edition: `<slug>/<file>`. The first path segment
  * is the product id, which is what the bucket's RLS policy checks. */
-export function objectKey(notebook: Notebook, edition: EditionId): string | null {
+export function objectKey(
+  notebook: Notebook,
+  edition: EditionId,
+): string | null {
   const asset = notebook.assets[edition];
   return asset ? `${notebook.slug}/${asset.file}` : null;
 }
@@ -790,4 +857,9 @@ export function formatBytes(bytes: number): string {
 /** Total pages across the library, for the index page. */
 export function totalPages(): number {
   return notebooks.reduce((sum, n) => sum + n.pages, 0);
+}
+
+/** Total sections across the library, counted from the tables of contents. */
+export function totalSections(): number {
+  return notebooks.reduce((sum, n) => sum + n.contents.length, 0);
 }

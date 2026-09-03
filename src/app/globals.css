@@ -586,6 +586,97 @@ body {
   );
 }
 
+/* learn.binarysemaphore.com is paper, so its canvas is actually white rather
+   than the warm off-white the marketing site uses. Scoped to the subtree and to
+   light mode: the rest of the site keeps its own canvas, and dark mode keeps
+   its charcoal, which is the second look in the reference and not a fallback.
+   Cards stay white too, which is correct here: paper on paper, told apart by
+   the hairline and the shadow rather than by tint. */
+html:not(.dark) .learn-canvas {
+  --background: #ffffff;
+  --card-hover: #fafafa;
+}
+
+/* The page as one continuous sheet rather than a stack of cards: a ruled
+   margin down the left, with room beside it for the things you write in a
+   margin. Below `lg` there is no room for a gutter, so the rule and the notes
+   both go away rather than crowding the text. */
+.notes-rule {
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .notes-rule::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 5.5rem;
+    width: 1px;
+    background: color-mix(in srgb, #e2624a 40%, transparent);
+  }
+}
+
+/* Something written in that margin: a page number, a date, an arrow, "!!". */
+.margin-note {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .margin-note {
+    display: block;
+    position: absolute;
+    left: -8rem;
+    width: 5.25rem;
+    text-align: right;
+    line-height: 1.15;
+  }
+}
+
+/* A photo stuck into the notebook rather than a banner sitting on top of it:
+   a white paper margin, a tilt, tape, and the colour pulled most of the way
+   out so it sits with the ink instead of shouting over it. Hovering restores
+   the colour, the way you would pick a photo up to look properly. */
+.photo-print {
+  filter: grayscale(0.3) sepia(0.08) contrast(1.03);
+  transition: filter 0.5s ease;
+}
+.group:hover .photo-print {
+  filter: grayscale(0) sepia(0) contrast(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-print {
+    transition: none;
+  }
+}
+
+/* A tear-off line between blocks. Two dashes, so it reads as perforation and
+   not as a table border. */
+.perforation {
+  height: 0;
+  border-top: 2px dashed color-mix(in srgb, var(--border) 90%, transparent);
+}
+
+/* A drawn box, the way you would ring something on paper: the corners are
+   uneven on purpose. */
+.drawn-box {
+  border: 1.5px solid color-mix(in srgb, var(--foreground) 32%, transparent);
+  border-radius: 14px 6px 16px 8px / 8px 16px 6px 14px;
+}
+
+/* An index card: lined, with a red rule under the term the way a real one has
+   a heading line. */
+.index-card {
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: var(--card);
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.05),
+    0 8px 16px -14px rgb(0 0 0 / 0.35);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 1.55rem,
+    color-mix(in srgb, #6ec6ff 22%, transparent) 1.55rem 1.6rem
+  );
+}
+
 /* --- Study notebook reader ----------------------------------------------- */
 /* The notebooks have their own typography, set in the `learnings` repo's
    engine/theme.css and visible in the PDFs: a serif body, handwritten section

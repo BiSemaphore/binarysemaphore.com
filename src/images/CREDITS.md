@@ -14,3 +14,5 @@ Sources were resized to 2400px max edge and re-encoded as JPEG q82.
 | `the-force-note.jpg` | Lucrezia Carnelos | `JWIOZkvFVWQ` |
 | `notes-window.jpg` | Irfan Simsar | `wxWulfjN-G0` |
 | `torn-paper.jpg` | Olga Thelavart | `RyrFRsVoe2Q` |
+| `desk-grid-pad.jpg` | Kelly Sikkema | `UDY1fa6UHCw` |
+| `empty-lecture-hall.jpg` | Philippe Bout | `93W0xn4961g` |
