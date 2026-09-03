@@ -2,12 +2,7 @@ import Link from "next/link";
 import { notebooks } from "@/lib/learn";
 
 /** The four highlighters, cycled so the rail reads as a set of notes. */
-const CARD_BG = [
-  "bg-[#ffe0d2] dark:bg-[#4a2f26]",
-  "bg-[#d6f3e6] dark:bg-[#1f4036]",
-  "bg-[#d9ecff] dark:bg-[#22384d]",
-  "bg-[#eddcff] dark:bg-[#38294a]",
-];
+const CARD_BG = ["note-peach", "note-mint", "note-sky", "note-pink"];
 
 /**
  * The library, shown rather than counted.
