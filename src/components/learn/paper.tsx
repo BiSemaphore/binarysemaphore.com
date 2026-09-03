@@ -32,15 +32,20 @@ export type Tilt = 0 | 1 | 2 | 3;
 export function PaperSheet({
   children,
   tape = false,
+  tone,
   className = "",
 }: {
   children: ReactNode;
   tape?: boolean;
+  /** Tints the sheet with one of the four highlighter colours. */
+  tone?: Tone;
   className?: string;
 }) {
   return (
     <div
-      className={`relative isolate overflow-hidden rounded-card border border-border bg-card shadow-soft ${className}`}
+      className={`relative isolate overflow-hidden rounded-card border shadow-soft ${
+        tone ? `${NOTE_BG[tone]} border-transparent` : "border-border bg-card"
+      } ${className}`}
     >
       <DotGrid className="text-foreground/[0.07]" gap={24} size={1.2} />
       {tape ? (
@@ -169,66 +174,76 @@ export function IndexCard({
 /** A box drawn round something by hand, corners and all. */
 export function DrawnBox({
   children,
+  tone,
   className = "",
 }: {
   children: ReactNode;
+  tone?: Tone;
   className?: string;
 }) {
-  return <div className={`drawn-box ${className}`}>{children}</div>;
+  return (
+    <div className={`drawn-box ${tone ? NOTE_BG[tone] : ""} ${className}`}>
+      {children}
+    </div>
+  );
 }
 
 /**
- * A photograph stuck into the notebook.
+ * A photograph at full width, with the page's own content laid over it.
  *
- * Not a hero image and not a banner: a white paper margin (deeper at the foot,
- * the way a print is), a degree or two of tilt, tape at the top, and the colour
- * pulled most of the way out by `.photo-print` so it sits with the ink rather
- * than shouting over it. Hovering restores the colour, the way you would pick a
- * photo up to look at it properly.
- *
- * The caption is optional and set in the handwritten face, because a photo in
- * someone's notes is captioned by hand or not at all.
+ * Deliberately not a small taped print: an image this size is either the
+ * strongest thing in view or it should not be there at all. The scrim is a
+ * gradient rather than a flat wash, so the picture stays a picture while the
+ * type over it keeps its contrast.
  */
-export function TapedPhoto({
+export function PhotoBand({
   src,
   alt,
-  caption,
-  tilt = 0,
-  className = "",
-  /** Aspect ratio of the print itself, as a Tailwind class. */
-  aspect = "aspect-[3/4]",
-  sizes = "(min-width: 1024px) 24rem, 100vw",
+  children,
+  /** Fixed ratio for an image-only band. Pass "" when content sets the height. */
+  aspect = "aspect-[16/9]",
   priority = false,
+  className = "",
+  /** Which part of the photo to keep when it is cropped. */
+  focus = "object-center",
 }: {
   src: StaticImageData;
   alt: string;
-  caption?: string;
-  tilt?: Tilt;
-  className?: string;
+  children?: ReactNode;
   aspect?: string;
-  sizes?: string;
   priority?: boolean;
+  className?: string;
+  focus?: string;
 }) {
   return (
-    <figure
-      className={`group relative ${TILT[tilt]} bg-card p-3 pb-4 shadow-soft ring-1 ring-black/5 transition-transform duration-500 hover:rotate-0 ${className}`}
+    <div
+      className={`relative isolate overflow-hidden rounded-panel ${aspect} ${className}`}
     >
-      <span
-        aria-hidden
-        className="tape left-1/2 -top-2 -translate-x-1/2 rotate-2"
-      />
-      <Photo
-        src={src}
-        alt={alt}
-        sizes={sizes}
-        priority={priority}
-        className={`photo-print w-full ${aspect}`}
-      />
-      {caption ? (
-        <figcaption className="pt-3 text-center font-hand text-lg leading-none text-subtle">
-          {caption}
-        </figcaption>
+      {/* Photo sets `relative` on its own wrapper, so it cannot be positioned
+          by passing `absolute` in. It gets its own absolute box instead, which
+          also means the band can be sized by its content rather than needing a
+          fixed aspect ratio. */}
+      <div className="absolute inset-0">
+        <Photo
+          src={src}
+          alt={alt}
+          sizes="(min-width: 1024px) 56rem, 100vw"
+          priority={priority}
+          className="h-full w-full"
+          imgClassName={focus}
+        />
+      </div>
+      {children ? (
+        <>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/65 to-black/15 sm:bg-gradient-to-r sm:from-black/90 sm:via-black/70 sm:to-black/20"
+          />
+          <div className="relative flex h-full flex-col justify-end p-6 py-10 sm:p-10 sm:py-12">
+            {children}
+          </div>
+        </>
       ) : null}
-    </figure>
+    </div>
   );
 }

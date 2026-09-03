@@ -1,5 +1,5 @@
 import { site } from "@/lib/site";
-import { DrawnBox } from "@/components/learn/paper";
+import { DrawnBox, type Tone } from "@/components/learn/paper";
 
 /**
  * The two drawn things on the page.
@@ -14,6 +14,16 @@ import { DrawnBox } from "@/components/learn/paper";
  * What actually happens between the question and the answer. Four stages,
  * because a fifth turns it into a lecture.
  */
+const TONES: Tone[] = ["peach", "mint", "sky", "pink"];
+
+/** The same four highlighters, at chip strength. */
+const LEAF_BG = [
+  "bg-[#ffe0d2] dark:bg-[#4a2f26]",
+  "bg-[#d6f3e6] dark:bg-[#1f4036]",
+  "bg-[#d9ecff] dark:bg-[#22384d]",
+  "bg-[#eddcff] dark:bg-[#38294a]",
+];
+
 export function AiPipeline() {
   const { stages } = site.mentorship.ai;
 
@@ -21,14 +31,16 @@ export function AiPipeline() {
     <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stages.map((stage, i) => (
         <li key={stage.name} className="relative">
-          <DrawnBox className="h-full bg-card px-5 py-5">
-            <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-subtle">
+          <DrawnBox tone={TONES[i % TONES.length]} className="h-full px-5 py-5">
+            <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-foreground/45">
               {String(i + 1).padStart(2, "0")}
             </p>
             <p className="mt-2 font-hand text-2xl leading-none text-foreground">
               {stage.name}
             </p>
-            <p className="mt-3 text-sm leading-6 text-muted">{stage.body}</p>
+            <p className="mt-3 text-sm leading-6 text-foreground/75">
+              {stage.body}
+            </p>
           </DrawnBox>
 
           {/* The arrow to the next stage, drawn in the gap. Only where there is
@@ -70,10 +82,10 @@ export function SyllabusTree() {
           </p>
 
           <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-2">
-            {branch.leaves.map((leaf) => (
+            {branch.leaves.map((leaf, i) => (
               <li
                 key={leaf}
-                className="rounded-full border border-border bg-card px-3 py-1 font-mono text-[0.68rem] tracking-wide text-muted"
+                className={`rounded-full px-3 py-1 font-mono text-[0.68rem] tracking-wide text-foreground/75 ${LEAF_BG[i % LEAF_BG.length]}`}
               >
                 {leaf}
               </li>
