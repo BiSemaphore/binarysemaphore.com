@@ -9,6 +9,7 @@ import { learnBase } from "@/lib/learn/paths";
 import { ArrowRightIcon } from "@/components/icons";
 import { DecodeTitle } from "@/components/learn/topics/decode-title";
 import { RequestNote } from "@/components/learn/request-note";
+import { getBody } from "@/lib/learn/topic-source";
 
 export function generateStaticParams() {
   return allTopics().map((topic) => ({ slug: topic.slug }));
@@ -78,6 +79,7 @@ export default async function TopicPage({
   const { topic, group } = found;
   const base = await learnBase();
   const state = topicState(topic);
+  const Body = await getBody(topic.slug);
   const notebook = topic.notebook ? getNotebook(topic.notebook) : undefined;
   const roadmap = topic.roadmap ? getRoadmap(topic.roadmap) : undefined;
   const { bookingUrl } = site.mentorship;
@@ -100,13 +102,24 @@ export default async function TopicPage({
 
         {/* The honest bit. 52 of 64 topics have nothing of ours behind them, and
             a page that pretends otherwise is a lie the reader finds on arrival. */}
+        {/* Written prose when there is any. `notebook` styling is reused so a
+            topic reads like the rest of the site rather than inventing a third
+            set of typography. */}
+        {Body ? (
+          <div className="notebook mt-10 max-w-2xl">
+            <Body />
+          </div>
+        ) : null}
+
         <div className="mt-10 max-w-2xl space-y-5">
           <p className="leading-7 text-muted">
-            {state === "soon"
-              ? topic.reference
-                ? `We have not written our own notes on ${topic.title} yet. The canonical documentation is linked on the right and it is better than anything we would rush out.`
-                : `We have not written our own notes on ${topic.title} yet, and there is no single source worth sending you to instead.`
-              : `We have written on ${topic.title}. It is linked on the right. A page in its own words is still to come.`}
+            {Body
+              ? `More on ${topic.title} is coming, and asking moves it up the list.`
+              : state === "soon"
+                ? topic.reference
+                  ? `We have not written our own notes on ${topic.title} yet. The canonical documentation is linked on the right and it is better than anything we would rush out.`
+                  : `We have not written our own notes on ${topic.title} yet, and there is no single source worth sending you to instead.`
+                : `We have written on ${topic.title}. It is linked on the right. A page in its own words is still to come.`}
           </p>
 
           <RequestNote subject={topic.slug} title={topic.title} />

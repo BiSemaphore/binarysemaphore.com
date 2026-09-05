@@ -100,8 +100,11 @@ any client-side or third-party consumer, but it is **not in the page's critical
 path**. This matters: a student stuck at midnight finds us through search, and a
 tree fetched after hydration is invisible to a crawler.
 
-Prose loads with the pattern already proven in the notebook reader
-(`src/app/learn/notebooks/[slug]/read/page.tsx`):
+Prose loads through `getBody()` in `topic-source.ts`, using the pattern already
+proven in the notebook reader (`src/app/learn/notebooks/[slug]/read/page.tsx`).
+Existence is checked on disk first rather than by catching a failed import: a
+throwing import is indistinguishable from a genuine MDX compile error, and
+swallowing that would hide a broken page instead of surfacing it.
 
 ```ts
 const { default: Body } = await import(`@/content/topics/${slug}.mdx`);
@@ -329,8 +332,10 @@ null.
 2. Add the row to the taxonomy table in this document.
 3. If we have written something, set `notebook` or `roadmap` instead and point at
    it. Do not claim coverage we do not have.
-4. For prose, add `src/content/topics/<slug>.mdx` with `rev: 1` in frontmatter.
-5. Bump `rev` on any later meaningful edit, so returning readers see the dot.
+4. For prose, add `src/content/topics/<slug>.mdx`. No frontmatter: nothing
+   reads it yet, and `rev` arrives with the unread model.
+5. The page picks it up automatically. `hasBody()` checks disk, so there is no
+   registry to update and no import to add.
 6. Never change an existing slug without a redirect.
 
 ## Phases
