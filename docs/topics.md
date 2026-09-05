@@ -63,7 +63,7 @@ a slug, on the other hand, is a breaking change and needs a redirect.
 ## Topic states
 
 Every topic declares what actually exists behind it. This is the most important
-rule in the system, because 54 of 64 topics have nothing written yet and a
+rule in the system, because 52 of the 64 topics have nothing of ours behind them yet and a
 navigation tree that implies otherwise is a lie the reader discovers on click.
 
 | State      | Means                              | UI                               |

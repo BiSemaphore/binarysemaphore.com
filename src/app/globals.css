@@ -716,6 +716,70 @@ html:not(.dark) .learn-canvas {
   );
 }
 
+/* --- The topic shell (/topics) ------------------------------------------- */
+/* Matte black, and deliberately the only part of `learn` that is. The pitch at
+   `/` is a page and stays white; this is an app for browsing a tree, and long
+   reading still belongs on white. See docs/topics.md.
+
+   Scoped with the same token-override technique `.learn-canvas` uses, so the
+   palette cannot leak into the rest of the subdomain. */
+/* `html .learn-canvas:has(...)` rather than plain `.learn-canvas:has(...)`:
+   the light-mode rule above is `html:not(.dark) .learn-canvas`, and without the
+   leading `html` this would lose the specificity tie and the header would stay
+   white above a black page. */
+.topics-shell,
+html .learn-canvas:has(.topics-shell) {
+  --background: #0c0c0d; /* matte, not #000: pure black crushes on OLED */
+  --card: #151517;
+  --card-hover: #1c1c1f;
+  --foreground: #ededed;
+  --muted: #b4b4ba;
+  --subtle: #8e8e94;
+  --border: rgba(255, 255, 255, 0.09);
+  --accent: #ededed;
+  --accent-strong: #ffffff;
+  color-scheme: dark;
+}
+
+/* A channel row. The hash is generated rather than typed into the label, so the
+   accessible name stays "Operating Systems" and not "# Operating Systems". */
+.channel::before {
+  content: "#";
+  margin-right: 0.55rem;
+  opacity: 0.45;
+}
+
+/* The unread dot, and the rule that a read row leaves its space behind so the
+   list does not reflow the moment something is marked seen. */
+.channel-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: #ededed;
+}
+
+/* Per-character decode on a topic title. Chrome only: prose is never animated,
+   because it hurts both readability and LCP. */
+@keyframes topic-decode {
+  from {
+    opacity: 0;
+    transform: translateY(0.18em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.decode > span {
+  display: inline-block;
+  animation: topic-decode 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .decode > span {
+    animation: none;
+  }
+}
+
 /* --- Study notebook reader ----------------------------------------------- */
 /* The notebooks have their own typography, set in the `learnings` repo's
    engine/theme.css and visible in the PDFs: a serif body, handwritten section
