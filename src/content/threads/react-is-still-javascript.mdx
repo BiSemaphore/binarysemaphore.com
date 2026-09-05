@@ -1,0 +1,132 @@
+---
+title: "React is still JavaScript. Its compiler is not."
+description: "The React Compiler was ported from TypeScript to Rust and merged in June 2026. React itself did not change. The quoted speedups range from 3x to 17x depending on what is being measured, and the gap between those numbers is the interesting part."
+date: 2026-09-05
+tags: ["react", "compilers", "rust", "build-tools"]
+---
+
+The headline going around is some variation of "React is now Rust". It is not. Nothing about
+writing React changed. You still write components in JavaScript or TypeScript, they still
+run in a JavaScript engine, and React itself is still a JavaScript library.
+
+What moved is the **React Compiler**, the build-time tool formerly called React Forget.
+[PR #36173](https://github.com/react/react/pull/36173) ported it from TypeScript to Rust
+and was merged on 9 June 2026. The author, Joseph Savona, describes it in the PR itself as
+"an experimental, work-in-progress port". That phrase has not survived the trip into the
+headlines, and it should.
+
+## What the React Compiler actually does
+
+It writes your memoization for you.
+
+Left alone, React re-runs a component's body on every render and rebuilds every object and
+closure inside it. If a child is comparing props by reference, a freshly built object is a
+new object, so the child re-renders too, and so does its subtree. The manual fix is
+`useMemo` and `useCallback` scattered by hand at every point where a reference has to stay
+stable between renders.
+
+That is a mechanical job, and a badly specified one. You have to reason about which values
+can change, which comparisons are by reference, and which dependency arrays are honest. It
+is the kind of task humans are reliably bad at and a compiler is reliably good at, because
+the answer is derivable from the code rather than from taste.
+
+So the compiler reads your component, works out what actually depends on what, and emits
+the memoization you would have written if you had been perfectly careful. Your source stays
+readable. The output does the bookkeeping.
+
+## The numbers, and what each one is measuring
+
+This is where the reporting gets loose. Four different figures are circulating and they are
+measuring four different things.
+
+**Around 3x, as a drop-in Babel plugin.** This is the honest general number and it is the
+one in the PR. Same integration point, same surrounding build, Rust instead of TypeScript.
+
+**Up to 10x, for the transformation logic in isolation.** Also from the PR. The gap between
+this and the 3x is serialization: as a Babel plugin, the Rust compiler has to receive an AST
+across a language boundary and hand one back, and that marshalling cost is paid on every
+file regardless of how fast the middle got.
+
+**Over 40% faster compilation in Turbopack**, per Vercel's testing on v0, and 20 to 50%
+faster route compilation across Next.js test apps, with experimental support landing in
+Next.js 16.3. Different number again, because this is end-to-end build time, and the
+compiler was never all of it.
+
+**14.3 seconds to 0.81 seconds**, the figure doing the most numerical work in the headlines.
+This one deserves care, because it is widely being attributed to the React Router project.
+It is not. It comes from the team behind [Outlyne](https://blog.master.dev/react-now-rusted-all-the-way-out/),
+a website builder whose own codebase is 1,036 files and uses React Router, after switching
+to the oxc implementation. And it is the **compiler portion of their build only**. The same
+post gives the whole-build figure in the same breath: 22.1 seconds to 9.3 seconds, about
+2.4x.
+
+That is still an excellent result. It is not a 17x build.
+
+## Why the numbers diverge
+
+Every one of those figures is true. They differ because a compiler is a fraction of a build,
+and speeding up a fraction is bounded by how large the fraction was.
+
+If the React Compiler is 65% of your build, deleting it entirely caps you at about 2.9x
+overall. Making it 17x faster gets you most of that cap, which is exactly the 2.4x Outlyne
+measured. If the compiler is 10% of your build, the same 17x buys you about 11% and nobody
+writes a headline about it.
+
+So the honest question is not "how much faster is the compiler". It is "how much of my build
+is the compiler", and that number is yours, not theirs. Measure before you get excited.
+
+The second reason is the boundary. A Rust compiler called from Babel spends real time
+converting an AST in and out of JavaScript. The same compiler linked natively into a Rust
+bundler does not. That is why the Turbopack and oxc integrations post better numbers than the
+Babel plugin does: not because the compiler got faster, but because the translation at the
+edge went away.
+
+## Why Rust, when TypeScript went to Go
+
+We wrote about [TypeScript 7 moving to Go](/threads/why-typescript-7-is-written-in-go) a
+couple of months back, and the obvious question is why these two answered the same question
+differently.
+
+The TypeScript answer was about the workload: a shared, read-mostly graph traversed in
+parallel, which Go's runtime expresses well. It is a program that runs on its own.
+
+The React Compiler is not a program that runs on its own. It is a pass inside somebody
+else's build, and the builds that matter are increasingly Rust: Turbopack, oxc, SWC. A
+compiler pass written in Go would have to be shipped as a separate process or a foreign
+binary and would pay the marshalling cost at every boundary, which is precisely the cost the
+port set out to remove. The PR ships integration examples for both OXC and SWC, which tells
+you what the target really was.
+
+So the choice was not "which language is faster". It was "where does this code have to
+live", and the answer was inside a Rust toolchain. That is a more useful way to read most
+rewrites than the language-war version.
+
+## The part nobody is talking about
+
+From the PR: the port leaned heavily on large language models for the mechanical work, with
+humans kept for the architecture and the review. All 1,725 test fixtures pass under snapshot
+comparison of generated output, plus per-pass comparisons of the compiler's intermediate
+representation.
+
+That is a genuinely interesting engineering result, and the shape of it matters. A port is
+the ideal task for this: the specification already exists in the form of the old
+implementation, the architecture is a given rather than a decision, and correctness is
+checkable against 1,725 fixtures that already existed. None of those three conditions holds
+when you are writing something new.
+
+The same PR is honest about the limits, and it is worth quoting the caution rather than the
+claim: the performance benchmarks themselves "derive from AI analysis and haven't undergone
+extensive validation". The people doing this work are being more careful about their numbers
+than the people reporting on it.
+
+## What to do about it
+
+Probably nothing, yet. It is experimental and the PR says so.
+
+If you are on Next.js 16.3 or later with Turbopack, you may already be getting some of it
+without having done anything. If your builds are genuinely slow, spend twenty minutes
+finding out what fraction of that time the React Compiler accounts for before you go
+looking for a faster one. Most of the time it will not be the biggest number on the list.
+
+And if you are still hand-writing `useMemo` everywhere, the compiler being fast is the
+second-best news in this story. The first is that you can stop.
