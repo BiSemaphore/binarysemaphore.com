@@ -252,6 +252,32 @@ The right rail is the part that earns its width. On Discord it lists people. Her
 it answers the only question a reader actually has on landing: is there anything
 here for me, and what do I do if there is not.
 
+### The height model
+
+The single thing most likely to be broken by a later change.
+
+Discord never scrolls the page; each pane scrolls itself. That requires a
+bounded height at the top (`h-[calc(100dvh-3.5rem)]`, the viewport less the
+learn header) and `min-h-0` on every flex child down the chain. A flex item
+defaults to `min-height: auto` and refuses to shrink below its content, which
+silently defeats `overflow-y` on its descendants.
+
+The first version of the shell got this wrong in exactly that way: the panes
+carried `overflow-y-auto` but had grown to 2564px inside a 911px viewport, so
+the property did nothing and the whole page scrolled. If the sidebar ever stops
+scrolling on its own, this is why.
+
+`100dvh` rather than `100vh`, so collapsing mobile browser chrome does not leave
+a dead strip beneath the sidebar.
+
+The marketing footer is hidden on `/topics` for the same reason: an app shell
+sized to the viewport with a footer underneath scrolls the page no matter how
+well the panes behave.
+
+The rail and sidebar are a single instance moved off-canvas by transform below
+`md`, never a second copy. A duplicate would repeat every `id="group-*"` and
+break the rail's own anchor links.
+
 ### Palette
 
 Matte black, scoped to `.topics-shell` with the same token-override technique

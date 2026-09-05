@@ -717,45 +717,89 @@ html:not(.dark) .learn-canvas {
 }
 
 /* --- The topic shell (/topics) ------------------------------------------- */
-/* Matte black, and deliberately the only part of `learn` that is. The pitch at
-   `/` is a page and stays white; this is an app for browsing a tree, and long
-   reading still belongs on white. See docs/topics.md.
+/* Discord's structure, not its palette. The one thing genuinely worth copying
+   from Discord's colour is the *layering*: three distinct greys, darkest at the
+   rail and lightest in the reading pane, so depth reads without a single border.
+   A flat surface was why the first attempt looked wrong.
 
-   Scoped with the same token-override technique `.learn-canvas` uses, so the
-   palette cannot leak into the rest of the subdomain. */
-/* `html .learn-canvas:has(...)` rather than plain `.learn-canvas:has(...)`:
-   the light-mode rule above is `html:not(.dark) .learn-canvas`, and without the
-   leading `html` this would lose the specificity tie and the header would stay
-   white above a black page. */
+   Scoped with the same token-override technique `.learn-canvas` uses, and the
+   leading `html` on the :has() rule is load-bearing: the light rule is
+   `html:not(.dark) .learn-canvas`, so without it the specificity tie is lost and
+   the header stays white above a black page. */
 .topics-shell,
 html .learn-canvas:has(.topics-shell) {
-  --background: #0c0c0d; /* matte, not #000: pure black crushes on OLED */
-  --card: #151517;
-  --card-hover: #1c1c1f;
-  --foreground: #ededed;
-  --muted: #b4b4ba;
-  --subtle: #8e8e94;
-  --border: rgba(255, 255, 255, 0.09);
-  --accent: #ededed;
+  --rail: #050506; /* darkest: the group rail */
+  --sidebar: #0c0c0e; /* the channel list */
+  --background: #131316; /* the reading pane, lightest of the three */
+  --card: #1b1b1f;
+  --card-hover: #26262c;
+  --foreground: #f2f2f3;
+  --muted: #a8a8b0;
+  --subtle: #75757e;
+  --border: rgba(255, 255, 255, 0.07);
+  --accent: #f2f2f3;
   --accent-strong: #ffffff;
   color-scheme: dark;
 }
 
-/* A channel row. The hash is generated rather than typed into the label, so the
-   accessible name stays "Operating Systems" and not "# Operating Systems". */
-.channel::before {
-  content: "#";
-  margin-right: 0.55rem;
-  opacity: 0.45;
+/* An app shell has no marketing footer under it. Leaving it there added its
+   own height below a pane already sized to the viewport, which is what made the
+   page scroll on top of the panes scrolling. Same `:has()` scoping as the
+   palette, so it only disappears on /topics. */
+html .learn-canvas:has(.topics-shell) > footer {
+  display: none;
 }
 
-/* The unread dot, and the rule that a read row leaves its space behind so the
-   list does not reflow the moment something is marked seen. */
-.channel-dot {
-  width: 0.4rem;
-  height: 0.4rem;
+.rail-surface {
+  background: var(--rail);
+}
+.sidebar-surface {
+  background: var(--sidebar);
+}
+
+/* Discord's active-server tell: a white pill on the left edge that grows out of
+   nothing. Hover gives a short stub, current gives the full bar. */
+.rail-item::before {
+  content: "";
+  position: absolute;
+  left: -0.75rem;
+  width: 0.25rem;
+  height: 0.5rem;
   border-radius: 999px;
-  background: #ededed;
+  background: var(--foreground);
+  opacity: 0;
+  transition:
+    height 0.2s ease,
+    opacity 0.2s ease;
+}
+.rail-item:hover::before {
+  opacity: 1;
+}
+.rail-item[aria-current]::before {
+  opacity: 1;
+  height: 1.5rem;
+}
+
+/* The squircle that relaxes into a rounded rectangle on hover, which is the
+   single most recognisable motion in Discord's chrome. */
+.rail-item {
+  border-radius: 45%;
+  transition:
+    border-radius 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+.rail-item:hover,
+.rail-item[aria-current] {
+  border-radius: 30%;
+}
+
+/* A channel row. The hash is generated rather than typed into the label, so the
+   accessible name stays "operating-systems" and not "# operating-systems". */
+.channel::before {
+  content: "#";
+  margin-right: 0.5rem;
+  opacity: 0.4;
 }
 
 /* Per-character decode on a topic title. Chrome only: prose is never animated,
@@ -763,7 +807,7 @@ html .learn-canvas:has(.topics-shell) {
 @keyframes topic-decode {
   from {
     opacity: 0;
-    transform: translateY(0.18em);
+    transform: translateY(0.16em);
   }
   to {
     opacity: 1;
@@ -772,12 +816,32 @@ html .learn-canvas:has(.topics-shell) {
 }
 .decode > span {
   display: inline-block;
-  animation: topic-decode 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  animation: topic-decode 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
 @media (prefers-reduced-motion: reduce) {
   .decode > span {
     animation: none;
   }
+  .rail-item,
+  .rail-item::before {
+    transition: none;
+  }
+}
+
+/* Discord's scrollbar: present, thin, and only obvious once you look for it. */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+.thin-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* --- Study notebook reader ----------------------------------------------- */
