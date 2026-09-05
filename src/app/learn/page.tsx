@@ -406,7 +406,7 @@ export default async function MentorshipPage() {
         </p>
 
         <div className="mt-10">
-          <SyllabusTree />
+          <SyllabusTree base={base} />
         </div>
       </NotesBlock>
 
