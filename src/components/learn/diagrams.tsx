@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { site } from "@/lib/site";
 import { DrawnBox, type Tone } from "@/components/learn/paper";
 
@@ -58,7 +59,7 @@ export function AiPipeline() {
  * The subjects, as a map rather than a syllabus: one stem, a branch per
  * subject, and what actually sits on each branch.
  */
-export function SyllabusTree() {
+export function SyllabusTree({ base }: { base: string }) {
   const { syllabus } = site.mentorship;
 
   return (
@@ -72,9 +73,21 @@ export function SyllabusTree() {
             className="absolute -left-6 top-8 h-4 w-4 rounded-bl-xl border-b border-l border-dashed border-border sm:-left-10 sm:w-8"
           />
 
-          <p className="font-hand text-3xl leading-none text-foreground">
-            {branch.branch}
-          </p>
+          {branch.roadmap ? (
+            <Link
+              href={`${base}/roadmaps/${branch.roadmap}`}
+              className="group inline-flex items-baseline gap-2 font-hand text-3xl leading-none text-foreground"
+            >
+              {branch.branch}
+              <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-accent-strong underline decoration-accent/40 underline-offset-4 transition-colors group-hover:decoration-accent">
+                roadmap
+              </span>
+            </Link>
+          ) : (
+            <p className="font-hand text-3xl leading-none text-foreground">
+              {branch.branch}
+            </p>
+          )}
 
           <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-2">
             {branch.leaves.map((leaf, i) => (

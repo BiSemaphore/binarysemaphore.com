@@ -198,8 +198,12 @@ export type Mentorship = {
     /** Our own shipped proof, linked rather than described. */
     proof: { body: string; href: string; label: string };
   };
-  /** The subjects, drawn as a tree rather than listed as a syllabus. */
-  syllabus: { branch: string; leaves: string[] }[];
+  /**
+   * The subjects, drawn as a tree rather than listed as a syllabus. A branch
+   * with a `roadmap` slug becomes a link into that map; the rest are still
+   * just labels, which is honest until those maps are drawn.
+   */
+  syllabus: { branch: string; leaves: string[]; roadmap?: string }[];
   /** What an hour actually consists of. Logistics reassure more than pep talk. */
   session: { label: string; body: string }[];
   faq: { q: string; a: string }[];
@@ -558,6 +562,7 @@ export const site: SiteConfig = {
       {
         branch: "javascript",
         leaves: ["the language", "async, honestly", "the browser", "node"],
+        roadmap: "react",
       },
       {
         branch: "ai",

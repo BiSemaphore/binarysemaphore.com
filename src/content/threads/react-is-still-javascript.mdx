@@ -5,15 +5,15 @@ date: 2026-09-05
 tags: ["react", "compilers", "rust", "build-tools"]
 ---
 
-The headline going around is some variation of "React is now Rust". It is not. Nothing about
+The headline going around is some variation of <Strike>"React is now Rust"</Strike>. It is not. Nothing about
 writing React changed. You still write components in JavaScript or TypeScript, they still
 run in a JavaScript engine, and React itself is still a JavaScript library.
 
 What moved is the **React Compiler**, the build-time tool formerly called React Forget.
 [PR #36173](https://github.com/react/react/pull/36173) ported it from TypeScript to Rust
 and was merged on 9 June 2026. The author, Joseph Savona, describes it in the PR itself as
-"an experimental, work-in-progress port". That phrase has not survived the trip into the
-headlines, and it should.
+<Highlight>an experimental, work-in-progress port</Highlight>. That phrase has not survived the
+trip into the headlines, and it should.
 
 ## What the React Compiler actually does
 
@@ -54,7 +54,7 @@ compiler was never all of it.
 
 **14.3 seconds to 0.81 seconds**, the figure doing the most numerical work in the headlines.
 This one deserves care, because it is widely being attributed to the React Router project.
-It is not. It comes from the team behind [Outlyne](https://blog.master.dev/react-now-rusted-all-the-way-out/),
+<Circle>It is not.</Circle> It comes from the team behind [Outlyne](https://blog.master.dev/react-now-rusted-all-the-way-out/),
 a website builder whose own codebase is 1,036 files and uses React Router, after switching
 to the oxc implementation. And it is the **compiler portion of their build only**. The same
 post gives the whole-build figure in the same breath: 22.1 seconds to 9.3 seconds, about
@@ -72,8 +72,8 @@ overall. Making it 17x faster gets you most of that cap, which is exactly the 2.
 measured. If the compiler is 10% of your build, the same 17x buys you about 11% and nobody
 writes a headline about it.
 
-So the honest question is not "how much faster is the compiler". It is "how much of my build
-is the compiler", and that number is yours, not theirs. Measure before you get excited.
+So the honest question is not "how much faster is the compiler". It is
+<Underline>how much of my build is the compiler</Underline>, and that number is yours, not theirs. Measure before you get excited.
 
 The second reason is the boundary. A Rust compiler called from Babel spends real time
 converting an AST in and out of JavaScript. The same compiler linked natively into a Rust
@@ -97,8 +97,9 @@ binary and would pay the marshalling cost at every boundary, which is precisely 
 port set out to remove. The PR ships integration examples for both OXC and SWC, which tells
 you what the target really was.
 
-So the choice was not "which language is faster". It was "where does this code have to
-live", and the answer was inside a Rust toolchain. That is a more useful way to read most
+So the choice was not "which language is faster". It was
+<Underline className="text-violet/80">where does this code have to live</Underline>, and the answer was inside a Rust
+toolchain. That is a more useful way to read most
 rewrites than the language-war version.
 
 ## The part nobody is talking about

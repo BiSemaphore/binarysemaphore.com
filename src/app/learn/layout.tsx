@@ -35,7 +35,11 @@ export default async function LearnLayout({
       <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between gap-3 px-6">
           <div className="flex min-w-0 items-center gap-2.5">
-            <a href={APEX} aria-label="Binary Semaphore home" className="shrink-0">
+            <a
+              href={APEX}
+              aria-label="Binary Semaphore home"
+              className="shrink-0"
+            >
               <Wordmark textClassName="max-sm:hidden" />
             </a>
             {/* The wordmark is an SVG (viewBox "0 0 1036.28 150") whose text
@@ -56,8 +60,8 @@ export default async function LearnLayout({
               </Link>
             </span>
 
-            {/* The two sections. `learn` is a platform now, not a library, so
-                both have to be reachable from either. */}
+            {/* The three sections. `learn` is a platform now, not a library,
+                so each has to be reachable from any of the others. */}
             <nav
               aria-label="Sections"
               className="ml-3 hidden items-center gap-4 border-l border-border pl-4 sm:flex"
@@ -67,6 +71,12 @@ export default async function LearnLayout({
                 className="font-mono text-xs text-muted transition-colors hover:text-foreground"
               >
                 mentorship
+              </Link>
+              <Link
+                href={`${base}/roadmaps`}
+                className="font-mono text-xs text-muted transition-colors hover:text-foreground"
+              >
+                roadmaps
               </Link>
               <Link
                 href={`${base}/notebooks`}
