@@ -44,8 +44,6 @@ export type Topic = {
 export type TopicGroup = {
   slug: string;
   name: string;
-  /** Two letters for the server rail, the way Discord abbreviates a server. */
-  mark: string;
   /** One line for the group header. */
   tagline: string;
   topics: Topic[];
@@ -57,7 +55,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "languages",
     name: "Languages",
-    mark: "LA",
     tagline: "The ones you will be asked to write in.",
     topics: [
       {
@@ -124,7 +121,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "dsa",
     name: "DSA",
-    mark: "DS",
     tagline: "The part of the year placement season eats.",
     topics: [
       {
@@ -186,7 +182,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "maths",
     name: "Maths for CS",
-    mark: "MA",
     tagline: "The maths that actually shows up later.",
     topics: [
       {
@@ -218,7 +213,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "foundations",
     name: "Foundations",
-    mark: "FN",
     tagline: "The theory papers, and why they are not busywork.",
     topics: [
       {
@@ -251,7 +245,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "systems",
     name: "Systems",
-    mark: "SY",
     tagline: "How one machine, then many, actually behave.",
     topics: [
       {
@@ -284,7 +277,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "networking",
     name: "Networking",
-    mark: "NW",
     tagline: "How the bytes get from there to here.",
     topics: [
       {
@@ -324,7 +316,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "data",
     name: "Data",
-    mark: "DA",
     tagline: "Where it lives, and what it costs to get it back.",
     topics: [
       {
@@ -376,7 +367,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "building",
     name: "Building",
-    mark: "BL",
     tagline: "Turning all of it into something that runs.",
     topics: [
       {
@@ -418,7 +408,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "security",
     name: "Security",
-    mark: "SE",
     tagline: "The half that gets projects marked down.",
     topics: [
       {
@@ -452,7 +441,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "cloud",
     name: "Cloud and DevOps",
-    mark: "CD",
     tagline: "Someone else's computer, and how you talk to it.",
     topics: [
       {
@@ -498,7 +486,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "ai",
     name: "AI",
-    mark: "AI",
     tagline: "What happens after you press enter.",
     topics: [
       {
@@ -540,7 +527,6 @@ export const groups: TopicGroup[] = [
   {
     slug: "toolbox",
     name: "Toolbox",
-    mark: "TB",
     tagline: "The things nobody teaches and everybody needs.",
     topics: [
       {

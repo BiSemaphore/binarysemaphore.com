@@ -36,13 +36,11 @@ describe("the topic tree", () => {
     expect(getTopic("not-a-topic")).toBeUndefined();
   });
 
-  it("gives every group a distinct two-letter rail mark", () => {
-    const marks = groups.map((g) => g.mark);
-    expect(new Set(marks).size).toBe(marks.length);
-    for (const mark of marks) expect(mark).toMatch(/^[A-Z]{2}$/);
+  it("resolves every group by slug", () => {
     for (const group of groups) {
       expect(getGroup(group.slug)?.name).toBe(group.name);
     }
+    expect(getGroup("not-a-group")).toBeUndefined();
   });
 });
 

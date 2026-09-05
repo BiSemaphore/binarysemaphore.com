@@ -7,11 +7,12 @@ import {
   topicState,
 } from "@/lib/learn/topics";
 import { learnBase } from "@/lib/learn/paths";
+import { GroupIcon } from "@/components/learn/topics/group-icons";
 
 export const metadata: Metadata = {
   title: "Topics",
   description:
-    "The computer science topic tree: 64 topics across languages, DSA, systems, data, security, cloud and AI, each honest about what we have written and what we have not.",
+    "The papers and tools a computer science degree covers, listed with what we have written on each and what we have not.",
 };
 
 export default async function TopicsIndex() {
@@ -20,34 +21,35 @@ export default async function TopicsIndex() {
   const covered = countCovered();
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-10 lg:px-10 lg:py-14">
-      <p className="font-mono text-[0.65rem] uppercase tracking-[0.22em] text-subtle">
-        binary semaphore / topics
-      </p>
-      <h1 className="mt-4 font-mono text-4xl font-bold leading-[1.05] tracking-[-0.045em] text-foreground sm:text-5xl">
-        Everything, in one tree
+    <div className="mx-auto w-full max-w-3xl px-6 py-10 lg:px-10 lg:py-14">
+      <h1 className="font-mono text-3xl font-bold leading-tight tracking-[-0.04em] text-foreground sm:text-4xl">
+        Topics
       </h1>
-      <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">
-        {total} topics in {groups.length} groups. Pick the one that is giving
-        you trouble. Each says plainly whether we have written anything on it,
-        and offers an hour where we have not.
+      <p className="mt-5 text-lg leading-8 text-muted">
+        The papers and tools a computer science degree actually covers, laid out
+        so you can find the one that is giving you trouble.
+      </p>
+      <p className="mt-4 leading-7 text-muted">
+        {covered} of the {total} have something written by us so far. The other{" "}
+        {total - covered} are listed anyway, with what they are and where to
+        read about them, and each says plainly that we have not got to it yet.
+        We are working through them.
       </p>
 
-      <p className="mt-6 font-mono text-xs text-subtle">
-        {covered} of {total} have something of ours behind them today. The rest
-        say so.
-      </p>
-
-      <div className="mt-12 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+      {/* One column. A topic list is read down, not scanned across, and two
+          columns made the eye jump between unrelated groups. */}
+      <div className="mt-14 space-y-12">
         {groups.map((group) => (
-          <section key={group.slug}>
+          <section
+            key={group.slug}
+            id={`group-${group.slug}`}
+            className="scroll-mt-6"
+          >
             <div className="flex items-center gap-3 border-b border-border pb-3">
-              <span
-                aria-hidden
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-card font-mono text-[0.62rem] tracking-wider text-subtle"
-              >
-                {group.mark}
-              </span>
+              <GroupIcon
+                group={group.slug}
+                className="h-5 w-5 shrink-0 text-subtle"
+              />
               <h2 className="font-mono text-sm font-semibold tracking-tight text-foreground">
                 {group.name}
               </h2>
@@ -60,23 +62,28 @@ export default async function TopicsIndex() {
               {group.tagline}
             </p>
 
-            <ul className="mt-4 space-y-px">
+            <ul className="mt-5 space-y-1">
               {group.topics.map((topic) => {
                 const state = topicState(topic);
                 return (
                   <li key={topic.slug}>
                     <Link
                       href={`${base}/topics/${topic.slug}`}
-                      className="channel flex items-center rounded px-2 py-1.5 font-mono text-[0.78rem] text-subtle transition-colors hover:bg-card-hover hover:text-foreground"
+                      className="flex items-baseline gap-3 rounded px-2 py-2 transition-colors hover:bg-card-hover"
                     >
-                      <span className="truncate">{topic.slug}</span>
+                      <span className="channel shrink-0 font-mono text-[0.82rem] text-foreground">
+                        {topic.slug}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-sm text-subtle">
+                        {topic.blurb}
+                      </span>
                       {state === "soon" ? null : (
                         <span
-                          className="ml-auto pl-3 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted"
+                          className="shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted"
                           title={
                             state === "notebook"
-                              ? "A notebook covers this"
-                              : "A roadmap passes through this"
+                              ? "A notebook of ours covers this"
+                              : "A roadmap of ours passes through this"
                           }
                         >
                           {state}

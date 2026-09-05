@@ -24,7 +24,6 @@ export function GET() {
     groups: groups.map((group) => ({
       slug: group.slug,
       name: group.name,
-      mark: group.mark,
       tagline: group.tagline,
       topics: group.topics.map((topic) => ({
         slug: topic.slug,

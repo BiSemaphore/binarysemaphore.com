@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { TopicGroup } from "@/lib/learn/topics";
+import { GroupIcon } from "@/components/learn/topics/group-icons";
 
 const STORE = "topics:collapsed";
 
@@ -103,13 +104,13 @@ export function TopicsShell({
               href={`#group-${group.slug}`}
               title={group.name}
               aria-current={current ? "true" : undefined}
-              className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl font-mono text-[0.7rem] tracking-wider transition-all duration-200 hover:rounded-xl ${
+              className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl transition-all duration-200 hover:rounded-xl ${
                 current
                   ? "bg-foreground text-background"
                   : "bg-background text-subtle hover:bg-card-hover hover:text-foreground"
               }`}
             >
-              <span aria-hidden>{group.mark}</span>
+              <GroupIcon group={group.slug} className="h-5 w-5" />
               <span className="sr-only">{group.name}</span>
             </a>
           );

@@ -137,7 +137,10 @@ may import from `src/content/topics/` directly.**
 
 ## The unread model
 
-The one part of this that genuinely needs a backend.
+**Not built yet.** Planned as the second thing needing a backend, after note
+requests. Recorded here so the design is settled before it is written.
+
+The one part of browsing that genuinely needs per-user state.
 
 The feature worth copying from Discord is the unread dot, and it is per-user, so
 it cannot be static. Everything else about the tree can be, and is.
@@ -157,11 +160,41 @@ never during render: a render must not have side effects.
 Signed out, there is no state and no dot. The tree is identical, which is
 intentional; nothing about browsing is gated.
 
+## Note requests
+
+52 topics have nothing of ours behind them. Rather than guessing which to write
+next, every topic page asks, and `public.note_requests` (migration `0010`) is
+the answer.
+
+`<RequestNote subject title />` in `src/components/learn/request-note.tsx` is
+deliberately generic: it takes a subject slug and a display name and nothing
+else, so the same component works on a topic page, a roadmap stop, or anywhere
+else we have not written something yet. It is a server component, so the
+signed-in and already-asked states resolve before render with no flicker.
+
+**Signing in is required, and that is the point rather than friction.** An
+anonymous vote is noise. A request is only useful if we can tell one person
+asking five times from five people asking once, which is exactly what the
+primary key `(user_id, topic)` enforces.
+
+**The email is not stored.** `auth.users` already has it, joined server-side
+when the queue is read with the service key. A second copy would be a second
+thing to keep in step and a second thing to leak.
+
+Unlike `mentorship_requests`, a reader may `select` their own rows. The button
+has to be able to say "you asked for this" rather than inviting the same person
+to ask again, and their own request is not information worth hiding from them.
+The queue is still not enumerable from a browser: the policy restricts a select
+to `auth.uid() = user_id`.
+
+There is no update policy. A request is a fact with a timestamp, so amending one
+means withdrawing it and asking again.
+
 ## Where authorization lives
 
 In Postgres, and only incidentally in the app. Same stance as the notebooks.
 
-`public.topic_visits` (migration `0010`) is a straight copy of
+`public.topic_visits` (migration `0011`, not yet written) is a straight copy of
 `reading_progress` (`0006`), because it is the same shape of data and those
 policies are already proven:
 

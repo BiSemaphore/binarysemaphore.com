@@ -8,6 +8,7 @@ import { allTopics, getTopic, topicState } from "@/lib/learn/topics";
 import { learnBase } from "@/lib/learn/paths";
 import { ArrowRightIcon } from "@/components/icons";
 import { DecodeTitle } from "@/components/learn/topics/decode-title";
+import { RequestNote } from "@/components/learn/request-note";
 
 export function generateStaticParams() {
   return allTopics().map((topic) => ({ slug: topic.slug }));
@@ -99,37 +100,31 @@ export default async function TopicPage({
 
         {/* The honest bit. 52 of 64 topics have nothing of ours behind them, and
             a page that pretends otherwise is a lie the reader finds on arrival. */}
-        {state === "soon" ? (
-          <div className="mt-10 max-w-2xl rounded-card border border-border bg-card px-6 py-6">
-            <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-subtle">
-              Not written yet
-            </p>
-            <p className="mt-3 leading-7 text-muted">
-              We have not published anything on {topic.title} yet, and it would
-              be easy to pretend otherwise.{" "}
-              {topic.reference
-                ? "The canonical documentation is linked on the right, and it is better than anything we would rush out."
-                : "There is no single canonical source worth sending you to, which is exactly the kind of topic an hour is good for."}
-            </p>
+        <div className="mt-10 max-w-2xl space-y-5">
+          <p className="leading-7 text-muted">
+            {state === "soon"
+              ? topic.reference
+                ? `We have not written our own notes on ${topic.title} yet. The canonical documentation is linked on the right and it is better than anything we would rush out.`
+                : `We have not written our own notes on ${topic.title} yet, and there is no single source worth sending you to instead.`
+              : `We have written on ${topic.title}. It is linked on the right. A page in its own words is still to come.`}
+          </p>
+
+          <RequestNote subject={topic.slug} title={topic.title} />
+
+          <p className="text-sm leading-6 text-subtle">
+            Or{" "}
             <a
               href={bookingUrl || `${base}/#ask`}
               {...(bookingUrl
                 ? { target: "_blank", rel: "noopener noreferrer" }
                 : {})}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
+              className="text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
             >
-              Sit with someone on it
-              <ArrowRightIcon className="h-4 w-4" />
-            </a>
-          </div>
-        ) : (
-          <div className="mt-10 max-w-2xl rounded-card border border-border bg-card px-6 py-6">
-            <p className="leading-7 text-muted">
-              There is work of ours behind this one. It is linked on the right,
-              and the written-up version of this page is still to come.
-            </p>
-          </div>
-        )}
+              sit with someone on it
+            </a>{" "}
+            instead of waiting for us to write it.
+          </p>
+        </div>
       </article>
 
       {/* The right rail. On Discord this lists people; here it answers the only

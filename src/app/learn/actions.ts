@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { getNotebook } from "@/lib/learn";
 import { canRead, getAccess, grantAccess } from "@/lib/learn/access";
 import { markRead } from "@/lib/learn/progress";
+import { getTopic } from "@/lib/learn/topics";
+import { requestNote, withdrawNote } from "@/lib/learn/note-requests";
 
 /**
  * Open a notebook for the signed-in reader.
@@ -37,4 +39,32 @@ export async function markReadAction(slug: string, section: string) {
   if (!canRead(await getAccess(slug))) return;
 
   await markRead(slug, section);
+}
+
+/**
+ * Ask us to write up a topic.
+ *
+ * Signed out is a no-op rather than a redirect, matching `openNotebookAction`:
+ * the form is only rendered to signed-in readers, and the RLS policy refuses an
+ * anonymous caller anyway. Keeping the action dumb means there is no second
+ * place a request could be created by mistake.
+ */
+export async function requestNoteAction(formData: FormData) {
+  const topic = String(formData.get("topic") ?? "");
+  if (!getTopic(topic)) return;
+
+  const note = String(formData.get("note") ?? "");
+  await requestNote(topic, note);
+
+  revalidatePath(`/learn/topics/${topic}`);
+}
+
+/** Change your mind. */
+export async function withdrawNoteAction(formData: FormData) {
+  const topic = String(formData.get("topic") ?? "");
+  if (!getTopic(topic)) return;
+
+  await withdrawNote(topic);
+
+  revalidatePath(`/learn/topics/${topic}`);
 }
