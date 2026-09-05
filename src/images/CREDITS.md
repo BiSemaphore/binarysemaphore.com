@@ -1,6 +1,8 @@
 # Photo credits
 
-All photos are from [Unsplash](https://unsplash.com) (free to use under the
+Covers we drew ourselves (`compilers-outgrow.jpg`) are not listed below:
+they are rendered from the Binary Semaphore post system, not licensed from
+anyone. Everything in the table is from [Unsplash](https://unsplash.com) (free to use under the
 Unsplash License, no attribution required, but credited here as good practice).
 Sources were resized to 2400px max edge and re-encoded as JPEG q82.
 
