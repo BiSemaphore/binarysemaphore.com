@@ -5,6 +5,7 @@ import { getDocument } from "@/lib/admin/documents";
 import { adminBase } from "@/lib/admin/paths";
 import { Editor } from "@/components/admin/editor";
 import { Revisions } from "@/components/admin/revisions";
+import { StatusChip, When } from "@/components/admin/ui";
 
 export const metadata: Metadata = { title: "Edit", robots: { index: false } };
 
@@ -33,15 +34,38 @@ export default async function EditDocument({
         ← {doc.collection === "thread" ? "Threads" : "Topics"}
       </Link>
 
-      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-foreground">
-        {doc.title}
-      </h1>
-      <p className="mt-1 font-mono text-xs text-subtle">
-        {doc.collection === "thread"
-          ? `/threads/${doc.slug}`
-          : `/topics/${doc.scope}/${doc.slug}`}{" "}
-        · {doc.reading_minutes} min · updated{" "}
-        {new Date(doc.updated_at).toLocaleString("en-GB")}
+      <div className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground">
+          {doc.title}
+        </h1>
+        <StatusChip status={doc.status} />
+      </div>
+
+      <p className="mt-1.5 flex flex-wrap items-baseline gap-x-3 font-mono text-xs text-subtle">
+        <a
+          href={
+            doc.status === "published"
+              ? doc.collection === "thread"
+                ? `https://binarysemaphore.com/threads/${doc.slug}`
+                : `https://learn.binarysemaphore.com/topics/${doc.scope}/${doc.slug}`
+              : undefined
+          }
+          target="_blank"
+          rel="noreferrer noopener"
+          className={
+            doc.status === "published"
+              ? "underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
+              : "pointer-events-none"
+          }
+        >
+          {doc.collection === "thread"
+            ? `/threads/${doc.slug}`
+            : `/topics/${doc.scope}/${doc.slug}`}
+        </a>
+        <span>{doc.reading_minutes} min</span>
+        <span>
+          edited <When iso={doc.updated_at} />
+        </span>
       </p>
 
       {doc.origin === "sync" ? (

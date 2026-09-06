@@ -2,11 +2,11 @@
 
 import { useActionState } from "react";
 import { signInAction, type SignInState } from "@/app/admin/actions";
+import { FIELD, LABEL, BUTTON } from "@/components/admin/ui";
 
 const initial: SignInState = { error: null };
 
-const field =
-  "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-subtle focus:border-foreground";
+const field = `${FIELD} py-3`;
 
 export function LoginForm() {
   const [state, action, pending] = useActionState(signInAction, initial);
@@ -14,7 +14,7 @@ export function LoginForm() {
   return (
     <form action={action} className="grid gap-3">
       <label className="grid gap-1.5">
-        <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-subtle">
+        <span className={LABEL}>
           Email
         </span>
         <input
@@ -28,7 +28,7 @@ export function LoginForm() {
       </label>
 
       <label className="grid gap-1.5">
-        <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-subtle">
+        <span className={LABEL}>
           Password
         </span>
         <input
@@ -49,7 +49,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-60"
+        className={`${BUTTON} py-3`}
       >
         {pending ? "Checking…" : "Sign in"}
       </button>
