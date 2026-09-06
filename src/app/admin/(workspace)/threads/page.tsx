@@ -3,6 +3,7 @@ import Link from "next/link";
 import { listDocuments } from "@/lib/admin/documents";
 import { adminBase } from "@/lib/admin/paths";
 import { formatDate } from "@/lib/threads";
+import { CreateForm } from "@/components/admin/create-form";
 
 export const metadata: Metadata = { title: "Threads" };
 
@@ -27,6 +28,8 @@ export default async function AdminThreads() {
         {threads.length} in the database. A draft is invisible to readers because
         the select policy says so, not because this page filters it.
       </p>
+
+      <CreateForm collection="thread" />
 
       <ul className="mt-8 divide-y divide-border border-y border-border">
         {threads.map((t) => (

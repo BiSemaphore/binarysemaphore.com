@@ -1,6 +1,7 @@
 import "server-only";
 import { revalidateTag } from "next/cache";
 import { compile } from "@mdx-js/mdx";
+import { isSituationalSlug } from "@/lib/learn/topics";
 import { createClient } from "@/utils/supabase/server";
 
 /**
@@ -138,4 +139,95 @@ export async function saveDocument(
   revalidateTag("threads", "max");
   revalidateTag("topics", "max");
   return { ok: true };
+}
+
+
+export type CreateResult = { ok: true; id: string } | { ok: false; error: string };
+
+/**
+ * Create a thread or a channel.
+ *
+ * Everything this checks, the database also checks, and the database is the
+ * rule: the `slug` domain rejects a bad URL, `channel_slugs_are_situations`
+ * rejects a syllabus name, `unique nulls not distinct (collection, scope, slug)`
+ * rejects a duplicate, and `is_admin()` on the insert policy rejects everyone
+ * else. The checks here exist so a person gets a sentence instead of a
+ * constraint name.
+ *
+ * A new document is always a draft. There is no "create and publish": a page is
+ * published from the editor, once it has something on it, and
+ * `published_has_a_body` would refuse it anyway.
+ */
+export async function createDocument(fields: {
+  collection: "thread" | "channel";
+  scope: string | null;
+  slug: string;
+  title: string;
+}): Promise<CreateResult> {
+  const slug = fields.slug.trim().toLowerCase();
+  const title = fields.title.trim();
+
+  if (!title) return { ok: false, error: "It needs a title." };
+
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug) || slug.length > 80) {
+    return {
+      ok: false,
+      error:
+        "The slug has to be lowercase words joined by single hyphens, and it is the URL, so it is permanent.",
+    };
+  }
+
+  if (fields.collection === "channel") {
+    if (!fields.scope) return { ok: false, error: "Pick a subject." };
+    if (!isSituationalSlug(slug)) {
+      return {
+        ok: false,
+        error:
+          "Channels are named after situations, not syllabus steps. No numbers, no intro, no basics: name what is going wrong when someone opens it.",
+      };
+    }
+  }
+
+  const db = await createClient();
+
+  const { data, error } = await db
+    .from("documents")
+    .insert({
+      collection: fields.collection,
+      scope: fields.collection === "channel" ? fields.scope : null,
+      slug,
+      title,
+      status: "draft",
+      origin: "admin",
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    // 23505 is the unique constraint, and it is the one worth translating:
+    // "duplicate key value violates unique constraint" tells a writer nothing.
+    return {
+      ok: false,
+      error:
+        error.code === "23505"
+          ? "That slug is already taken here."
+          : error.message,
+    };
+  }
+
+  // The satellite has to follow the document: a trigger asserts it agrees with
+  // documents.scope, so it cannot be written first.
+  const satellite =
+    fields.collection === "thread"
+      ? db.from("thread_meta").insert({ document_id: data.id })
+      : db
+          .from("channel_meta")
+          .insert({ document_id: data.id, subject: fields.scope });
+
+  const { error: satError } = await satellite;
+  if (satError) return { ok: false, error: satError.message };
+
+  revalidateTag("threads", "max");
+  revalidateTag("topics", "max");
+  return { ok: true, id: data.id };
 }

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getDocument } from "@/lib/admin/documents";
 import { adminBase } from "@/lib/admin/paths";
 import { Editor } from "@/components/admin/editor";
+import { Revisions } from "@/components/admin/revisions";
 
 export const metadata: Metadata = { title: "Edit", robots: { index: false } };
 
@@ -60,6 +61,8 @@ export default async function EditDocument({
           status: doc.status,
         }}
       />
+
+      <Revisions documentId={doc.id} />
     </>
   );
 }

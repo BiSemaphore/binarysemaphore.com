@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { adminBase } from "@/lib/admin/paths";
+import { CreateForm } from "@/components/admin/create-form";
 
 export const metadata: Metadata = { title: "Topics" };
 
@@ -61,6 +62,11 @@ export default async function AdminTopics() {
         The rest are drafts: they appear in the sidebar with an honest empty
         state, because the tree comes from a view with no body column.
       </p>
+
+      <CreateForm
+        collection="channel"
+        subjects={subjects.map((s) => ({ slug: s.slug, name: s.name }))}
+      />
 
       <div className="mt-8 space-y-8">
         {subjects.map((subject) => (
