@@ -1,4 +1,4 @@
-import { subjects } from "@/lib/learn/topics";
+import { getSubjects } from "@/lib/learn/topics";
 import { learnBase } from "@/lib/learn/paths";
 import { TopicsShell } from "@/components/learn/topics/shell";
 
@@ -15,7 +15,7 @@ export default async function TopicsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const base = await learnBase();
+  const [subjects, base] = await Promise.all([getSubjects(), learnBase()]);
 
   return (
     <TopicsShell subjects={subjects} base={base}>

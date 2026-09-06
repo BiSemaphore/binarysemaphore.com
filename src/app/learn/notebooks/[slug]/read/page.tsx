@@ -9,7 +9,7 @@ import { learnBase } from "@/lib/learn/paths";
 import { ReaderNav } from "@/components/learn/reader-nav";
 import { ActiveSectionProvider } from "@/components/learn/active-section";
 import { ReferencedRail } from "@/components/learn/referenced-rail";
-import { notebooks } from "@/lib/learn";
+import { getNotebooks } from "@/lib/learn";
 import { openNotebookAction } from "@/app/learn/actions";
 import { LockIcon } from "@/components/icons";
 import { Credit } from "@/components/learn/credit";
@@ -23,7 +23,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const notebook = getNotebook(slug);
+  const notebook = await getNotebook(slug);
   if (!notebook) return {};
 
   return {
@@ -78,7 +78,7 @@ export default async function ReaderPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const notebook = getNotebook(slug);
+  const notebook = await getNotebook(slug);
   if (!notebook) notFound();
 
   const sections = getSections(slug);
@@ -97,7 +97,7 @@ export default async function ReaderPage({
   const shown = entitled ? sections : free;
 
   const notebookTitles = Object.fromEntries(
-    notebooks.map((n) => [n.slug, n.title]),
+    (await getNotebooks()).map((n) => [n.slug, n.title]),
   );
 
   return (

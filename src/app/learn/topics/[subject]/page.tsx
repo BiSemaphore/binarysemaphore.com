@@ -1,9 +1,12 @@
 import { notFound, redirect } from "next/navigation";
-import { getSubject, subjects } from "@/lib/learn/topics";
+import { prerenderParams } from "@/lib/prerender";
+import { getSubject, getSubjects } from "@/lib/learn/topics";
 import { learnBase } from "@/lib/learn/paths";
 
-export function generateStaticParams() {
-  return subjects.map((subject) => ({ subject: subject.slug }));
+export async function generateStaticParams() {
+  return prerenderParams("subjects", async () =>
+    (await getSubjects()).map((subject) => ({ subject: subject.slug })),
+  );
 }
 
 /**
@@ -20,8 +23,8 @@ export default async function SubjectPage({
   params: Promise<{ subject: string }>;
 }) {
   const { subject: slug } = await params;
-  const subject = getSubject(slug);
-  if (!subject) notFound();
+  const subject = await getSubject(slug);
+  if (!subject || subject.channels.length === 0) notFound();
 
   redirect(`${await learnBase()}/topics/${subject.slug}/${subject.channels[0].slug}`);
 }

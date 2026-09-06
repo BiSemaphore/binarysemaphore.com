@@ -215,6 +215,31 @@ Worth repeating whenever a policy or constraint changes. Wrapping the whole set
 in `begin; ... rollback;` works because Postgres DDL is transactional, so it is
 a real test rather than a syntax check.
 
+## What live verification found that review did not
+
+Both of these were caught by querying the live API with the publishable key
+after applying, and neither is visible when reading the SQL, which reads
+correctly in both cases.
+
+**`or public.is_admin()` broke every anonymous read.** Reader policies are
+`status = 'published' or public.is_admin()`. Postgres does not guarantee
+short-circuit evaluation of `OR`, so it may call the function even when the
+first half is already true. With execute revoked from `anon`, a signed-out
+visitor got `42501 permission denied` rather than rows. Execute is now granted
+to `anon`, which leaks nothing: the function returns a boolean about the
+caller, and `auth.uid()` is null for `anon`, so it is always false.
+
+**The satellite policy hid 86 of 93 channels.** "A satellite is readable when
+its document is" is right, and wrong for the product: the sidebar shows the
+whole tree with honest "nothing written yet" states, and only 7 channels have
+prose. The tree is not the prose. `public.topic_tree` exposes every channel
+without any body column, so it cannot leak a draft even by accident; bodies
+still come from `documents`, which stays published-only.
+
+The general lesson, which the repo already applied to `entitlements`: a policy
+that reads correctly is not a policy that behaves correctly. Query it as the
+role that will actually use it.
+
 ## Applying it
 
 The migration set has been validated against the real database inside a

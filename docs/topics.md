@@ -1,5 +1,11 @@
 # Topics (learn.binarysemaphore.com/topics)
 
+> **Superseded in part.** Subjects and channels live in Postgres now, managed
+> from the admin, and `src/content/topics/` and the `topic-source.ts` seam have
+> been deleted. Everything here about the shell, the taxonomy rules and the
+> naming discipline still holds; everything about MDX in git does not. See
+> [`database.md`](database.md).
+
 The computer science topic tree: 93 channels across 23 subjects, browsed in a shell
 modelled on Discord's rail-and-channel layout. This document covers the
 taxonomy, where topic content lives, and the one part of it that needs a

@@ -34,22 +34,33 @@ Run `lint` and `typecheck` before committing; CI runs both.
 - `src/app/` — routes (`/`, `/threads`, `/threads/[slug]`, `/projects/[slug]`), `layout.tsx`, `globals.css`.
 - `src/components/` — section + UI components (hero, features, projects, team, contact, footer, header, decoration, reveal, doodle, icons).
 - `src/lib/site.ts` — **single source of truth** for all site copy, links, the `team` array, and `projects`. Edit copy here, not in components.
-- `src/content/threads/*.mdx` — blog posts; frontmatter parsed by `src/lib/threads.ts`.
-- `src/lib/learn.ts` — **single source of truth** for the study notebook catalog
-  served at `learn.binarysemaphore.com` (`src/app/learn/`). Access rules live in
-  `src/lib/learn/`; the PDFs live in Supabase Storage, not in git.
+- Threads live in Postgres, read by `src/lib/threads.ts` through `unstable_cache`
+  tagged `threads`. There is no `src/content/threads/` any more: the MDX moved in
+  a one-way sync and the files were deleted. A body is compiled at request time by
+  `src/lib/mdx/runtime.tsx`, whose plugin list must stay in step with the one in
+  `next.config.ts` (Turbopack takes plugin names, the runtime takes functions).
+- `src/lib/learn.ts` — reads the study notebook catalog from Postgres, serving
+  `learn.binarysemaphore.com` (`src/app/learn/`). The `notebooks` table is the
+  catalog; this file holds the types, the three editions and the lecture series,
+  which are configuration rather than content. Access rules live in
+  `src/lib/learn/`; the PDFs live in Supabase Storage, not in git. Section prose
+  is still generated MDX under `src/content/notebooks/` (from the `learnings`
+  repo) and is the last content not in the database.
 - `src/content/notebooks/*/*.mdx` — notebook sections, **generated** by
   `scripts/sync-notebooks.mjs` from the `learnings` repo. Never hand-edit them,
   and never let Prettier near them. Same MDX pattern as threads. Read
   [`docs/learn.md`](docs/learn.md) before touching the gate or adding a notebook.
-- `src/lib/learn/topics.ts` — the computer science topic tree: 23 subjects on
+- `src/lib/learn/topics.ts` — reads the topic tree from Postgres: 23 subjects on
   the rail, 93 channels in the sidebar, browsed at `/topics` in a Discord-style
-  shell. Channels are named after situations, never syllabus steps, and the test
-  suite enforces that. Prose lives in `src/content/topics/<subject>/<channel>.mdx`
-  behind the `topic-source.ts` seam, so **no page may import that directory
-  directly**. The shell is the one part of `learn` on a
-  black canvas; everything else stays white. Read
-  [`docs/topics.md`](docs/topics.md) before adding a topic or touching the shell.
+  shell. Subjects and channels are both managed from the admin, so this file is
+  a reader, not a source; `src/content/topics/` and `topic-source.ts` are gone.
+  The tree comes from the `topic_tree` view (**no body column**, so every
+  channel is listed whether or not it has prose) and a body from `documents`
+  (published-only). Channels are named after situations, never syllabus steps,
+  and the `channel_slugs_are_situations` constraint enforces that, because a
+  test cannot see a channel typed into a form. The shell is the one part of
+  `learn` on a black canvas; everything else stays white. Read
+  [`docs/topics.md`](docs/topics.md) before touching the shell.
 
 ### Where a component goes
 

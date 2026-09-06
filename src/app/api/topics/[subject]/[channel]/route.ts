@@ -18,14 +18,14 @@ export async function GET(
   { params }: { params: Promise<{ subject: string; channel: string }> },
 ) {
   const { subject: subjectSlug, channel: channelSlug } = await params;
-  const found = getChannel(subjectSlug, channelSlug);
+  const found = await getChannel(subjectSlug, channelSlug);
 
   if (!found) {
     return NextResponse.json({ error: "No such channel" }, { status: 404 });
   }
 
   const { subject, channel } = found;
-  const notebook = channel.notebook ? getNotebook(channel.notebook) : undefined;
+  const notebook = channel.notebook ? await getNotebook(channel.notebook) : undefined;
   const roadmap = channel.roadmap ? getRoadmap(channel.roadmap) : undefined;
 
   return NextResponse.json(

@@ -3,7 +3,7 @@ import {
   channelState,
   countChannels,
   countCovered,
-  subjects,
+  getSubjects,
 } from "@/lib/learn/topics";
 
 /**
@@ -11,15 +11,21 @@ import {
  *
  * The whole tree as JSON.
  *
- * The pages do not use this. They read `src/lib/learn/topics.ts` directly and
- * server-render, because a tree fetched after hydration is invisible to search
- * and a student stuck at midnight finds us through search. This endpoint exists
- * for anything outside the app that wants the same data.
+ * The pages do not use this. They read the same tables and server-render,
+ * because a tree fetched after hydration is invisible to search and a student
+ * stuck at midnight finds us through search. This endpoint exists for anything
+ * outside the app that wants the same data.
  *
  * `state` is derived here rather than stored, so a consumer cannot see a channel
  * claiming coverage the tree does not actually have.
  */
-export function GET() {
+export async function GET() {
+  const [subjects, channels, covered] = await Promise.all([
+    getSubjects(),
+    countChannels(),
+    countCovered(),
+  ]);
+
   return NextResponse.json(
     {
       subjects: subjects.map((subject) => ({
@@ -36,11 +42,7 @@ export function GET() {
           roadmap: channel.roadmap ?? null,
         })),
       })),
-      counts: {
-        subjects: subjects.length,
-        channels: countChannels(),
-        covered: countCovered(),
-      },
+      counts: { subjects: subjects.length, channels, covered },
     },
     {
       headers: {

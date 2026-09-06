@@ -11,7 +11,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { cache } from "react";
-import { getNotebook } from "@/lib/learn";
 
 const DIR = path.join(process.cwd(), "src/content/notebooks");
 
@@ -34,7 +33,11 @@ export type SectionEntry = {
 
 /** Every section of a notebook, in reading order. */
 export const getSections = cache((slug: string): SectionEntry[] => {
-  if (!getNotebook(slug)) return [];
+  // Guards the path, not the catalog. This used to ask getNotebook(), which is
+  // a database read now and would have turned a synchronous filesystem helper
+  // into an async one for no gain: a slug that is not in the catalog has no
+  // directory here either, so the existsSync below already answers it.
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) return [];
 
   const file = path.join(DIR, slug, "index.json");
   if (!fs.existsSync(file)) return [];

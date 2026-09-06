@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import { prerenderParams } from "@/lib/prerender";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   getAllThreads,
   getThread,
+  getThreadBody,
   getRelatedThreads,
   formatDate,
 } from "@/lib/threads";
+import { MdxBody } from "@/lib/mdx/runtime";
 import { threadCovers } from "@/lib/thread-covers";
 import { Photo } from "@/components/photo";
 import { Header } from "@/components/header";
@@ -15,11 +18,16 @@ import { TableOfContents } from "@/components/table-of-contents";
 
 type Params = { slug: string };
 
-// Only slugs returned here exist; anything else 404s.
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return getAllThreads().map((t) => ({ slug: t.slug }));
+// Threads that exist at build time are prerendered; one written in the admin
+// afterwards renders on first request. `dynamicParams` is therefore no longer
+// false: refusing an unknown slug at the routing layer would 404 every thread
+// published since the last deploy, which is the thing this move was for.
+// getThread() still returns undefined for a slug that does not exist, and the
+// page still calls notFound().
+export async function generateStaticParams() {
+  return prerenderParams("threads", async () =>
+    (await getAllThreads()).map((t) => ({ slug: t.slug })),
+  );
 }
 
 export async function generateMetadata({
@@ -28,7 +36,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const thread = getThread(slug);
+  const thread = await getThread(slug);
   if (!thread) return {};
 
   return {
@@ -57,11 +65,12 @@ export default async function ThreadPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const thread = getThread(slug);
-  if (!thread) notFound();
-
-  const { default: Post } = await import(`@/content/threads/${slug}.mdx`);
-  const related = getRelatedThreads(slug);
+  const [thread, body, related] = await Promise.all([
+    getThread(slug),
+    getThreadBody(slug),
+    getRelatedThreads(slug),
+  ]);
+  if (!thread || !body) notFound();
 
   return (
     <>
@@ -120,7 +129,7 @@ export default async function ThreadPage({
         <hr className="my-10 border-0 border-t border-border" />
 
         <article className="thread">
-          <Post />
+          <MdxBody source={body} />
         </article>
 
         {related.length > 0 ? (

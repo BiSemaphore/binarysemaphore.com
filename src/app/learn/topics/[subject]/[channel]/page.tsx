@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
+import { prerenderParams } from "@/lib/prerender";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/lib/site";
 import { getNotebook } from "@/lib/learn";
 import { getRoadmap } from "@/lib/learn/roadmaps";
-import { allChannels, channelState, getChannel } from "@/lib/learn/topics";
-import { getBody } from "@/lib/learn/topic-source";
+import {
+  allChannels,
+  channelState,
+  getChannel,
+  getChannelBody,
+} from "@/lib/learn/topics";
+import { MdxBody } from "@/lib/mdx/runtime";
 import { learnBase } from "@/lib/learn/paths";
 import { ArrowRightIcon } from "@/components/icons";
 import { DecodeTitle } from "@/components/learn/topics/decode-title";
@@ -13,11 +19,13 @@ import { RequestNote } from "@/components/learn/request-note";
 
 type Params = { subject: string; channel: string };
 
-export function generateStaticParams() {
-  return allChannels().map(({ subject, channel }) => ({
-    subject: subject.slug,
-    channel: channel.slug,
-  }));
+export async function generateStaticParams() {
+  return prerenderParams("channels", async () =>
+    (await allChannels()).map(({ subject, channel }) => ({
+      subject: subject.slug,
+      channel: channel.slug,
+    })),
+  );
 }
 
 export async function generateMetadata({
@@ -26,7 +34,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { subject, channel } = await params;
-  const found = getChannel(subject, channel);
+  const found = await getChannel(subject, channel);
   if (!found) return {};
   return {
     title: `${found.channel.title} · ${found.subject.name}`,
@@ -76,14 +84,16 @@ export default async function ChannelPage({
   params: Promise<Params>;
 }) {
   const { subject: subjectSlug, channel: channelSlug } = await params;
-  const found = getChannel(subjectSlug, channelSlug);
+  const [found, body] = await Promise.all([
+    getChannel(subjectSlug, channelSlug),
+    getChannelBody(subjectSlug, channelSlug),
+  ]);
   if (!found) notFound();
 
   const { subject, channel } = found;
   const base = await learnBase();
   const state = channelState(channel);
-  const Body = await getBody(subject.slug, channel.slug);
-  const notebook = channel.notebook ? getNotebook(channel.notebook) : undefined;
+  const notebook = channel.notebook ? await getNotebook(channel.notebook) : undefined;
   const roadmap = channel.roadmap ? getRoadmap(channel.roadmap) : undefined;
   const { bookingUrl } = site.mentorship;
 
@@ -103,15 +113,15 @@ export default async function ChannelPage({
           {channel.blurb}
         </p>
 
-        {Body ? (
+        {body ? (
           <article className="thread topic-prose mt-10 max-w-3xl">
-            <Body />
+            <MdxBody source={body} />
           </article>
         ) : null}
 
         <div className="mt-12 max-w-3xl space-y-5 border-t border-border pt-10">
           <p className="leading-7 text-muted">
-            {Body
+            {body
               ? "More on this is coming, and asking moves it up the list."
               : state === "soon"
                 ? "We have not written this one up yet, and it would be easy to pretend otherwise."

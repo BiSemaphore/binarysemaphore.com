@@ -15,7 +15,6 @@
     "db:stop": "supabase stop",
     "db:status": "supabase status",
     "db:reset": "supabase db reset",
-    "db:sync": "node --env-file=.env.local scripts/sync-content.mts",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -33,6 +32,7 @@
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.41.0",
     "next": "16.2.9",
+    "next-mdx-remote-client": "^2.1.12",
     "pdf-lib": "^1.17.1",
     "puppeteer-core": "^24.43.1",
     "react": "19.2.4",

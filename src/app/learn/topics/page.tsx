@@ -4,7 +4,7 @@ import {
   channelState,
   countChannels,
   countCovered,
-  subjects,
+  getSubjects,
 } from "@/lib/learn/topics";
 import { learnBase } from "@/lib/learn/paths";
 import { SubjectIcon } from "@/components/learn/topics/subject-icons";
@@ -17,8 +17,11 @@ export const metadata: Metadata = {
 
 export default async function TopicsIndex() {
   const base = await learnBase();
-  const total = countChannels();
-  const covered = countCovered();
+  const [subjects, total, covered] = await Promise.all([
+    getSubjects(),
+    countChannels(),
+    countCovered(),
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-10 lg:px-10 lg:py-14">

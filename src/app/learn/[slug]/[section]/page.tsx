@@ -17,7 +17,7 @@ export default async function SectionRootRedirect({
 }) {
   const { slug, section } = await params;
 
-  if (!getNotebook(slug)) notFound();
+  if (!await getNotebook(slug)) notFound();
   if (!getSections(slug).some((s) => s.slug === section)) notFound();
 
   permanentRedirect(`${await learnBase()}/notebooks/${slug}/read#${section}`);
