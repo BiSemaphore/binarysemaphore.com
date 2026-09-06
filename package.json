@@ -15,6 +15,7 @@
     "db:stop": "supabase stop",
     "db:status": "supabase status",
     "db:reset": "supabase db reset",
+    "db:sync": "node --env-file=.env.local scripts/sync-content.mts",
     "prepare": "husky"
   },
   "lint-staged": {
