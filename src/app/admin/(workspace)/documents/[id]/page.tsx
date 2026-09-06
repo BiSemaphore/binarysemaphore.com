@@ -7,7 +7,14 @@ import { Editor } from "@/components/admin/editor";
 
 export const metadata: Metadata = { title: "Edit", robots: { index: false } };
 
-export default async function EditThread({
+/**
+ * One editor for every collection.
+ *
+ * A thread, a channel and a notebook section are the same row in the same
+ * table, so they get the same editor. Copying this per collection is how three
+ * editors that disagree about publishing get built.
+ */
+export default async function EditDocument({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -19,17 +26,20 @@ export default async function EditThread({
   return (
     <>
       <Link
-        href={`${base}/threads`}
+        href={doc.collection === "thread" ? `${base}/threads` : `${base}/topics`}
         className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
       >
-        ← Threads
+        ← {doc.collection === "thread" ? "Threads" : "Topics"}
       </Link>
 
       <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-foreground">
         {doc.title}
       </h1>
       <p className="mt-1 font-mono text-xs text-subtle">
-        /threads/{doc.slug} · {doc.reading_minutes} min · updated{" "}
+        {doc.collection === "thread"
+          ? `/threads/${doc.slug}`
+          : `/topics/${doc.scope}/${doc.slug}`}{" "}
+        · {doc.reading_minutes} min · updated{" "}
         {new Date(doc.updated_at).toLocaleString("en-GB")}
       </p>
 

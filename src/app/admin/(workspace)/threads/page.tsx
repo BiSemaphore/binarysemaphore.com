@@ -32,7 +32,7 @@ export default async function AdminThreads() {
         {threads.map((t) => (
           <li key={t.id}>
             <Link
-              href={`${base}/threads/${t.id}`}
+              href={`${base}/documents/${t.id}`}
               className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-4 transition-colors hover:bg-card-hover"
             >
               <span className="min-w-0 flex-1">
