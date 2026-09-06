@@ -34,7 +34,11 @@ Run `lint` and `typecheck` before committing; CI runs both.
 - `src/app/` — routes (`/`, `/threads`, `/threads/[slug]`, `/projects/[slug]`), `layout.tsx`, `globals.css`.
 - `src/components/` — section + UI components (hero, features, projects, team, contact, footer, header, decoration, reveal, doodle, icons).
 - `src/lib/site.ts` — **single source of truth** for all site copy, links, the `team` array, and `projects`. Edit copy here, not in components.
-- `src/content/threads/*.mdx` — blog posts; frontmatter parsed by `src/lib/threads.ts`.
+- Threads live in Postgres, read by `src/lib/threads.ts` through `unstable_cache`
+  tagged `threads`. There is no `src/content/threads/` any more: the MDX moved in
+  a one-way sync and the files were deleted. A body is compiled at request time by
+  `src/lib/mdx/runtime.tsx`, whose plugin list must stay in step with the one in
+  `next.config.ts` (Turbopack takes plugin names, the runtime takes functions).
 - `src/lib/learn.ts` — **single source of truth** for the study notebook catalog
   served at `learn.binarysemaphore.com` (`src/app/learn/`). Access rules live in
   `src/lib/learn/`; the PDFs live in Supabase Storage, not in git.

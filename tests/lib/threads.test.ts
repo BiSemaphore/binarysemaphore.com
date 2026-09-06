@@ -1,11 +1,29 @@
 import { describe, it, expect } from "vitest";
-import {
-  getAllThreads,
-  getThread,
-  getAllTags,
-  getRelatedThreads,
-  formatDate,
-} from "@/lib/threads";
+import { formatDate, rankRelated, type ThreadMeta } from "@/lib/threads";
+
+/**
+ * Threads come from Postgres now, so the reads are I/O and are not unit
+ * tested; the ranking rule and the date formatting are pure and are.
+ *
+ * The old suite asserted over the real MDX files (every thread has a
+ * description, slugs are unique, sorted newest first). Those invariants moved
+ * into the database, where `not null`, `unique (collection, scope, slug)` and
+ * an `order by` enforce them for every row and not only the eight that
+ * happened to be committed.
+ */
+
+const thread = (
+  slug: string,
+  date: string,
+  tags: string[],
+): ThreadMeta => ({
+  slug,
+  title: slug,
+  description: slug,
+  date,
+  tags,
+  readingMinutes: 1,
+});
 
 describe("formatDate", () => {
   it("formats an ISO date as day month year (UTC)", () => {
@@ -14,67 +32,46 @@ describe("formatDate", () => {
   });
 });
 
-describe("getAllThreads", () => {
-  const threads = getAllThreads();
+describe("rankRelated", () => {
+  const all = [
+    thread("current", "2026-06-01", ["react", "rust"]),
+    thread("two-shared", "2026-05-01", ["react", "rust"]),
+    thread("one-shared-newer", "2026-05-20", ["react"]),
+    thread("one-shared-older", "2026-04-01", ["rust"]),
+    thread("unrelated", "2026-06-02", ["postgres"]),
+  ];
 
-  it("returns at least one thread", () => {
-    expect(threads.length).toBeGreaterThan(0);
+  it("ranks by shared tags, newest first on a tie", () => {
+    expect(rankRelated(all, "current").map((t) => t.slug)).toEqual([
+      "two-shared",
+      "one-shared-newer",
+      "one-shared-older",
+    ]);
   });
 
-  it("sorts newest first", () => {
-    const dates = threads.map((t) => t.date);
-    const sorted = [...dates].sort((a, b) => (a < b ? 1 : -1));
-    expect(dates).toEqual(sorted);
+  it("never returns the thread itself", () => {
+    expect(rankRelated(all, "current").some((t) => t.slug === "current")).toBe(
+      false,
+    );
   });
 
-  it("gives every thread the required fields", () => {
-    for (const t of threads) {
-      expect(t.slug).toBeTruthy();
-      expect(t.title).toBeTruthy();
-      expect(t.description).toBeTruthy();
-      expect(t.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      expect(t.readingMinutes).toBeGreaterThan(0);
-      expect(Array.isArray(t.tags)).toBe(true);
-    }
+  it("drops threads with no shared tag", () => {
+    expect(rankRelated(all, "current").some((t) => t.slug === "unrelated")).toBe(
+      false,
+    );
   });
 
-  it("has unique slugs", () => {
-    const slugs = threads.map((t) => t.slug);
-    expect(new Set(slugs).size).toBe(slugs.length);
-  });
-});
-
-describe("getThread", () => {
-  it("finds a thread by slug", () => {
-    const first = getAllThreads()[0];
-    expect(getThread(first.slug)?.title).toBe(first.title);
+  it("respects the limit", () => {
+    expect(rankRelated(all, "current", 2)).toHaveLength(2);
   });
 
-  it("returns undefined for an unknown slug", () => {
-    expect(getThread("does-not-exist")).toBeUndefined();
-  });
-});
-
-describe("getAllTags", () => {
-  it("returns unique, alphabetically sorted tags", () => {
-    const tags = getAllTags();
-    expect(tags.length).toBeGreaterThan(0);
-    expect(new Set(tags).size).toBe(tags.length);
-    expect(tags).toEqual([...tags].sort());
-  });
-});
-
-describe("getRelatedThreads", () => {
-  it("excludes the current thread and only returns tag matches", () => {
-    const first = getAllThreads()[0];
-    const related = getRelatedThreads(first.slug);
-    expect(related.every((r) => r.slug !== first.slug)).toBe(true);
-    for (const r of related) {
-      expect(r.tags.some((tag) => first.tags.includes(tag))).toBe(true);
-    }
+  it("returns nothing for an unknown slug", () => {
+    expect(rankRelated(all, "does-not-exist")).toEqual([]);
   });
 
-  it("returns an empty array for an unknown slug", () => {
-    expect(getRelatedThreads("does-not-exist")).toEqual([]);
+  it("returns nothing when the thread has no tags", () => {
+    expect(rankRelated([...all, thread("bare", "2026-06-03", [])], "bare")).toEqual(
+      [],
+    );
   });
 });

@@ -30,9 +30,9 @@ export default async function ThreadsPage({
   searchParams: Promise<{ tag?: string }>;
 }) {
   const { tag } = await searchParams;
-  const tags = getAllTags();
+  const tags = await getAllTags();
   const activeTag = tag && tags.includes(tag) ? tag : undefined;
-  const allThreads = getAllThreads();
+  const allThreads = await getAllThreads();
   const threads = activeTag
     ? allThreads.filter((t) => t.tags.includes(activeTag))
     : allThreads;

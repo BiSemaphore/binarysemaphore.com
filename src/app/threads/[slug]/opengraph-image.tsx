@@ -5,9 +5,11 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "Binary Semaphore Threads";
 
-// Prerender an OG image for every thread.
-export function generateStaticParams() {
-  return getAllThreads().map((t) => ({ slug: t.slug }));
+// Prerender an OG image for every thread that exists at build time. A thread
+// written in the admin afterwards renders its image on first request instead,
+// which is the trade for content that no longer needs a deploy.
+export async function generateStaticParams() {
+  return (await getAllThreads()).map((t) => ({ slug: t.slug }));
 }
 
 export default async function Image({
@@ -16,7 +18,7 @@ export default async function Image({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const thread = getThread(slug);
+  const thread = await getThread(slug);
   const title = thread?.title ?? "Threads";
   const tags = thread?.tags ?? [];
 

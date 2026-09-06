@@ -101,6 +101,15 @@ async function syncNotebooks() {
 
 async function syncThreads() {
   const dir = path.join(ROOT, "src/content/threads");
+
+  // Gone once threads have moved, which is the point: after the one-way sync
+  // the files are deleted and Postgres is the source of truth. Left in place so
+  // this script still runs for the parts that have not moved yet.
+  if (!fs.existsSync(dir)) {
+    console.log("threads          already moved, nothing on disk");
+    return;
+  }
+
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".mdx"));
 
   for (const file of files) {
