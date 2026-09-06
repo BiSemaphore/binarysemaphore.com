@@ -39,6 +39,12 @@ export const slugToSub = new Map(
 export const APP_SUBDOMAINS = new Map<string, string>([
   ["resume", "/resume"],
   ["learn", "/learn"],
+  // Routing only. This is NOT the security boundary: binarysemaphore.com/admin
+  // reaches the same route tree, and parseHost() returns a null root for an
+  // unrecognised host (a Vercel preview URL), which the proxy deliberately
+  // leaves untouched, so /admin is reachable there with no subdomain at all.
+  // The boundary is is_admin() in RLS. See docs/database.md.
+  ["admin", "/admin"],
 ]);
 
 /** The base path an app subdomain is served from, or null if not an app sub. */
