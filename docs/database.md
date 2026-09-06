@@ -191,6 +191,30 @@ MDX errors become runtime errors, mitigated by compiling on save and refusing to
 store what does not compile. Review of copy on a preview deploy goes away, which
 is what `document_revisions` buys back.
 
+## Verified, not assumed
+
+The set was applied to the real database inside a transaction that was rolled
+back, and the invariants were exercised rather than read. All seven held:
+
+| Check                                                        | Result                                  |
+| ------------------------------------------------------------ | --------------------------------------- |
+| A published document must have a body                        | rejected as designed                    |
+| The `slug` domain rejects `Not A Slug`                       | rejected as designed                    |
+| Two threads cannot share a slug, though both scopes are null | rejected as designed                    |
+| The same slug is allowed in two different subjects           | accepted, which is the point of `scope` |
+| A satellite cannot disagree with its document's `scope`      | rejected by the trigger                 |
+| An edit writes a revision automatically                      | one row                                 |
+| The revision holds the title from _before_ the save          | confirmed                               |
+
+Plus the inbox path end to end: `record_inbox_message` writes a row that keeps
+its `context`, starts as `new`, and is callable by `service_role` alone. `anon`
+and `authenticated` have neither execute on the function nor usage on the
+schema.
+
+Worth repeating whenever a policy or constraint changes. Wrapping the whole set
+in `begin; ... rollback;` works because Postgres DDL is transactional, so it is
+a real test rather than a syntax check.
+
 ## Applying it
 
 The migration set has been validated against the real database inside a
