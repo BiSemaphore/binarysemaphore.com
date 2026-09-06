@@ -39,12 +39,20 @@ export const slugToSub = new Map(
 export const APP_SUBDOMAINS = new Map<string, string>([
   ["resume", "/resume"],
   ["learn", "/learn"],
-  // Routing only. This is NOT the security boundary: binarysemaphore.com/admin
-  // reaches the same route tree, and parseHost() returns a null root for an
-  // unrecognised host (a Vercel preview URL), which the proxy deliberately
-  // leaves untouched, so /admin is reachable there with no subdomain at all.
-  // The boundary is is_admin() in RLS. See docs/database.md.
-  ["admin", "/admin"],
+  // root.binarysemaphore.com, served from the /admin route tree.
+  //
+  // Named for the Unix root user, and deliberately obvious. Hiding this behind
+  // a guessed name would be security through obscurity, and the boundary is not
+  // here at all: it is the row in private.admins and the is_admin() check in
+  // every write policy. binarysemaphore.com/admin reaches the same routes, and
+  // parseHost() returns a null root for an unrecognised host (a Vercel preview
+  // URL), which the proxy deliberately leaves untouched, so the tree is
+  // reachable there with no subdomain. None of that matters. See
+  // docs/database.md.
+  //
+  // The name collides with `root` in ParsedHost below, which means the apex
+  // domain. Different things: this is the label, that is the domain it sits on.
+  ["root", "/admin"],
 ]);
 
 /** The base path an app subdomain is served from, or null if not an app sub. */
