@@ -1,9 +1,12 @@
 import { notFound, redirect } from "next/navigation";
+import { prerenderParams } from "@/lib/prerender";
 import { getSubject, getSubjects } from "@/lib/learn/topics";
 import { learnBase } from "@/lib/learn/paths";
 
 export async function generateStaticParams() {
-  return (await getSubjects()).map((subject) => ({ subject: subject.slug }));
+  return prerenderParams("subjects", async () =>
+    (await getSubjects()).map((subject) => ({ subject: subject.slug })),
+  );
 }
 
 /**

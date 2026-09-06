@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { prerenderParams } from "@/lib/prerender";
 import { getAllThreads, getThread } from "@/lib/threads";
 
 export const size = { width: 1200, height: 630 };
@@ -9,7 +10,9 @@ export const alt = "Binary Semaphore Threads";
 // written in the admin afterwards renders its image on first request instead,
 // which is the trade for content that no longer needs a deploy.
 export async function generateStaticParams() {
-  return (await getAllThreads()).map((t) => ({ slug: t.slug }));
+  return prerenderParams("thread og images", async () =>
+    (await getAllThreads()).map((t) => ({ slug: t.slug })),
+  );
 }
 
 export default async function Image({

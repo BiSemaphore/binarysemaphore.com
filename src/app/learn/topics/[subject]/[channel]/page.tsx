@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { prerenderParams } from "@/lib/prerender";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/lib/site";
@@ -19,10 +20,12 @@ import { RequestNote } from "@/components/learn/request-note";
 type Params = { subject: string; channel: string };
 
 export async function generateStaticParams() {
-  return (await allChannels()).map(({ subject, channel }) => ({
-    subject: subject.slug,
-    channel: channel.slug,
-  }));
+  return prerenderParams("channels", async () =>
+    (await allChannels()).map(({ subject, channel }) => ({
+      subject: subject.slug,
+      channel: channel.slug,
+    })),
+  );
 }
 
 export async function generateMetadata({

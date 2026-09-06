@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { prerenderParams } from "@/lib/prerender";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -24,7 +25,9 @@ type Params = { slug: string };
 // getThread() still returns undefined for a slug that does not exist, and the
 // page still calls notFound().
 export async function generateStaticParams() {
-  return (await getAllThreads()).map((t) => ({ slug: t.slug }));
+  return prerenderParams("threads", async () =>
+    (await getAllThreads()).map((t) => ({ slug: t.slug })),
+  );
 }
 
 export async function generateMetadata({

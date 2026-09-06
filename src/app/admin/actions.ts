@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import { adminBase } from "@/lib/admin/paths";
 
 export type SignInState = { error: string | null };
 
@@ -34,13 +35,16 @@ export async function signInAction(
 
   if (error) return { error: "That email and password do not match." };
 
+  const base = await adminBase();
   revalidatePath("/admin", "layout");
-  redirect("/admin");
+  redirect(`${base}/`);
 }
 
 export async function signOutAction(): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
+
+  const base = await adminBase();
   revalidatePath("/admin", "layout");
-  redirect("/admin/login");
+  redirect(`${base}/login`);
 }

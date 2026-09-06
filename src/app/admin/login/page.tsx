@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/admin/login-form";
 import { SignInButtons } from "@/components/auth/sign-in-buttons";
 import { isAdmin } from "@/lib/admin/auth";
+import { adminBase } from "@/lib/admin/paths";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminLoginPage() {
-  if (await isAdmin()) redirect("/admin");
+  const base = await adminBase();
+  if (await isAdmin()) redirect(`${base}/`);
 
   return (
     <main className="flex min-h-dvh items-center justify-center px-6 py-16">
@@ -41,7 +43,7 @@ export default async function AdminLoginPage() {
           <span className="h-px flex-1 bg-border" />
         </div>
 
-        <SignInButtons next="/admin" />
+        <SignInButtons next={`${base}/`} />
       </div>
     </main>
   );

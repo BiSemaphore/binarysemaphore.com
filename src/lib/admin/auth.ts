@@ -2,6 +2,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { createClient, isSupabaseConfigured } from "@/utils/supabase/server";
+import { adminBase } from "@/lib/admin/paths";
 import { getCurrentUser } from "@/utils/supabase/auth";
 
 /**
@@ -37,7 +38,12 @@ export const isAdmin = cache(async (): Promise<boolean> => {
  */
 export async function requireAdmin(): Promise<User> {
   const user = await getCurrentUser();
-  if (!user) redirect("/admin/login");
-  if (!(await isAdmin())) redirect("/admin/denied");
+  // Through adminBase(), because the same tree is served at
+  // admin.binarysemaphore.com/login and at /admin/login. Hard-coding "/admin"
+  // sends the subdomain to /admin/admin/login, since the proxy already rewrites
+  // "/" to "/admin" there.
+  const base = await adminBase();
+  if (!user) redirect(`${base}/login`);
+  if (!(await isAdmin())) redirect(`${base}/denied`);
   return user;
 }
