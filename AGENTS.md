@@ -65,6 +65,16 @@ Route boundaries exist at the root: `error.tsx`, `global-error.tsx` and
 `not-found.tsx`. Add a nested `error.tsx` only where a subtree needs to fail
 differently from the rest of the site.
 
+### Planned: admin.binarysemaphore.com
+
+Design in [`docs/admin.md`](docs/admin.md), nothing built yet. Two rules from it
+that apply the moment anyone starts: **being able to sign in must never imply
+being an admin** (the gate is an `admins` table and `is_admin()` in RLS, never
+the subdomain, which is routing), and after the move **Postgres is the source of
+truth for content, not git**. The trade-offs, including that runtime MDX
+evaluation makes an admin compromise a code-execution problem, are recorded in
+[`docs/content-backend.md`](docs/content-backend.md).
+
 ## Design system — repo tokens (rationale and palette concept in `docs/brand.md`; see `globals.css`)
 
 - Palette tokens drive Tailwind utilities: `bg-coral`, `text-accent-strong`, etc. Candy panels: `coral`, `blue`, `violet`, `sun`.
