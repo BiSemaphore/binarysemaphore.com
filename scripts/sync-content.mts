@@ -21,7 +21,6 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { createClient } from "@supabase/supabase-js";
-import { subjects } from "../src/lib/learn/topics.ts";
 import { notebooks } from "../src/lib/learn.ts";
 
 const DRY = process.argv.includes("--dry-run");
@@ -48,10 +47,6 @@ function check(label: string, error: { message: string } | null) {
   }
 }
 
-function read(...segments: string[]): string | null {
-  const file = path.join(ROOT, ...segments);
-  return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
-}
 
 /**
  * A document plus its satellite, in that order.
@@ -146,90 +141,12 @@ async function syncThreads() {
   console.log(`threads          ${files.length}`);
 }
 
-async function syncTopics() {
-  const subjectRows = subjects.map((s, i) => ({
-    slug: s.slug,
-    name: s.name,
-    blurb: s.blurb,
-    icon: s.icon,
-    position: i,
-    status: "published",
-  }));
-
-  if (!DRY) check("subjects", (await db.from("subjects").upsert(subjectRows)).error);
-
-  let written = 0;
-  let empty = 0;
-
-  for (const subject of subjects) {
-    for (const [i, channel] of subject.channels.entries()) {
-      const body = read("src/content/topics", subject.slug, `${channel.slug}.mdx`);
-      // Only a channel we have actually written is published. The rest exist as
-      // drafts so the tree is complete and the page can say so honestly, which
-      // published_has_a_body would otherwise refuse to store.
-      if (body) written++;
-      else empty++;
-
-      await upsertDocument(
-        {
-          collection: "channel",
-          scope: subject.slug,
-          slug: channel.slug,
-          title: channel.title,
-          summary: channel.blurb,
-          body_mdx: body,
-          status: body ? "published" : "draft",
-          published_at: body ? new Date().toISOString() : null,
-          origin: "admin",
-        },
-        {
-          table: "channel_meta",
-          row: {
-            subject: subject.slug,
-            position: i,
-            reference: channel.reference ?? null,
-            notebook_id: channel.notebook ?? null,
-          },
-        },
-      );
-    }
-  }
-
-  console.log(`subjects         ${subjectRows.length}`);
-  console.log(`channels         ${written + empty} (${written} written, ${empty} awaiting prose)`);
-}
-
-/**
- * Rows in Postgres that git no longer knows about.
- *
- * Reported, never deleted. Once the admin exists, a row absent from git is far
- * more likely to be something written in the admin than something retired, and
- * a sync script that deletes those is a content shredder.
- */
-async function reportOrphans() {
-  if (DRY) return;
-
-  const known = new Set(
-    subjects.flatMap((s) => s.channels.map((c) => `${s.slug}/${c.slug}`)),
-  );
-
-  const { data } = await db
-    .from("documents")
-    .select("scope, slug")
-    .eq("collection", "channel");
-
-  const orphans = (data ?? [])
-    .map((r) => `${r.scope}/${r.slug}`)
-    .filter((k) => !known.has(k));
-
-  if (orphans.length) {
-    console.log(`\nIn Postgres but not in git (left alone):\n  ${orphans.join("\n  ")}`);
-  }
-}
+// syncTopics() lived here. The tree moved in one direction and the literal it
+// read is gone, which is the point of a one-way sync: subjects and channels are
+// edited in the admin now, and re-seeding them from a file that no longer
+// exists would be the two-way sync that loses content.
 
 console.log(DRY ? "Dry run, nothing written.\n" : "");
 await syncNotebooks();
 await syncThreads();
-await syncTopics();
-await reportOrphans();
 console.log(DRY ? "\nNothing was written." : "\nDone. Postgres is now the source of truth.");
