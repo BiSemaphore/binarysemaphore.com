@@ -1,0 +1,16 @@
+-- Let anon call is_admin().
+--
+-- Every reader-facing select policy is `status = 'published' or
+-- public.is_admin()`. Postgres does not guarantee short-circuit evaluation of
+-- OR, so it may call the function even when the first half is already true.
+-- With execute revoked from anon, that turned a perfectly valid read into
+-- 42501 permission denied for a signed-out visitor: not "no rows", an error.
+--
+-- Found by querying the live API with the publishable key rather than by
+-- reading the policy, which reads correctly.
+--
+-- Granting execute to anon leaks nothing. The function returns a boolean about
+-- the caller, and for anon `auth.uid()` is null, so it is always false. It
+-- cannot be used to enumerate the admin list or anything else. Revoking it
+-- bought no security and cost every anonymous read.
+grant execute on function public.is_admin() to anon;
