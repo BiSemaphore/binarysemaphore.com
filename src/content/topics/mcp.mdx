@@ -1,5 +1,5 @@
-MCP is a protocol. That is the whole of it, and almost every explanation you
-will read makes it sound like more.
+MCP is a protocol. <Underline>That is the whole of it</Underline>, and almost every
+explanation you will read makes it sound like more.
 
 A model can only work with what it is handed. MCP is an agreement about how a
 program hands it things: what a tool is called, what arguments it takes, what
@@ -12,13 +12,13 @@ Before an agreement like this, every combination was its own integration. Five
 AI clients and five tools meant twenty-five pieces of glue, each written twice
 and maintained by nobody.
 
-An agreed protocol turns that multiplication into addition. Five clients and
+An agreed protocol <Highlight>turns that multiplication into addition</Highlight>. Five clients and
 five tools is ten implementations, each written once. That is the entire
 argument, and it is the same argument as USB, or HTTP, or the language server
 protocol that stopped every editor writing its own support for every language.
 
-Nothing about MCP is clever. Protocols rarely are. They are valuable precisely
-because they are boring enough that everyone can agree.
+Nothing about MCP is clever. Protocols rarely are. They are valuable precisely because they are
+<Circle>boring</Circle> enough that everyone can agree.
 
 ## What a server actually exposes
 
@@ -35,7 +35,8 @@ arguments, no effects, just content the client can pull in as context.
 the model reaches for on its own.
 
 The useful line is between tools and resources: a tool is something you let the
-model _do_, a resource is something you let it _see_. Getting that boundary
+model <Underline>do</Underline>, a resource is something you let it
+<Underline>see</Underline>. Getting that boundary
 wrong is how an integration becomes dangerous. A model that can read your
 database is a research assistant. A model that can write to it is a liability
 unless you meant it.
@@ -70,7 +71,7 @@ similar options chooses badly. Five well-named tools beat thirty vague ones.
 `inode` is our knowledge base in Go: notes and commands saved from the terminal,
 retrieved later in plain English through a real retrieval pipeline.
 
-It exposes an MCP server, and deliberately a **read-only** one. An editor can
+It exposes an MCP server, and deliberately a <Highlight>read-only</Highlight> one. An editor can
 query the knowledge base; it cannot write to it. That was not caution for its
 own sake. Saving something is a decision a person should make, and the moment a
 model can save things too, you no longer trust what is in there.

@@ -96,22 +96,23 @@ export default async function TopicPage({
           className="mt-4 font-mono text-4xl font-bold leading-[1.08] tracking-[-0.04em] text-foreground sm:text-5xl"
         />
 
-        <p className="mt-5 max-w-2xl text-lg leading-8 text-muted">
+        <p className="mt-4 max-w-3xl text-lg leading-7 text-muted">
           {topic.blurb}
         </p>
 
         {/* The honest bit. 52 of 64 topics have nothing of ours behind them, and
             a page that pretends otherwise is a lie the reader finds on arrival. */}
-        {/* Written prose when there is any. `notebook` styling is reused so a
-            topic reads like the rest of the site rather than inventing a third
-            set of typography. */}
+        {/* Written prose reads exactly like a thread: same MDX component map,
+            same `.thread` code-block styling, same measure. `.notebook` was the
+            wrong one of the site's two type systems, since that is the serif
+            navy system built for the printed books. */}
         {Body ? (
-          <div className="notebook mt-10 max-w-2xl">
+          <article className="thread mt-10 max-w-3xl">
             <Body />
-          </div>
+          </article>
         ) : null}
 
-        <div className="mt-10 max-w-2xl space-y-5">
+        <div className="mt-12 max-w-3xl space-y-5 border-t border-border pt-10">
           <p className="leading-7 text-muted">
             {Body
               ? `More on ${topic.title} is coming, and asking moves it up the list.`
