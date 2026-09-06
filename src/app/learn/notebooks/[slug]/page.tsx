@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { editions, getNotebook, notebooks } from "@/lib/learn";
+import { editions, getNotebook, getNotebooks } from "@/lib/learn";
 import { getAccess } from "@/lib/learn/access";
 import { getSections } from "@/lib/learn/book";
 import { getProgress, summarise } from "@/lib/learn/progress";
@@ -18,7 +18,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const notebook = getNotebook(slug);
+  const notebook = await getNotebook(slug);
   if (!notebook) return {};
 
   const description = `${notebook.subtitle}. ${notebook.blurb}`;
@@ -40,7 +40,7 @@ export default async function NotebookPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const notebook = getNotebook(slug);
+  const notebook = await getNotebook(slug);
   if (!notebook) notFound();
 
   const [access, base] = await Promise.all([getAccess(slug), learnBase()]);
@@ -50,7 +50,7 @@ export default async function NotebookPage({
   const resume =
     progress.resume ?? (sections.length > 0 ? sections[0].slug : null);
   const available = editions.filter((e) => notebook.assets[e.id]);
-  const others = notebooks.filter((n) => n.slug !== slug).slice(0, 3);
+  const others = (await getNotebooks()).filter((n) => n.slug !== slug).slice(0, 3);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 pb-24">

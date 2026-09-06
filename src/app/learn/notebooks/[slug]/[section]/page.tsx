@@ -19,7 +19,7 @@ export default async function SectionRedirect({
 }) {
   const { slug, section } = await params;
 
-  if (!getNotebook(slug)) notFound();
+  if (!await getNotebook(slug)) notFound();
   if (!getSections(slug).some((s) => s.slug === section)) notFound();
 
   const base = await learnBase();

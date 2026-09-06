@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { editions, notebooks, totalPages } from "@/lib/learn";
+import { editions, getNotebooks, totalPages } from "@/lib/learn";
 import { accessLabel, getAllAccess } from "@/lib/learn/access";
 import { learnBase } from "@/lib/learn/paths";
 import { getAllProgress, summarise } from "@/lib/learn/progress";
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 
 /** The colophon: the facts a reader wants before opening anything. Mono, so the
  * values line up in a column the way a spec block should. */
-function Colophon({ pages }: { pages: number }) {
+function Colophon({ count, pages }: { count: number; pages: number }) {
   const rows = [
-    { label: "Notebooks", value: String(notebooks.length) },
+    { label: "Notebooks", value: String(count) },
     { label: "Pages", value: pages.toLocaleString("en-GB") },
     { label: "Editions", value: editions.map((e) => e.name).join(" / ") },
     { label: "To read", value: "Sign in" },
@@ -43,6 +43,10 @@ function Colophon({ pages }: { pages: number }) {
 }
 
 export default async function LearnIndexPage() {
+  // One read for the page, passed down. Every helper here is cached under the
+  // same key, so calling them separately would not cost extra round trips, but
+  // it would leave awaits scattered through the JSX where they read as noise.
+  const [books, pages] = await Promise.all([getNotebooks(), totalPages()]);
   const [access, base, progress] = await Promise.all([
     getAllAccess(),
     learnBase(),
@@ -71,7 +75,7 @@ export default async function LearnIndexPage() {
           </p>
         </div>
 
-        <Colophon pages={totalPages()} />
+        <Colophon count={books.length} pages={pages} />
       </header>
 
       {/* The library, set as a book's contents page. The numbers are the real
@@ -85,12 +89,12 @@ export default async function LearnIndexPage() {
             Contents
           </h2>
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-subtle">
-            {notebooks.length} notebooks
+            {(await getNotebooks()).length} notebooks
           </p>
         </div>
 
         <ol>
-          {notebooks.map((notebook) => {
+          {(await getNotebooks()).map((notebook) => {
             const label = accessLabel(
               access.get(notebook.slug) ?? { state: "none" },
             );

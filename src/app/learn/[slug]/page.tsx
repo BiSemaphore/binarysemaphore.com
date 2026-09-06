@@ -17,7 +17,7 @@ export default async function NotebookRootRedirect({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  if (!getNotebook(slug)) notFound();
+  if (!await getNotebook(slug)) notFound();
 
   permanentRedirect(`${await learnBase()}/notebooks/${slug}`);
 }

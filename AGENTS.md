@@ -39,9 +39,13 @@ Run `lint` and `typecheck` before committing; CI runs both.
   a one-way sync and the files were deleted. A body is compiled at request time by
   `src/lib/mdx/runtime.tsx`, whose plugin list must stay in step with the one in
   `next.config.ts` (Turbopack takes plugin names, the runtime takes functions).
-- `src/lib/learn.ts` — **single source of truth** for the study notebook catalog
-  served at `learn.binarysemaphore.com` (`src/app/learn/`). Access rules live in
-  `src/lib/learn/`; the PDFs live in Supabase Storage, not in git.
+- `src/lib/learn.ts` — reads the study notebook catalog from Postgres, serving
+  `learn.binarysemaphore.com` (`src/app/learn/`). The `notebooks` table is the
+  catalog; this file holds the types, the three editions and the lecture series,
+  which are configuration rather than content. Access rules live in
+  `src/lib/learn/`; the PDFs live in Supabase Storage, not in git. Section prose
+  is still generated MDX under `src/content/notebooks/` (from the `learnings`
+  repo) and is the last content not in the database.
 - `src/content/notebooks/*/*.mdx` — notebook sections, **generated** by
   `scripts/sync-notebooks.mjs` from the `learnings` repo. Never hand-edit them,
   and never let Prettier near them. Same MDX pattern as threads. Read

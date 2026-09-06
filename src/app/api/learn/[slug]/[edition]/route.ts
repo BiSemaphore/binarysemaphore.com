@@ -28,7 +28,7 @@ export async function GET(
 ) {
   const { slug, edition } = await params;
 
-  const notebook = getNotebook(slug);
+  const notebook = await getNotebook(slug);
   if (!notebook || !isEditionId(edition)) {
     return NextResponse.json({ error: "No such notebook." }, { status: 404 });
   }

@@ -17,7 +17,7 @@ import { requestNote, withdrawNote } from "@/lib/learn/note-requests";
  */
 export async function openNotebookAction(formData: FormData) {
   const slug = String(formData.get("slug") ?? "");
-  if (!getNotebook(slug)) return;
+  if (!await getNotebook(slug)) return;
 
   await grantAccess(slug);
 
@@ -35,7 +35,7 @@ export async function openNotebookAction(formData: FormData) {
  * section, and marking it would put a bookmark on a page they cannot finish.
  */
 export async function markReadAction(slug: string, section: string) {
-  if (!getNotebook(slug)) return;
+  if (!await getNotebook(slug)) return;
   if (!canRead(await getAccess(slug))) return;
 
   await markRead(slug, section);

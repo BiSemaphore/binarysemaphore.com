@@ -25,7 +25,7 @@ export async function GET(
   }
 
   const { subject, channel } = found;
-  const notebook = channel.notebook ? getNotebook(channel.notebook) : undefined;
+  const notebook = channel.notebook ? await getNotebook(channel.notebook) : undefined;
   const roadmap = channel.roadmap ? getRoadmap(channel.roadmap) : undefined;
 
   return NextResponse.json(

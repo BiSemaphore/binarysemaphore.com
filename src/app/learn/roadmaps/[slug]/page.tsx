@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/lib/site";
-import { getNotebook } from "@/lib/learn";
+import { getNotebooks } from "@/lib/learn";
 import { getRoadmap, roadmaps, countStops } from "@/lib/learn/roadmaps";
 import { learnBase } from "@/lib/learn/paths";
 import { Reveal } from "@/components/reveal";
@@ -42,7 +42,7 @@ export default async function RoadmapPage({
   const roadmap = getRoadmap(slug);
   if (!roadmap) notFound();
 
-  const base = await learnBase();
+  const [base, books] = await Promise.all([learnBase(), getNotebooks()]);
   const { bookingUrl } = site.mentorship;
   const stops = countStops(roadmap);
 
@@ -100,7 +100,7 @@ export default async function RoadmapPage({
             <ul className="mt-8 grid gap-4 sm:grid-cols-2">
               {stage.stops.map((stop, i) => {
                 const notebook = stop.notebook
-                  ? getNotebook(stop.notebook)
+                  ? books.find((n) => n.slug === stop.notebook)
                   : undefined;
 
                 return (

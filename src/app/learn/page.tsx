@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { notebooks, totalPages, totalSections } from "@/lib/learn";
+import { getNotebooks, totalPages, totalSections } from "@/lib/learn";
 import { learnBase } from "@/lib/learn/paths";
 import { Reveal } from "@/components/reveal";
 import { Circle } from "@/components/annotate";
@@ -42,6 +42,11 @@ const EYEBROW =
   "font-mono text-[0.7rem] uppercase tracking-[0.28em] text-subtle";
 
 export default async function MentorshipPage() {
+  const [books, sections, pages] = await Promise.all([
+    getNotebooks(),
+    totalSections(),
+    totalPages(),
+  ]);
   const base = await learnBase();
   const { mentorship } = site;
 
@@ -409,8 +414,8 @@ export default async function MentorshipPage() {
       <NotesBlock margin="or just read" className="mt-20">
         <p className={EYEBROW}>The notebooks</p>
         <h2 className={`mt-3 ${HEADING}`}>
-          {notebooks.length} of them, {totalSections()} sections,{" "}
-          {totalPages().toLocaleString("en-GB")} pages
+          {books.length} of them, {sections} sections,{" "}
+          {pages.toLocaleString("en-GB")} pages
         </h2>
         <p className="mt-3 max-w-2xl leading-7 text-muted">
           Long-form manuals on backend and systems work, built to be printed and

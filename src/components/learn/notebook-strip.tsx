@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notebooks } from "@/lib/learn";
+import { getNotebooks } from "@/lib/learn";
 import { toneAt } from "@/lib/learn/tones";
 
 /**
@@ -13,11 +13,13 @@ import { toneAt } from "@/lib/learn/tones";
  * A scroll strip rather than a grid: ten cards in a grid is a wall, ten cards on
  * a rail invites a flick.
  */
-export function NotebookStrip({ base }: { base: string }) {
+export async function NotebookStrip({ base }: { base: string }) {
+  const books = await getNotebooks();
+
   return (
     <div className="-mx-6 overflow-x-auto px-6 pb-4 lg:-mx-10 lg:px-10">
       <ul className="flex w-max gap-4">
-        {notebooks.map((notebook, i) => (
+        {books.map((notebook, i) => (
           <li key={notebook.slug} className="w-[17.5rem] shrink-0">
             <Link
               href={`${base}/notebooks/${notebook.slug}`}

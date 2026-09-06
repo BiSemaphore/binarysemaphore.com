@@ -90,7 +90,7 @@ export default async function ChannelPage({
   const { subject, channel } = found;
   const base = await learnBase();
   const state = channelState(channel);
-  const notebook = channel.notebook ? getNotebook(channel.notebook) : undefined;
+  const notebook = channel.notebook ? await getNotebook(channel.notebook) : undefined;
   const roadmap = channel.roadmap ? getRoadmap(channel.roadmap) : undefined;
   const { bookingUrl } = site.mentorship;
 

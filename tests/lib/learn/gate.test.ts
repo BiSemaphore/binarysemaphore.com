@@ -1,10 +1,25 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, it, expect } from "vitest";
-import { notebooks } from "@/lib/learn";
 import { splitBook, type SectionEntry } from "@/lib/learn/book";
 
 const DIR = path.join(process.cwd(), "src/content/notebooks");
+
+/**
+ * The notebooks on disk, not the ones in the catalog.
+ *
+ * This suite is about the generated MDX: that every section has frontmatter, a
+ * url-safe slug, balanced fences and no gated prose leaking into a free page.
+ * It used to take its list from the catalog, which is a database read now, and
+ * a unit test must not reach the network. Reading the directory is also more
+ * honest: these assertions are about what the generator produced.
+ *
+ * The one thing lost is the cross-check that catalog and disk agree. That is a
+ * runtime concern now, and the read page 404s on a section that does not exist.
+ */
+const slugs = readdirSync(DIR).filter((d) =>
+  /^[a-z0-9]+(-[a-z0-9]+)*$/.test(d),
+);
 
 const index = (slug: string): SectionEntry[] =>
   JSON.parse(readFileSync(path.join(DIR, slug, "index.json"), "utf8"));
@@ -12,23 +27,23 @@ const index = (slug: string): SectionEntry[] =>
 const read = (slug: string, file: string) =>
   readFileSync(path.join(DIR, slug, file), "utf8");
 
-const all = notebooks.flatMap((n) =>
-  index(n.slug).map((s) => ({ notebook: n.slug, ...s })),
+const all = slugs.flatMap((slug) =>
+  index(slug).map((s) => ({ notebook: slug, ...s })),
 );
 
 describe("the generated notebook content", () => {
   it("covers every notebook in the catalog", () => {
-    for (const notebook of notebooks) {
-      expect(existsSync(path.join(DIR, notebook.slug)), notebook.slug).toBe(true);
-      expect(index(notebook.slug).length).toBeGreaterThan(0);
+    for (const slug of slugs) {
+      expect(existsSync(path.join(DIR, slug, "index.json")), slug).toBe(true);
+      expect(index(slug).length).toBeGreaterThan(0);
     }
   });
 
   it("writes one mdx file per section, and nothing else", () => {
-    for (const notebook of notebooks) {
+    for (const slug of slugs) {
       const expected = new Set(["index.json"]);
-      for (const s of index(notebook.slug)) expected.add(`${s.slug}.mdx`);
-      const actual = readdirSync(path.join(DIR, notebook.slug));
+      for (const s of index(slug)) expected.add(`${s.slug}.mdx`);
+      const actual = readdirSync(path.join(DIR, slug));
       expect(new Set(actual)).toEqual(expected);
     }
   });
@@ -44,9 +59,9 @@ describe("the generated notebook content", () => {
   });
 
   it("gives each notebook unique section slugs", () => {
-    for (const notebook of notebooks) {
-      const slugs = index(notebook.slug).map((s) => s.slug);
-      expect(new Set(slugs).size, notebook.slug).toBe(slugs.length);
+    for (const slug of slugs) {
+      const slugs = index(slug).map((s) => s.slug);
+      expect(new Set(slugs).size, slug).toBe(slugs.length);
     }
   });
 
@@ -115,16 +130,16 @@ describe("the highlighter marks", () => {
 
 describe("splitBook", () => {
   it("always frees something and always holds something back", () => {
-    for (const notebook of notebooks) {
-      const { free, gated } = splitBook(index(notebook.slug));
-      expect(free.length, notebook.slug).toBeGreaterThan(0);
-      expect(gated.length, notebook.slug).toBeGreaterThan(0);
+    for (const slug of slugs) {
+      const { free, gated } = splitBook(index(slug));
+      expect(free.length, slug).toBeGreaterThan(0);
+      expect(gated.length, slug).toBeGreaterThan(0);
     }
   });
 
   it("keeps every section, in order", () => {
-    for (const notebook of notebooks) {
-      const sections = index(notebook.slug);
+    for (const slug of slugs) {
+      const sections = index(slug);
       const { free, gated } = splitBook(sections);
       expect([...free, ...gated]).toEqual(sections);
     }
@@ -132,25 +147,25 @@ describe("splitBook", () => {
 
   it("frees a small share of a full-length book", () => {
     let checked = 0;
-    for (const notebook of notebooks) {
-      const sections = index(notebook.slug);
+    for (const slug of slugs) {
+      const sections = index(slug);
       // A short book cannot free less than its two-section minimum, and REST
       // API Design is seven sections long. Judge the books that have room.
       if (sections.length < 12) continue;
       const total = sections.reduce((n, s) => n + s.length, 0);
       const shown = splitBook(sections).free.reduce((n, s) => n + s.length, 0);
-      expect(shown / total, notebook.slug).toBeLessThan(0.3);
+      expect(shown / total, slug).toBeLessThan(0.3);
       checked += 1;
     }
     expect(checked).toBeGreaterThan(6);
   });
 
   it("never frees more than half of any book", () => {
-    for (const notebook of notebooks) {
-      const sections = index(notebook.slug);
+    for (const slug of slugs) {
+      const sections = index(slug);
       const total = sections.reduce((n, s) => n + s.length, 0);
       const shown = splitBook(sections).free.reduce((n, s) => n + s.length, 0);
-      expect(shown / total, notebook.slug).toBeLessThan(0.5);
+      expect(shown / total, slug).toBeLessThan(0.5);
     }
   });
 
@@ -188,8 +203,12 @@ describe("cross-references", () => {
     }
   });
 
-  it("only points at notebooks that are in the catalog", () => {
-    const known = new Set(notebooks.map((n) => n.slug));
+  // Cross-notebook references are checked against the notebooks that exist on
+  // disk, not against the catalog, which is a database read now. That is the
+  // right target anyway: a reference points at a page, and a page needs the
+  // generated sections behind it, not just a catalog row.
+  it("only points at notebooks that exist", () => {
+    const known = new Set(slugs);
     for (const s of all) {
       for (const ref of s.refs) {
         if (!ref.startsWith("n:")) continue;
@@ -207,14 +226,14 @@ describe("cross-references", () => {
   });
 
   it("makes backrefs the exact inverse of refs", () => {
-    for (const notebook of notebooks) {
-      const sections = index(notebook.slug);
+    for (const slug of slugs) {
+      const sections = index(slug);
       for (const target of sections) {
         const expected = sections
           .filter((s) => s.refs.includes(`s:${target.slug}`))
           .map((s) => s.slug)
           .sort();
-        expect(target.backrefs, `${notebook.slug}/${target.slug}`).toEqual(
+        expect(target.backrefs, `${slug}/${target.slug}`).toEqual(
           expected,
         );
       }
