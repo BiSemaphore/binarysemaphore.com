@@ -336,6 +336,22 @@ overlays, which stops one set of values working across three different greys.
 Discord's own hover blurple is deliberately not used. This surface is matte
 black and white.
 
+### Icons
+
+The twelve group icons come from **lucide-react**, the one dependency this
+feature adds.
+
+They were hand-rolled first, to match the 22 icons already in
+`src/components/icons.tsx` and to avoid a dependency for twelve glyphs. That was
+wrong twice over: drawing twelve _category_ marks that stay legible at 22px is a
+different job from drawing a mail glyph, and the results were the weakest part
+of the shell. Lucide is properly drawn, consistent at this size, and
+tree-shakeable, so the cost is twelve icons rather than a whole set.
+
+`icons.tsx` keeps the brand and utility marks. `group-icons.tsx` is only the
+rail, and the mapping lives there with a `Blocks` fallback so a group added
+without an entry still renders something clickable.
+
 ### Typography
 
 The chrome is JetBrains Mono, already `--font-mono`. The reading pane is
