@@ -22,20 +22,26 @@ const DIR = path.join(process.cwd(), "src/content/topics");
  * import that throws is indistinguishable from a genuine compile error in the
  * MDX, and swallowing that would hide a broken page instead of surfacing it.
  */
-export const hasBody = cache((slug: string): boolean => {
-  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) return false;
-  return fs.existsSync(path.join(DIR, `${slug}.mdx`));
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+export const hasBody = cache((subject: string, channel: string): boolean => {
+  if (!SLUG.test(subject) || !SLUG.test(channel)) return false;
+  return fs.existsSync(path.join(DIR, subject, `${channel}.mdx`));
 });
 
-/** Every topic slug that has prose, for counting what is actually written. */
+/** "subject/channel" for every channel that has prose. */
 export const writtenSlugs = cache((): Set<string> => {
   if (!fs.existsSync(DIR)) return new Set();
-  return new Set(
-    fs
-      .readdirSync(DIR)
-      .filter((f) => f.endsWith(".mdx"))
-      .map((f) => f.replace(/\.mdx$/, "")),
-  );
+  const out = new Set<string>();
+  for (const subject of fs.readdirSync(DIR)) {
+    const dir = path.join(DIR, subject);
+    if (!fs.statSync(dir).isDirectory()) continue;
+    for (const file of fs.readdirSync(dir)) {
+      if (file.endsWith(".mdx"))
+        out.add(`${subject}/${file.replace(/\.mdx$/, "")}`);
+    }
+  }
+  return out;
 });
 
 /**
@@ -44,10 +50,13 @@ export const writtenSlugs = cache((): Set<string> => {
  * The slug is validated by `hasBody` before it reaches the import, so a request
  * for `../../etc/passwd` never becomes a path.
  */
-export async function getBody(slug: string): Promise<ComponentType | null> {
-  if (!hasBody(slug)) return null;
+export async function getBody(
+  subject: string,
+  channel: string,
+): Promise<ComponentType | null> {
+  if (!hasBody(subject, channel)) return null;
 
-  const mod = (await import(`@/content/topics/${slug}.mdx`)) as {
+  const mod = (await import(`@/content/topics/${subject}/${channel}.mdx`)) as {
     default: ComponentType;
   };
   return mod.default;

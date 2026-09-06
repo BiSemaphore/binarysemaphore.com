@@ -1,6 +1,6 @@
 # Topics (learn.binarysemaphore.com/topics)
 
-The computer science topic tree: 64 topics in 12 groups, browsed in a shell
+The computer science topic tree: 93 channels across 23 subjects, browsed in a shell
 modelled on Discord's rail-and-channel layout. This document covers the
 taxonomy, where topic content lives, and the one part of it that needs a
 database. Sign-in is [`docs/auth.md`](./auth.md) and the notebook library is
@@ -27,40 +27,49 @@ We start at 64 and will grow.
 - Not a Discord clone visually. We took the information architecture, not the
   palette. See [The shell](#the-shell).
 
-## The taxonomy
+## The shape
 
-Twelve groups. This table is canonical: if `src/lib/learn/topics.ts` and this
-document disagree, one of them is a bug.
+**Subjects on the rail, angles in the sidebar.**
 
-| Group                | Topics                                                                                                                                        |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Languages**        | `c` `c-plus-plus` `java` `python` `javascript` `typescript` `sql` `go`                                                                        |
-| **DSA**              | `arrays-and-strings` `linked-lists` `stacks-and-queues` `trees` `graphs` `hashing` `sorting-and-searching` `dynamic-programming` `complexity` |
-| **Maths for CS**     | `discrete-mathematics` `probability-and-statistics` `linear-algebra` `maths-for-data-science`                                                 |
-| **Foundations**      | `theory-of-computation` `compiler-design` `computer-organisation` `software-engineering`                                                      |
-| **Systems**          | `operating-systems` `concurrency` `distributed-systems` `system-design`                                                                       |
-| **Networking**       | `computer-networks` `tcp-and-ip` `http` `dns-and-domains` `sockets`                                                                           |
-| **Data**             | `dbms` `postgres` `data-modelling` `caching` `object-storage` `data-at-scale`                                                                 |
-| **Building**         | `web-fundamentals` `frontend-and-react` `backend-and-apis` `testing` `deployment`                                                             |
-| **Security**         | `web-vulnerabilities` `auth-and-authorisation` `cryptography` `network-security`                                                              |
-| **Cloud and DevOps** | `docker` `kubernetes` `ci-cd` `aws` `observability`                                                                                           |
-| **AI**               | `how-llms-work` `embeddings-and-retrieval` `mcp` `agents` `working-with-claude`                                                               |
-| **Toolbox**          | `git` `linux-and-the-shell` `shell-scripting` `debugging` `the-editor`                                                                        |
+The first version had subject-areas on the rail (Languages, DSA, Maths) with
+subjects as leaves, so `java` was one page and the sidebar showed all twelve
+areas at once. That is a library catalogue, not a place to look something up.
 
-Two rules hold this together.
+You pick the subject you are working in. Its channels are _ways in_:
 
-**A topic belongs to exactly one group.** DSA is its own group rather than living
-inside Foundations because it carries placement season almost single-handedly,
-and burying it three levels down misrepresents how much of a student's year it
-takes. Anything that feels like it belongs in two groups is usually two topics.
+```
+▣ Java
+   # memory-and-gc
+   # concurrency-traps
+   # collections-in-anger
+   # equals-and-hashcode
+   # interview-questions
+   # viva-defence
+```
 
-**Slugs are flat and permanent.** The URL is `/topics/operating-systems`, never
-`/topics/systems/operating-systems`. The group drives the sidebar and nothing
-else. This is the whole reason regrouping is cheap: move `concurrency` from
-Systems to Foundations tomorrow and not one link on the internet breaks. Renaming
-a slug, on the other hand, is a breaking change and needs a redirect.
+23 subjects, 93 channels. `src/lib/learn/topics.ts` is canonical; this document
+describes the rules, not the contents, because a table of 93 rows goes stale the
+first time anyone edits one.
 
-## Topic states
+Three rules hold it together.
+
+**Channel names are situations, not syllabus entries.** `what-breaks-in-
+production`, never `1-introduction`. If a name could head a textbook chapter it
+is the wrong name. This is enforced, not merely advised: the test suite fails on
+a channel slug that is numbered or that contains `intro`, `basics`,
+`fundamentals` or `getting-started`. It caught `observability-basics` on the
+first run.
+
+**Nobody arrives needing chapter one.** The audience already works with this
+stuff, or is about to be examined on it. A channel is written for someone with
+a heap dump open on the other monitor, not for someone starting a course.
+
+**Slugs are permanent, and a channel's URL is `/topics/<subject>/<channel>`.**
+A channel slug only has to be unique inside its subject, which is why
+`interview-questions` can exist under Java, Python and Databases without
+collision. Moving a channel between subjects breaks a link and needs a redirect.
+
+## Channel states
 
 Every topic declares what actually exists behind it. This is the most important
 rule in the system, because 52 of the 64 topics have nothing of ours behind them yet and a
@@ -72,14 +81,8 @@ navigation tree that implies otherwise is a lie the reader discovers on click.
 | `roadmap`  | A roadmap passes through it        | Links to the roadmap stop        |
 | `soon`     | Nothing of ours yet                | Canonical reference plus an hour |
 
-Ten topics are notebook-backed today: `postgres`, `caching`, `object-storage`,
-`backend-and-apis`, `auth-and-authorisation`, `web-vulnerabilities`,
-`system-design`, `software-engineering`, `sockets` and `data-at-scale`. Two are
-roadmap-backed: `frontend-and-react` and `javascript`. Threads add a third,
-weaker signal on a handful more.
-
-A `soon` topic is not an empty page. It gives the reader the canonical reference
-(MDN, the Postgres manual, react.dev) and the offer of a session, which is the
+A `soon` channel is not an empty page. It gives the canonical reference where
+one genuinely exists and the offer of a session where it does not, which is the
 honest answer to "we have not written this yet". An empty room is worse than a
 locked door.
 
@@ -88,7 +91,7 @@ locked door.
 In MDX, in git, behind an interface.
 
 ```
-src/content/topics/<slug>.mdx        the prose, compiled at build
+src/content/topics/<subject>/<channel>.mdx   prose, compiled at build
 src/lib/learn/topics.ts              the tree: groups, topics, states
 src/lib/learn/topic-source.ts        getTopic() / listTopics(), the seam
 src/app/api/topics/route.ts          GET the tree as JSON
@@ -107,7 +110,9 @@ throwing import is indistinguishable from a genuine MDX compile error, and
 swallowing that would hide a broken page instead of surfacing it.
 
 ```ts
-const { default: Body } = await import(`@/content/topics/${slug}.mdx`);
+const { default: Body } = await import(
+  `@/content/topics/${subject}/${channel}.mdx`
+);
 ```
 
 ### Why not Postgres
@@ -384,18 +389,20 @@ Collapse state persists per viewer in `localStorage`, wrapped in try/catch, sinc
 a private window or blocked site data throws on access rather than returning
 null.
 
-## Adding a topic
+## Adding a channel
 
-1. Add it to the right group in `src/lib/learn/topics.ts`, with a `soon` state
-   and a canonical `reference`.
-2. Add the row to the taxonomy table in this document.
-3. If we have written something, set `notebook` or `roadmap` instead and point at
-   it. Do not claim coverage we do not have.
-4. For prose, add `src/content/topics/<slug>.mdx`. No frontmatter: nothing
-   reads it yet, and `rev` arrives with the unread model.
+1. Add it to the right subject in `src/lib/learn/topics.ts`, with a `soon` state
+   and a canonical `reference` only if one genuinely exists.
+2. Name it after a situation. The test suite rejects numbered names and the
+   words intro, basics, fundamentals and getting-started.
+3. If we have written something, set `notebook` or `roadmap` and point at it. Do
+   not claim coverage we do not have.
+4. For prose, add `src/content/topics/<subject>/<channel>.mdx`. No frontmatter:
+   nothing reads it yet.
 5. The page picks it up automatically. `hasBody()` checks disk, so there is no
-   registry to update and no import to add.
-6. Never change an existing slug without a redirect.
+   registry to update.
+6. A subject redirects to its first channel, so put the most useful one first.
+7. Never change an existing slug without a redirect.
 
 ## Phases
 

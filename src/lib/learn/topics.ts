@@ -1,119 +1,305 @@
 /**
- * The computer science topic tree browsed at /topics.
+ * The topic tree browsed at /topics.
  *
- * Canonical taxonomy: 12 groups, 64 topics. `docs/topics.md` holds the same
- * table in prose; if the two disagree, one of them is a bug.
+ * **Subjects on the rail, angles in the sidebar.** The first version had
+ * subject-areas on the rail (Languages, DSA, Maths) and subjects as leaves, so
+ * `java` was a single page and the sidebar showed all twelve areas at once.
+ * That is a library catalogue, not a place to look something up.
  *
- * Three rules this file exists to hold:
+ * You pick the subject you are working in, and its channels are *ways in*:
+ * what breaks, what gets asked, where people freeze. Deliberately not a
+ * beginner ladder. Nobody arrives at `#memory-and-gc` needing chapter one, they
+ * arrive because a heap dump is open on the other monitor.
  *
- * 1. **A topic belongs to exactly one group.** `assertTree()` proves it rather
- *    than trusting it, and the test suite calls that.
- * 2. **Slugs are flat and permanent.** The group drives the sidebar and nothing
- *    else, so regrouping is free and renaming is a breaking change needing a
- *    redirect.
- * 3. **Nothing claims coverage we do not have.** A topic points at a notebook or
- *    a roadmap only when one genuinely covers it. Everything else is `soon`, and
- *    the UI says so on every row.
+ * Rules this file holds:
  *
- * References are the canonical source or nothing. Where a topic has no single
- * authoritative home (most of the theory papers do not), the field is left off
- * rather than filled with whatever ranks well.
+ * 1. **Channel names are situations, not syllabus entries.** `what-breaks-in-
+ *    production`, not `1-introduction`. If a name could head a textbook
+ *    chapter, it is the wrong name.
+ * 2. **Slugs are permanent.** A channel's URL is `/topics/<subject>/<channel>`.
+ *    Moving a channel between subjects breaks a link, so it needs a redirect.
+ * 3. **Nothing claims coverage we do not have.** A channel points at a notebook
+ *    or roadmap only when one genuinely covers it; everything else is `soon` and
+ *    the page says so.
+ * 4. **References are canonical or absent.** Where no single authoritative
+ *    source exists, and for most of these there is not one, the field is left
+ *    off rather than filled with whatever ranks well.
  */
 
-export type TopicState = "notebook" | "roadmap" | "soon";
+export type ChannelState = "notebook" | "roadmap" | "soon";
 
-export type TopicReference = {
+export type Reference = {
   href: string;
   /** e.g. "MDN", "postgresql.org". */
   label: string;
 };
 
-export type Topic = {
-  /** Flat and permanent. The URL is /topics/<slug>. */
+export type Channel = {
+  /** Unique within its subject. The URL is /topics/<subject>/<slug>. */
   slug: string;
   title: string;
-  /** One line, in the words a student would use. */
+  /** One line, in the words someone with the problem would use. */
   blurb: string;
-  reference?: TopicReference;
+  reference?: Reference;
   /** Slug in `src/lib/learn.ts`, when one of our notebooks covers this. */
   notebook?: string;
   /** Slug in `src/lib/learn/roadmaps.ts`, when a roadmap passes through this. */
   roadmap?: string;
 };
 
-export type TopicGroup = {
+export type Subject = {
   slug: string;
   name: string;
-  /** One line for the group header. */
-  tagline: string;
-  topics: Topic[];
+  /** Key into `group-icons.tsx`. */
+  icon: string;
+  /** One line for the sidebar header and the index. */
+  blurb: string;
+  channels: Channel[];
 };
 
 const MDN = "https://developer.mozilla.org/en-US/docs";
 
-export const groups: TopicGroup[] = [
+export const subjects: Subject[] = [
   {
-    slug: "languages",
-    name: "Languages",
-    tagline: "The ones you will be asked to write in.",
-    topics: [
+    slug: "c",
+    name: "C",
+    icon: "c",
+    blurb: "Pointers, memory, and the machine underneath everything else.",
+    channels: [
       {
-        slug: "c",
-        title: "C",
+        slug: "pointers-in-practice",
+        title: "Pointers in practice",
         blurb:
-          "Where pointers, memory and the machine stop being abstract. Usually your first real language and the one that explains the others.",
+          "Where the mental model breaks: arrays decaying, ownership nobody wrote down, and the difference between a pointer and the thing it points at.",
       },
       {
-        slug: "c-plus-plus",
-        title: "C++",
+        slug: "undefined-behaviour",
+        title: "Undefined behaviour",
         blurb:
-          "C with objects, templates and a standard library, plus every decision C left to you still left to you.",
+          "The compiler is allowed to do anything at all. What that means for code that works today and stops working at -O2.",
       },
       {
-        slug: "java",
-        title: "Java",
+        slug: "memory-bugs",
+        title: "Memory bugs, and how they present",
         blurb:
-          "Objects, collections, the garbage collector, and threads. The paper most students carry a backlog in.",
+          "Leaks, double frees, use-after-free. Almost none of them crash where the mistake is, which is why they are hard.",
       },
       {
-        slug: "python",
-        title: "Python",
+        slug: "interview-questions",
+        title: "What gets asked",
         blurb:
-          "The language you reach for when the problem matters more than the ceremony.",
+          "The C questions that come up, and what the examiner is checking.",
+      },
+    ],
+  },
+  {
+    slug: "cpp",
+    name: "C++",
+    icon: "cpp",
+    blurb: "Everything C left to you, plus the machinery to manage it.",
+    channels: [
+      {
+        slug: "ownership-and-raii",
+        title: "Ownership and RAII",
+        blurb:
+          "Who frees this, and when. The one idea that makes the rest of the language make sense.",
+      },
+      {
+        slug: "what-the-compiler-generates",
+        title: "What the compiler generates for you",
+        blurb:
+          "Copy, move, and the constructors you did not write but are using anyway.",
+      },
+      {
+        slug: "templates-when-they-help",
+        title: "Templates, when they help",
+        blurb:
+          "And when they turn a build into a four-minute wait and an error nobody can read.",
+      },
+      {
+        slug: "interview-questions",
+        title: "What gets asked",
+        blurb: "The C++ questions that come up, and the ones that are traps.",
+      },
+    ],
+  },
+  {
+    slug: "java",
+    name: "Java",
+    icon: "java",
+    blurb:
+      "The paper most students carry a backlog in, and the one most jobs want.",
+    channels: [
+      {
+        slug: "memory-and-gc",
+        title: "Memory and the collector",
+        blurb:
+          "Heap, stack, generations, and why a pause happened at the worst moment.",
+      },
+      {
+        slug: "concurrency-traps",
+        title: "Concurrency traps",
+        blurb:
+          "synchronized, volatile, and the race that only appears on the marker's machine.",
+      },
+      {
+        slug: "collections-in-anger",
+        title: "Collections in anger",
+        blurb:
+          "Which one to reach for, what it costs, and what happens when you mutate while iterating.",
+      },
+      {
+        slug: "equals-and-hashcode",
+        title: "equals and hashCode",
+        blurb:
+          "The contract between them, and the bug you get in a HashMap when you break it.",
+      },
+      {
+        slug: "interview-questions",
+        title: "What gets asked",
+        blurb: "The Java questions that come up in nearly every round.",
+      },
+      {
+        slug: "viva-defence",
+        title: "Defending it in a viva",
+        blurb:
+          "Saying why you used an interface there, out loud, without hedging.",
+      },
+    ],
+  },
+  {
+    slug: "python",
+    name: "Python",
+    icon: "python",
+    blurb: "Quick to write, and quick to write something surprising.",
+    channels: [
+      {
+        slug: "mutable-defaults",
+        title: "Mutable defaults and other gotchas",
+        blurb:
+          "The handful of behaviours that bite everyone once, and are obvious forever after.",
+      },
+      {
+        slug: "the-gil-in-practice",
+        title: "The GIL, in practice",
+        blurb:
+          "What it actually stops you doing, and why your threads did not go faster.",
+      },
+      {
+        slug: "packaging",
+        title: "Packaging, and why it hurts",
+        blurb:
+          "Virtual environments, versions, and the reason it runs for you and not for them.",
+      },
+      {
+        slug: "interview-questions",
+        title: "What gets asked",
+        blurb:
+          "Python questions, including the ones that are really CS questions.",
         reference: {
           href: "https://docs.python.org/3/",
           label: "docs.python.org",
         },
       },
+    ],
+  },
+  {
+    slug: "javascript",
+    name: "JavaScript",
+    icon: "javascript",
+    blurb: "Most people stuck on a framework are stuck here instead.",
+    channels: [
       {
-        slug: "javascript",
-        title: "JavaScript",
+        slug: "this-and-closures",
+        title: "this, and closures",
         blurb:
-          "Closures, async and the event loop. Most people stuck on React are stuck here.",
-        reference: { href: `${MDN}/Web/JavaScript`, label: "MDN" },
+          "Two features that explain most confusing JavaScript, including every hook you will write.",
+        reference: {
+          href: `${MDN}/Web/JavaScript/Guide/Closures`,
+          label: "MDN",
+        },
         roadmap: "react",
       },
       {
-        slug: "typescript",
-        title: "TypeScript",
+        slug: "async-in-practice",
+        title: "Async, in practice",
         blurb:
-          "Types over JavaScript, and what they do and do not check for you.",
+          "The event loop, and why your data is undefined on the first render.",
+        reference: {
+          href: `${MDN}/Web/JavaScript/Guide/Using_promises`,
+          label: "MDN",
+        },
+        roadmap: "react",
+      },
+      {
+        slug: "equality-and-coercion",
+        title: "Equality and coercion",
+        blurb:
+          "Why == and === are different questions, and which one you meant.",
+        reference: {
+          href: `${MDN}/Web/JavaScript/Guide/Equality_comparisons_and_sameness`,
+          label: "MDN",
+        },
+      },
+      {
+        slug: "interview-questions",
+        title: "What gets asked",
+        blurb: "Closures, hoisting, event loop. The same four, forever.",
+      },
+    ],
+  },
+  {
+    slug: "typescript",
+    name: "TypeScript",
+    icon: "typescript",
+    blurb: "Types over JavaScript, and a clear line around what they check.",
+    channels: [
+      {
+        slug: "what-types-do-not-check",
+        title: "What types do not check",
+        blurb:
+          "Everything at the edges: API responses, JSON, forms. The compiler believed you.",
+      },
+      {
+        slug: "narrowing",
+        title: "Narrowing, in practice",
+        blurb:
+          "Getting from unknown to something usable without reaching for an assertion.",
+      },
+      {
+        slug: "generics-when-you-need-them",
+        title: "Generics, when you need them",
+        blurb: "Which is later than most tutorials suggest.",
         reference: {
           href: "https://www.typescriptlang.org/docs/",
           label: "typescriptlang.org",
         },
       },
+    ],
+  },
+  {
+    slug: "go",
+    name: "Go",
+    icon: "go",
+    blurb: "Small language, real concurrency, few places to hide.",
+    channels: [
       {
-        slug: "sql",
-        title: "SQL",
+        slug: "goroutines-and-leaks",
+        title: "Goroutines, and leaking them",
         blurb:
-          "Declaring what you want instead of how to get it, and why that is harder than it sounds.",
+          "Cheap to start, easy to forget, and nothing tells you they piled up.",
       },
       {
-        slug: "go",
-        title: "Go",
+        slug: "errors-as-values",
+        title: "Errors as values",
         blurb:
-          "Small language, real concurrency, and a compiler that keeps up with you.",
+          "What it buys, what it costs, and wrapping without losing the cause.",
+      },
+      {
+        slug: "interfaces-in-practice",
+        title: "Interfaces, in practice",
+        blurb:
+          "Accept interfaces, return structs, and why the nil check surprised you.",
         reference: { href: "https://go.dev/doc/", label: "go.dev" },
       },
     ],
@@ -121,505 +307,597 @@ export const groups: TopicGroup[] = [
   {
     slug: "dsa",
     name: "DSA",
-    tagline: "The part of the year placement season eats.",
-    topics: [
+    icon: "dsa",
+    blurb: "The part of the year placement season eats.",
+    channels: [
       {
-        slug: "arrays-and-strings",
-        title: "Arrays and Strings",
+        slug: "patterns-that-repeat",
+        title: "The patterns that actually repeat",
         blurb:
-          "Contiguous memory, indexing, and the two-pointer tricks built on both.",
+          "Two pointers, sliding window, the handful that cover most of what you will be shown.",
       },
       {
-        slug: "linked-lists",
-        title: "Linked Lists",
+        slug: "where-people-freeze",
+        title: "Where people freeze",
         blurb:
-          "Pointers made visible. Slow to read, cheap to splice, and endlessly examined.",
+          "Not the algorithm. Recognising which problem you are looking at, under a clock.",
       },
       {
-        slug: "stacks-and-queues",
-        title: "Stacks and Queues",
+        slug: "complexity-in-interviews",
+        title: "Complexity, out loud",
         blurb:
-          "Two orderings that turn out to describe an enormous amount of real software.",
+          "Stating it correctly and confidently, including what Big O deliberately ignores.",
       },
       {
-        slug: "trees",
-        title: "Trees",
+        slug: "the-questions-that-get-asked",
+        title: "The questions that get asked",
         blurb:
-          "Binary trees, BSTs, heaps, and the traversals you will be asked to write by hand.",
+          "The real set, and what a good answer sounds like rather than looks like.",
+        notebook: "question-bank",
       },
       {
-        slug: "graphs",
-        title: "Graphs",
+        slug: "whiteboard-without-panic",
+        title: "Whiteboarding without panic",
+        blurb: "Thinking out loud is a skill, and it is the one being marked.",
+      },
+    ],
+  },
+  {
+    slug: "operating-systems",
+    name: "Operating Systems",
+    icon: "operating-systems",
+    blurb: "The paper everything else quietly assumes you did.",
+    channels: [
+      {
+        slug: "processes-vs-threads",
+        title: "Processes and threads, properly",
         blurb:
-          "BFS, DFS, shortest paths. Most hard problems are a graph problem wearing a costume.",
+          "Said without the word lightweight, which is where most answers go wrong.",
       },
       {
-        slug: "hashing",
-        title: "Hashing",
-        blurb:
-          "Why a hash map is fast, what a collision costs, and when it stops being fast.",
+        slug: "what-the-scheduler-does",
+        title: "What the scheduler does to you",
+        blurb: "Why your timing is not reproducible and your benchmark lied.",
       },
       {
-        slug: "sorting-and-searching",
-        title: "Sorting and Searching",
-        blurb:
-          "The classic algorithms, and the more useful question of which one your language uses.",
+        slug: "memory-you-did-not-allocate",
+        title: "Memory you did not allocate",
+        blurb: "Virtual memory, paging, and where the resident size came from.",
       },
       {
-        slug: "dynamic-programming",
-        title: "Dynamic Programming",
+        slug: "interview-questions",
+        title: "What gets asked",
         blurb:
-          "Recognising overlapping subproblems, which is the whole difficulty.",
+          "Deadlock, scheduling, paging. Reliably these, reliably in this order.",
+      },
+    ],
+  },
+  {
+    slug: "networks",
+    name: "Networks",
+    icon: "networks",
+    blurb: "How the bytes get there, and why sometimes they do not.",
+    channels: [
+      {
+        slug: "what-happens-on-a-request",
+        title: "What happens on one request",
+        blurb:
+          "DNS, TCP, TLS, HTTP, in order. The answer to the most-asked interview question there is.",
+        reference: { href: `${MDN}/Web/HTTP`, label: "MDN" },
       },
       {
-        slug: "complexity",
-        title: "Complexity",
+        slug: "latency-you-can-feel",
+        title: "Latency you can feel",
         blurb:
-          "Big O said properly: what it measures, and what it deliberately ignores.",
+          "Where the time actually goes, and which fixes are worth anything.",
+      },
+      {
+        slug: "tls-and-certificates",
+        title: "TLS and certificates",
+        blurb:
+          "What an attacker on the wire can and cannot see, and why it expired.",
+      },
+      {
+        slug: "the-network-tab",
+        title: "Debugging with the network tab",
+        blurb:
+          "It answers more questions than any tutorial, and almost nobody opens it.",
+      },
+    ],
+  },
+  {
+    slug: "databases",
+    name: "Databases",
+    icon: "databases",
+    blurb: "The theory paper, and the thing your project actually runs on.",
+    channels: [
+      {
+        slug: "normalisation-for-the-exam",
+        title: "Normalisation, for the exam",
+        blurb: "1NF to BCNF said in a way you can reproduce under pressure.",
+      },
+      {
+        slug: "indexes-and-slow-queries",
+        title: "Indexes, and why it crawls",
+        blurb:
+          "What an index is, what it costs on write, and reading EXPLAIN without guessing.",
+        notebook: "postgres",
+      },
+      {
+        slug: "transactions-and-isolation",
+        title: "Transactions and isolation",
+        blurb:
+          "What ACID buys, and the anomaly each isolation level still allows.",
+        notebook: "postgres",
+      },
+      {
+        slug: "the-n-plus-one",
+        title: "The N+1",
+        blurb:
+          "The most common performance bug in student projects, and in real ones.",
+        notebook: "postgres",
+      },
+      {
+        slug: "interview-questions",
+        title: "What gets asked",
+        blurb: "Joins, indexes, isolation, and one normalisation question.",
+        reference: {
+          href: "https://www.postgresql.org/docs/",
+          label: "postgresql.org",
+        },
+      },
+      {
+        slug: "viva-defence",
+        title: "Defending your schema",
+        blurb: "Why this table, why this key, why not one big table. Out loud.",
+      },
+    ],
+  },
+  {
+    slug: "system-design",
+    name: "System Design",
+    icon: "system-design",
+    blurb: "Sizing, bottlenecks, and defending a drawing under questioning.",
+    channels: [
+      {
+        slug: "sizing-before-designing",
+        title: "Sizing before designing",
+        blurb:
+          "Numbers first. Most bad designs are answers to an unasked question.",
+        notebook: "scaling",
+      },
+      {
+        slug: "caching-decisions",
+        title: "Caching is a bet",
+        blurb:
+          "Where caches live, what staleness you accepted, and every way it betrays you.",
+        notebook: "caching",
+      },
+      {
+        slug: "queues-and-backpressure",
+        title: "Queues and backpressure",
+        blurb:
+          "What happens when the producer is faster than the consumer, which it will be.",
+        notebook: "large-scale-ingestion",
+      },
+      {
+        slug: "the-interview-format",
+        title: "The interview format",
+        blurb:
+          "Forty-five minutes, a whiteboard, and someone deliberately vague.",
+      },
+    ],
+  },
+  {
+    slug: "theory",
+    name: "Theory and Compilers",
+    icon: "theory",
+    blurb: "Automata, grammars, and what a machine can be asked to do.",
+    channels: [
+      {
+        slug: "automata-that-matter",
+        title: "The automata that matter",
+        blurb: "Which parts show up again later, and which are exam-only.",
+      },
+      {
+        slug: "parsing-in-practice",
+        title: "Parsing, in practice",
+        blurb: "Lexing and parsing, and where you meet them outside the paper.",
+      },
+      {
+        slug: "what-the-optimiser-does",
+        title: "What the optimiser does",
+        blurb: "Why your benchmark disappeared and the loop was deleted.",
       },
     ],
   },
   {
     slug: "maths",
     name: "Maths for CS",
-    tagline: "The maths that actually shows up later.",
-    topics: [
+    icon: "maths",
+    blurb: "The subset that shows up again after the exam.",
+    channels: [
       {
-        slug: "discrete-mathematics",
-        title: "Discrete Mathematics",
+        slug: "discrete-for-the-exam",
+        title: "Discrete maths, for the exam",
         blurb:
-          "Logic, sets, relations, combinatorics. The grammar under the theory papers.",
+          "Logic, sets, relations, counting. The grammar under the theory papers.",
       },
       {
-        slug: "probability-and-statistics",
-        title: "Probability and Statistics",
+        slug: "probability-that-shows-up",
+        title: "The probability that shows up",
         blurb:
-          "Distributions, expectation, and why averages mislead you about latency.",
+          "Expectation, distributions, and why an average misleads you about latency.",
       },
       {
-        slug: "linear-algebra",
-        title: "Linear Algebra",
+        slug: "linear-algebra-for-ml",
+        title: "Linear algebra, for ML",
         blurb:
-          "Vectors and matrices, which is also what an embedding is made of.",
-      },
-      {
-        slug: "maths-for-data-science",
-        title: "Maths for Data Science",
-        blurb:
-          "The subset that carries most of the weight: distance, gradients, dimensionality.",
+          "Vectors, matrices, distance. Which is also what an embedding is made of.",
       },
     ],
   },
   {
-    slug: "foundations",
-    name: "Foundations",
-    tagline: "The theory papers, and why they are not busywork.",
-    topics: [
+    slug: "frontend",
+    name: "Frontend",
+    icon: "frontend",
+    blurb: "React, and the browser it is sitting on.",
+    channels: [
       {
-        slug: "theory-of-computation",
-        title: "Theory of Computation",
+        slug: "state-that-gets-away",
+        title: "State that gets away from you",
         blurb:
-          "Automata, grammars, decidability. What a machine can and cannot be asked to do.",
-      },
-      {
-        slug: "compiler-design",
-        title: "Compiler Design",
-        blurb:
-          "Lexing, parsing, intermediate representations, and code generation.",
-      },
-      {
-        slug: "computer-organisation",
-        title: "Computer Organisation",
-        blurb:
-          "Instructions, pipelines, caches. The layer your Big O quietly depends on.",
-      },
-      {
-        slug: "software-engineering",
-        title: "Software Engineering",
-        blurb:
-          "Cohesion, coupling, SOLID, and when two of those principles disagree.",
-        notebook: "design-principles",
-      },
-    ],
-  },
-  {
-    slug: "systems",
-    name: "Systems",
-    tagline: "How one machine, then many, actually behave.",
-    topics: [
-      {
-        slug: "operating-systems",
-        title: "Operating Systems",
-        blurb:
-          "Processes, threads, scheduling, memory, files. The paper everything else assumes.",
-      },
-      {
-        slug: "concurrency",
-        title: "Concurrency",
-        blurb:
-          "Locks, races, deadlock, and the semaphore this studio is named after.",
-      },
-      {
-        slug: "distributed-systems",
-        title: "Distributed Systems",
-        blurb:
-          "What breaks once one machine becomes several, which is more than you expect.",
-      },
-      {
-        slug: "system-design",
-        title: "System Design",
-        blurb:
-          "Sizing, bottlenecks, and defending a design out loud under questioning.",
-        notebook: "scaling",
-      },
-    ],
-  },
-  {
-    slug: "networking",
-    name: "Networking",
-    tagline: "How the bytes get from there to here.",
-    topics: [
-      {
-        slug: "computer-networks",
-        title: "Computer Networks",
-        blurb:
-          "The layered model, and what each layer is genuinely responsible for.",
-      },
-      {
-        slug: "tcp-and-ip",
-        title: "TCP and IP",
-        blurb:
-          "Addressing, routing, the handshake, and what reliability actually costs.",
-      },
-      {
-        slug: "http",
-        title: "HTTP",
-        blurb:
-          "Methods, status codes, headers, caching. The protocol your app lives inside.",
-        reference: { href: `${MDN}/Web/HTTP`, label: "MDN" },
-      },
-      {
-        slug: "dns-and-domains",
-        title: "DNS and Domains",
-        blurb:
-          "Names to addresses, records, propagation, and why your deploy is not live yet.",
-      },
-      {
-        slug: "sockets",
-        title: "Sockets and Real Time",
-        blurb:
-          "WebSockets, server-sent events, and keeping a connection open honestly.",
-        notebook: "real-time-backends",
-      },
-    ],
-  },
-  {
-    slug: "data",
-    name: "Data",
-    tagline: "Where it lives, and what it costs to get it back.",
-    topics: [
-      {
-        slug: "dbms",
-        title: "DBMS",
-        blurb:
-          "The theory paper: the relational model, normalisation, ER diagrams, transactions.",
-      },
-      {
-        slug: "postgres",
-        title: "Postgres",
-        blurb:
-          "The same ideas in a real database: types, indexes, EXPLAIN, isolation, vacuum.",
-        reference: {
-          href: "https://www.postgresql.org/docs/",
-          label: "postgresql.org",
-        },
-        notebook: "postgres",
-      },
-      {
-        slug: "data-modelling",
-        title: "Data Modelling",
-        blurb:
-          "Choosing the shape before you write the query, which decides everything after.",
-      },
-      {
-        slug: "caching",
-        title: "Caching",
-        blurb:
-          "A bet about staleness. Where caches live, and every way they betray you.",
-        notebook: "caching",
-      },
-      {
-        slug: "object-storage",
-        title: "Object Storage",
-        blurb:
-          "Files at scale: uploads, streaming, and how much memory that actually uses.",
-        notebook: "object-storage",
-      },
-      {
-        slug: "data-at-scale",
-        title: "Data at Scale",
-        blurb:
-          "Ingestion, queues, partial failure, and what 'failed' really means.",
-        notebook: "large-scale-ingestion",
-      },
-    ],
-  },
-  {
-    slug: "building",
-    name: "Building",
-    tagline: "Turning all of it into something that runs.",
-    topics: [
-      {
-        slug: "web-fundamentals",
-        title: "Web Fundamentals",
-        blurb:
-          "HTML, CSS, the DOM, and what the browser is doing before any framework arrives.",
-        reference: { href: `${MDN}/Web`, label: "MDN" },
-      },
-      {
-        slug: "frontend-and-react",
-        title: "Frontend and React",
-        blurb:
-          "Components, state, effects, and shipping something you can defend in a viva.",
+          "UI as a function of state, and what happens when you fight that.",
         reference: { href: "https://react.dev/learn", label: "react.dev" },
         roadmap: "react",
       },
       {
-        slug: "backend-and-apis",
-        title: "Backend and APIs",
+        slug: "effects-you-did-not-need",
+        title: "The effects you did not need",
         blurb:
-          "Resources, URLs, methods, versioning. An interface two strangers agree on.",
+          "Most useEffect is wrong, including in the tutorial you learned it from.",
+        reference: {
+          href: "https://react.dev/learn/you-might-not-need-an-effect",
+          label: "react.dev",
+        },
+        roadmap: "react",
+      },
+      {
+        slug: "what-costs-a-render",
+        title: "What a render actually costs",
+        blurb:
+          "Measure before memoising, and note the compiler now writes most of it.",
+        roadmap: "react",
+      },
+      {
+        slug: "forms-and-validation",
+        title: "Forms, and validating them twice",
+        blurb:
+          "Where everyone fights the framework, and the rule that stops it.",
+      },
+      {
+        slug: "interview-questions",
+        title: "What gets asked",
+        blurb:
+          "Keys, reconciliation, hooks rules, and one question about the DOM.",
+      },
+    ],
+  },
+  {
+    slug: "backend",
+    name: "Backend and APIs",
+    icon: "backend",
+    blurb: "An interface two strangers have to agree on.",
+    channels: [
+      {
+        slug: "designing-an-endpoint",
+        title: "Designing one endpoint",
+        blurb: "Nouns, URLs, methods. Getting one right teaches you the rest.",
         notebook: "rest-api-design",
       },
       {
-        slug: "testing",
-        title: "Testing",
+        slug: "errors-and-status-codes",
+        title: "Errors, and status codes",
         blurb:
-          "What is worth testing, what is not, and why most student projects have neither.",
+          "What to return, what to log, and what the caller can actually do about it.",
+        notebook: "rest-api-design",
       },
       {
-        slug: "deployment",
-        title: "Deployment",
+        slug: "what-breaks-under-load",
+        title: "What breaks under load",
         blurb:
-          "Getting it onto a real URL, which is the difference between a demo and a project.",
+          "Connections, pools, timeouts, and the failure that only appears at scale.",
+        notebook: "scaling",
+      },
+      {
+        slug: "real-time",
+        title: "Keeping a connection open",
+        blurb:
+          "WebSockets and server-sent events, and what a deploy does to both.",
+        notebook: "real-time-backends",
+      },
+      {
+        slug: "interview-questions",
+        title: "What gets asked",
+        blurb:
+          "REST versus RPC, idempotency, versioning, and one caching question.",
       },
     ],
   },
   {
     slug: "security",
     name: "Security",
-    tagline: "The half that gets projects marked down.",
-    topics: [
+    icon: "security",
+    blurb: "The half that gets projects marked down.",
+    channels: [
       {
-        slug: "web-vulnerabilities",
-        title: "Web Vulnerabilities",
+        slug: "injection-in-three-contexts",
+        title: "Injection, in three contexts",
         blurb:
-          "Injection, XSS, CSRF: three contexts, the character that breaks each, one fix.",
+          "The character that breaks each, and the one structural fix they share.",
         notebook: "security",
       },
       {
-        slug: "auth-and-authorisation",
-        title: "Auth and Authorisation",
+        slug: "auth-vs-authorisation",
+        title: "Logging in is the easy half",
         blurb:
-          "Logging in is the easy half. Checking permission on every request is the other.",
+          "Checking permission on every request is the half that gets forgotten.",
         notebook: "security",
       },
       {
-        slug: "cryptography",
-        title: "Cryptography",
+        slug: "secrets-and-where-they-leak",
+        title: "Secrets, and where they leak",
         blurb:
-          "Hashing, signing, encryption, and knowing which one your problem needs.",
+          "Git history, client bundles, logs, error messages. Usually all four.",
       },
       {
-        slug: "network-security",
-        title: "Network Security",
+        slug: "interview-questions",
+        title: "What gets asked",
         blurb:
-          "TLS, certificates, and what an attacker on the wire can and cannot see.",
+          "XSS, CSRF, hashing versus encryption, and how you store a password.",
       },
     ],
   },
   {
     slug: "cloud",
     name: "Cloud and DevOps",
-    tagline: "Someone else's computer, and how you talk to it.",
-    topics: [
+    icon: "cloud",
+    blurb: "Someone else's computer, and how you talk to it.",
+    channels: [
       {
-        slug: "docker",
-        title: "Docker",
-        blurb:
-          "Images, containers, and why 'works on my machine' stopped being an excuse.",
+        slug: "containers-in-practice",
+        title: "Containers, in practice",
+        blurb: "Images, layers, and why yours is 1.2GB.",
         reference: {
           href: "https://docs.docker.com/",
           label: "docs.docker.com",
         },
       },
       {
-        slug: "kubernetes",
-        title: "Kubernetes",
+        slug: "ci-that-does-not-lie",
+        title: "CI that does not lie to you",
         blurb:
-          "Scheduling containers across machines, and whether you need it yet.",
-        reference: {
-          href: "https://kubernetes.io/docs/home/",
-          label: "kubernetes.io",
-        },
+          "A green build that means something, and what to do when it does not.",
       },
       {
-        slug: "ci-cd",
-        title: "CI and CD",
+        slug: "what-production-is-doing",
+        title: "Knowing what production is doing",
         blurb:
-          "A machine that checks and ships your work, so you stop doing it by hand.",
+          "Logs, metrics, traces, and which of the three answers your question.",
       },
       {
-        slug: "aws",
-        title: "AWS",
-        blurb:
-          "The handful of services that carry most real systems, not the other two hundred.",
+        slug: "cost-surprises",
+        title: "The bill",
+        blurb: "Where the money actually goes, and the free tier that was not.",
+      },
+    ],
+  },
+  {
+    slug: "testing",
+    name: "Testing",
+    icon: "testing",
+    blurb: "What is worth testing, and what is theatre.",
+    channels: [
+      {
+        slug: "what-is-worth-testing",
+        title: "What is worth testing",
+        blurb: "And what only makes the coverage number go up.",
       },
       {
-        slug: "observability",
-        title: "Observability",
+        slug: "tests-that-fail-usefully",
+        title: "Tests that fail usefully",
+        blurb: "A failure should name the bug, not just say something changed.",
+      },
+      {
+        slug: "flaky-tests",
+        title: "Flaky tests",
         blurb:
-          "Logs, metrics, traces. Knowing what production is doing without guessing.",
+          "Almost always time, order or shared state. Almost never the framework.",
       },
     ],
   },
   {
     slug: "ai",
     name: "AI",
-    tagline: "What happens after you press enter.",
-    topics: [
+    icon: "ai",
+    blurb: "What is actually happening after you press enter.",
+    channels: [
       {
         slug: "how-llms-work",
-        title: "How LLMs Work",
+        title: "How an LLM actually works",
         blurb:
-          "Tokens, context, prediction, and why confidence is not a signal of correctness.",
+          "Tokens, context, prediction, and why confidence signals nothing.",
       },
       {
-        slug: "embeddings-and-retrieval",
-        title: "Embeddings and Retrieval",
+        slug: "retrieval-that-returns-the-wrong-thing",
+        title: "Retrieval that returns the wrong thing",
         blurb:
-          "Meaning as numbers, nearest neighbours, and why your RAG answers the wrong thing.",
+          "Nearest is not the same as correct. Where every RAG project breaks.",
       },
       {
-        slug: "mcp",
-        title: "MCP",
+        slug: "what-mcp-actually-is",
+        title: "What MCP actually is",
         blurb:
-          "A protocol: your tool exposes functions a model may call. The rest is plumbing.",
+          "A protocol. Your tool exposes functions a model may call, and the rest is plumbing.",
         reference: {
           href: "https://modelcontextprotocol.io/",
           label: "modelcontextprotocol.io",
         },
       },
       {
-        slug: "agents",
-        title: "Agents",
+        slug: "agents-in-practice",
+        title: "Agents, in practice",
         blurb:
-          "A loop. Pick a tool, read the result, pick again, stop. That is the whole trick.",
+          "A loop: pick a tool, read the result, pick again. And where it goes wrong.",
       },
       {
-        slug: "working-with-claude",
-        title: "Working with Claude",
+        slug: "building-with-claude-honestly",
+        title: "Building with Claude, honestly",
         blurb:
-          "Building fast with an agent and still being able to answer for every line.",
+          "Moving fast with an agent and still answering for every line of it.",
       },
     ],
   },
   {
     slug: "toolbox",
-    name: "Toolbox",
-    tagline: "The things nobody teaches and everybody needs.",
-    topics: [
+    name: "Git and the Shell",
+    icon: "toolbox",
+    blurb: "The tools nobody teaches and everybody needs.",
+    channels: [
       {
-        slug: "git",
-        title: "Git",
+        slug: "git-when-it-goes-wrong",
+        title: "Git, when it goes wrong",
         blurb:
-          "Commits, branches, merges, and what to do the moment it goes wrong.",
+          "Detached heads, bad merges, and getting the work back. It is nearly always there.",
         reference: { href: "https://git-scm.com/doc", label: "git-scm.com" },
       },
       {
-        slug: "linux-and-the-shell",
-        title: "Linux and the Shell",
+        slug: "shell-that-pays-off",
+        title: "The shell commands that pay off",
         blurb:
-          "Files, permissions, processes, pipes. The environment your code will run in.",
+          "The dozen worth knowing properly, and pipes that turn them into one tool.",
       },
       {
-        slug: "shell-scripting",
-        title: "Shell Scripting",
-        blurb: "Automating the thing you have now typed four times.",
+        slug: "scripting-the-repeated-thing",
+        title: "Scripting the thing you typed four times",
+        blurb: "Where automation starts, and where it stops being worth it.",
+      },
+    ],
+  },
+  {
+    slug: "debugging",
+    name: "Debugging",
+    icon: "debugging",
+    blurb: "The skill nobody is taught and everybody is judged on.",
+    channels: [
+      {
+        slug: "reading-a-stack-trace",
+        title: "Reading a stack trace",
+        blurb: "Where the error is thrown is rarely where the mistake is.",
       },
       {
-        slug: "debugging",
-        title: "Debugging",
-        blurb:
-          "Reading a stack trace, bisecting, and forming a hypothesis instead of guessing.",
+        slug: "bisecting-a-problem",
+        title: "Bisecting a problem",
+        blurb: "Halving the search space beats staring at it, every time.",
       },
       {
-        slug: "the-editor",
-        title: "The Editor",
+        slug: "hypothesis-not-guessing",
+        title: "Hypothesis, not guessing",
+        blurb: "One change at a time, and a prediction before you run it.",
+      },
+    ],
+  },
+  {
+    slug: "interviews",
+    name: "Interviews and Viva",
+    icon: "interviews",
+    blurb: "Explaining work you did, to someone deciding about you.",
+    channels: [
+      {
+        slug: "the-viva-test",
+        title: "The viva test",
         blurb:
-          "Knowing your tools well enough that they stop being in the way.",
+          "Point at any line and say why it is there. If you cannot, you do not own it yet.",
+      },
+      {
+        slug: "explaining-your-own-project",
+        title: "Explaining your own project",
+        blurb: "Two minutes, no jargon, and one defensible decision.",
+      },
+      {
+        slug: "placement-season",
+        title: "Placement season",
+        blurb:
+          "You can write it and freeze when asked. Those are different skills.",
+      },
+      {
+        slug: "what-they-actually-ask",
+        title: "What they actually ask",
+        blurb:
+          "Lifted from our own question bank rather than invented for a listicle.",
+        notebook: "question-bank",
       },
     ],
   },
 ];
 
-/** What actually exists behind a topic. Derived, never stored twice. */
-export function topicState(topic: Topic): TopicState {
-  if (topic.notebook) return "notebook";
-  if (topic.roadmap) return "roadmap";
+/** What actually exists behind a channel. Derived, never stored twice. */
+export function channelState(channel: Channel): ChannelState {
+  if (channel.notebook) return "notebook";
+  if (channel.roadmap) return "roadmap";
   return "soon";
 }
 
-/** Every topic, flat, in group order. */
-export function allTopics(): Topic[] {
-  return groups.flatMap((group) => group.topics);
+export function getSubject(slug: string): Subject | undefined {
+  return subjects.find((s) => s.slug === slug);
 }
 
-/** A topic and the group it sits in. */
-export function getTopic(
-  slug: string,
-): { topic: Topic; group: TopicGroup } | undefined {
-  for (const group of groups) {
-    const topic = group.topics.find((t) => t.slug === slug);
-    if (topic) return { topic, group };
-  }
-  return undefined;
+export function getChannel(
+  subjectSlug: string,
+  channelSlug: string,
+): { subject: Subject; channel: Channel } | undefined {
+  const subject = getSubject(subjectSlug);
+  const channel = subject?.channels.find((c) => c.slug === channelSlug);
+  return subject && channel ? { subject, channel } : undefined;
 }
 
-export function getGroup(slug: string): TopicGroup | undefined {
-  return groups.find((g) => g.slug === slug);
+/** Every channel, flat, with its subject. */
+export function allChannels(): { subject: Subject; channel: Channel }[] {
+  return subjects.flatMap((subject) =>
+    subject.channels.map((channel) => ({ subject, channel })),
+  );
 }
 
-export function countTopics(): number {
-  return allTopics().length;
+export function countChannels(): number {
+  return allChannels().length;
 }
 
-/** How many topics have something of ours behind them. */
+/** How many channels have something of ours behind them. */
 export function countCovered(): number {
-  return allTopics().filter((t) => topicState(t) !== "soon").length;
+  return allChannels().filter(({ channel }) => channelState(channel) !== "soon")
+    .length;
 }
 
 /**
- * Prove the two invariants rather than trusting them: every slug unique across
- * the whole tree, and every group slug unique. Called by the test suite, so a
- * duplicate fails CI instead of quietly shadowing a route.
+ * Prove the invariants rather than trusting them. Called by the test suite, so
+ * a duplicate fails CI instead of quietly shadowing a route.
  */
 export function assertTree(): void {
-  const seen = new Map<string, string>();
-  for (const group of groups) {
-    for (const topic of group.topics) {
-      const previous = seen.get(topic.slug);
-      if (previous) {
+  const subjectSlugs = new Set<string>();
+  for (const subject of subjects) {
+    if (subjectSlugs.has(subject.slug)) {
+      throw new Error(`Two subjects share the slug "${subject.slug}".`);
+    }
+    subjectSlugs.add(subject.slug);
+
+    const channelSlugs = new Set<string>();
+    for (const channel of subject.channels) {
+      if (channelSlugs.has(channel.slug)) {
         throw new Error(
-          `Topic "${topic.slug}" is in both "${previous}" and "${group.slug}". A topic belongs to exactly one group.`,
+          `"${subject.slug}" has two channels called "${channel.slug}".`,
         );
       }
-      seen.set(topic.slug, group.slug);
+      channelSlugs.add(channel.slug);
     }
-  }
-
-  const groupSlugs = new Set(groups.map((g) => g.slug));
-  if (groupSlugs.size !== groups.length) {
-    throw new Error("Two groups share a slug.");
   }
 }

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import {
+  channelState,
+  countChannels,
   countCovered,
-  countTopics,
-  groups,
-  topicState,
+  subjects,
 } from "@/lib/learn/topics";
 
 /**
@@ -16,38 +16,37 @@ import {
  * and a student stuck at midnight finds us through search. This endpoint exists
  * for anything outside the app that wants the same data.
  *
- * `state` is derived here rather than stored, so a consumer cannot see a topic
+ * `state` is derived here rather than stored, so a consumer cannot see a channel
  * claiming coverage the tree does not actually have.
  */
 export function GET() {
-  const body = {
-    groups: groups.map((group) => ({
-      slug: group.slug,
-      name: group.name,
-      tagline: group.tagline,
-      topics: group.topics.map((topic) => ({
-        slug: topic.slug,
-        title: topic.title,
-        blurb: topic.blurb,
-        state: topicState(topic),
-        reference: topic.reference ?? null,
-        notebook: topic.notebook ?? null,
-        roadmap: topic.roadmap ?? null,
+  return NextResponse.json(
+    {
+      subjects: subjects.map((subject) => ({
+        slug: subject.slug,
+        name: subject.name,
+        blurb: subject.blurb,
+        channels: subject.channels.map((channel) => ({
+          slug: channel.slug,
+          title: channel.title,
+          blurb: channel.blurb,
+          state: channelState(channel),
+          reference: channel.reference ?? null,
+          notebook: channel.notebook ?? null,
+          roadmap: channel.roadmap ?? null,
+        })),
       })),
-    })),
-    counts: {
-      groups: groups.length,
-      topics: countTopics(),
-      covered: countCovered(),
+      counts: {
+        subjects: subjects.length,
+        channels: countChannels(),
+        covered: countCovered(),
+      },
     },
-  };
-
-  return NextResponse.json(body, {
-    // The tree only changes on deploy, so it is safe to cache hard at the edge
-    // while letting a stale copy serve while it revalidates.
-    headers: {
-      "cache-control":
-        "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
+    {
+      headers: {
+        "cache-control":
+          "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
+      },
     },
-  });
+  );
 }

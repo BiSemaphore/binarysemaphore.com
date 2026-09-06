@@ -3,8 +3,8 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { TopicGroup } from "@/lib/learn/topics";
-import { GroupIcon } from "@/components/learn/topics/group-icons";
+import type { Subject } from "@/lib/learn/topics";
+import { SubjectIcon } from "@/components/learn/topics/subject-icons";
 import { Tooltip } from "@/components/tooltip";
 import { MenuIcon, CloseIcon } from "@/components/icons";
 
@@ -24,31 +24,31 @@ import { MenuIcon, CloseIcon } from "@/components/icons";
  * leave a dead strip under the sidebar.
  *
  * **The rail filters, it does not scroll.** The first version listed all twelve
- * groups in the sidebar at once and used the rail as anchor links, which is not
- * what a Discord rail does: picking a server shows that server's channels and
- * hides every other server's. Picking a group here does the same, so the
- * sidebar only ever holds one group's channels.
+ * subject-areas in the sidebar at once and used the rail as anchor links, which
+ * is not what a Discord rail does: picking a server shows that server's
+ * channels and hides every other server's. Picking a subject here does the
+ * same, so the sidebar only ever holds one subject's channels.
  *
- * With no group selected (the `/topics` index) the sidebar lists the groups
+ * With no subject selected (the `/topics` index) the sidebar lists the subjects
  * themselves, the way Discord's home shows conversations rather than channels.
  *
  * The rail and sidebar are one instance, moved off-canvas by transform below
  * `md`, rather than rendered twice.
  */
 export function TopicsShell({
-  groups,
+  subjects,
   base,
   children,
 }: {
-  groups: TopicGroup[];
+  subjects: Subject[];
   base: string;
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const activeSlug = pathname.split("/topics/")[1]?.split("/")[0] ?? "";
-  const activeGroup = groups.find((g) =>
-    g.topics.some((t) => t.slug === activeSlug),
-  );
+  const [subjectSlug = "", channelSlug = ""] = (
+    pathname.split("/topics/")[1] ?? ""
+  ).split("/");
+  const activeSubject = subjects.find((s) => s.slug === subjectSlug);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -75,17 +75,17 @@ export function TopicsShell({
           aria-label="Topic groups"
           className="rail-surface thin-scroll flex min-h-0 w-[72px] shrink-0 flex-col items-center gap-2 overflow-y-auto py-3"
         >
-          {groups.map((group) => {
-            const current = group.slug === activeGroup?.slug;
+          {subjects.map((subject) => {
+            const current = subject.slug === activeSubject?.slug;
             return (
               <Tooltip
-                key={group.slug}
-                label={group.name}
+                key={subject.slug}
+                label={subject.name}
                 side="right"
                 delay={120}
               >
                 <Link
-                  href={`${base}/topics/${group.topics[0].slug}`}
+                  href={`${base}/topics/${subject.slug}`}
                   onClick={closeDrawer}
                   aria-current={current ? "true" : undefined}
                   className={`rail-item relative grid h-12 w-12 shrink-0 place-items-center ${
@@ -94,8 +94,11 @@ export function TopicsShell({
                       : "bg-card text-muted hover:bg-card-hover hover:text-foreground"
                   }`}
                 >
-                  <GroupIcon group={group.slug} className="h-[22px] w-[22px]" />
-                  <span className="sr-only">{group.name}</span>
+                  <SubjectIcon
+                    subject={subject.slug}
+                    className="h-[22px] w-[22px]"
+                  />
+                  <span className="sr-only">{subject.name}</span>
                 </Link>
               </Tooltip>
             );
@@ -107,7 +110,7 @@ export function TopicsShell({
               from the list that scrolls beneath. */}
           <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-4 shadow-[0_1px_0_rgba(0,0,0,0.45)]">
             <span className="truncate font-mono text-[0.78rem] font-semibold text-foreground">
-              {activeGroup ? activeGroup.name : "Topics"}
+              {activeSubject ? activeSubject.name : "Topics"}
             </span>
             <button
               type="button"
@@ -123,19 +126,19 @@ export function TopicsShell({
             aria-label="Topics"
             className="thin-scroll min-h-0 flex-1 overflow-y-auto px-2 py-3"
           >
-            {activeGroup ? (
+            {activeSubject ? (
               <ul>
-                {activeGroup.topics.map((topic) => {
-                  const current = topic.slug === activeSlug;
+                {activeSubject.channels.map((channel) => {
+                  const current = channel.slug === channelSlug;
                   return (
-                    <li key={topic.slug}>
+                    <li key={channel.slug}>
                       <Tooltip
-                        label={topic.slug}
+                        label={channel.slug}
                         side="right"
                         onlyWhenTruncated
                       >
                         <Link
-                          href={`${base}/topics/${topic.slug}`}
+                          href={`${base}/topics/${activeSubject.slug}/${channel.slug}`}
                           onClick={closeDrawer}
                           aria-current={current ? "page" : undefined}
                           className={`channel mx-2 flex h-8 items-center rounded-[4px] px-2 font-mono text-[0.9rem] font-medium transition-colors ${
@@ -145,7 +148,7 @@ export function TopicsShell({
                           }`}
                         >
                           <span data-truncate className="truncate">
-                            {topic.slug}
+                            {channel.slug}
                           </span>
                         </Link>
                       </Tooltip>
@@ -154,23 +157,23 @@ export function TopicsShell({
                 })}
               </ul>
             ) : (
-              /* No group selected: list the groups, the way Discord's home
+              /* No subject selected: list the subjects, the way Discord's home
                  shows conversations rather than one server's channels. */
               <ul>
-                {groups.map((group) => (
-                  <li key={group.slug}>
+                {subjects.map((subject) => (
+                  <li key={subject.slug}>
                     <Link
-                      href={`${base}/topics/${group.topics[0].slug}`}
+                      href={`${base}/topics/${subject.slug}`}
                       onClick={closeDrawer}
                       className="row-hover mx-2 flex h-9 items-center gap-2.5 rounded-[4px] px-2 text-[0.85rem] text-subtle transition-colors hover:text-foreground"
                     >
-                      <GroupIcon
-                        group={group.slug}
+                      <SubjectIcon
+                        subject={subject.slug}
                         className="h-4 w-4 shrink-0"
                       />
-                      <span className="truncate">{group.name}</span>
+                      <span className="truncate">{subject.name}</span>
                       <span className="ml-auto font-mono text-[0.7rem] text-subtle">
-                        {group.topics.length}
+                        {subject.channels.length}
                       </span>
                     </Link>
                   </li>
@@ -189,7 +192,7 @@ export function TopicsShell({
           className="sticky top-0 z-20 flex shrink-0 items-center gap-2 border-b border-border bg-background/95 px-4 py-3 font-mono text-xs text-subtle backdrop-blur md:hidden"
         >
           <MenuIcon className="h-4 w-4" />
-          {activeGroup ? activeGroup.name : "All topics"}
+          {activeSubject ? activeSubject.name : "All subjects"}
         </button>
         {children}
       </main>

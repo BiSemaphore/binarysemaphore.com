@@ -42,10 +42,12 @@ Run `lint` and `typecheck` before committing; CI runs both.
   `scripts/sync-notebooks.mjs` from the `learnings` repo. Never hand-edit them,
   and never let Prettier near them. Same MDX pattern as threads. Read
   [`docs/learn.md`](docs/learn.md) before touching the gate or adding a notebook.
-- `src/lib/learn/topics.ts` — the computer science topic tree (12 groups, 64
-  topics) browsed at `/topics` in a Discord-style shell. Prose lives in
-  `src/content/topics/*.mdx` behind the `topic-source.ts` seam, so **no page may
-  import that directory directly**. The shell is the one part of `learn` on a
+- `src/lib/learn/topics.ts` — the computer science topic tree: 23 subjects on
+  the rail, 93 channels in the sidebar, browsed at `/topics` in a Discord-style
+  shell. Channels are named after situations, never syllabus steps, and the test
+  suite enforces that. Prose lives in `src/content/topics/<subject>/<channel>.mdx`
+  behind the `topic-source.ts` seam, so **no page may import that directory
+  directly**. The shell is the one part of `learn` on a
   black canvas; everything else stays white. Read
   [`docs/topics.md`](docs/topics.md) before adding a topic or touching the shell.
 

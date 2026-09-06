@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getNotebook } from "@/lib/learn";
 import { canRead, getAccess, grantAccess } from "@/lib/learn/access";
 import { markRead } from "@/lib/learn/progress";
-import { getTopic } from "@/lib/learn/topics";
+import { getChannel } from "@/lib/learn/topics";
 import { requestNote, withdrawNote } from "@/lib/learn/note-requests";
 
 /**
@@ -51,7 +51,8 @@ export async function markReadAction(slug: string, section: string) {
  */
 export async function requestNoteAction(formData: FormData) {
   const topic = String(formData.get("topic") ?? "");
-  if (!getTopic(topic)) return;
+  const [subject, channel] = topic.split("/");
+  if (!getChannel(subject ?? "", channel ?? "")) return;
 
   const note = String(formData.get("note") ?? "");
   await requestNote(topic, note);
@@ -62,7 +63,8 @@ export async function requestNoteAction(formData: FormData) {
 /** Change your mind. */
 export async function withdrawNoteAction(formData: FormData) {
   const topic = String(formData.get("topic") ?? "");
-  if (!getTopic(topic)) return;
+  const [subject, channel] = topic.split("/");
+  if (!getChannel(subject ?? "", channel ?? "")) return;
 
   await withdrawNote(topic);
 

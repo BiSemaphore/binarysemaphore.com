@@ -1,4 +1,4 @@
-import { groups } from "@/lib/learn/topics";
+import { subjects } from "@/lib/learn/topics";
 import { learnBase } from "@/lib/learn/paths";
 import { TopicsShell } from "@/components/learn/topics/shell";
 
@@ -18,7 +18,7 @@ export default async function TopicsLayout({
   const base = await learnBase();
 
   return (
-    <TopicsShell groups={groups} base={base}>
+    <TopicsShell subjects={subjects} base={base}>
       {children}
     </TopicsShell>
   );

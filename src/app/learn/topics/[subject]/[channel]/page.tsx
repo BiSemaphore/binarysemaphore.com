@@ -4,26 +4,34 @@ import { notFound } from "next/navigation";
 import { site } from "@/lib/site";
 import { getNotebook } from "@/lib/learn";
 import { getRoadmap } from "@/lib/learn/roadmaps";
-import { allTopics, getTopic, topicState } from "@/lib/learn/topics";
+import { allChannels, channelState, getChannel } from "@/lib/learn/topics";
+import { getBody } from "@/lib/learn/topic-source";
 import { learnBase } from "@/lib/learn/paths";
 import { ArrowRightIcon } from "@/components/icons";
 import { DecodeTitle } from "@/components/learn/topics/decode-title";
 import { RequestNote } from "@/components/learn/request-note";
-import { getBody } from "@/lib/learn/topic-source";
+
+type Params = { subject: string; channel: string };
 
 export function generateStaticParams() {
-  return allTopics().map((topic) => ({ slug: topic.slug }));
+  return allChannels().map(({ subject, channel }) => ({
+    subject: subject.slug,
+    channel: channel.slug,
+  }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<Params>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const found = getTopic(slug);
+  const { subject, channel } = await params;
+  const found = getChannel(subject, channel);
   if (!found) return {};
-  return { title: found.topic.title, description: found.topic.blurb };
+  return {
+    title: `${found.channel.title} · ${found.subject.name}`,
+    description: found.channel.blurb,
+  };
 }
 
 /** One row in the right rail. */
@@ -52,12 +60,7 @@ function RailLink({
   );
 
   return external ? (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className}
-    >
+    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
       {body}
     </a>
   ) : (
@@ -67,45 +70,39 @@ function RailLink({
   );
 }
 
-export default async function TopicPage({
+export default async function ChannelPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<Params>;
 }) {
-  const { slug } = await params;
-  const found = getTopic(slug);
+  const { subject: subjectSlug, channel: channelSlug } = await params;
+  const found = getChannel(subjectSlug, channelSlug);
   if (!found) notFound();
 
-  const { topic, group } = found;
+  const { subject, channel } = found;
   const base = await learnBase();
-  const state = topicState(topic);
-  const Body = await getBody(topic.slug);
-  const notebook = topic.notebook ? getNotebook(topic.notebook) : undefined;
-  const roadmap = topic.roadmap ? getRoadmap(topic.roadmap) : undefined;
+  const state = channelState(channel);
+  const Body = await getBody(subject.slug, channel.slug);
+  const notebook = channel.notebook ? getNotebook(channel.notebook) : undefined;
+  const roadmap = channel.roadmap ? getRoadmap(channel.roadmap) : undefined;
   const { bookingUrl } = site.mentorship;
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-10 lg:flex-row lg:gap-12 lg:px-10 lg:py-14">
       <article className="min-w-0 flex-1">
         <p className="font-mono text-[0.65rem] uppercase tracking-[0.22em] text-subtle">
-          {group.name}
+          {subject.name}
         </p>
 
         <DecodeTitle
-          text={topic.title}
-          className="mt-4 font-reading text-4xl font-bold leading-[1.1] tracking-[-0.04em] text-foreground sm:text-5xl"
+          text={channel.title}
+          className="font-reading mt-4 text-3xl font-bold leading-[1.15] tracking-[-0.04em] text-foreground sm:text-4xl"
         />
 
         <p className="font-reading mt-4 max-w-3xl text-[1.05rem] leading-[1.75] text-muted">
-          {topic.blurb}
+          {channel.blurb}
         </p>
 
-        {/* The honest bit. 52 of 64 topics have nothing of ours behind them, and
-            a page that pretends otherwise is a lie the reader finds on arrival. */}
-        {/* Written prose reads exactly like a thread: same MDX component map,
-            same `.thread` code-block styling, same measure. `.notebook` was the
-            wrong one of the site's two type systems, since that is the serif
-            navy system built for the printed books. */}
         {Body ? (
           <article className="thread topic-prose mt-10 max-w-3xl">
             <Body />
@@ -115,15 +112,16 @@ export default async function TopicPage({
         <div className="mt-12 max-w-3xl space-y-5 border-t border-border pt-10">
           <p className="leading-7 text-muted">
             {Body
-              ? `More on ${topic.title} is coming, and asking moves it up the list.`
+              ? "More on this is coming, and asking moves it up the list."
               : state === "soon"
-                ? topic.reference
-                  ? `We have not written our own notes on ${topic.title} yet. The canonical documentation is linked on the right and it is better than anything we would rush out.`
-                  : `We have not written our own notes on ${topic.title} yet, and there is no single source worth sending you to instead.`
-                : `We have written on ${topic.title}. It is linked on the right. A page in its own words is still to come.`}
+                ? "We have not written this one up yet, and it would be easy to pretend otherwise."
+                : "There is work of ours behind this. It is linked on the right."}
           </p>
 
-          <RequestNote subject={topic.slug} title={topic.title} />
+          <RequestNote
+            subject={`${subject.slug}/${channel.slug}`}
+            title={channel.title}
+          />
 
           <p className="text-sm leading-6 text-subtle">
             Or{" "}
@@ -141,8 +139,6 @@ export default async function TopicPage({
         </div>
       </article>
 
-      {/* The right rail. On Discord this lists people; here it answers the only
-          question a reader has on landing: is there anything here for me. */}
       <aside className="w-full shrink-0 lg:w-[264px]">
         <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-subtle">
           What we have
@@ -156,7 +152,6 @@ export default async function TopicPage({
               href={`${base}/notebooks/${notebook.slug}`}
             />
           ) : null}
-
           {roadmap ? (
             <RailLink
               label="Roadmap"
@@ -164,17 +159,15 @@ export default async function TopicPage({
               href={`${base}/roadmaps/${roadmap.slug}`}
             />
           ) : null}
-
-          {topic.reference ? (
+          {channel.reference ? (
             <RailLink
               label="Reference"
-              title={topic.reference.label}
-              href={topic.reference.href}
+              title={channel.reference.label}
+              href={channel.reference.href}
               external
             />
           ) : null}
-
-          {state === "soon" && !topic.reference ? (
+          {state === "soon" && !channel.reference ? (
             <p className="rounded-card border border-dashed border-border px-4 py-3 text-sm leading-6 text-subtle">
               Nothing yet, and no canonical source worth pointing at.
             </p>
