@@ -38,6 +38,13 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+        # Content is served from Postgres now, so a smoke test with no Supabase
+        # config asserts that the site 500s politely rather than that it works.
+        # Both values are public by design (they ship in every browser bundle);
+        # they are secrets here only so rotating one does not mean a commit.
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
 
   deploy-preview:
     name: Deploy Preview
