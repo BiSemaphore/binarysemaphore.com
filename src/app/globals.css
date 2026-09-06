@@ -538,3 +538,62 @@ body {
 .dark .thread pre[data-figure] {
   background: color-mix(in srgb, var(--foreground) 6%, transparent);
 }
+
+/* ---------------------------------------------------------------------------
+   Navigation progress
+   --------------------------------------------------------------------------- */
+
+/*
+  The bar is always in the DOM and always animating; only its opacity and the
+  delay change. Doing it in CSS rather than with a timer in React means the
+  150ms grace period costs no renders, and an instant navigation never mounts
+  anything at all.
+*/
+.progress-bar {
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 100;
+  height: 2px;
+  width: 0;
+  background: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+}
+
+.progress-bar[data-loading] {
+  opacity: 1;
+  /* Eases towards 90% and stops: the last 10% belongs to the page arriving,
+     and a bar that reaches 100% before the content does is a lie. */
+  animation: progress-grow 10s cubic-bezier(0.1, 0.6, 0.2, 1) 150ms forwards;
+  transition-delay: 150ms;
+}
+
+@keyframes progress-grow {
+  0% {
+    width: 0;
+    opacity: 1;
+  }
+  40% {
+    width: 55%;
+    opacity: 1;
+  }
+  /* Holds at 90% for the whole ten seconds, then fades. That fade is how the
+     bar gives up on a click that never navigates, with no timer in React. */
+  92% {
+    width: 90%;
+    opacity: 1;
+  }
+  100% {
+    width: 90%;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar[data-loading] {
+    animation: none;
+    width: 100%;
+    opacity: 0.5;
+  }
+}
