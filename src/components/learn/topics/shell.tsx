@@ -11,6 +11,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { TopicGroup } from "@/lib/learn/topics";
 import { GroupIcon } from "@/components/learn/topics/group-icons";
+import { Tooltip } from "@/components/tooltip";
 import { MenuIcon, CloseIcon } from "@/components/icons";
 
 const STORE = "topics:collapsed";
@@ -112,20 +113,25 @@ export function TopicsShell({
           {groups.map((group) => {
             const current = group.slug === activeGroup?.slug;
             return (
-              <a
+              <Tooltip
                 key={group.slug}
-                href={`#group-${group.slug}`}
-                title={group.name}
-                aria-current={current ? "true" : undefined}
-                className={`rail-item relative grid h-12 w-12 shrink-0 place-items-center ${
-                  current
-                    ? "bg-foreground text-[#050506]"
-                    : "bg-card text-muted hover:bg-card-hover hover:text-foreground"
-                }`}
+                label={group.name}
+                side="right"
+                delay={120}
               >
-                <GroupIcon group={group.slug} className="h-[22px] w-[22px]" />
-                <span className="sr-only">{group.name}</span>
-              </a>
+                <a
+                  href={`#group-${group.slug}`}
+                  aria-current={current ? "true" : undefined}
+                  className={`rail-item relative grid h-12 w-12 shrink-0 place-items-center ${
+                    current
+                      ? "bg-foreground text-[#050506]"
+                      : "bg-card text-muted hover:bg-card-hover hover:text-foreground"
+                  }`}
+                >
+                  <GroupIcon group={group.slug} className="h-[22px] w-[22px]" />
+                  <span className="sr-only">{group.name}</span>
+                </a>
+              </Tooltip>
             );
           })}
         </nav>
@@ -180,18 +186,26 @@ export function TopicsShell({
                     const current = topic.slug === activeSlug;
                     return (
                       <li key={topic.slug}>
-                        <Link
-                          href={`${base}/topics/${topic.slug}`}
-                          onClick={closeDrawer}
-                          aria-current={current ? "page" : undefined}
-                          className={`channel mx-2 flex h-8 items-center rounded-[4px] px-2 font-mono text-[0.9rem] font-medium transition-colors ${
-                            current
-                              ? "row-active text-foreground"
-                              : "row-hover text-subtle hover:text-muted"
-                          }`}
+                        <Tooltip
+                          label={topic.slug}
+                          side="right"
+                          onlyWhenTruncated
                         >
-                          <span className="truncate">{topic.slug}</span>
-                        </Link>
+                          <Link
+                            href={`${base}/topics/${topic.slug}`}
+                            onClick={closeDrawer}
+                            aria-current={current ? "page" : undefined}
+                            className={`channel mx-2 flex h-8 items-center rounded-[4px] px-2 font-mono text-[0.9rem] font-medium transition-colors ${
+                              current
+                                ? "row-active text-foreground"
+                                : "row-hover text-subtle hover:text-muted"
+                            }`}
+                          >
+                            <span data-truncate className="truncate">
+                              {topic.slug}
+                            </span>
+                          </Link>
+                        </Tooltip>
                       </li>
                     );
                   })}

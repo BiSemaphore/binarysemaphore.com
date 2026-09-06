@@ -884,6 +884,65 @@ html .learn-canvas:has(.topics-shell) .theme-slot {
   background: color-mix(in srgb, var(--foreground) 10%, transparent);
 }
 
+/* The tooltip bubble: translated onto its anchor point per side, with an arrow
+   drawn from the same border trick on whichever edge faces the trigger. */
+.tooltip[data-side="top"] {
+  transform: translate(-50%, -100%);
+}
+.tooltip[data-side="bottom"] {
+  transform: translate(-50%, 0);
+}
+.tooltip[data-side="left"] {
+  transform: translate(-100%, -50%);
+}
+.tooltip[data-side="right"] {
+  transform: translate(0, -50%);
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  border: 5px solid transparent;
+}
+.tooltip[data-side="top"]::before {
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-top-color: #111214;
+}
+.tooltip[data-side="bottom"]::before {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-bottom-color: #111214;
+}
+.tooltip[data-side="left"]::before {
+  left: 100%;
+  top: 50%;
+  margin-top: -5px;
+  border-left-color: #111214;
+}
+.tooltip[data-side="right"]::before {
+  right: 100%;
+  top: 50%;
+  margin-top: -5px;
+  border-right-color: #111214;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tooltip {
+    animation: tooltip-in 0.12s ease-out both;
+  }
+  @keyframes tooltip-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
 /* Discord's scrollbar: present, thin, and only obvious once you look for it. */
 .thin-scroll {
   scrollbar-width: thin;
