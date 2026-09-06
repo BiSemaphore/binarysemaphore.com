@@ -19,7 +19,7 @@ function Icon({ children, ...props }: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="1.9"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -52,13 +52,11 @@ export function DsaIcon(props: IconProps) {
   );
 }
 
-/** Plus and minus: the maths group. */
+/** Sigma. One clear glyph beats four small operators fighting in a 24px box. */
 export function MathsIcon(props: IconProps) {
   return (
     <Icon {...props}>
-      <path d="M4 8h6M7 5v6" />
-      <path d="M14 8h6" />
-      <path d="M4 17h6M14 15l6 4M20 15l-6 4" />
+      <path d="M18 5H6l6 7-6 7h12" />
     </Icon>
   );
 }
@@ -107,13 +105,14 @@ export function DataIcon(props: IconProps) {
   );
 }
 
-/** A window with a toolbar: something you built. */
+/** A browser window. The two dots read as chrome even at 22px. */
 export function BuildingIcon(props: IconProps) {
   return (
     <Icon {...props}>
-      <rect x="3" y="4" width="18" height="16" rx="2" />
-      <path d="M3 9h18" />
-      <path d="M6.5 6.5h.01M9.5 6.5h.01" />
+      <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+      <path d="M3 9.5h18" />
+      <circle cx="6.5" cy="7" r="0.6" fill="currentColor" stroke="none" />
+      <circle cx="9" cy="7" r="0.6" fill="currentColor" stroke="none" />
     </Icon>
   );
 }
@@ -146,11 +145,13 @@ export function AiIcon(props: IconProps) {
   );
 }
 
-/** A wrench. */
+/** A toolbox, which is legible at 22px in a way a wrench outline is not. */
 export function ToolboxIcon(props: IconProps) {
   return (
     <Icon {...props}>
-      <path d="M15.5 4a4.5 4.5 0 0 0-4 6.6L4 18.1 5.9 20l7.5-7.5A4.5 4.5 0 1 0 15.5 4" />
+      <rect x="3" y="8.5" width="18" height="11" rx="2" />
+      <path d="M8.5 8.5V6a1.5 1.5 0 0 1 1.5-1.5h4A1.5 1.5 0 0 1 15.5 6v2.5" />
+      <path d="M3 13h18" />
     </Icon>
   );
 }

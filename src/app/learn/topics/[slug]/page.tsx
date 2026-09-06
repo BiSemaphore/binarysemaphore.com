@@ -93,10 +93,10 @@ export default async function TopicPage({
 
         <DecodeTitle
           text={topic.title}
-          className="mt-4 font-mono text-4xl font-bold leading-[1.08] tracking-[-0.04em] text-foreground sm:text-5xl"
+          className="mt-4 font-reading text-4xl font-bold leading-[1.1] tracking-[-0.04em] text-foreground sm:text-5xl"
         />
 
-        <p className="mt-4 max-w-3xl text-lg leading-7 text-muted">
+        <p className="font-reading mt-4 max-w-3xl text-[1.05rem] leading-[1.75] text-muted">
           {topic.blurb}
         </p>
 
@@ -107,7 +107,7 @@ export default async function TopicPage({
             wrong one of the site's two type systems, since that is the serif
             navy system built for the printed books. */}
         {Body ? (
-          <article className="thread mt-10 max-w-3xl">
+          <article className="thread topic-prose mt-10 max-w-3xl">
             <Body />
           </article>
         ) : null}

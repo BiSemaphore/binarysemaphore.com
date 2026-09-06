@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   Inter_Tight,
   JetBrains_Mono,
+  Ubuntu_Mono,
   Plus_Jakarta_Sans,
   Shantell_Sans,
   Caveat,
@@ -30,6 +31,18 @@ const jetbrainsMono = JetBrains_Mono({
 // standing in for Google Sans (which isn't freely licensable).
 const bricolage = Plus_Jakarta_Sans({
   variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Topic prose at /topics. A console face for a console-shaped surface: the
+// shell already speaks in `#channel` names and mono labels, and the reading pane
+// was the one part still in a UI sans. Only 400/700 exist, which is why the MDX
+// map leans on size and colour rather than weight for hierarchy.
+const ubuntuMono = Ubuntu_Mono({
+  variable: "--font-ubuntu-mono",
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -110,7 +123,7 @@ export default function RootLayout({
       lang="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${inter.variable} ${jetbrainsMono.variable} ${bricolage.variable} ${shantellSans.variable} ${caveat.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${bricolage.variable} ${shantellSans.variable} ${caveat.variable} ${ubuntuMono.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

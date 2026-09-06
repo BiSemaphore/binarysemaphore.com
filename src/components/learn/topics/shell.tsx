@@ -119,11 +119,11 @@ export function TopicsShell({
                 aria-current={current ? "true" : undefined}
                 className={`rail-item relative grid h-12 w-12 shrink-0 place-items-center ${
                   current
-                    ? "bg-foreground text-background"
+                    ? "bg-foreground text-[#050506]"
                     : "bg-card text-muted hover:bg-card-hover hover:text-foreground"
                 }`}
               >
-                <GroupIcon group={group.slug} className="h-5 w-5" />
+                <GroupIcon group={group.slug} className="h-[22px] w-[22px]" />
                 <span className="sr-only">{group.name}</span>
               </a>
             );
@@ -165,7 +165,7 @@ export function TopicsShell({
                 }
                 className="group/cat mb-3 scroll-mt-3"
               >
-                <summary className="flex cursor-pointer list-none items-center gap-1 px-1 py-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-subtle transition-colors hover:text-foreground">
+                <summary className="flex h-6 cursor-pointer list-none items-center gap-0.5 px-2 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.02em] text-subtle transition-colors hover:text-foreground">
                   <span
                     aria-hidden
                     className="inline-block -rotate-90 text-[0.7rem] transition-transform duration-200 group-open/cat:rotate-0"
@@ -184,10 +184,10 @@ export function TopicsShell({
                           href={`${base}/topics/${topic.slug}`}
                           onClick={closeDrawer}
                           aria-current={current ? "page" : undefined}
-                          className={`channel mx-0.5 flex items-center rounded-[4px] px-2 py-[7px] font-mono text-[0.8rem] transition-colors ${
+                          className={`channel mx-2 flex h-8 items-center rounded-[4px] px-2 font-mono text-[0.9rem] font-medium transition-colors ${
                             current
-                              ? "bg-card-hover text-foreground"
-                              : "text-subtle hover:bg-card hover:text-muted"
+                              ? "row-active text-foreground"
+                              : "row-hover text-subtle hover:text-muted"
                           }`}
                         >
                           <span className="truncate">{topic.slug}</span>

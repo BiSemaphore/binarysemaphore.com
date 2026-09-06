@@ -311,6 +311,43 @@ reason.
 Type is JetBrains Mono throughout the shell, which is already `--font-mono`.
 Channels render as `# operating-systems`, categories as tracked uppercase.
 
+### Measured against Discord, not approximated
+
+Structure taken from the published spec rather than from memory, because the
+first attempt was close enough to read as wrong:
+
+| Element       | Value                                             |
+| ------------- | ------------------------------------------------- |
+| rail width    | 72px                                              |
+| group icon    | 48px, radius 16px at rest, 50% on hover or active |
+| active pill   | 4px wide, 40px tall; 20px on hover                |
+| sidebar width | 240px                                             |
+| channel row   | 32px tall, 4px radius, 8px side margin            |
+| row hover     | `rgba(78, 80, 88, 0.3)`                           |
+| row active    | `rgba(78, 80, 88, 0.6)`                           |
+
+Two of these were wrong before and are worth recording so they are not
+reintroduced. **The radius animation ran backwards**: circle relaxing into a
+square, where Discord goes rounded-square into circle. That is the most
+recognisable motion in the whole chrome and inverting it is exactly why it
+looked off. And row states were **solid** fills rather than translucent
+overlays, which stops one set of values working across three different greys.
+
+Discord's own hover blurple is deliberately not used. This surface is matte
+black and white.
+
+### Typography
+
+The chrome is JetBrains Mono, already `--font-mono`. The reading pane is
+**Ubuntu Mono**, exposed as `--font-reading` and the `font-reading` utility.
+
+A monospace is not a drop-in for a proportional face. Every glyph is the same
+width, so the same point size reads larger and the same measure holds fewer
+words. `.topic-prose` drops the size slightly, opens the leading to 1.85 and
+pulls the tracking in; without those three it reads like a terminal dump. Inline
+code gets a tint rather than a family change, since a family change is invisible
+inside a mono body.
+
 ### Motion
 
 Two effects, both gated behind `prefers-reduced-motion`:
