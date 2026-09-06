@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ProgressBar } from "@/components/progress-bar";
 import {
   Inter_Tight,
   JetBrains_Mono,
@@ -129,6 +130,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="flex min-h-full flex-col">
+        <ProgressBar />
         {children}
         <Analytics />
       </body>
