@@ -2,11 +2,11 @@
 
 import { useActionState } from "react";
 import { createAction, type CreateState } from "@/app/admin/create";
+import { FIELD, BUTTON } from "@/components/admin/ui";
 
 const initial: CreateState = { ok: null };
 
-const field =
-  "rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-subtle focus:border-foreground";
+const field = `${FIELD} w-auto`;
 
 /**
  * Create a thread or a channel.
@@ -63,7 +63,7 @@ export function CreateForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-xl bg-foreground px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-60"
+          className={BUTTON}
         >
           {pending ? "Creating…" : "Create"}
         </button>
