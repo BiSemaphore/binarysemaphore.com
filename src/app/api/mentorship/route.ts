@@ -1,21 +1,25 @@
 import { NextResponse } from "next/server";
-import { createClient, isSupabaseConfigured } from "@/utils/supabase/server";
+import { createAdminClient, isAdminConfigured } from "@/utils/supabase/admin";
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-/** Matches the bounds in the insert policy, so the two cannot drift apart. */
+/** Matches the bounds in `record_inbox_message`, so the two cannot drift. */
 const LIMITS = { name: 200, email: 320, college: 200, paper: 200, stuck: 5000 };
 
 /**
  * POST /api/mentorship
  *
- * A student asking for a one-to-one session. Mirrors POST /api/contact:
- * validate, then insert. The policy on `mentorship_requests` is the boundary;
- * the checks here exist so a person gets a useful message rather than a
- * database error.
+ * A student asking for a one-to-one session. Same shape as POST /api/contact,
+ * and the same table: a contact message and a mentorship request were always
+ * one entity (somebody we do not know, an email, some prose, some situational
+ * detail) and are now stored as one.
+ *
+ * The college and the paper go in `context` rather than in columns, because we
+ * display them and never query them. The moment we query one, it becomes a
+ * column.
  */
 export async function POST(request: Request) {
-  if (!isSupabaseConfigured()) {
+  if (!isAdminConfigured()) {
     return NextResponse.json(
       { error: "This form is not connected yet." },
       { status: 503 },
@@ -38,7 +42,9 @@ export async function POST(request: Request) {
 
   if (!name || !email || !paper || !stuck) {
     return NextResponse.json(
-      { error: "Name, email, the paper and where you are stuck are all needed." },
+      {
+        error: "Name, email, the paper and where you are stuck are all needed.",
+      },
       { status: 400 },
     );
   }
@@ -48,7 +54,13 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  for (const [field, value] of Object.entries({ name, email, college, paper, stuck })) {
+  for (const [field, value] of Object.entries({
+    name,
+    email,
+    college,
+    paper,
+    stuck,
+  })) {
     if (value.length > LIMITS[field as keyof typeof LIMITS]) {
       return NextResponse.json(
         { error: `That ${field} is too long.` },
@@ -57,10 +69,13 @@ export async function POST(request: Request) {
     }
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("mentorship_requests")
-    .insert({ name, email, college: college || null, paper, stuck });
+  const { error } = await createAdminClient().rpc("record_inbox_message", {
+    p_kind: "mentorship",
+    p_name: name,
+    p_email: email,
+    p_body: stuck,
+    p_context: { college: college || null, paper },
+  });
 
   if (error) {
     console.error("mentorship insert failed:", error.message);

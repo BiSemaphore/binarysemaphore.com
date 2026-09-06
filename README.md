@@ -71,20 +71,35 @@ Unit tests live next to the code as `*.test.ts`; smoke tests live in `e2e/`.
 The backend is [Supabase](https://supabase.com) (hosted Postgres + Auth), called
 from inside the app via `@supabase/ssr`. No separate service to host.
 
-1. Create a Supabase project and run [`supabase/schema.sql`](supabase/schema.sql)
-   in its SQL editor.
+1. Create a Supabase project, then apply the schema with the CLI. Migrations in
+   [`supabase/migrations/`](supabase/migrations) are the only source of truth
+   for it; there is no `schema.sql` to keep in step any more.
+
+   ```bash
+   export SUPABASE_ACCESS_TOKEN=<a personal access token>
+   npx supabase link --project-ref <ref>
+   npx supabase db push
+   ```
+
 2. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL` and
    `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (Project Settings -> API). Add the same
    vars to the Vercel project env for production.
-3. Clients live under [`src/utils/supabase/`](src/utils/supabase): `server.ts`
+3. `SUPABASE_SECRET_KEY` is needed as well, for the contact and mentorship
+   forms. They write to `private.inbox`, a schema not exposed to PostgREST, so
+   the publishable key cannot reach it under any policy. Without this key those
+   two routes return 503 and everything else works.
+4. Clients live under [`src/utils/supabase/`](src/utils/supabase): `server.ts`
    (Server Components / Route Handlers / server actions), `client.ts` (browser),
-   and `middleware.ts` (session refresh, wired in `src/proxy.ts` — Next 16's
-   renamed middleware convention). They use the publishable key and respect
-   row-level security.
+   `middleware.ts` (session refresh, wired in `src/proxy.ts`, Next 16's renamed
+   middleware convention), and `admin.ts` (service role, server-only). The first
+   three use the publishable key and respect row-level security. `admin.ts`
+   bypasses it, which is why it is `server-only` and why nothing else imports it.
+
+The design and the reasoning behind it are in [`docs/database.md`](docs/database.md).
 
 Worked example: `POST /api/contact`
 ([`src/app/api/contact/route.ts`](src/app/api/contact/route.ts)) validates a
-submission and inserts it into the `contact_messages` table.
+submission and records it in the inbox through `record_inbox_message`.
 
 ```bash
 curl -X POST http://localhost:3000/api/contact \

@@ -1,6 +1,6 @@
 /**
  * The shape of a resume document. Stored as `jsonb` in `public.resumes.content`
- * (see supabase/schema.sql). Every template renders from this one type, so a
+ * (see supabase/migrations/). Every template renders from this one type, so a
  * resume's data is independent of which template displays it.
  */
 

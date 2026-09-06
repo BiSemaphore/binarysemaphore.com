@@ -1,0 +1,207 @@
+/* --- Resume tune sliders ------------------------------------------------- */
+/* Brand-styled range input: thin track, coral-accent fill, soft round thumb.
+   Native `accent-color` looks heavy and inconsistent across browsers. */
+.r-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--border);
+  cursor: pointer;
+}
+.r-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--accent);
+  border: 2px solid var(--background);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  transition: transform 0.1s ease;
+}
+.r-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+.r-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--accent);
+  border: 2px solid var(--background);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+}
+.r-slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- Resume product canvas (scoped to .rx) ------------------------------ */
+/* The resume product borrows the resumex layout, but with the Binary Semaphore
+   palette (deep-red accent, near-black ink) and a notebook/graph-paper grid
+   instead of a dot canvas. Scoped to .rx so the rest of the site is unaffected. */
+.rx {
+  /* Brand color = the navy logo (#003554), used for fills (buttons, active
+     states, slider). Red is reserved for text only, never a background. */
+  --rx-accent: #003554;
+  --rx-accent-ink: #ffffff;
+  --rx-muted: #6b6b6b;
+  --rx-line: rgba(17, 17, 17, 0.06); /* notebook grid line */
+  /* Slider thumb (.r-slider) picks this up. */
+  --accent: var(--rx-accent);
+}
+/* Smooth scrolling for the resume app's inner scroll panes (editor columns,
+   etc.). scroll-behavior isn't inherited from <html>, so set it here. Only
+   affects anchor/programmatic scrolls; wheel/trackpad stays native. */
+.rx-scroll {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rx-scroll {
+    scroll-behavior: auto;
+  }
+}
+.rx-canvas {
+  background-color: #fbfaf8;
+  background-image:
+    linear-gradient(to right, var(--rx-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rx-line) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+/* Dark mode: the chrome (canvas, panels, pills) goes dark; the resume "paper"
+   itself stays white (it is printed paper, set on the templates). */
+.dark .rx {
+  --rx-muted: #9a9a9a;
+  --rx-line: rgba(255, 255, 255, 0.05);
+}
+.dark .rx-canvas {
+  background-color: #161616;
+}
+.dark .rx-panel,
+.dark .rx-pill {
+  background: rgba(30, 30, 30, 0.85);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--rx-muted);
+}
+.dark .rx-pill:hover {
+  color: #f5f5f5;
+}
+/* The template card is an always-light "sheet" (it frames a white resume), so
+   its pills keep the light styling even in dark mode, like the card's
+   fixed-dark text. Same specificity as `.dark .rx-pill`, declared after it so it
+   wins inside a card. */
+.rx-card .rx-pill {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(20, 20, 19, 0.12);
+  color: #6b6b6b;
+}
+.rx-card .rx-pill:hover {
+  color: #171717;
+}
+/* Translucent floating surfaces (tune panel, control pills). */
+.rx-panel {
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(20, 20, 19, 0.12);
+  border-radius: 8px;
+}
+/* Within the resume product, interactive controls get a pointer cursor
+   (the browser default for <button> is the arrow). */
+.rx button:not(:disabled),
+.rx [role="button"]:not([aria-disabled="true"]),
+.rx label:has(input[type="range"]) {
+  cursor: pointer;
+}
+.rx-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  border-radius: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(20, 20, 19, 0.12);
+  color: var(--rx-muted);
+  transition: color 0.12s ease;
+}
+.rx-pill:hover {
+  color: #171717;
+}
+.rx-accent {
+  background: var(--rx-accent);
+  color: var(--rx-accent-ink);
+  border-color: transparent;
+}
+.rx-accent:hover {
+  color: var(--rx-accent-ink);
+  filter: brightness(1.08);
+}
+
+/* --- Resume editor stage + paper ---------------------------------------- */
+/* The editor preview sits the resume "paper" on a patterned stage, like the
+   reference (resumex). Same idea, our own pattern: a faint engineering grid in
+   brand ink on a warm gray, instead of their dot grid. */
+.resume-stage {
+  background-color: #ecebe5;
+  background-image:
+    linear-gradient(to right, rgba(20, 20, 19, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(20, 20, 19, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+/* The paper: white sheet, hairline border, layered soft shadow, rounded. */
+.resume-frame {
+  background: #fff;
+  border: 1px solid rgba(20, 20, 19, 0.1);
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 1px 1px -0.5px rgba(0, 0, 0, 0.06),
+    0 3px 3px -1.5px rgba(0, 0, 0, 0.06),
+    0 6px 6px -3px rgba(0, 0, 0, 0.06),
+    0 12px 12px -6px rgba(0, 0, 0, 0.06);
+}
+/* Page label sitting in the gutter between stacked preview sheets. The pages
+   are real, separate page boxes with a gap between them, so this label lives in
+   the empty gutter and never overlaps content (unlike the old overlay line). */
+.resume-page-label {
+  display: block;
+  width: max-content;
+  margin: 0 auto 8px;
+  padding: 1px 10px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 1px solid rgba(0, 53, 84, 0.2);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: #003554;
+  pointer-events: none;
+}
+
+/* --- Resume PDF export --------------------------------------------------- */
+/* The PDF is rendered server-side by headless Chromium loading /print/[id]
+   (see src/app/api/resume/[id]/pdf/route.ts), so there is no client print
+   stylesheet. These rules only help Chromium's print engine paginate cleanly. */
+@media print {
+  /* Keep the page white. Without this, the cream site background (--background)
+     shows through any page area the resume doesn't fill (e.g. a half-empty
+     second page printed as a grey block). */
+  html,
+  body {
+    background: #fff !important;
+  }
+  .resume-paper {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .resume-paper h2,
+  .resume-paper h3 {
+    break-after: avoid;
+  }
+  .resume-paper li {
+    break-inside: avoid;
+  }
+}

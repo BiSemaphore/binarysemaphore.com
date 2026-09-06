@@ -60,7 +60,7 @@ export default async function LearnLayout({
               </Link>
             </span>
 
-            {/* The three sections. `learn` is a platform now, not a library,
+            {/* The four sections. `learn` is a platform now, not a library,
                 so each has to be reachable from any of the others. */}
             <nav
               aria-label="Sections"
@@ -71,6 +71,12 @@ export default async function LearnLayout({
                 className="font-mono text-xs text-muted transition-colors hover:text-foreground"
               >
                 mentorship
+              </Link>
+              <Link
+                href={`${base}/topics`}
+                className="font-mono text-xs text-muted transition-colors hover:text-foreground"
+              >
+                topics
               </Link>
               <Link
                 href={`${base}/roadmaps`}
@@ -88,7 +94,11 @@ export default async function LearnLayout({
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
-            <ThemeToggle />
+            {/* Hidden on /topics by CSS: that surface is deliberately one
+                look, so a toggle there would move and change nothing. */}
+            <span className="theme-slot">
+              <ThemeToggle />
+            </span>
             {user ? (
               <form action="/auth/signout" method="post">
                 <button

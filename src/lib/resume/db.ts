@@ -1,6 +1,6 @@
 /**
  * Server-only data access for the resume builder. Row-Level Security (see
- * supabase/schema.sql) does the authorization; these helpers just scope and
+ * supabase/migrations/) does the authorization; these helpers just scope and
  * shape the queries. Call from Server Components, Route Handlers, or actions.
  *
  * Server-only: imports `next/headers` (via the SSR client), so importing this

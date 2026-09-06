@@ -5,7 +5,7 @@
  *   notebooks/<slug>/<Title>-<Edition>.pdf
  *
  * The first path segment is the notebook slug, which is what the bucket's RLS
- * policy checks against `has_learn_access()`. Getting it wrong means nobody can
+ * policy checks against `has_notebook_access()`. Getting it wrong means nobody can
  * download the file, so the paths come from src/lib/learn.ts rather than from
  * whatever is on disk.
  *

@@ -19,12 +19,12 @@ import {
   StuckChip,
   PhotoBand,
   type Tilt,
-  type Tone,
 } from "@/components/learn/paper";
 import { AiPipeline, SyllabusTree } from "@/components/learn/diagrams";
 import { NotebookStrip } from "@/components/learn/notebook-strip";
 import { SelfCheck } from "@/components/learn/self-check";
 import { MentorshipForm } from "@/components/learn/mentorship-form";
+import { TONES, toneAt } from "@/lib/learn/tones";
 
 export const metadata: Metadata = {
   title: "Mentorship",
@@ -33,16 +33,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://learn.binarysemaphore.com" },
 };
 
-/** Cycled so the scraps and notes do not all sit at the same angle. */
-const TONES: Tone[] = ["peach", "mint", "sky", "pink"];
 const TILTS: Tilt[] = [0, 1, 2, 3];
 
 /** Shared by every section heading, so they all read as the same hand. */
 const HEADING =
   "font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl";
-/** The four highlighters, for the FAQ notes. */
-const FAQ_BG = ["note-peach", "note-mint", "note-sky", "note-pink"];
-
 const EYEBROW =
   "font-mono text-[0.7rem] uppercase tracking-[0.28em] text-subtle";
 
@@ -470,7 +465,7 @@ export default async function MentorshipPage() {
           {mentorship.faq.map((item, i) => (
             <li key={item.q}>
               <details
-                className={`group h-full rounded-card px-5 py-4 ${FAQ_BG[i % FAQ_BG.length]}`}
+                className={`group h-full rounded-card px-5 py-4 ${toneAt(i)}`}
               >
                 <summary className="flex cursor-pointer list-none items-start gap-3 font-hand text-xl leading-snug text-foreground">
                   <span aria-hidden className="text-accent">

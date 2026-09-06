@@ -3,8 +3,8 @@
  *
  * Stored in Postgres rather than the browser, so it follows the reader between
  * devices and matches the rest of the model: the reading belongs to someone.
- * Unlike entitlements, a reader writes their own rows; see the policies in
- * supabase/migrations/0006_reading_progress.sql for why that is safe.
+ * Unlike entitlements, a reader writes their own rows; the policies restrict
+ * every one of them to `auth.uid() = user_id`, which is why that is safe.
  *
  * Server-only: uses the SSR Supabase client.
  */
@@ -20,13 +20,13 @@ export type Progress = {
 
 const EMPTY: Progress = { read: new Set(), resume: null };
 
-type Row = { product_id: string; section: string; read_at: string };
+type Row = { notebook_id: string; section: string; read_at: string };
 
 /** Newest first, so the first row for a book is where to resume. */
-const COLUMNS = "product_id, section, read_at";
+const COLUMNS = "notebook_id, section, read_at";
 
 /** Progress in one notebook. */
-export async function getProgress(productId: string): Promise<Progress> {
+export async function getProgress(notebookId: string): Promise<Progress> {
   if (!isSupabaseConfigured()) return EMPTY;
 
   const user = await getCurrentUser();
@@ -36,7 +36,7 @@ export async function getProgress(productId: string): Promise<Progress> {
   const { data } = await supabase
     .from("reading_progress")
     .select(COLUMNS)
-    .eq("product_id", productId)
+    .eq("notebook_id", notebookId)
     .order("read_at", { ascending: false });
 
   const rows = (data ?? []) as Row[];
@@ -64,10 +64,14 @@ export async function getAllProgress(): Promise<Map<string, Progress>> {
     .order("read_at", { ascending: false });
 
   for (const row of (data ?? []) as Row[]) {
-    const current = result.get(row.product_id);
+    const current = result.get(row.notebook_id);
     if (current) current.read.add(row.section);
     // Rows arrive newest first, so the first one seen is the resume point.
-    else result.set(row.product_id, { read: new Set([row.section]), resume: row.section });
+    else
+      result.set(row.notebook_id, {
+        read: new Set([row.section]),
+        resume: row.section,
+      });
   }
   return result;
 }
@@ -80,7 +84,7 @@ export async function getAllProgress(): Promise<Map<string, Progress>> {
  * bookmark must never break the page someone is trying to read.
  */
 export async function markRead(
-  productId: string,
+  notebookId: string,
   section: string,
 ): Promise<void> {
   if (!isSupabaseConfigured()) return;
@@ -92,11 +96,11 @@ export async function markRead(
   await supabase.from("reading_progress").upsert(
     {
       user_id: user.id,
-      product_id: productId,
+      notebook_id: notebookId,
       section,
       read_at: new Date().toISOString(),
     },
-    { onConflict: "user_id,product_id,section" },
+    { onConflict: "user_id,notebook_id,section" },
   );
 }
 

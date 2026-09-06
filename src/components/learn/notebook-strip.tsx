@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { notebooks } from "@/lib/learn";
-
-/** The four highlighters, cycled so the rail reads as a set of notes. */
-const CARD_BG = ["note-peach", "note-mint", "note-sky", "note-pink"];
+import { toneAt } from "@/lib/learn/tones";
 
 /**
  * The library, shown rather than counted.
@@ -23,7 +21,7 @@ export function NotebookStrip({ base }: { base: string }) {
           <li key={notebook.slug} className="w-[17.5rem] shrink-0">
             <Link
               href={`${base}/notebooks/${notebook.slug}`}
-              className={`flex h-full flex-col rounded-card p-5 transition-transform duration-300 hover:-translate-y-1 ${CARD_BG[i % CARD_BG.length]}`}
+              className={`flex h-full flex-col rounded-card p-5 transition-transform duration-300 hover:-translate-y-1 ${toneAt(i)}`}
             >
               <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-foreground/45">
                 {notebook.series} {notebook.number}

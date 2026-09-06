@@ -6,6 +6,10 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    // scripts/*.mts import src/*.ts directly, which Node 26 runs by stripping
+    // types. Node requires the real extension in an ESM specifier; this lets
+    // tsc agree. Safe because nothing here is emitted.
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",

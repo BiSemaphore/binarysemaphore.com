@@ -1,0 +1,257 @@
+/* --- The topic shell (/topics) ------------------------------------------- */
+/* Discord's structure, not its palette. The one thing genuinely worth copying
+   from Discord's colour is the *layering*: three distinct greys, darkest at the
+   rail and lightest in the reading pane, so depth reads without a single border.
+   A flat surface was why the first attempt looked wrong.
+
+   Scoped with the same token-override technique `.learn-canvas` uses. The
+   selector is `html:not(.dark) .learn-canvas:has(...)` rather than
+   `html .learn-canvas:has(...)` so it *outranks* the light-mode rule on
+   specificity instead of merely coming after it. Winning by source order is
+   what made this file impossible to split. */
+/* Light is the default, dark is the override, the same way the rest of the site
+   works. The first version pinned dark unconditionally, which is why the theme
+   toggle appeared to do nothing here and had to be hidden. */
+.topics-shell,
+html:not(.dark) .learn-canvas:has(.topics-shell) {
+  --rail: #e1e3e6; /* darkest of the three, as on dark */
+  --sidebar: #f0f1f3;
+  --background: #ffffff; /* the reading pane, lightest */
+  --card: #e6e8ea;
+  --card-hover: #dcdee2;
+  --foreground: #101114;
+  --muted: #4b4d55;
+  --subtle: #5f6169;
+  --border: rgba(0, 0, 0, 0.08);
+  --accent: #101114;
+  --accent-strong: #000000;
+  color-scheme: light;
+}
+
+.dark .topics-shell,
+.dark .learn-canvas:has(.topics-shell) {
+  --rail: #050506; /* matte, not #000: pure black crushes on OLED */
+  --sidebar: #0c0c0e;
+  --background: #131316;
+  --card: #1b1b1f;
+  --card-hover: #26262c;
+  --foreground: #f2f2f3;
+  --muted: #a8a8b0;
+  --subtle: #75757e;
+  --border: rgba(255, 255, 255, 0.07);
+  --accent: #f2f2f3;
+  --accent-strong: #ffffff;
+  color-scheme: dark;
+}
+
+/* An app shell has no marketing footer under it. Leaving it there added its own
+   height below a pane already sized to the viewport, which made the page scroll
+   on top of the panes scrolling. */
+html:not(.dark) .learn-canvas:has(.topics-shell) > footer,
+.dark .learn-canvas:has(.topics-shell) > footer {
+  display: none;
+}
+
+.rail-surface {
+  background: var(--rail);
+}
+.sidebar-surface {
+  background: var(--sidebar);
+}
+
+/* Discord's active-server tell: a 4px white pill on the left edge of the icon
+   column, growing out of nothing. Hover gives a short stub, current the full
+   bar. Measured from the spec, not guessed. */
+.rail-item::before {
+  content: "";
+  position: absolute;
+  left: -0.75rem;
+  width: 4px;
+  height: 0;
+  border-radius: 0 4px 4px 0;
+  background: #ffffff;
+  transition: height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rail-item:hover::before {
+  height: 20px;
+}
+.rail-item[aria-current]::before {
+  height: 40px;
+}
+
+/* The radius runs rounded-square -> circle, which is the direction Discord
+   actually animates. The first version had it inverted, circle -> squarer,
+   which is why the chrome read as "nearly Discord" and looked wrong. */
+.rail-item {
+  border-radius: 16px;
+  transition:
+    border-radius 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.rail-item:hover,
+.rail-item[aria-current] {
+  border-radius: 50%;
+}
+
+/* Row overlays are translucent, not solid fills. That is what lets one set of
+   values sit correctly on the rail, the sidebar and the reading pane, which are
+   three different greys. */
+.row-hover:hover {
+  background: rgba(78, 80, 88, 0.12);
+}
+.row-active {
+  background: rgba(78, 80, 88, 0.2);
+}
+.dark .row-hover:hover {
+  background: rgba(78, 80, 88, 0.3);
+}
+.dark .row-active {
+  background: rgba(78, 80, 88, 0.6);
+}
+
+/* A channel row. The hash is generated rather than typed into the label, so the
+   accessible name stays "operating-systems" and not "# operating-systems". */
+.channel::before {
+  content: "#";
+  margin-right: 0.375rem;
+  opacity: 0.5;
+  font-weight: 400;
+}
+
+/* Per-character decode on a topic title. Chrome only: prose is never animated,
+   because it hurts both readability and LCP. */
+@keyframes topic-decode {
+  from {
+    opacity: 0;
+    transform: translateY(0.16em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.decode > span {
+  display: inline-block;
+  animation: topic-decode 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .decode > span {
+    animation: none;
+  }
+  .rail-item,
+  .rail-item::before {
+    transition: none;
+  }
+}
+
+/* Topic reading pane: Ubuntu Mono.
+   A console face for a console-shaped surface. The shell already speaks in
+   `#channel` names, so the reading pane was the one part still in a UI sans.
+
+   A mono is not a drop-in for a proportional face. Every glyph is the same
+   width, so the same point size reads larger and the same measure holds fewer
+   words: the size comes down slightly, the leading goes up, and the tracking is
+   pulled in a touch. Without those three the page reads like a terminal dump.
+
+   `:is()` is here for specificity: the MDX component map sets Tailwind classes
+   directly on p and h2, and a bare element selector would lose to them. */
+.topic-prose {
+  font-family: var(--font-reading);
+}
+.topic-prose :is(p, li) {
+  font-family: var(--font-reading);
+  font-size: 0.95rem;
+  line-height: 1.85;
+  letter-spacing: -0.006em;
+}
+.topic-prose :is(h2, h3, h4) {
+  font-family: var(--font-reading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.topic-prose :is(strong, b) {
+  font-weight: 700;
+  color: var(--foreground);
+}
+/* Inline code inside a mono body needs to stop being "the mono bit" and start
+   being "the tinted bit", or it disappears into the surrounding text. */
+.topic-prose :not(pre) > code {
+  font-size: 0.92em;
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+/* The tooltip bubble: translated onto its anchor point per side, with an arrow
+   drawn from the same border trick on whichever edge faces the trigger. */
+.tooltip[data-side="top"] {
+  transform: translate(-50%, -100%);
+}
+.tooltip[data-side="bottom"] {
+  transform: translate(-50%, 0);
+}
+.tooltip[data-side="left"] {
+  transform: translate(-100%, -50%);
+}
+.tooltip[data-side="right"] {
+  transform: translate(0, -50%);
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  border: 5px solid transparent;
+}
+.tooltip[data-side="top"]::before {
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-top-color: #111214;
+}
+.tooltip[data-side="bottom"]::before {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-bottom-color: #111214;
+}
+.tooltip[data-side="left"]::before {
+  left: 100%;
+  top: 50%;
+  margin-top: -5px;
+  border-left-color: #111214;
+}
+.tooltip[data-side="right"]::before {
+  right: 100%;
+  top: 50%;
+  margin-top: -5px;
+  border-right-color: #111214;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tooltip {
+    animation: tooltip-in 0.12s ease-out both;
+  }
+  @keyframes tooltip-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+/* Discord's scrollbar: present, thin, and only obvious once you look for it. */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+.thin-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}

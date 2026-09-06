@@ -1,0 +1,91 @@
+Java gives you automatic memory management, and then spends the rest of your
+career making you care about it anyway.
+
+The collector is not magic and it is not free. It is a program running inside
+your program, and the only reason you notice it is that occasionally
+
+<Underline>it stops yours</Underline>.
+
+## Two places things live
+
+A local variable holding a number lives on the **stack**, in the frame for the
+method that declared it. When the method returns, the frame goes, and so does
+the variable. No collector involved.
+
+Anything you `new` lives on the **heap**, and the variable on the stack is a
+reference to it. The heap is shared across threads and it is what the collector
+manages.
+
+So `int x = 5` and `Integer x = 5` are not the same shape at all, and neither is
+`int[]` and `Integer[]`. One of those distinctions will cost you an interview
+question and the other will cost you memory.
+
+## The observation the whole design rests on
+
+Most objects die young.
+
+That is not a design decision, it is a measurement, and it holds across almost
+every program anyone has looked at. A request comes in, allocates a pile of
+short-lived objects, and finishes. Almost none of them survive.
+
+So the heap is split. New objects go in a small **young generation**, and
+collecting it means finding the few survivors and copying them out rather than
+finding the many dead ones and cleaning them up. That is cheap, and it is cheap
+precisely because most of what it looks at is garbage.
+
+Survive enough of those collections and you get promoted to the **old
+generation**, which is collected far less often and much more expensively.
+
+The consequence worth carrying: <Highlight>allocation is cheap, promotion is
+not</Highlight>. An object that lives slightly too long costs far more than one
+that dies immediately.
+
+## Why the pause happened
+
+Some phases of collection need the heap to hold still. The collector cannot
+chase references while your threads are busy rewriting them, so it stops them.
+That is a **stop-the-world** pause, and it is the thing your users actually feel.
+
+Modern collectors work hard to shrink it. G1, the default since Java 9, splits
+the heap into regions and collects the ones with the most garbage first, which
+is where the name comes from. ZGC and Shenandoah go further and do most of their
+work concurrently, trading throughput for pauses that stay small even on large
+heaps.
+
+None of that makes pauses go away. It makes them shorter and more predictable,
+which is usually what you actually wanted.
+
+## What causes trouble in practice
+
+**Holding references you have finished with.** A static `Map` used as a cache
+with no eviction is the classic. Nothing is unreachable, so nothing is
+collected, and the heap grows until it does not. This is the Java version of a
+memory leak and it is entirely your doing.
+
+**Allocating in a loop that did not need to.** String concatenation inside a
+loop creates a new object each time round. `StringBuilder` exists for exactly
+this and the compiler will not always rescue you.
+
+**Assuming a bigger heap is a fix.** A larger heap often means longer
+collections, not fewer problems. If you are promoting garbage, more room to
+promote it into is not help.
+
+## What to do when it happens
+
+Not guess. There is real instrumentation here and almost nobody reaches for it.
+
+Turn on GC logging and read it: how often collections run, how long they take,
+and how much survives each one. If survivors are climbing steadily, something is
+being retained. Take a heap dump and look at what holds the most, then follow
+the reference chain back to whatever will not let go.
+
+The answer is nearly always a collection someone forgot to bound.
+
+## What an interviewer is checking
+
+They are rarely testing whether you can name the generations. They are testing
+whether you know that <Circle>you can still leak</Circle> in a garbage-collected
+language, and whether you understand why.
+
+If you can say "a leak in Java is an unwanted reference, not an unfreed
+allocation", you have answered the real question.

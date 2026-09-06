@@ -42,6 +42,59 @@ Run `lint` and `typecheck` before committing; CI runs both.
   `scripts/sync-notebooks.mjs` from the `learnings` repo. Never hand-edit them,
   and never let Prettier near them. Same MDX pattern as threads. Read
   [`docs/learn.md`](docs/learn.md) before touching the gate or adding a notebook.
+- `src/lib/learn/topics.ts` — the computer science topic tree: 23 subjects on
+  the rail, 93 channels in the sidebar, browsed at `/topics` in a Discord-style
+  shell. Channels are named after situations, never syllabus steps, and the test
+  suite enforces that. Prose lives in `src/content/topics/<subject>/<channel>.mdx`
+  behind the `topic-source.ts` seam, so **no page may import that directory
+  directly**. The shell is the one part of `learn` on a
+  black canvas; everything else stays white. Read
+  [`docs/topics.md`](docs/topics.md) before adding a topic or touching the shell.
+
+### Where a component goes
+
+- `src/components/*.tsx` — shared primitives used by more than one area
+  (`tooltip`, `photo`, `reveal`, `icons`, `annotate`, `doodle`).
+- `src/components/<area>/` — anything only one area uses (`learn/`, `resume/`,
+  `auth/`). Nest further only when a subtree earns it, as `learn/topics/` does.
+
+The test is who imports it, not what it is about. A component imported from one
+place under `src/app/<area>` belongs in `components/<area>`.
+
+Route boundaries exist at the root: `error.tsx`, `global-error.tsx` and
+`not-found.tsx`. Add a nested `error.tsx` only where a subtree needs to fail
+differently from the rest of the site.
+
+### The database
+
+Schema lives in `supabase/migrations/`, applied with the Supabase CLI
+(`npx supabase db push`). It is the only source of truth: the old
+`supabase/schema.sql` mirror is gone, and content is never seeded by a
+migration. Read [`docs/database.md`](docs/database.md) before adding a table.
+
+Four rules from it that are easy to get wrong:
+
+- **RLS filters rows; it does not grant table access.** A policy without a
+  matching `grant` produces "permission denied for table ...".
+- **Slugs use the `public.slug` domain**, and are unique within a `scope` (the
+  subject for a channel, the notebook for a section, null for a thread), never
+  globally.
+- **`private` is not exposed to PostgREST**, so nothing in it has a URL. Reach
+  it with `src/utils/supabase/admin.ts` through a `security definer` function,
+  never by exposing the schema.
+- **Being able to sign in must never imply being an admin.** Signup is global
+  and the email provider is on, so anyone can get an account. The gate is a row
+  in `private.admins`, checked by `is_admin()`.
+
+### Planned: admin.binarysemaphore.com
+
+Design in [`docs/admin.md`](docs/admin.md), nothing built yet. Two rules from it
+that apply the moment anyone starts: **being able to sign in must never imply
+being an admin** (the gate is an `admins` table and `is_admin()` in RLS, never
+the subdomain, which is routing), and after the move **Postgres is the source of
+truth for content, not git**. The trade-offs, including that runtime MDX
+evaluation makes an admin compromise a code-execution problem, are recorded in
+[`docs/content-backend.md`](docs/content-backend.md).
 
 ## Design system — repo tokens (rationale and palette concept in `docs/brand.md`; see `globals.css`)
 

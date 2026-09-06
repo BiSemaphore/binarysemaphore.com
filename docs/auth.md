@@ -21,7 +21,7 @@ security lives in Supabase and the database, not in application logic.
   calls `supabase.auth.getUser()` to keep the session fresh and rotate refresh
   tokens, and forwards the updated cookies. It no-ops when Supabase env vars are
   absent, so the site still builds and renders signed-out.
-- **RLS policies (`supabase/schema.sql`)** — every `resumes` row is owned by a
+- **RLS policies (`supabase/migrations/`)** — every `resumes` row is owned by a
   `user_id`, and policies restrict select/insert/update/delete to
   `auth.uid() = user_id`. Authorization is enforced by Postgres, so a bug in app
   code cannot leak another user's data.
