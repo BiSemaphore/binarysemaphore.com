@@ -1,4 +1,8 @@
-# admin.binarysemaphore.com
+# root.binarysemaphore.com
+
+The admin surface. Named for the Unix root user and deliberately obvious:
+hiding it behind a guessed name would be security through obscurity, and the
+boundary is a row in `private.admins`, not a hostname.
 
 > **Built.** This was the design; most of it now exists. `admin` routes,
 > `private.admins` with two rows, `is_admin()` in every write policy, an MDX

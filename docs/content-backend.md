@@ -221,7 +221,7 @@ schema change one command instead of a copy-paste.
 here are the ones that matter, and the database buys nothing we currently need.
 
 > **Superseded, same day.** Shahid proposed an admin at
-> `admin.binarysemaphore.com` for managing threads and learning modules. That is
+> `root.binarysemaphore.com` for managing threads and learning modules. That is
 > exactly condition (1) above: editing without a deploy. With an admin in the
 > plan, content in Postgres stops being overhead and becomes the point, because
 > a form cannot open a pull request. See `docs/admin.md`.

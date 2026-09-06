@@ -39,7 +39,7 @@ export const isAdmin = cache(async (): Promise<boolean> => {
 export async function requireAdmin(): Promise<User> {
   const user = await getCurrentUser();
   // Through adminBase(), because the same tree is served at
-  // admin.binarysemaphore.com/login and at /admin/login. Hard-coding "/admin"
+  // root.binarysemaphore.com/login and at /admin/login. Hard-coding "/admin"
   // sends the subdomain to /admin/admin/login, since the proxy already rewrites
   // "/" to "/admin" there.
   const base = await adminBase();
