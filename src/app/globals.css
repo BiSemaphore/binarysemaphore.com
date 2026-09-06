@@ -750,6 +750,14 @@ html .learn-canvas:has(.topics-shell) > footer {
   display: none;
 }
 
+/* The theme toggle goes with it. The shell pins its own tokens, so the toggle
+   would flip `.dark` on <html> and change nothing visible: a control that moves
+   and does nothing is worse than no control. If /topics ever gets a light
+   variant, delete this rule and the toggle starts working again. */
+html .learn-canvas:has(.topics-shell) .theme-slot {
+  display: none;
+}
+
 .rail-surface {
   background: var(--rail);
 }

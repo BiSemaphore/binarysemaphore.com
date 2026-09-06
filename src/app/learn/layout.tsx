@@ -94,7 +94,11 @@ export default async function LearnLayout({
           </div>
 
           <div className="flex shrink-0 items-center gap-3">
-            <ThemeToggle />
+            {/* Hidden on /topics by CSS: that surface is deliberately one
+                look, so a toggle there would move and change nothing. */}
+            <span className="theme-slot">
+              <ThemeToggle />
+            </span>
             {user ? (
               <form action="/auth/signout" method="post">
                 <button

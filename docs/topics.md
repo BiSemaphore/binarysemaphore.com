@@ -296,6 +296,12 @@ Matte black, scoped to `.topics-shell` with the same token-override technique
 
 White is the only other colour. No accent hue.
 
+**The theme toggle is hidden on `/topics`.** The shell pins its own tokens, so
+the toggle would flip `.dark` on `<html>` and change nothing visible. A control
+that moves and does nothing is worse than no control. It is one CSS rule
+(`.theme-slot`), so if `/topics` ever gains a light variant, delete the rule and
+the toggle works again.
+
 **The black stops at `/topics`.** The mentorship page, roadmaps and the notebook
 reader stay on the white canvas. This is a deliberate split rather than an
 inconsistency: the pitch is a page and the tree is an app, and long-form reading
