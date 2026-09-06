@@ -9,12 +9,30 @@
    `html .learn-canvas:has(...)` so it *outranks* the light-mode rule on
    specificity instead of merely coming after it. Winning by source order is
    what made this file impossible to split. */
+/* Light is the default, dark is the override, the same way the rest of the site
+   works. The first version pinned dark unconditionally, which is why the theme
+   toggle appeared to do nothing here and had to be hidden. */
 .topics-shell,
-html:not(.dark) .learn-canvas:has(.topics-shell),
+html:not(.dark) .learn-canvas:has(.topics-shell) {
+  --rail: #e1e3e6; /* darkest of the three, as on dark */
+  --sidebar: #f0f1f3;
+  --background: #ffffff; /* the reading pane, lightest */
+  --card: #e6e8ea;
+  --card-hover: #dcdee2;
+  --foreground: #101114;
+  --muted: #4b4d55;
+  --subtle: #5f6169;
+  --border: rgba(0, 0, 0, 0.08);
+  --accent: #101114;
+  --accent-strong: #000000;
+  color-scheme: light;
+}
+
+.dark .topics-shell,
 .dark .learn-canvas:has(.topics-shell) {
-  --rail: #050506; /* darkest: the group rail */
-  --sidebar: #0c0c0e; /* the channel list */
-  --background: #131316; /* the reading pane, lightest of the three */
+  --rail: #050506; /* matte, not #000: pure black crushes on OLED */
+  --sidebar: #0c0c0e;
+  --background: #131316;
   --card: #1b1b1f;
   --card-hover: #26262c;
   --foreground: #f2f2f3;
@@ -26,21 +44,11 @@ html:not(.dark) .learn-canvas:has(.topics-shell),
   color-scheme: dark;
 }
 
-/* An app shell has no marketing footer under it. Leaving it there added its
-   own height below a pane already sized to the viewport, which is what made the
-   page scroll on top of the panes scrolling. Same `:has()` scoping as the
-   palette, so it only disappears on /topics. */
+/* An app shell has no marketing footer under it. Leaving it there added its own
+   height below a pane already sized to the viewport, which made the page scroll
+   on top of the panes scrolling. */
 html:not(.dark) .learn-canvas:has(.topics-shell) > footer,
 .dark .learn-canvas:has(.topics-shell) > footer {
-  display: none;
-}
-
-/* The theme toggle goes with it. The shell pins its own tokens, so the toggle
-   would flip `.dark` on <html> and change nothing visible: a control that moves
-   and does nothing is worse than no control. If /topics ever gets a light
-   variant, delete this rule and the toggle starts working again. */
-html:not(.dark) .learn-canvas:has(.topics-shell) .theme-slot,
-.dark .learn-canvas:has(.topics-shell) .theme-slot {
   display: none;
 }
 
@@ -90,9 +98,15 @@ html:not(.dark) .learn-canvas:has(.topics-shell) .theme-slot,
    values sit correctly on the rail, the sidebar and the reading pane, which are
    three different greys. */
 .row-hover:hover {
-  background: rgba(78, 80, 88, 0.3);
+  background: rgba(78, 80, 88, 0.12);
 }
 .row-active {
+  background: rgba(78, 80, 88, 0.2);
+}
+.dark .row-hover:hover {
+  background: rgba(78, 80, 88, 0.3);
+}
+.dark .row-active {
   background: rgba(78, 80, 88, 0.6);
 }
 

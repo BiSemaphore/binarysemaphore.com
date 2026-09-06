@@ -1,39 +1,12 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { TopicGroup } from "@/lib/learn/topics";
 import { GroupIcon } from "@/components/learn/topics/group-icons";
 import { Tooltip } from "@/components/tooltip";
 import { MenuIcon, CloseIcon } from "@/components/icons";
-
-const STORE = "topics:collapsed";
-
-/** Group slugs the viewer has collapsed. Never throws: storage can be blocked. */
-function readCollapsed(): Set<string> {
-  try {
-    const saved = localStorage.getItem(STORE);
-    return new Set(saved ? (JSON.parse(saved) as string[]) : []);
-  } catch {
-    return new Set();
-  }
-}
-
-function writeCollapsed(slugs: Set<string>) {
-  try {
-    localStorage.setItem(STORE, JSON.stringify([...slugs]));
-  } catch {
-    // Private window or blocked site data. The tree still works, it just will
-    // not be remembered.
-  }
-}
 
 /**
  * The topic shell: group rail, channel sidebar, reading pane.
@@ -50,9 +23,17 @@ function writeCollapsed(slugs: Set<string>) {
  * `100dvh` rather than `100vh`, so collapsing mobile browser chrome does not
  * leave a dead strip under the sidebar.
  *
+ * **The rail filters, it does not scroll.** The first version listed all twelve
+ * groups in the sidebar at once and used the rail as anchor links, which is not
+ * what a Discord rail does: picking a server shows that server's channels and
+ * hides every other server's. Picking a group here does the same, so the
+ * sidebar only ever holds one group's channels.
+ *
+ * With no group selected (the `/topics` index) the sidebar lists the groups
+ * themselves, the way Discord's home shows conversations rather than channels.
+ *
  * The rail and sidebar are one instance, moved off-canvas by transform below
- * `md`, rather than rendered twice. A second copy would duplicate every
- * `id="group-*"` and break the rail's own anchor links.
+ * `md`, rather than rendered twice.
  */
 export function TopicsShell({
   groups,
@@ -70,24 +51,8 @@ export function TopicsShell({
   );
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const details = useRef(new Map<string, HTMLDetailsElement>());
 
-  // Restore by writing to the DOM, not by setting state: the server has no
-  // localStorage, so the markup ships expanded and closes on arrival for anyone
-  // who collapsed a group last time.
-  useEffect(() => {
-    const collapsed = readCollapsed();
-    for (const [slug, el] of details.current) el.open = !collapsed.has(slug);
-  }, []);
-
-  const onToggle = useCallback((slug: string, open: boolean) => {
-    const collapsed = readCollapsed();
-    if (open) collapsed.delete(slug);
-    else collapsed.add(slug);
-    writeCollapsed(collapsed);
-  }, []);
-
-  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+  const closeDrawer = () => setDrawerOpen(false);
 
   return (
     <div className="topics-shell flex h-[calc(100dvh-3.5rem)] overflow-hidden bg-background text-foreground">
@@ -119,18 +84,19 @@ export function TopicsShell({
                 side="right"
                 delay={120}
               >
-                <a
-                  href={`#group-${group.slug}`}
+                <Link
+                  href={`${base}/topics/${group.topics[0].slug}`}
+                  onClick={closeDrawer}
                   aria-current={current ? "true" : undefined}
                   className={`rail-item relative grid h-12 w-12 shrink-0 place-items-center ${
                     current
-                      ? "bg-foreground text-[#050506]"
+                      ? "bg-foreground text-background"
                       : "bg-card text-muted hover:bg-card-hover hover:text-foreground"
                   }`}
                 >
                   <GroupIcon group={group.slug} className="h-[22px] w-[22px]" />
                   <span className="sr-only">{group.name}</span>
-                </a>
+                </Link>
               </Tooltip>
             );
           })}
@@ -157,61 +123,60 @@ export function TopicsShell({
             aria-label="Topics"
             className="thin-scroll min-h-0 flex-1 overflow-y-auto px-2 py-3"
           >
-            {groups.map((group) => (
-              <details
-                key={group.slug}
-                id={`group-${group.slug}`}
-                open
-                ref={(el) => {
-                  if (el) details.current.set(group.slug, el);
-                  else details.current.delete(group.slug);
-                }}
-                onToggle={(event) =>
-                  onToggle(group.slug, event.currentTarget.open)
-                }
-                className="group/cat mb-3 scroll-mt-3"
-              >
-                <summary className="flex h-6 cursor-pointer list-none items-center gap-0.5 px-2 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.02em] text-subtle transition-colors hover:text-foreground">
-                  <span
-                    aria-hidden
-                    className="inline-block -rotate-90 text-[0.7rem] transition-transform duration-200 group-open/cat:rotate-0"
-                  >
-                    &#9662;
-                  </span>
-                  <span className="truncate">{group.name}</span>
-                </summary>
-
-                <ul className="mt-0.5">
-                  {group.topics.map((topic) => {
-                    const current = topic.slug === activeSlug;
-                    return (
-                      <li key={topic.slug}>
-                        <Tooltip
-                          label={topic.slug}
-                          side="right"
-                          onlyWhenTruncated
+            {activeGroup ? (
+              <ul>
+                {activeGroup.topics.map((topic) => {
+                  const current = topic.slug === activeSlug;
+                  return (
+                    <li key={topic.slug}>
+                      <Tooltip
+                        label={topic.slug}
+                        side="right"
+                        onlyWhenTruncated
+                      >
+                        <Link
+                          href={`${base}/topics/${topic.slug}`}
+                          onClick={closeDrawer}
+                          aria-current={current ? "page" : undefined}
+                          className={`channel mx-2 flex h-8 items-center rounded-[4px] px-2 font-mono text-[0.9rem] font-medium transition-colors ${
+                            current
+                              ? "row-active text-foreground"
+                              : "row-hover text-subtle hover:text-muted"
+                          }`}
                         >
-                          <Link
-                            href={`${base}/topics/${topic.slug}`}
-                            onClick={closeDrawer}
-                            aria-current={current ? "page" : undefined}
-                            className={`channel mx-2 flex h-8 items-center rounded-[4px] px-2 font-mono text-[0.9rem] font-medium transition-colors ${
-                              current
-                                ? "row-active text-foreground"
-                                : "row-hover text-subtle hover:text-muted"
-                            }`}
-                          >
-                            <span data-truncate className="truncate">
-                              {topic.slug}
-                            </span>
-                          </Link>
-                        </Tooltip>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </details>
-            ))}
+                          <span data-truncate className="truncate">
+                            {topic.slug}
+                          </span>
+                        </Link>
+                      </Tooltip>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              /* No group selected: list the groups, the way Discord's home
+                 shows conversations rather than one server's channels. */
+              <ul>
+                {groups.map((group) => (
+                  <li key={group.slug}>
+                    <Link
+                      href={`${base}/topics/${group.topics[0].slug}`}
+                      onClick={closeDrawer}
+                      className="row-hover mx-2 flex h-9 items-center gap-2.5 rounded-[4px] px-2 text-[0.85rem] text-subtle transition-colors hover:text-foreground"
+                    >
+                      <GroupIcon
+                        group={group.slug}
+                        className="h-4 w-4 shrink-0"
+                      />
+                      <span className="truncate">{group.name}</span>
+                      <span className="ml-auto font-mono text-[0.7rem] text-subtle">
+                        {group.topics.length}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </nav>
         </div>
       </div>
