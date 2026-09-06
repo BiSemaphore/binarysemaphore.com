@@ -49,6 +49,20 @@ Run `lint` and `typecheck` before committing; CI runs both.
   black canvas; everything else stays white. Read
   [`docs/topics.md`](docs/topics.md) before adding a topic or touching the shell.
 
+### Where a component goes
+
+- `src/components/*.tsx` — shared primitives used by more than one area
+  (`tooltip`, `photo`, `reveal`, `icons`, `annotate`, `doodle`).
+- `src/components/<area>/` — anything only one area uses (`learn/`, `resume/`,
+  `auth/`). Nest further only when a subtree earns it, as `learn/topics/` does.
+
+The test is who imports it, not what it is about. A component imported from one
+place under `src/app/<area>` belongs in `components/<area>`.
+
+Route boundaries exist at the root: `error.tsx`, `global-error.tsx` and
+`not-found.tsx`. Add a nested `error.tsx` only where a subtree needs to fail
+differently from the rest of the site.
+
 ## Design system — repo tokens (rationale and palette concept in `docs/brand.md`; see `globals.css`)
 
 - Palette tokens drive Tailwind utilities: `bg-coral`, `text-accent-strong`, etc. Candy panels: `coral`, `blue`, `violet`, `sun`.
