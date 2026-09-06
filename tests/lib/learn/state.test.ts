@@ -11,7 +11,7 @@ const inDays = (n: number) => new Date(NOW + n * 86_400_000).toISOString();
 
 function row(over: Partial<EntitlementRow> = {}): EntitlementRow {
   return {
-    product_id: "postgres",
+    notebook_id: "postgres",
     status: "active",
     source: "trial",
     expires_at: inDays(7),

@@ -19,7 +19,7 @@ export type Access =
 
 /** One entitlements row, as selected. */
 export type EntitlementRow = {
-  product_id: string;
+  notebook_id: string;
   status: string;
   source: string;
   expires_at: string | null;

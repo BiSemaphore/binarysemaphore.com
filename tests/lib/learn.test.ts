@@ -20,11 +20,6 @@ const migration = readdirSync(migrationsDir)
   .map((f) => readFileSync(path.join(migrationsDir, f), "utf8"))
   .join("\n");
 
-const schema = readFileSync(
-  path.join(process.cwd(), "supabase/schema.sql"),
-  "utf8",
-);
-
 describe("the notebook catalog", () => {
   it("has a unique slug per notebook", () => {
     const slugs = notebooks.map((n) => n.slug);
@@ -76,59 +71,25 @@ describe("the notebook catalog", () => {
   });
 });
 
-describe("learn_products stays in step with the catalog", () => {
-  // The database needs a row per notebook for the entitlements foreign key and
-  // for start_learn_trial()'s validation. Drift means a working page with a
-  // button that always errors, which is worth failing a build over.
-  it("seeds every catalog slug in the migration", () => {
+describe("catalog slugs are storable", () => {
+  // The `slug` domain in the schema rejects anything outside this shape, and a
+  // notebook whose slug it rejects cannot be seeded at all. Catching it here
+  // means a bad slug fails a test rather than a deploy.
+  const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+  it("matches the slug domain in the database", () => {
     for (const notebook of notebooks) {
-      expect(migration, notebook.slug).toContain(`('${notebook.slug}'`);
+      expect(notebook.slug, notebook.slug).toMatch(SLUG);
+      expect(notebook.slug.length, notebook.slug).toBeLessThanOrEqual(80);
     }
   });
 
-  // supabase/schema.sql mirrors the migrations by convention (see the header on
-  // 0001_init.sql), so a notebook added to one and not the other would leave a
-  // freshly built database missing a row.
-  it("keeps schema.sql in step with the migration", () => {
-    for (const notebook of notebooks) {
-      expect(schema, notebook.slug).toContain(`('${notebook.slug}'`);
-    }
-    expect(schema).toContain("public.start_learn_trial");
-    expect(schema).toContain("public.has_learn_access");
-  });
-
-  // A slug can leave the catalog (a notebook is retired) but its row must stay,
-  // because entitlements reference it. What must not happen is a row that is
-  // still active while the site no longer lists it: start_learn_trial() would
-  // hand out access to something with no page.
-  it("deactivates any seeded slug the catalog no longer lists", () => {
-    const seeded = [...migration.matchAll(/^ {2}\('([a-z0-9-]+)',/gm)].map(
-      (m) => m[1],
-    );
-    const retired = new Set(
-      [
-        ...migration.matchAll(
-          /set\s+active\s*=\s*false\s+where\s+id\s*=\s*'([a-z0-9-]+)'/gm,
-        ),
-      ].map((m) => m[1]),
-    );
-
-    for (const slug of seeded) {
-      if (getNotebook(slug)) continue;
-      expect(retired, `${slug} is seeded, absent from the catalog, and never retired`).toContain(slug);
-    }
-  });
-
-  it("does not retire a notebook that is still on the site", () => {
-    const retired = [
-      ...migration.matchAll(
-        /set\s+active\s*=\s*false\s+where\s+id\s*=\s*'([a-z0-9-]+)'/gm,
-      ),
-    ].map((m) => m[1]);
-
-    for (const slug of retired) {
-      expect(getNotebook(slug), `${slug} is retired but still in the catalog`).toBeUndefined();
-    }
+  // Content is no longer seeded by a migration: three of the old ten were
+  // content edits, which is what made the migration folder a changelog. The
+  // catalog is synced into Postgres by a script instead, so the only thing a
+  // migration can now get wrong about a notebook is its shape.
+  it("keeps content out of the migrations", () => {
+    expect(migration).not.toMatch(/insert into public\.notebooks/i);
   });
 });
 

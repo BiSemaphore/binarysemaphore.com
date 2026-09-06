@@ -1,14 +1,14 @@
 /**
  * Note requests: which topics readers have asked us to write up.
  *
- * 52 of the 64 topics have nothing of ours behind them. This is how we find out
- * which to write next from the people who actually want them, rather than
+ * 86 of the 93 channels have nothing of ours behind them. This is how we find
+ * out which to write next from the people who actually want them, rather than
  * guessing.
  *
  * The reader writes their own row directly, as with `reading_progress`. RLS is
- * the boundary: `supabase/migrations/0010_note_requests.sql` restricts every
- * policy to `auth.uid() = user_id` and bounds both text fields, so a request
- * cannot be filed as somebody else and the table cannot be used as free storage.
+ * the boundary: every policy is restricted to `auth.uid() = user_id` and bounds
+ * both text fields, so a request cannot be filed as somebody else and the table
+ * cannot be used as free storage.
  *
  * Server-only: uses the SSR Supabase client.
  */

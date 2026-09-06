@@ -65,6 +65,27 @@ Route boundaries exist at the root: `error.tsx`, `global-error.tsx` and
 `not-found.tsx`. Add a nested `error.tsx` only where a subtree needs to fail
 differently from the rest of the site.
 
+### The database
+
+Schema lives in `supabase/migrations/`, applied with the Supabase CLI
+(`npx supabase db push`). It is the only source of truth: the old
+`supabase/schema.sql` mirror is gone, and content is never seeded by a
+migration. Read [`docs/database.md`](docs/database.md) before adding a table.
+
+Four rules from it that are easy to get wrong:
+
+- **RLS filters rows; it does not grant table access.** A policy without a
+  matching `grant` produces "permission denied for table ...".
+- **Slugs use the `public.slug` domain**, and are unique within a `scope` (the
+  subject for a channel, the notebook for a section, null for a thread), never
+  globally.
+- **`private` is not exposed to PostgREST**, so nothing in it has a URL. Reach
+  it with `src/utils/supabase/admin.ts` through a `security definer` function,
+  never by exposing the schema.
+- **Being able to sign in must never imply being an admin.** Signup is global
+  and the email provider is on, so anyone can get an account. The gate is a row
+  in `private.admins`, checked by `is_admin()`.
+
 ### Planned: admin.binarysemaphore.com
 
 Design in [`docs/admin.md`](docs/admin.md), nothing built yet. Two rules from it

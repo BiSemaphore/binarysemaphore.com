@@ -11,7 +11,7 @@ import { requestNote, withdrawNote } from "@/lib/learn/note-requests";
  * Open a notebook for the signed-in reader.
  *
  * Deliberately does nothing when signed out rather than redirecting: the form
- * is only rendered to signed-in users, and `grant_learn_access()` rejects an
+ * is only rendered to signed-in users, and `grant_notebook_access()` rejects an
  * anonymous caller anyway. Keeping the action dumb means there is no second
  * place where access could be granted by mistake.
  */

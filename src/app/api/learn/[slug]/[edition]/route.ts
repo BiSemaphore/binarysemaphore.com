@@ -18,7 +18,7 @@ function isEditionId(value: string): value is EditionId {
  * The download is served through this route rather than by redirecting to a
  * signed URL, because the stamp has to be applied per reader. The bucket stays
  * private either way: `download()` runs as the signed-in user, and the bucket's
- * RLS policy re-checks `has_learn_access()` against the first segment of the
+ * RLS policy re-checks `has_notebook_access()` against the first segment of the
  * object path, so the fetch fails for a user without a live grant even if the
  * check below were wrong. See supabase/migrations/0003_learn.sql.
  */

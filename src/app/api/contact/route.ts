@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server";
-import { createClient, isSupabaseConfigured } from "@/utils/supabase/server";
+import { createAdminClient, isAdminConfigured } from "@/utils/supabase/admin";
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 /**
  * POST /api/contact
- * A worked example of writing to Supabase from a Route Handler. Validates a
- * contact submission and inserts it into the `contact_messages` table using the
- * server-only service-role client. See supabase/schema.sql for the table.
+ *
+ * Writes to `private.inbox`, which has no URL: the schema is not exposed to
+ * PostgREST, so this cannot be done from a browser under any policy. The route
+ * calls `record_inbox_message` with the service key instead, which is the only
+ * grant on that function.
+ *
+ * The checks below exist so a person gets a useful message. The function checks
+ * the same bounds again, and that is the rule.
  */
 export async function POST(request: Request) {
-  if (!isSupabaseConfigured()) {
+  if (!isAdminConfigured()) {
     return NextResponse.json(
       { error: "Contact storage is not configured yet." },
       { status: 503 },
@@ -42,10 +47,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Message is too long." }, { status: 400 });
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("contact_messages")
-    .insert({ name, email, message });
+  const { error } = await createAdminClient().rpc("record_inbox_message", {
+    p_kind: "contact",
+    p_name: name,
+    p_email: email,
+    p_body: message,
+  });
 
   if (error) {
     console.error("contact insert failed:", error.message);

@@ -24,7 +24,7 @@ port = 54322
 shadow_port = 54320
 # Match your hosted project's Postgres major version. Bump if `supabase start`
 # complains about the image (recent CLIs default to 15/17).
-major_version = 15
+major_version = 17
 
 [db.pooler]
 enabled = false

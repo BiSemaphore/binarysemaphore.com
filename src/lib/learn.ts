@@ -9,7 +9,7 @@
  * exists and what it is called; `src/lib/learn/access.ts` decides who may read
  * it.
  *
- * Every `slug` here must also exist in `public.learn_products` (seeded in
+ * Every `slug` here must also exist in `public.notebooks` (seeded in
  * supabase/migrations/0003_learn.sql). tests/lib/learn.test.ts enforces that.
  */
 
@@ -78,7 +78,7 @@ export type EditionAsset = {
 };
 
 export type Notebook = {
-  /** URL slug, storage folder, and `learn_products.id`. All the same string. */
+  /** URL slug, storage folder, and `notebooks.id`. All the same string. */
   slug: string;
   /** e.g. "System Design Notebook". */
   series: string;

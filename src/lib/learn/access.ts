@@ -4,12 +4,11 @@
  * There is exactly one question in this file, `getAccess`, and everything else
  * in the product asks it: the library page, the notebook page, and the download
  * route. The database asks it too, independently, in the storage policy on the
- * `notebooks` bucket (see supabase/migrations/0003_learn.sql), so a bug here
- * cannot hand out a file.
+ * `notebooks` bucket, so a bug here cannot hand out a file.
  *
- * Today the only way to get access is a free trial. When payments land, a paid
- * grant is the same `entitlements` row with `source = 'stripe'` and a null
- * `expires_at`, written by the webhook. Nothing in this file changes.
+ * Access is free and permanent today. When payments land, a paid grant is the
+ * same `entitlements` row with `source = 'purchase'`, written by the webhook
+ * with the service key. Nothing in this file changes.
  *
  * Server-only: imports the SSR Supabase client, which reads `next/headers`. The
  * pure state rules live in ./state.ts and can be imported anywhere.
@@ -40,7 +39,7 @@ export function isDevUnlocked(): boolean {
   );
 }
 
-const COLUMNS = "product_id, status, source, expires_at";
+const COLUMNS = "notebook_id, status, source, expires_at";
 
 /**
  * Every grant the current user holds, keyed by notebook slug. One query, so the
@@ -58,13 +57,13 @@ export async function getAllAccess(): Promise<Map<string, Access>> {
   const { data } = await supabase.from("entitlements").select(COLUMNS);
 
   for (const row of (data ?? []) as EntitlementRow[]) {
-    result.set(row.product_id, toAccess(row));
+    result.set(row.notebook_id, toAccess(row));
   }
   return result;
 }
 
 /** Access to one notebook for the current user. */
-export async function getAccess(productId: string): Promise<Access> {
+export async function getAccess(notebookId: string): Promise<Access> {
   // Applied here so every caller agrees: the reader, the landing page and the
   // download route all ask this one question.
   if (isDevUnlocked()) {
@@ -80,7 +79,7 @@ export async function getAccess(productId: string): Promise<Access> {
   const { data } = await supabase
     .from("entitlements")
     .select(COLUMNS)
-    .eq("product_id", productId)
+    .eq("notebook_id", notebookId)
     .maybeSingle();
 
   return toAccess(data as EntitlementRow | null);
@@ -92,15 +91,15 @@ export async function getAccess(productId: string): Promise<Access> {
  * Calls the security-definer function rather than inserting, so a client cannot
  * write its own row. Idempotent: a second call returns the existing grant.
  */
-export async function grantAccess(productId: string): Promise<Access> {
+export async function grantAccess(notebookId: string): Promise<Access> {
   if (!isSupabaseConfigured()) return { state: "anonymous" };
 
   const user = await getCurrentUser();
   if (!user) return { state: "anonymous" };
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("grant_learn_access", {
-    p_product_id: productId,
+  const { data, error } = await supabase.rpc("grant_notebook_access", {
+    p_notebook: notebookId,
   });
 
   if (error) throw new Error(`Could not open the notebook: ${error.message}`);

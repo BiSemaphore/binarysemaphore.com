@@ -10,7 +10,7 @@ import { useState } from "react";
  * what lets a reply be worth reading.
  *
  * Posts JSON to POST /api/mentorship, which validates and inserts. The insert
- * policy on `mentorship_requests` is the real boundary; the messages here exist
+ * server route is the real boundary; the messages here exist
  * so a person is told what to fix.
  */
 
