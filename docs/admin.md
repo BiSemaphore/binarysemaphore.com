@@ -1,5 +1,23 @@
 # admin.binarysemaphore.com
 
+> **Built.** This was the design; most of it now exists. `admin` routes,
+> `private.admins` with two rows, `is_admin()` in every write policy, an MDX
+> editor at `/admin/documents/[id]`, lists for threads and topics, and the
+> merged inbox. Threads, the topic tree and the notebook catalog have all moved
+> to Postgres and their files are deleted. The schema and its reasoning are in
+> [`database.md`](database.md).
+>
+> **Accounts.** Two admins: `razashahid532@gmail.com` (OAuth, the pre-existing
+> account) and `shahid@binarysemaphore.com` (email and password). The password
+> lives in Supabase Auth as a hash and **is not in any env file**. Putting it in
+> one would mean the app compares it itself, which skips Supabase's rate
+> limiting, puts the credential in deploy logs and on every developer machine,
+> and gives us a second place for it to drift from the real one. Nothing needs
+> the plaintext: `signInWithPassword` checks it against the hash.
+>
+> **Still open:** MFA, and a password-reset page so a forgotten password does
+> not need the service key.
+
 Design for the admin surface: one place to create and edit threads, subjects,
 channels and notebook metadata, without a deploy.
 
