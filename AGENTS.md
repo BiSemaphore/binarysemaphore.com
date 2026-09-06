@@ -97,14 +97,27 @@ Four rules from it that are easy to get wrong:
   and the email provider is on, so anyone can get an account. The gate is a row
   in `private.admins`, checked by `is_admin()`.
 
-### Planned: admin.binarysemaphore.com
+### root.binarysemaphore.com
 
-Design in [`docs/admin.md`](docs/admin.md), nothing built yet. Two rules from it
-that apply the moment anyone starts: **being able to sign in must never imply
-being an admin** (the gate is an `admins` table and `is_admin()` in RLS, never
-the subdomain, which is routing), and after the move **Postgres is the source of
-truth for content, not git**. The trade-offs, including that runtime MDX
-evaluation makes an admin compromise a code-execution problem, are recorded in
+The admin, built and live. Routes live under `src/app/admin/`, served at
+`root.binarysemaphore.com` and at `/admin` elsewhere; use `adminBase()` for
+links and redirects, never a hard-coded `/admin`, or the subdomain gets
+`/admin/admin`. Read [`docs/admin.md`](docs/admin.md).
+
+Three rules that are easy to break:
+
+- **Being able to sign in must never imply being an admin.** The gate is a row
+  in `private.admins` and `is_admin()` in every write policy, never the
+  subdomain, which is routing. `binarysemaphore.com/admin` and any preview URL
+  reach the same tree on purpose.
+- **The `(workspace)` layout gates, `admin/layout.tsx` does not.** Login and
+  denied live under `/admin` too, and a gate above them would need a path
+  exception.
+- **Postgres is the source of truth for content, not git.** Threads, the topic
+  tree and the notebook catalog have all moved and their files are deleted.
+
+Runtime MDX evaluation makes an admin compromise a code-execution problem, which
+is why `private.admins` stays tiny. Recorded in
 [`docs/content-backend.md`](docs/content-backend.md).
 
 ## Design system — repo tokens (rationale and palette concept in `docs/brand.md`; see `globals.css`)
