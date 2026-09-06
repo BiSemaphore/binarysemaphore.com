@@ -4,9 +4,8 @@ import { roadmaps, countStops } from "@/lib/learn/roadmaps";
 import { learnBase } from "@/lib/learn/paths";
 import { Reveal } from "@/components/reveal";
 import { ArrowRightIcon } from "@/components/icons";
-import { NotesBlock, PaperSheet, type Tone } from "@/components/learn/paper";
-
-const TONES: Tone[] = ["mint", "sky", "peach", "pink"];
+import { NotesBlock, PaperSheet } from "@/components/learn/paper";
+import { TONES } from "@/lib/learn/tones";
 
 export const metadata: Metadata = {
   title: "Roadmaps",

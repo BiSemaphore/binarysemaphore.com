@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
-import { DrawnBox, type Tone } from "@/components/learn/paper";
+import { DrawnBox } from "@/components/learn/paper";
+import { TONES, toneAt } from "@/lib/learn/tones";
 
 /**
  * The two drawn things on the page.
@@ -10,15 +11,6 @@ import { DrawnBox, type Tone } from "@/components/learn/paper";
  * a student is holding. The hand-drawn quality comes from the uneven corners of
  * `.drawn-box` and from Caveat, not from a bitmap.
  */
-
-/**
- * What actually happens between the question and the answer. Four stages,
- * because a fifth turns it into a lecture.
- */
-const TONES: Tone[] = ["peach", "mint", "sky", "pink"];
-
-/** The same four highlighters, at chip strength. */
-const LEAF_BG = ["note-peach", "note-mint", "note-sky", "note-pink"];
 
 export function AiPipeline() {
   const { stages } = site.mentorship.ai;
@@ -93,7 +85,7 @@ export function SyllabusTree({ base }: { base: string }) {
             {branch.leaves.map((leaf, i) => (
               <li
                 key={leaf}
-                className={`rounded-full px-3 py-1 font-mono text-[0.68rem] tracking-wide text-foreground/75 ${LEAF_BG[i % LEAF_BG.length]}`}
+                className={`rounded-full px-3 py-1 font-mono text-[0.68rem] tracking-wide text-foreground/75 ${toneAt(i)}`}
               >
                 {leaf}
               </li>

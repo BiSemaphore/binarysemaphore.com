@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { StaticImageData } from "next/image";
 import { DotGrid } from "@/components/decoration";
+import { TONE_CLASS, type Tone } from "@/lib/learn/tones";
 import { Photo } from "@/components/photo";
 
 /**
@@ -15,15 +16,7 @@ import { Photo } from "@/components/photo";
  * every render reads as broken, not as handmade.
  */
 
-/** The four highlighter tones, matching the notebooks' own marks. */
-export type Tone = "peach" | "mint" | "sky" | "pink";
-
-const NOTE_BG: Record<Tone, string> = {
-  peach: "note-peach",
-  mint: "note-mint",
-  sky: "note-sky",
-  pink: "note-pink",
-};
+export type { Tone } from "@/lib/learn/tones";
 
 const TILT = ["-rotate-1", "rotate-1", "-rotate-2", "rotate-2"] as const;
 export type Tilt = 0 | 1 | 2 | 3;
@@ -44,7 +37,9 @@ export function PaperSheet({
   return (
     <div
       className={`relative isolate overflow-hidden rounded-card border shadow-soft ${
-        tone ? `${NOTE_BG[tone]} border-transparent` : "border-border bg-card"
+        tone
+          ? `${TONE_CLASS[tone]} border-transparent`
+          : "border-border bg-card"
       } ${className}`}
     >
       <DotGrid className="text-foreground/[0.07]" gap={24} size={1.2} />
@@ -73,7 +68,7 @@ export function StickyNote({
 }) {
   return (
     <div
-      className={`sticky-note ${NOTE_BG[tone]} ${TILT[tilt]} p-5 transition-transform duration-300 hover:rotate-0 ${className}`}
+      className={`sticky-note ${TONE_CLASS[tone]} ${TILT[tilt]} p-5 transition-transform duration-300 hover:rotate-0 ${className}`}
     >
       {children}
     </div>
@@ -95,7 +90,7 @@ export function StuckChip({
 }) {
   return (
     <span
-      className={`sticky-note ${NOTE_BG[tone]} ${TILT[tilt]} inline-block px-4 py-2 font-hand text-lg leading-none text-foreground transition-transform duration-300 hover:rotate-0`}
+      className={`sticky-note ${TONE_CLASS[tone]} ${TILT[tilt]} inline-block px-4 py-2 font-hand text-lg leading-none text-foreground transition-transform duration-300 hover:rotate-0`}
     >
       {label}
     </span>
@@ -182,7 +177,7 @@ export function DrawnBox({
   className?: string;
 }) {
   return (
-    <div className={`drawn-box ${tone ? NOTE_BG[tone] : ""} ${className}`}>
+    <div className={`drawn-box ${tone ? TONE_CLASS[tone] : ""} ${className}`}>
       {children}
     </div>
   );

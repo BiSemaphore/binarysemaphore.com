@@ -12,10 +12,8 @@ import {
   PaperSheet,
   Perforation,
   StickyNote,
-  type Tone,
 } from "@/components/learn/paper";
-
-const TONES: Tone[] = ["peach", "mint", "sky", "pink"];
+import { TONES } from "@/lib/learn/tones";
 
 export function generateStaticParams() {
   return roadmaps.map((roadmap) => ({ slug: roadmap.slug }));

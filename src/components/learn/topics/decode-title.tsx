@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * A topic title that resolves character by character as it arrives.
  *
@@ -11,6 +9,11 @@
  * Chrome only. Body prose is never animated: it hurts readability and LCP. With
  * `prefers-reduced-motion` the animation is dropped in CSS and the title is
  * simply present.
+ *
+ * Deliberately a server component. It has no state, no handlers and touches no
+ * browser API: the animation is CSS and the only per-character value is a
+ * static inline delay. Marking it `"use client"` shipped JavaScript to render
+ * spans.
  */
 export function DecodeTitle({
   text,
