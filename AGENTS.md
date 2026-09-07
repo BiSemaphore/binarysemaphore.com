@@ -34,8 +34,11 @@ Run `lint` and `typecheck` before committing; CI runs both.
 - `src/app/` — routes (`/`, `/threads`, `/threads/[slug]`, `/projects/[slug]`), `layout.tsx`, `globals.css`.
 - `src/components/` — section + UI components (hero, features, projects, team, contact, footer, header, decoration, reveal, doodle, icons).
 - `src/lib/site.ts` — **single source of truth** for all site copy, links, the `team` array, and `projects`. Edit copy here, not in components.
-- Threads live in Postgres, read by `src/lib/threads.ts` through `unstable_cache`
-  tagged `threads`. There is no `src/content/threads/` any more: the MDX moved in
+- Threads live in Postgres, read by `src/lib/threads.ts` on every request. There
+  is **no cache layer**: `unstable_cache` + `revalidateTag` was built, measured,
+  and found never to invalidate, so an edit took an hour to reach a reader. Do
+  not reintroduce it without a probe that proves invalidation. The note at the
+  top of `src/lib/threads.ts` has the method. There is no `src/content/threads/` any more: the MDX moved in
   a one-way sync and the files were deleted. A body is compiled at request time by
   `src/lib/mdx/runtime.tsx`, whose plugin list must stay in step with the one in
   `next.config.ts` (Turbopack takes plugin names, the runtime takes functions).

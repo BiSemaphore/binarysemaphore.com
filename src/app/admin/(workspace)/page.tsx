@@ -50,17 +50,15 @@ async function overview() {
       count("channel", "draft"),
       db.from("note_requests").select("topic", { count: "exact", head: true }),
       db.rpc("admin_inbox", { p_status: "new" }),
-      // Only documents a person has actually changed since they were created.
+      // Documents that have a revision, which is exactly the set a person has
+      // saved: the trigger writes one on every real change and nothing else
+      // writes to that table.
       //
       // Ordering by updated_at alone showed eight arbitrary channels, because
-      // the one-way sync stamped all 93 with the same second. That is an import
-      // timestamp wearing an edit history's clothes, and it is worse than an
-      // empty list: it invites you to trust an order that means nothing.
-      db
-        .from("documents")
-        .select("id, collection, scope, slug, title, status, updated_at, created_at")
-        .order("updated_at", { ascending: false })
-        .limit(40),
+      // the one-way sync stamped all 93 within the same second, and filtering
+      // on "updated later than created" was a guess about how far those stamps
+      // drifted during the import.
+      db.rpc("admin_recently_edited", { p_limit: 8 }),
     ]);
 
   return {
@@ -70,9 +68,7 @@ async function overview() {
     channelDrafts: channelDrafts.count ?? 0,
     requests: requests.count ?? 0,
     inbox: Array.isArray(inbox.data) ? inbox.data.length : 0,
-    recent: ((recent.data ?? []) as (Recent & { created_at: string })[])
-      .filter((d) => Date.parse(d.updated_at) - Date.parse(d.created_at) > 1000)
-      .slice(0, 8),
+    recent: (recent.data ?? []) as Recent[],
   };
 }
 
@@ -170,9 +166,9 @@ export default async function AdminOverview() {
 
         {o.recent.length === 0 ? (
           <p className="mt-2 rounded-xl border border-dashed border-border px-4 py-6 text-sm text-subtle">
-            Nothing has been edited here yet. Everything currently in the
-            database arrived through the one-way sync from git, so there is no
-            history to show until the first save.
+            Nothing has been saved from here yet. Everything in the database
+            arrived through the one-way sync from git, so there is no history
+            to show until the first edit.
           </p>
         ) : (
         <ul className="mt-2 divide-y divide-border border-y border-border">

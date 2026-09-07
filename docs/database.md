@@ -185,8 +185,14 @@ live and editable, is how content is silently lost.
 ## What this costs
 
 Every thread and channel page becomes a query plus an MDX compile where today it
-is a compiled import, so `unstable_cache` with tags is not optional
-(`cacheComponents` is not enabled, so `use cache` does not apply). Build-time
+is a compiled import.
+
+`unstable_cache` with tags was the obvious answer and is the wrong one: nothing
+invalidates it here, so an edit took an hour to reach a reader while the editor
+reported the cache cleared. Measured, not assumed, and removed. These pages
+query per request, at 110ms for `/threads`. Caching returns when invalidation is
+demonstrated, and the candidate is `cacheComponents` with `use cache` and
+`updateTag`. Build-time
 MDX errors become runtime errors, mitigated by compiling on save and refusing to
 store what does not compile. Review of copy on a preview deploy goes away, which
 is what `document_revisions` buys back.
