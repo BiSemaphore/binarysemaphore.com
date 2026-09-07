@@ -26,7 +26,13 @@ export default async function EditDocument({
   if (!doc) notFound();
 
   return (
-    <>
+    /*
+      Fills the shell instead of scrolling it. The header is fixed and the two
+      panes below share what is left, which is the whole point of bounding the
+      height in the layout.
+    */
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="shrink-0">
       <Link
         href={doc.collection === "thread" ? `${base}/threads` : `${base}/topics`}
         className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
@@ -74,6 +80,7 @@ export default async function EditDocument({
           would overwrite it without a trace, so the editor is read-only.
         </p>
       ) : null}
+      </div>
 
       <Editor
         id={doc.id}
@@ -85,9 +92,8 @@ export default async function EditDocument({
           body: doc.body_mdx ?? "",
           status: doc.status,
         }}
+        revisions={<Revisions documentId={doc.id} />}
       />
-
-      <Revisions documentId={doc.id} />
-    </>
+    </div>
   );
 }

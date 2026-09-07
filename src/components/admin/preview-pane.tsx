@@ -44,17 +44,13 @@ export function PreviewPane({
 
   return (
     <div className="min-w-0">
-      <div className="flex items-baseline justify-between gap-4">
-        <span className="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-subtle">
-          Preview
-        </span>
-        <span
-          aria-live="polite"
-          className="font-mono text-[0.65rem] text-subtle"
-        >
-          {pending ? "rendering" : null}
-        </span>
-      </div>
+      {/* No heading: the tab strip above already names this pane. */}
+      <span
+        aria-live="polite"
+        className="block text-right font-mono text-[0.65rem] text-subtle"
+      >
+        {pending ? "rendering" : null}
+      </span>
 
       {result?.ok === false ? (
         <p className="mt-1.5 rounded-xl border border-coral/40 bg-card px-4 py-3 font-mono text-xs leading-5 text-coral">
