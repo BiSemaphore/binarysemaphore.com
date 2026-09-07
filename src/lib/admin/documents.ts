@@ -1,5 +1,4 @@
 import "server-only";
-import { revalidateTag } from "next/cache";
 import { compile } from "@mdx-js/mdx";
 import { isSituationalSlug } from "@/lib/learn/topics";
 import { createClient } from "@/utils/supabase/server";
@@ -127,17 +126,8 @@ export async function saveDocument(
 
   if (error) return { ok: false, error: error.message };
 
-  // Both tags, because a channel and a thread are the same table and the reader
-  // caches them separately. Missing one leaves a page stale with no clue why.
-  //
-  // The second argument is a Next 16 wrinkle worth knowing: `cacheComponents`
-  // is off, so the previous caching model applies and its guide still shows
-  // `revalidateTag('user')` with one argument, but the shipped type declares
-  // the cache profile as required. "max" satisfies the compiler and is the
-  // profile the Cache Components docs recommend, so this call is correct under
-  // either model and will not need changing when that flag is turned on.
-  revalidateTag("threads", "max");
-  revalidateTag("topics", "max");
+  // No revalidateTag: reader pages hold no cache to clear. See the note at the
+  // top of src/lib/threads.ts for the measurements behind that.
   return { ok: true };
 }
 
@@ -227,7 +217,5 @@ export async function createDocument(fields: {
   const { error: satError } = await satellite;
   if (satError) return { ok: false, error: satError.message };
 
-  revalidateTag("threads", "max");
-  revalidateTag("topics", "max");
   return { ok: true, id: data.id };
 }

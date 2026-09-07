@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 
 /**
@@ -29,7 +29,5 @@ export async function restoreRevision(
     p_revision: revision,
   });
 
-  revalidateTag("threads", "max");
-  revalidateTag("topics", "max");
   revalidatePath(`/admin/documents/${documentId}`);
 }
