@@ -33,25 +33,79 @@ function PlainPre(props: React.HTMLAttributes<HTMLPreElement>) {
   return <pre {...props} />;
 }
 
-/** A mark in its drawn state, without the animation that needs a browser. */
-function mark(decoration: string) {
+/**
+ * A mark in its drawn state, without the animation that needs a browser.
+ *
+ * It accepts the same `color` prop as the real thing and applies it, so the
+ * preview answers "is this the right colour" even though it cannot answer "is
+ * this the right hand-drawn shape". The remaining props are accepted and
+ * ignored on purpose: `weight` and `speed` describe a stroke being drawn, and
+ * nothing is drawn here.
+ */
+const TOKENS = new Set([
+  "accent",
+  "accent-strong",
+  "coral",
+  "blue",
+  "violet",
+  "sun",
+  "lime",
+  "foreground",
+  "muted",
+  "subtle",
+]);
+
+function mark(decoration: string, fills: "text" | "background") {
   return function Mark({
     children,
+    color,
+    opacity = 0.4,
     className = "",
   }: {
     children: ReactNode;
+    color?: string;
+    opacity?: number;
     className?: string;
+    weight?: string;
+    speed?: string;
+    delay?: number;
+    height?: string;
+    tilt?: number;
   }) {
-    return <span className={`${decoration} ${className}`}>{children}</span>;
+    const resolved = color
+      ? TOKENS.has(color)
+        ? `var(--${color})`
+        : color
+      : undefined;
+
+    return (
+      <span
+        className={`${decoration} ${className}`}
+        style={
+          resolved
+            ? fills === "background"
+              ? {
+                  background: `color-mix(in oklab, ${resolved} ${Math.round(opacity * 100)}%, transparent)`,
+                }
+              : { color: resolved, textDecorationColor: resolved }
+            : undefined
+        }
+      >
+        {children}
+      </span>
+    );
   };
 }
 
 export const previewComponents: MDXComponents = {
   ...mdxComponents,
   pre: PlainPre,
-  Underline: mark("underline decoration-blue/70 decoration-2 underline-offset-4"),
-  Circle: mark("rounded-full px-1.5 ring-1 ring-accent/50"),
-  Box: mark("px-1 ring-1 ring-violet/60"),
-  Strike: mark("line-through decoration-accent/70 decoration-2"),
-  Highlight: mark("bg-sun/35 px-0.5"),
+  Underline: mark(
+    "underline decoration-blue/70 decoration-2 underline-offset-4",
+    "text",
+  ),
+  Circle: mark("rounded-full px-1.5 ring-1 ring-violet/50", "text"),
+  Box: mark("px-1 ring-1 ring-lime/70", "text"),
+  Strike: mark("line-through decoration-subtle decoration-2", "text"),
+  Highlight: mark("bg-sun/35 px-0.5", "background"),
 };

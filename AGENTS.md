@@ -126,6 +126,15 @@ is why `private.admins` stays tiny. Recorded in
 - Radii: `rounded-card` / `rounded-panel` / `rounded-blob`. Shadow: `shadow-soft`.
 - Font utilities: `font-display` (Bricolage Grotesque), `font-sans` (Inter), `font-mono` (JetBrains Mono), `font-doodle` (Shantell Sans), `font-hand` (Caveat).
 - Motion: scroll-reveal via `<Reveal>` (IntersectionObserver), gated behind `prefers-reduced-motion`.
+- Pen marks (`src/components/annotate.tsx`): `<Underline>`, `<Circle>`, `<Box>`,
+  `<Strike>`, `<Highlight>`, available in any MDX. Each takes `color` (a brand
+  token like `sun` or `blue`, or any CSS colour), `weight`
+  (`thin|regular|bold`), `speed` (`quick|normal|slow`) and `delay` in ms for
+  staggering. `<Highlight>` swaps `weight` for `opacity`, `height`
+  (`text|line`) and `tilt`. All optional: with none, output is unchanged from
+  before the props existed, which `tests/components/annotate.test.tsx` asserts.
+  The admin's MDX preview renders server-safe stand-ins that honour `color` but
+  not the drawing animation.
 
 ## Copy voice
 

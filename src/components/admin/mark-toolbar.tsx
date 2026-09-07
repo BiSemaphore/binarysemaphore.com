@@ -30,6 +30,10 @@ const MARKS = [
   { tag: "Highlight", label: "highlight", hint: "highlighter over the words" },
 ] as const;
 
+/** Shown on hover, because the props are the part nobody would guess. */
+const PROPS =
+  'props: color="sun" weight="bold" speed="slow" delay={200}';
+
 export function MarkToolbar({
   textarea,
   disabled = false,
@@ -62,7 +66,7 @@ export function MarkToolbar({
           key={mark.tag}
           type="button"
           disabled={disabled}
-          title={`${mark.hint}  <${mark.tag}>`}
+          title={`${mark.hint}\n<${mark.tag}> ${PROPS}`}
           onMouseDown={(event) => {
             // Keep the selection: focus would otherwise leave the textarea on
             // mousedown and collapse it before the click ever fires.
