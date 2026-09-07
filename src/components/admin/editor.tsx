@@ -5,6 +5,7 @@ import { saveAction, type EditorState } from "@/app/admin/save";
 import { INPUT, AREA, LABEL, BUTTON, CONTROL_H } from "@/components/admin/ui";
 import { Select } from "@/components/select";
 import { PreviewPane } from "@/components/admin/preview-pane";
+import { MarkToolbar } from "@/components/admin/mark-toolbar";
 
 type Initial = {
   title: string;
@@ -36,22 +37,30 @@ export function Editor({
   id,
   initial,
   collection,
+  revisions,
   readOnly = false,
 }: {
   id: string;
   initial: Initial;
   collection: "thread" | "channel" | "notebook_section";
+  /**
+   * Rendered on the server and handed in, so switching to it costs nothing and
+   * this component never has to fetch. Toggled with CSS rather than unmounted,
+   * so the history is not re-queried every time you glance at it.
+   */
+  revisions: React.ReactNode;
   readOnly?: boolean;
 }) {
   const [state, submit, pending] = useActionState(saveAction, initialState);
   const [dirty, setDirty] = useState(false);
   const [body, setBody] = useState(initial.body);
-  const [preview, setPreview] = useState(true);
+  const [pane, setPane] = useState<"preview" | "history" | "off">("preview");
 
   // Derived, not stored. A second piece of state for something computable from
   // the first is a second thing that can be wrong.
   const words = body.trim().split(/\s+/).filter(Boolean).length;
   const form = useRef<HTMLFormElement>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   /**
    * Submitting clears the dirty flag.
@@ -100,11 +109,15 @@ export function Editor({
       ref={form}
       action={action}
       onChange={() => setDirty(true)}
-      className="mt-6"
+      // flex-1, not h-full. As a flex child of the page column, `h-full`
+      // resolves against a parent whose height this element also contributes
+      // to, and the form collapsed to 24px with every pane inside it at zero.
+      // Claiming the leftover space is what was meant.
+      className="flex min-h-0 flex-1 flex-col"
     >
       <input type="hidden" name="id" value={id} />
 
-      <div className="grid gap-5">
+      <div className="grid shrink-0 gap-4 pb-5">
         <label className="grid gap-1.5">
           <span className={LABEL}>Title</span>
           <input
@@ -123,65 +136,93 @@ export function Editor({
             defaultValue={initial.summary}
             disabled={readOnly}
             rows={2}
-            className={`${AREA} w-full max-w-3xl resize-y`}
+            className={`${AREA} w-full max-w-3xl resize-none`}
           />
         </label>
+      </div>
 
-        <div
-          className={
-            preview
-              ? "grid gap-6 lg:grid-cols-2 lg:items-start"
-              : "grid gap-5 max-w-4xl"
-          }
-        >
-        <label className="grid gap-1.5">
-          <span className="flex items-baseline justify-between gap-4">
-            <span className={LABEL}>Body (MDX)</span>
-            <span className="flex items-baseline gap-4">
-              <span className="font-mono text-[0.65rem] tabular-nums text-subtle">
-                {words.toLocaleString("en-GB")} words
-              </span>
-              {/*
-                A toggle rather than always-on. Side by side halves the width of
-                the prose you are writing, which is the wrong trade when you are
-                editing a paragraph rather than building a page.
-              */}
-              <button
-                type="button"
-                onClick={() => setPreview((on) => !on)}
-                className="rounded font-mono text-[0.65rem] text-subtle underline decoration-border underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
-              >
-                {preview ? "hide preview" : "show preview"}
-              </button>
+      {/*
+        The two panes. Each scrolls itself; the page does not.
+      */}
+      <div
+        className={`grid min-h-0 flex-1 gap-6 ${
+          pane === "off" ? "" : "lg:grid-cols-2"
+        }`}
+      >
+        <label className="flex min-h-0 flex-col gap-1.5">
+          <span className="flex shrink-0 flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className={LABEL}>Body (MDX)</span>
+              <MarkToolbar textarea={bodyRef} disabled={readOnly} />
+            </span>
+            <span className="font-mono text-[0.65rem] tabular-nums text-subtle">
+              {words.toLocaleString("en-GB")} words
             </span>
           </span>
+
           {/*
-            `field-sizing: content` grows the box with the prose, so a long
-            body is not read through a small window inside a scrolling page.
-            Where it is unsupported the rows attribute still applies, which is
-            the previous behaviour rather than a broken one.
+            `resize-none` and a real height, not `field-sizing: content`. A box
+            that grows with the prose is right on a scrolling page and wrong
+            here: it would push the action bar off the bottom of a shell that
+            cannot scroll.
           */}
           <textarea
+            ref={bodyRef}
             name="body"
-            disabled={readOnly}
-            rows={24}
-            spellCheck={false}
             value={body}
             onChange={(event) => setBody(event.target.value)}
-            style={{ fieldSizing: "content" } as React.CSSProperties}
-            className={`${AREA} min-h-[28rem] w-full font-mono text-[13px] leading-relaxed`}
+            disabled={readOnly}
+            spellCheck={false}
+            className={`${AREA} min-h-0 w-full flex-1 resize-none font-mono text-[13px] leading-relaxed`}
           />
         </label>
 
-        {preview ? <PreviewPane source={body} collection={collection} /> : null}
-        </div>
+        {pane === "off" ? null : (
+          <div className="flex min-h-0 flex-col gap-1.5">
+            <span className="flex shrink-0 items-baseline gap-4">
+              {(["preview", "history"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setPane(tab)}
+                  aria-pressed={pane === tab}
+                  className={`rounded font-mono text-[0.65rem] uppercase tracking-[0.16em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground ${
+                    pane === tab
+                      ? "text-foreground"
+                      : "text-subtle hover:text-muted"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </span>
+
+            {/*
+              Both panes stay mounted. The history is a server-rendered tree
+              handed in as a prop, and unmounting it to switch tabs would throw
+              away a query for nothing.
+            */}
+            <div
+              className="min-h-0 flex-1 overflow-y-auto"
+              hidden={pane !== "preview"}
+            >
+              <PreviewPane source={body} collection={collection} />
+            </div>
+            <div
+              className="min-h-0 flex-1 overflow-y-auto"
+              hidden={pane !== "history"}
+            >
+              {revisions}
+            </div>
+          </div>
+        )}
       </div>
 
       {/*
         Sticky at the bottom of the viewport: the one control you need is always
         one click away, however far down the prose you are.
       */}
-      <div className="sticky bottom-0 z-10 -mx-1 mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-border bg-background/95 px-1 py-3 backdrop-blur">
+      <div className="z-10 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-3 border-t border-border bg-background px-1 py-3">
         <label className="flex items-center gap-2">
           <span className={LABEL}>Status</span>
           <Select
@@ -201,6 +242,14 @@ export function Editor({
         </button>
 
         <span className="font-mono text-[0.65rem] text-subtle">⌘S</span>
+
+        <button
+          type="button"
+          onClick={() => setPane((p) => (p === "off" ? "preview" : "off"))}
+          className="rounded font-mono text-[0.65rem] text-subtle underline decoration-border underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+        >
+          {pane === "off" ? "show preview" : "full width"}
+        </button>
 
         {/*
           The only feedback this form gives, so it is announced. A failed save
