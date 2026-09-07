@@ -7,11 +7,28 @@ working across applied AI, distributed systems, and developer tools. Source for
 Current focus: [**inode**](https://github.com/BiSemaphore), a CLI knowledge base
 that retrieves notes, secrets, and commands by meaning instead of exact keywords.
 
+## What is here
+
+One Next.js app serving four surfaces, routed by subdomain in
+[`src/proxy.ts`](src/proxy.ts):
+
+| Surface | Host                         | What it is                                             |
+| ------- | ---------------------------- | ------------------------------------------------------ |
+| Site    | `binarysemaphore.com`        | Marketing, projects, team, and `/threads`              |
+| Learn   | `learn.binarysemaphore.com`  | Study notebooks, roadmaps, and a 23-subject topic tree |
+| Resume  | `resume.binarysemaphore.com` | The resume builder                                     |
+| Admin   | `root.binarysemaphore.com`   | Writes the content the other three serve               |
+
+Content lives in Postgres, not in the repo. Threads, subjects, channels and the
+notebook catalog are rows; the admin edits them and the change is live on the
+next request. There is no `src/content/threads` any more.
+
 ## Stack
 
-- [Next.js](https://nextjs.org) 16 (App Router) + TypeScript (strict)
+- [Next.js](https://nextjs.org) 16 (App Router, Turbopack) + TypeScript (strict)
 - [Tailwind CSS](https://tailwindcss.com) v4
-- MDX content pipeline for `/threads`
+- [Supabase](https://supabase.com): Postgres, Auth, Storage, RLS as the boundary
+- MDX compiled at request time from the database
 - [Vitest](https://vitest.dev) (unit) and [Playwright](https://playwright.dev) (smoke)
 - Deployed on [Vercel](https://vercel.com)
 
@@ -36,26 +53,33 @@ npm run dev        # http://localhost:3000
 
 ## Project structure
 
-- `src/app/` — routes (`/`, `/about`, `/services`, `/projects`, `/team`,
-  `/contact`, `/threads`, plus `/projects/[slug]`, `/team/[slug]`,
-  `/threads/[slug]`), `layout.tsx`, `globals.css`.
-- `src/components/` — section and UI components.
-- `src/lib/site.ts` — **single source of truth** for all copy, links, the team,
-  and projects. Edit copy here, not in components.
-- `src/content/threads/*.mdx` — long-form posts; frontmatter parsed by
-  `src/lib/threads.ts`.
-- `src/images/` — optimized photography (statically imported for blur-up).
-- `public/tech/` — technology logos for the stack section.
+- `src/app/` — routes. `admin/(editor)` is the full-window MDX editor;
+  `admin/(workspace)` is everything else behind the same gate.
+- `src/components/` — shared primitives at the top level, one folder per area
+  (`admin/`, `learn/`, `resume/`, `auth/`) below it.
+- `src/lib/site.ts` — **single source of truth** for marketing copy, links, the
+  team, and projects. Edit copy here, not in components.
+- `src/lib/threads.ts`, `src/lib/learn/topics.ts`, `src/lib/learn.ts` — readers
+  for the content in Postgres.
+- `src/utils/supabase/` — one client per caller: `server` (session, RLS),
+  `client` (browser), `public` (no session, for published content),
+  `admin` (service role, server-only).
+- `supabase/migrations/` — the schema, and the only source of truth for it.
 - `e2e/` — Playwright smoke tests.
 
 ## Editing content
 
-All site copy and links live in [`src/lib/site.ts`](src/lib/site.ts); components
-read from it. Long-form writing lives as MDX under
-[`src/content/threads`](src/content/threads).
+**Marketing copy** lives in [`src/lib/site.ts`](src/lib/site.ts); components
+read from it.
+
+**Threads and topic channels** live in Postgres and are edited at
+`root.binarysemaphore.com` (or `/admin` locally). The editor compiles the MDX
+before storing it, so a page that does not compile cannot be saved, and every
+save keeps the version it replaced.
 
 Copy voice: plain and human, no em dashes, no marketing slogans. See
-[`AGENTS.md`](AGENTS.md) for the full guidelines.
+[`docs/brand.md`](docs/brand.md) for the full guidelines, and
+[`docs/`](docs/README.md) for everything else.
 
 ## Testing
 
@@ -135,6 +159,26 @@ merging a reviewed PR. Husky hooks enforce quality locally: `pre-commit` runs
 lint-staged (ESLint + Prettier on staged files), `commit-msg` checks the message
 against [Conventional Commits](https://www.conventionalcommits.org)
 (`feat:`, `fix:`, `chore:`, ...), and `pre-push` runs typecheck and unit tests.
+
+### Releasing
+
+A release is a `chore/release-vX.Y.Z` branch carrying two things and nothing
+else: the version in `package.json` and the matching
+[`CHANGELOG.md`](CHANGELOG.md) entry. Merge it, tag `main`, and publish the
+GitHub release from the same notes.
+
+```bash
+git switch -c chore/release-v0.5.0
+# bump package.json, write the CHANGELOG entry
+gh pr create && gh pr merge --squash
+git switch main && git pull
+git tag -a v0.5.0 -m "v0.5.0" && git push origin v0.5.0
+gh release create v0.5.0 --notes-from-file <(...)
+```
+
+The changelog is written from what shipped, not from the commit log: a reader
+wants to know what changed about the product, and "refactor(db): rebuild the
+schema" is not that.
 
 ## CI/CD
 
