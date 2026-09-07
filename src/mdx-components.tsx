@@ -1,7 +1,14 @@
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import type { AnchorHTMLAttributes } from "react";
-import { Underline, Circle, Box, Strike, Highlight } from "@/components/annotate";
+import {
+  Underline,
+  Circle,
+  Box,
+  Strike,
+  Highlight,
+  Bold,
+} from "@/components/annotate";
 import { CronDiagram } from "@/components/cron-diagram";
 import { Pre } from "@/components/code-block";
 import { notebookComponents } from "@/components/learn/mdx";
@@ -97,11 +104,22 @@ const components: MDXComponents = {
   Box,
   Strike,
   Highlight,
+  Bold,
   // Cron expression breakdown.
   CronDiagram,
   // Code blocks, with a copy-to-clipboard button.
   pre: Pre,
 };
+
+/**
+ * The same map, as a value.
+ *
+ * `useMDXComponents` is the name @next/mdx requires, and it is not a hook: it
+ * takes no state and calls nothing. Anywhere outside a component (the admin's
+ * MDX preview renders on the server) the hook-shaped name trips
+ * `react-hooks/rules-of-hooks`, correctly, so those callers take this instead.
+ */
+export const mdxComponents = components;
 
 export function useMDXComponents(): MDXComponents {
   return components;

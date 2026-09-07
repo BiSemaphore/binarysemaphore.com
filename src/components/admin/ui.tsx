@@ -6,17 +6,43 @@
  * looks different on two pages is a status you stop trusting.
  */
 
+/**
+ * One height for every single-line control.
+ *
+ * The select was 42px and the Save button beside it 40px, because one had
+ * vertical padding plus a border and the other had padding alone. Two pixels is
+ * enough to see, and no amount of matching padding values fixes it reliably:
+ * the only way two controls agree on height is to be told the same height.
+ */
+export const CONTROL_H = "h-10";
+
+/**
+ * The look of a field, and deliberately not its width.
+ *
+ * This used to start with `w-full`, which put a width on every input in the
+ * admin whether or not the layout wanted one. Adding `w-56` at the call site
+ * did not reliably win: two width utilities in one class string are resolved by
+ * Tailwind's own output order, not by the order they are written, so the result
+ * depended on which one the compiler happened to emit last. It made a create
+ * row wrap onto three lines.
+ *
+ * Width is a layout decision and belongs where the layout is.
+ */
 export const FIELD =
-  "w-full rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-subtle focus-visible:border-foreground focus-visible:ring-2 focus-visible:ring-foreground/15 disabled:opacity-60";
+  "rounded-xl border border-border bg-card px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-subtle focus-visible:border-foreground focus-visible:ring-2 focus-visible:ring-foreground/15 disabled:opacity-60";
+
+/** A single-line input. Fixed height, so it lines up with buttons and selects. */
+export const INPUT = `${FIELD} ${CONTROL_H}`;
+
+/** A textarea. Grows, so it takes padding instead of a height. */
+export const AREA = `${FIELD} py-2.5`;
 
 export const LABEL =
   "font-mono text-[0.65rem] uppercase tracking-[0.16em] text-subtle";
 
-export const BUTTON =
-  "rounded-xl bg-foreground px-4 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50";
+export const BUTTON = `${CONTROL_H} inline-flex items-center justify-center rounded-xl bg-foreground px-4 text-sm font-semibold text-background transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50`;
 
-export const QUIET_BUTTON =
-  "rounded-xl border border-border bg-card px-3.5 py-2 text-sm text-muted transition-colors hover:bg-card-hover hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+export const QUIET_BUTTON = `${CONTROL_H} inline-flex items-center justify-center rounded-xl border border-border bg-card px-3.5 text-sm text-muted transition-colors hover:bg-card-hover hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground`;
 
 type Status = "draft" | "published" | "archived" | string;
 

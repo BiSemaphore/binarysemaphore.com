@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache";
 import { createPublicClient } from "@/utils/supabase/public";
 
 /**
@@ -91,8 +90,7 @@ type ChannelRow = {
  * Two queries rather than 24: the alternative is a query per subject, and the
  * shell renders every subject on the rail on every page.
  */
-export const getSubjects = unstable_cache(
-  async (): Promise<Subject[]> => {
+export async function getSubjects(): Promise<Subject[]> {
     const db = createPublicClient();
 
     const [subjectResult, channelResult] = await Promise.all([
@@ -127,14 +125,11 @@ export const getSubjects = unstable_cache(
       bySubject.set(row.subject, list);
     }
 
-    return ((subjectResult.data ?? []) as SubjectRow[]).map((s) => ({
-      ...s,
-      channels: bySubject.get(s.slug) ?? [],
-    }));
-  },
-  ["topic-tree"],
-  { tags: ["topics"], revalidate: 3600 },
-);
+  return ((subjectResult.data ?? []) as SubjectRow[]).map((s) => ({
+    ...s,
+    channels: bySubject.get(s.slug) ?? [],
+  }));
+}
 
 /**
  * Is this slug a situation rather than a syllabus entry.
@@ -208,18 +203,17 @@ export async function countCovered(): Promise<number> {
  * into a path, so a request for `../../etc/passwd` is simply a row that does
  * not exist.
  */
-export const getChannelBody = unstable_cache(
-  async (subject: string, channel: string): Promise<string | null> => {
-    const { data } = await createPublicClient()
+export async function getChannelBody(
+  subject: string,
+  channel: string,
+): Promise<string | null> {
+  const { data } = await createPublicClient()
       .from("documents")
       .select("body_mdx")
       .eq("collection", "channel")
       .eq("scope", subject)
-      .eq("slug", channel)
-      .maybeSingle();
+    .eq("slug", channel)
+    .maybeSingle();
 
-    return data?.body_mdx ?? null;
-  },
-  ["channel-body"],
-  { tags: ["topics"], revalidate: 3600 },
-);
+  return data?.body_mdx ?? null;
+}

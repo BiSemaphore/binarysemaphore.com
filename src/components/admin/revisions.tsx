@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import { restoreAction } from "@/app/admin/restore";
+import { RestoreButton } from "@/components/admin/restore-button";
 
 type Revision = {
   revision: number;
@@ -60,13 +60,7 @@ export async function Revisions({ documentId }: { documentId: string }) {
               <span className="text-xs tabular-nums text-subtle">
                 {new Date(r.saved_at).toLocaleString("en-GB")}
               </span>
-              <form action={restoreAction}>
-                <input type="hidden" name="id" value={documentId} />
-                <input type="hidden" name="revision" value={r.revision} />
-                <button className="text-xs text-muted underline decoration-border underline-offset-4 transition-colors hover:text-foreground">
-                  Restore
-                </button>
-              </form>
+              <RestoreButton documentId={documentId} revision={r.revision} />
             </span>
           </li>
         ))}

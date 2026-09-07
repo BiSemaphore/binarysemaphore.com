@@ -130,9 +130,20 @@ time checking we get now, which is a real loss.
 
 ### Reading it, server-side
 
+> **Corrected by measurement.** The caching described below does not work in
+> this project and has been removed. Warm a page, change the row in Postgres,
+> then call `revalidateTag(tag)`, `revalidateTag(tag, "max")` and
+> `revalidatePath()` in turn, and restart the server so nothing survives in
+> memory: the page still serves the old value from `.next/cache` while the
+> database holds the new one. Tagging supabase-js's own `fetch` so the reads sit
+> in the fetch data cache instead makes no difference. Reader pages now query
+> Postgres per request, which measures 110ms end to end for `/threads`.
+> Caching returns when invalidation is demonstrated, and the candidate is
+> `cacheComponents` with `use cache` / `cacheTag` / `updateTag`.
+
 `cacheComponents` is **not** enabled in `next.config.ts`, so the model that
-applies in Next 16.2.9 is the previous one: `unstable_cache` with tags, not
-`use cache` and `cacheLife`.
+looked like it applied in Next 16.2.9 is the previous one: `unstable_cache` with
+tags, not `use cache` and `cacheLife`. It was built that way and did not work.
 
 ```ts
 import { unstable_cache } from "next/cache";

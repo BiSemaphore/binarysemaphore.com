@@ -1,5 +1,4 @@
 import "server-only";
-import { revalidateTag } from "next/cache";
 import { compile } from "@mdx-js/mdx";
 import { isSituationalSlug } from "@/lib/learn/topics";
 import { createClient } from "@/utils/supabase/server";
@@ -83,6 +82,19 @@ export async function saveDocument(
     summary: string;
     body: string;
     status: DocumentRow["status"];
+    /**
+     * The `updated_at` the editor loaded.
+     *
+     * Two admins with the same page open used to be last-write-wins, silently:
+     * the second save overwrote the first with no sign that anything had been
+     * lost. The write now matches on this value, so a row that moved underneath
+     * matches nothing and the save is refused instead of applied.
+     *
+     * Optimistic rather than a lock: nothing is held between opening a document
+     * and saving it, which for prose is the right trade. The loser is told, and
+     * their text is still in the box.
+     */
+    expectedUpdatedAt?: string;
   },
 ): Promise<SaveResult> {
   const body = fields.body.trim();
@@ -114,7 +126,7 @@ export async function saveDocument(
   const firstPublish =
     fields.status === "published" && !current?.published_at;
 
-  const { error } = await db
+  let write = db
     .from("documents")
     .update({
       title: fields.title.trim(),
@@ -125,19 +137,27 @@ export async function saveDocument(
     })
     .eq("id", id);
 
+  if (fields.expectedUpdatedAt) {
+    write = write.eq("updated_at", fields.expectedUpdatedAt);
+  }
+
+  // `select()` so the count is knowable: an update that matched nothing is not
+  // an error to PostgREST, it is a successful update of zero rows, which is
+  // exactly what a lost race looks like.
+  const { data, error } = await write.select("id");
+
   if (error) return { ok: false, error: error.message };
 
-  // Both tags, because a channel and a thread are the same table and the reader
-  // caches them separately. Missing one leaves a page stale with no clue why.
-  //
-  // The second argument is a Next 16 wrinkle worth knowing: `cacheComponents`
-  // is off, so the previous caching model applies and its guide still shows
-  // `revalidateTag('user')` with one argument, but the shipped type declares
-  // the cache profile as required. "max" satisfies the compiler and is the
-  // profile the Cache Components docs recommend, so this call is correct under
-  // either model and will not need changing when that flag is turned on.
-  revalidateTag("threads", "max");
-  revalidateTag("topics", "max");
+  if (fields.expectedUpdatedAt && (data?.length ?? 0) === 0) {
+    return {
+      ok: false,
+      error:
+        "Someone else saved this while you were editing. Your text is still here; open the page again in another tab to see theirs before overwriting it.",
+    };
+  }
+
+  // No revalidateTag: reader pages hold no cache to clear. See the note at the
+  // top of src/lib/threads.ts for the measurements behind that.
   return { ok: true };
 }
 
@@ -227,7 +247,5 @@ export async function createDocument(fields: {
   const { error: satError } = await satellite;
   if (satError) return { ok: false, error: satError.message };
 
-  revalidateTag("threads", "max");
-  revalidateTag("topics", "max");
   return { ok: true, id: data.id };
 }

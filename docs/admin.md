@@ -181,7 +181,19 @@ never render a channel body from any source other than these tables.
 Every thread and channel page becomes a database read plus an MDX compile,
 where today it is a compiled import. That is why caching is not optional here.
 
-`cacheComponents` is not enabled, so the model is `unstable_cache` with tags:
+> **Corrected by measurement.** The caching described below does not work in
+> this project and has been removed. Warm a page, change the row in Postgres,
+> then call `revalidateTag(tag)`, `revalidateTag(tag, "max")` and
+> `revalidatePath()` in turn, and restart the server so nothing survives in
+> memory: the page still serves the old value from `.next/cache` while the
+> database holds the new one. Tagging supabase-js's own `fetch` so the reads sit
+> in the fetch data cache instead makes no difference. Reader pages now query
+> Postgres per request, which measures 110ms end to end for `/threads`.
+> Caching returns when invalidation is demonstrated, and the candidate is
+> `cacheComponents` with `use cache` / `cacheTag` / `updateTag`.
+
+`cacheComponents` is not enabled, so the model was assumed to be
+`unstable_cache` with tags:
 
 ```ts
 export const getThread = unstable_cache(
@@ -193,8 +205,9 @@ export const getThread = unstable_cache(
 );
 ```
 
-and `revalidateTag("threads")` in the admin's save action. Get the tags wrong and
-the site is slower _and_ stale, which is worse than either alone.
+and `revalidateTag("threads")` in the admin's save action. That is what was
+built, and it never invalidated anything: the site was slower _and_ stale, which
+is the worst of both and exactly what the paragraph above warned about.
 
 We also lose two real things, and they should be lost knowingly: **build-time
 MDX errors** become runtime errors, so a bad paste breaks a live page rather

@@ -16,7 +16,6 @@
  * the lecture series are properties of how we make notebooks, not rows an admin
  * would edit.
  */
-import { unstable_cache } from "next/cache";
 import { createPublicClient } from "@/utils/supabase/public";
 
 /** The three cuts of every notebook. Same text, different page geometry. */
@@ -126,8 +125,7 @@ type Row = {
  * notebook is absent because the select policy says `status = 'published'`,
  * not because this filters.
  */
-export const getNotebooks = unstable_cache(
-  async (): Promise<Notebook[]> => {
+export async function getNotebooks(): Promise<Notebook[]> {
     const { data, error } = await createPublicClient()
       .from("notebooks")
       .select(
@@ -147,12 +145,9 @@ export const getNotebooks = unstable_cache(
       pages: n.pages,
       contents: n.contents,
       assets: n.assets,
-      sources: n.sources,
-    }));
-  },
-  ["notebook-catalog"],
-  { tags: ["notebooks"], revalidate: 3600 },
-);
+    sources: n.sources,
+  }));
+}
 
 /** The notebook with this slug, or undefined. */
 export async function getNotebook(

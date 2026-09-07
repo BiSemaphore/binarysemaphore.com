@@ -1,5 +1,25 @@
-import { unstable_cache } from "next/cache";
 import { createPublicClient } from "@/utils/supabase/public";
+
+/**
+ * No cache layer, deliberately.
+ *
+ * These reads were wrapped in `unstable_cache` with a `threads` / `topics` tag
+ * and a 3600s revalidate, and the admin called `revalidateTag` after every
+ * save. That never worked. Measured, not assumed: warm the page, change the row
+ * in Postgres, call `revalidateTag(tag)`, `revalidateTag(tag, "max")` and
+ * `revalidatePath()` in turn, restart the server so nothing is left in memory,
+ * and the page still serves the old value from `.next/cache` while the database
+ * holds the new one.
+ *
+ * So the site was showing content up to an hour stale after an edit, and the
+ * editor was telling the writer the cache had been cleared. A wrong answer
+ * served quickly is worse than a right answer served in 50ms, which is what a
+ * Supabase select costs here.
+ *
+ * Caching comes back when invalidation is demonstrated, not before, and the
+ * candidate is `cacheComponents` with `use cache` / `cacheTag` / `updateTag`,
+ * which is the model Next 16 actually documents revalidation against.
+ */
 
 /**
  * Threads, read from Postgres.
@@ -11,13 +31,6 @@ import { createPublicClient } from "@/utils/supabase/public";
  *
  * Everything here is async where it used to be synchronous, which is the whole
  * cost of the move and is worth naming rather than hiding behind a cache.
- *
- * ## Caching
- *
- * `cacheComponents` is not enabled, so the model is `unstable_cache` with tags,
- * not `use cache`. Every read is tagged `threads`, and the admin calls
- * `revalidateTag("threads")` after a save. Get the tags wrong and the site is
- * both slower and stale, which is worse than either alone.
  *
  * Drafts are invisible here, not by a filter but because the select policy on
  * `documents` is `status = 'published'`. The database decides; this file just
@@ -63,20 +76,16 @@ function toMeta(row: Row): ThreadMeta {
 }
 
 /** All published threads, newest first. */
-export const getAllThreads = unstable_cache(
-  async (): Promise<ThreadMeta[]> => {
-    const { data, error } = await createPublicClient()
-      .from("documents")
-      .select(LIST)
-      .eq("collection", "thread")
-      .order("published_at", { ascending: false });
+export async function getAllThreads(): Promise<ThreadMeta[]> {
+  const { data, error } = await createPublicClient()
+    .from("documents")
+    .select(LIST)
+    .eq("collection", "thread")
+    .order("published_at", { ascending: false });
 
-    if (error) throw new Error(`Could not read threads: ${error.message}`);
-    return (data as unknown as Row[]).map(toMeta);
-  },
-  ["threads-list"],
-  { tags: ["threads"], revalidate: 3600 },
-);
+  if (error) throw new Error(`Could not read threads: ${error.message}`);
+  return (data as unknown as Row[]).map(toMeta);
+}
 
 export async function getThread(slug: string): Promise<ThreadMeta | undefined> {
   return (await getAllThreads()).find((t) => t.slug === slug);
@@ -88,20 +97,16 @@ export async function getThread(slug: string): Promise<ThreadMeta | undefined> {
  * Separate from the metadata on purpose, so that listing eight threads does not
  * fetch eight bodies. Cached under its own key, invalidated by the same tag.
  */
-export const getThreadBody = unstable_cache(
-  async (slug: string): Promise<string | null> => {
-    const { data } = await createPublicClient()
-      .from("documents")
-      .select("body_mdx")
-      .eq("collection", "thread")
-      .eq("slug", slug)
-      .maybeSingle();
+export async function getThreadBody(slug: string): Promise<string | null> {
+  const { data } = await createPublicClient()
+    .from("documents")
+    .select("body_mdx")
+    .eq("collection", "thread")
+    .eq("slug", slug)
+    .maybeSingle();
 
-    return data?.body_mdx ?? null;
-  },
-  ["thread-body"],
-  { tags: ["threads"], revalidate: 3600 },
-);
+  return data?.body_mdx ?? null;
+}
 
 /** All tags used across threads, de-duplicated and alphabetically sorted. */
 export async function getAllTags(): Promise<string[]> {
