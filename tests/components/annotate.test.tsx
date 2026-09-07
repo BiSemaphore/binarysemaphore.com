@@ -2,6 +2,13 @@
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Underline, Highlight, Strike } from "@/components/annotate";
+import {
+  StaticBox,
+  StaticHighlight,
+  StaticUnderline,
+} from "@/components/annotate/static";
+import { STROKES } from "@/components/annotate/shapes";
+import { previewComponents } from "@/components/admin/preview-components";
 
 describe("annotation props", () => {
   it("renders the same markup as before when given no props", () => {
@@ -40,5 +47,44 @@ describe("annotation props", () => {
 
   it("lets a highlight cover the line box instead of the words", () => {
     expect(renderToStaticMarkup(<Highlight height="line">x</Highlight>)).toContain("inset-y-0");
+  });
+});
+
+describe("the static marks the admin preview uses", () => {
+  // The point of splitting shapes out of the animation: the preview renders
+  // the real geometry, not an approximation of it. Before this, the preview
+  // drew `underline decoration-2` where the page draws a hand-drawn path.
+  it("renders the same path data as the animated mark", () => {
+    const html = renderToStaticMarkup(<StaticUnderline>x</StaticUnderline>);
+    expect(html).toContain(STROKES.underline.d);
+    expect(renderToStaticMarkup(<Underline>x</Underline>)).toContain(
+      STROKES.underline.d,
+    );
+  });
+
+  it("keeps each mark's own default colour", () => {
+    expect(renderToStaticMarkup(<StaticBox>x</StaticBox>)).toContain(
+      STROKES.box.color,
+    );
+  });
+
+  it("is already drawn, since there is nothing to scroll into", () => {
+    const html = renderToStaticMarkup(<StaticUnderline>x</StaticUnderline>);
+    expect(html).toContain("stroke-dashoffset:0");
+  });
+
+  it("takes the same props as the animated one", () => {
+    const html = renderToStaticMarkup(
+      <StaticHighlight color="lime" opacity={0.6}>
+        x
+      </StaticHighlight>,
+    );
+    expect(html).toContain("var(--lime)");
+    expect(html).toContain("60%");
+  });
+
+  it("is what the preview map actually wires up", () => {
+    expect(previewComponents.Underline).toBe(StaticUnderline);
+    expect(previewComponents.Highlight).toBe(StaticHighlight);
   });
 });
