@@ -2,11 +2,12 @@
 
 import { useActionState } from "react";
 import { createAction, type CreateState } from "@/app/admin/create";
-import { FIELD, BUTTON } from "@/components/admin/ui";
+import { INPUT, BUTTON, CONTROL_H } from "@/components/admin/ui";
+import { Select } from "@/components/select";
 
 const initial: CreateState = { ok: null };
 
-const field = `${FIELD} w-auto`;
+const field = INPUT;
 
 /**
  * Create a thread or a channel.
@@ -34,7 +35,7 @@ export function CreateForm({
 
       <div className="flex flex-wrap items-center gap-2">
         {collection === "channel" ? (
-          <select name="scope" required className={field} defaultValue="">
+          <Select name="scope" required defaultValue="" className={CONTROL_H}>
             <option value="" disabled>
               subject
             </option>
@@ -43,7 +44,7 @@ export function CreateForm({
                 {s.name}
               </option>
             ))}
-          </select>
+          </Select>
         ) : null}
 
         <input

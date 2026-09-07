@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { saveAction, type EditorState } from "@/app/admin/save";
-import { FIELD, LABEL, BUTTON } from "@/components/admin/ui";
+import { INPUT, AREA, LABEL, BUTTON, CONTROL_H } from "@/components/admin/ui";
+import { Select } from "@/components/select";
 
 type Initial = {
   title: string;
@@ -105,7 +106,7 @@ export function Editor({
             defaultValue={initial.title}
             disabled={readOnly}
             required
-            className={`${FIELD} max-w-2xl`}
+            className={`${INPUT} w-full max-w-2xl`}
           />
         </label>
 
@@ -116,7 +117,7 @@ export function Editor({
             defaultValue={initial.summary}
             disabled={readOnly}
             rows={2}
-            className={`${FIELD} max-w-2xl resize-y`}
+            className={`${AREA} w-full max-w-2xl resize-y`}
           />
         </label>
 
@@ -145,7 +146,7 @@ export function Editor({
               )
             }
             style={{ fieldSizing: "content" } as React.CSSProperties}
-            className={`${FIELD} min-h-[28rem] font-mono text-[13px] leading-relaxed`}
+            className={`${AREA} min-h-[28rem] w-full font-mono text-[13px] leading-relaxed`}
           />
         </label>
       </div>
@@ -157,16 +158,16 @@ export function Editor({
       <div className="sticky bottom-0 z-10 -mx-1 mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-border bg-background/95 px-1 py-3 backdrop-blur">
         <label className="flex items-center gap-2">
           <span className={LABEL}>Status</span>
-          <select
+          <Select
             name="status"
             defaultValue={initial.status}
             disabled={readOnly}
-            className={`${FIELD} w-auto py-2`}
+            className={CONTROL_H}
           >
             <option value="draft">draft</option>
             <option value="published">published</option>
             <option value="archived">archived</option>
-          </select>
+          </Select>
         </label>
 
         <button type="submit" disabled={pending || readOnly} className={BUTTON}>
