@@ -54,7 +54,7 @@ export default async function AdminTopics() {
   const written = all.filter((c) => c.status === "published").length;
 
   return (
-    <>
+    <div className="max-w-4xl">
       <PageHead title="Topics">
         {subjects.length} subjects, {all.length} channels, {written} with prose.
         The rest appear in the sidebar with an honest empty state, because the
@@ -143,6 +143,6 @@ export default async function AdminTopics() {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }

@@ -137,7 +137,7 @@ export default async function AdminOverview() {
   ].filter(Boolean) as { href: string; label: string; detail: string }[];
 
   return (
-    <>
+    <div className="max-w-4xl">
       <PageHead title="Overview">
         Content is served from Postgres, so a change here is live as soon as its
         cache tag clears. There is no deploy in the loop and no staging copy.
@@ -206,6 +206,6 @@ export default async function AdminOverview() {
         </ul>
         )}
       </section>
-    </>
+    </div>
   );
 }

@@ -77,6 +77,7 @@ export default async function EditDocument({
 
       <Editor
         id={doc.id}
+        collection={doc.collection}
         readOnly={doc.origin === "sync"}
         initial={{
           title: doc.title,

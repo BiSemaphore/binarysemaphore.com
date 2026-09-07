@@ -16,7 +16,7 @@ export default async function AdminThreads() {
   const drafts = threads.filter((t) => t.status === "draft").length;
 
   return (
-    <>
+    <div className="max-w-4xl">
       <PageHead title="Threads">
         {threads.length} in the database
         {drafts > 0 ? `, ${drafts} still in draft` : ", all published"}. A draft
@@ -80,6 +80,6 @@ export default async function AdminThreads() {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }
