@@ -31,8 +31,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  BoldMark,
   HighlightMark,
   StrokeMark,
+  type BoldProps,
   type HighlightProps,
   type MarkProps,
 } from "@/components/annotate/shapes";
@@ -100,4 +102,10 @@ export function Strike(props: MarkProps) {
 export function Highlight(props: HighlightProps) {
   const { ref, drawn } = useDrawn<HTMLSpanElement>();
   return <HighlightMark ref={ref} drawn={drawn} {...props} />;
+}
+
+/** Emphasis that sweeps into colour, for a phrase that carries the paragraph. */
+export function Bold(props: BoldProps) {
+  const { ref, drawn } = useDrawn<HTMLSpanElement>();
+  return <BoldMark ref={ref} drawn={drawn} {...props} />;
 }

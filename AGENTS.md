@@ -127,7 +127,11 @@ is why `private.admins` stays tiny. Recorded in
 - Font utilities: `font-display` (Bricolage Grotesque), `font-sans` (Inter), `font-mono` (JetBrains Mono), `font-doodle` (Shantell Sans), `font-hand` (Caveat).
 - Motion: scroll-reveal via `<Reveal>` (IntersectionObserver), gated behind `prefers-reduced-motion`.
 - Pen marks (`src/components/annotate.tsx`): `<Underline>`, `<Circle>`, `<Box>`,
-  `<Strike>`, `<Highlight>`, available in any MDX. Each takes `color` (a brand
+  `<Strike>`, `<Highlight>`, `<Bold>`, available in any MDX. Geometry lives in
+  `annotate/shapes.tsx` (server-renderable); `annotate.tsx` adds only the
+  scroll-triggered draw, and `annotate/static.tsx` renders the same shapes
+  already drawn for the admin preview. Add a mark to the record in `shapes.tsx`,
+  not as a new component. Each takes `color` (a brand
   token like `sun` or `blue`, or any CSS colour), `weight`
   (`thin|regular|bold`), `speed` (`quick|normal|slow`) and `delay` in ms for
   staggering. `<Highlight>` swaps `weight` for `opacity`, `height`

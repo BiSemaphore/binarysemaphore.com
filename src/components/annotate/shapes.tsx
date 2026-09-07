@@ -221,3 +221,62 @@ export function HighlightMark({
     </span>
   );
 }
+
+export type BoldProps = Omit<MarkProps, "weight"> & {
+  /** How heavy the text gets. Default "bold". */
+  weight?: "semibold" | "bold" | "black";
+};
+
+const FONT_WEIGHTS = { semibold: 600, bold: 700, black: 900 } as const;
+
+/**
+ * Emphasis that arrives in colour, drawn or not.
+ *
+ * The other marks draw *around* the words. This one colours the words
+ * themselves, sweeping left to right the way a pen would if you went over a
+ * phrase to make it stand out.
+ *
+ * The sweep is a two-stop gradient clipped to the glyphs: it starts showing the
+ * inherited text colour and slides to show the mark colour, so nothing flashes
+ * and the text is legible at every frame, including before the animation runs
+ * and in browsers that never run it.
+ *
+ * Unlike the stroke marks this one has a colour by default rather than
+ * inheriting one, because emphasis with no colour is just bold text and there
+ * is already a way to write that.
+ */
+export function BoldMark({
+  drawn,
+  children,
+  color = "accent",
+  weight = "bold",
+  speed = "normal",
+  delay = 0,
+  className = "",
+  ref,
+}: BoldProps & { drawn: boolean; ref?: Ref<HTMLSpanElement> }) {
+  const resolved = resolveColor(color) ?? "currentColor";
+
+  return (
+    <span
+      ref={ref}
+      className={`relative inline-block font-semibold ${className}`}
+      style={{
+        fontWeight: FONT_WEIGHTS[weight],
+        // Two stops, one width of text each, slid across a double-width box.
+        backgroundImage: `linear-gradient(to right, ${resolved} 0 50%, currentColor 50% 100%)`,
+        backgroundSize: "200% 100%",
+        backgroundPosition: drawn ? "left center" : "right center",
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        color: "transparent",
+        // Selection and forced-colours modes ignore background-clip, so the
+        // text falls back to a real colour rather than disappearing.
+        WebkitTextFillColor: "transparent",
+        transition: `background-position ${Math.round(700 * SPEEDS[speed])}ms cubic-bezier(0.65, 0, 0.35, 1) ${delay}ms`,
+      }}
+    >
+      {children}
+    </span>
+  );
+}

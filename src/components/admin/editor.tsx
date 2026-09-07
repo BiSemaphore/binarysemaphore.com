@@ -2,10 +2,10 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { saveAction, type EditorState } from "@/app/admin/save";
-import { AREA, LABEL, BUTTON } from "@/components/admin/ui";
-import { Select } from "@/components/select";
+import { AREA, LABEL } from "@/components/admin/ui";
 import { PreviewPane } from "@/components/admin/preview-pane";
 import { MarkToolbar } from "@/components/admin/mark-toolbar";
+import { StatusControl, type Status } from "@/components/admin/status-control";
 
 type Initial = {
   title: string;
@@ -57,6 +57,7 @@ export function Editor({
   const [dirty, setDirty] = useState(false);
   const [body, setBody] = useState(initial.body);
   const [pane, setPane] = useState<Pane>("preview");
+  const [status, setStatus] = useState<Status>(initial.status);
   const form = useRef<HTMLFormElement>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
@@ -144,25 +145,19 @@ export function Editor({
           {words.toLocaleString("en-GB")}w
         </span>
 
-        <Select
-          name="status"
-          defaultValue={initial.status}
-          disabled={readOnly}
-          className="h-8 text-xs"
-          aria-label="Status"
-        >
-          <option value="draft">draft</option>
-          <option value="published">published</option>
-          <option value="archived">archived</option>
-        </Select>
+        {/* The real value, since the visible select is presentational and the
+            form is what gets submitted. */}
+        <input type="hidden" name="status" value={status} />
 
-        <button
-          type="submit"
-          disabled={pending || readOnly}
-          className={`${BUTTON} h-8 px-3.5 text-xs`}
-        >
-          {pending ? "Saving…" : "Save"}
-        </button>
+        <StatusControl value={status} onChange={setStatus} disabled={readOnly}>
+          <button
+            type="submit"
+            disabled={pending || readOnly}
+            className="-ml-px inline-flex items-center rounded-r-xl border border-foreground bg-foreground px-4 text-xs font-semibold text-background transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground disabled:opacity-50"
+          >
+            {pending ? "Saving…" : "Save"}
+          </button>
+        </StatusControl>
 
         {/* The only feedback a save gives, so it is announced. A failure
             carries the MDX compiler's own message, which names a line. */}

@@ -1,6 +1,8 @@
 import {
+  BoldMark,
   HighlightMark,
   StrokeMark,
+  type BoldProps,
   type HighlightProps,
   type MarkProps,
 } from "@/components/annotate/shapes";
@@ -35,4 +37,8 @@ export const StaticStrike = (props: MarkProps) => (
 
 export const StaticHighlight = (props: HighlightProps) => (
   <HighlightMark drawn {...props} />
+);
+
+export const StaticBold = (props: BoldProps) => (
+  <BoldMark drawn {...props} />
 );

@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Underline, Highlight, Strike } from "@/components/annotate";
+import { Underline, Highlight, Strike, Bold } from "@/components/annotate";
 import {
+  StaticBold,
   StaticBox,
   StaticHighlight,
   StaticUnderline,
@@ -86,5 +87,33 @@ describe("the static marks the admin preview uses", () => {
   it("is what the preview map actually wires up", () => {
     expect(previewComponents.Underline).toBe(StaticUnderline);
     expect(previewComponents.Highlight).toBe(StaticHighlight);
+  });
+});
+
+describe("Bold", () => {
+  // The one mark that colours the words rather than drawing around them, so it
+  // is the one that must never make them unreadable.
+  it("has a colour by default, since emphasis with none is just bold text", () => {
+    const html = renderToStaticMarkup(<Bold>x</Bold>);
+    expect(html).toContain("var(--accent)");
+  });
+
+  it("keeps the inherited colour as the second gradient stop", () => {
+    // This is what makes it legible before, during and after the sweep, and in
+    // any browser that never runs it.
+    expect(renderToStaticMarkup(<Bold>x</Bold>)).toContain("currentColor");
+  });
+
+  it("takes a weight, unlike the stroke marks' pen pressure", () => {
+    expect(renderToStaticMarkup(<Bold weight="black">x</Bold>)).toContain(
+      "font-weight:900",
+    );
+  });
+
+  it("starts undrawn and the static one starts drawn", () => {
+    expect(renderToStaticMarkup(<Bold>x</Bold>)).toContain("right center");
+    expect(renderToStaticMarkup(<StaticBold>x</StaticBold>)).toContain(
+      "left center",
+    );
   });
 });

@@ -28,6 +28,7 @@ const MARKS = [
   { tag: "Box", label: "box", hint: "boxed, for something to come back to" },
   { tag: "Strike", label: "strike", hint: "struck through, for a wrong idea" },
   { tag: "Highlight", label: "highlight", hint: "highlighter over the words" },
+  { tag: "Bold", label: "bold", hint: "the words themselves, sweeping into colour" },
 ] as const;
 
 /** Shown on hover, because the props are the part nobody would guess. */

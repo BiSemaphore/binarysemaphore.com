@@ -1,7 +1,14 @@
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import type { AnchorHTMLAttributes } from "react";
-import { Underline, Circle, Box, Strike, Highlight } from "@/components/annotate";
+import {
+  Underline,
+  Circle,
+  Box,
+  Strike,
+  Highlight,
+  Bold,
+} from "@/components/annotate";
 import { CronDiagram } from "@/components/cron-diagram";
 import { Pre } from "@/components/code-block";
 import { notebookComponents } from "@/components/learn/mdx";
@@ -97,6 +104,7 @@ const components: MDXComponents = {
   Box,
   Strike,
   Highlight,
+  Bold,
   // Cron expression breakdown.
   CronDiagram,
   // Code blocks, with a copy-to-clipboard button.

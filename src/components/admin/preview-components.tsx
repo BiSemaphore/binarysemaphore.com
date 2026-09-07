@@ -1,6 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 import { mdxComponents } from "@/mdx-components";
 import {
+  StaticBold,
   StaticBox,
   StaticCircle,
   StaticHighlight,
@@ -34,4 +35,5 @@ export const previewComponents: MDXComponents = {
   Box: StaticBox,
   Strike: StaticStrike,
   Highlight: StaticHighlight,
+  Bold: StaticBold,
 };
