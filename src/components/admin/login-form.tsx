@@ -2,11 +2,11 @@
 
 import { useActionState } from "react";
 import { signInAction, type SignInState } from "@/app/admin/actions";
-import { FIELD, LABEL, BUTTON } from "@/components/admin/ui";
+import { INPUT, LABEL, BUTTON } from "@/components/admin/ui";
 
 const initial: SignInState = { error: null };
 
-const field = `${FIELD} py-3`;
+const field = `${INPUT} h-11 w-full`;
 
 export function LoginForm() {
   const [state, action, pending] = useActionState(signInAction, initial);
@@ -49,7 +49,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className={`${BUTTON} py-3`}
+        className={`${BUTTON} h-11`}
       >
         {pending ? "Checking…" : "Sign in"}
       </button>

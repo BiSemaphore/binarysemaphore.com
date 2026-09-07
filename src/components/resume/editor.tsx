@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Select } from "@/components/select";
 import Link from "next/link";
 import { saveResume } from "@/app/resume/editor/[id]/actions";
 import {
@@ -153,18 +154,18 @@ export function Editor({
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2">
           <SaveIndicator status={status} />
-          <select
+          <Select
             value={templateId}
             onChange={(e) => setTemplateId(e.target.value as TemplateId)}
             aria-label="Template"
-            className="rounded-lg border border-border bg-background px-2 py-1.5 font-mono text-xs text-foreground focus:border-accent focus:outline-none"
+            className="h-8 rounded-lg pl-2 font-mono text-xs"
           >
             {TEMPLATES.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.label}
               </option>
             ))}
-          </select>
+          </Select>
 
           <div className="relative">
             <button
