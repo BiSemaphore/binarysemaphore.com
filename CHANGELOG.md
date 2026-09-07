@@ -4,8 +4,74 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Every release corresponds to a `staging` to `main` pull request and a matching
-`vX.Y.Z` tag on `main`.
+Every release corresponds to a `chore/release-vX.Y.Z` pull request and a matching
+`vX.Y.Z` tag on `main`. (Releases up to 0.4.2 came from a `staging` to `main`
+pull request; that branch has been dormant since #58 and feature branches merge
+to `main` directly.)
+
+## [0.5.0] - 2026-09-07
+
+The site stopped being a repository you deploy and became a product you edit.
+Threads, the topic tree and the notebook catalog moved out of git into Postgres,
+and an admin at `root.binarysemaphore.com` writes them. Two months of learn work
+shipped alongside it.
+
+### Added
+
+- **Admin at `root.binarysemaphore.com`.** Sign in with an email and a password,
+  create and edit threads and topic channels, publish, and roll back. The editor
+  is the whole window: MDX on the left, a live preview on the right rendered
+  through the same pipeline the published page uses, and each pane scrolls
+  itself. Cmd/Ctrl+S saves, leaving with unsaved changes warns, and every save
+  keeps the version it replaced.
+- **The topic tree**: 23 subjects and 93 channels at `learn.…/topics`, in a
+  Discord-shaped shell. Channels are named after situations rather than syllabus
+  steps, and a database constraint enforces that, not a convention.
+- **Study notebooks** at `learn.binarysemaphore.com`: a library, a reader that
+  keeps your place, reading progress, roadmaps, and a mentorship front page.
+- **Pen marks take props.** `color` (a brand token or any CSS colour), `weight`,
+  `speed` and `delay`, plus a sixth mark, `<Bold>`, which colours the words
+  themselves rather than drawing around them.
+- **Navigation feedback**: a progress bar for the gap before the first byte, and
+  route-level skeletons that mirror the real layout.
+- **Threads**: the React Compiler port to Rust, with a cover.
+
+### Changed
+
+- **Postgres is the source of truth for content, not git.** `src/content/threads`
+  and `src/content/topics` are deleted. MDX is compiled at request time.
+- **The schema was rebuilt from scratch.** Ten migrations that had grown by
+  accretion became six designed ones. A thread, a channel and a notebook section
+  are one `documents` table plus a thin satellite each. Slugs are a domain, so a
+  broken URL is impossible rather than unlikely. A published page cannot be
+  empty, because the database will not hold one.
+- `contact_messages` and `mentorship_requests` were one entity in two shapes with
+  no handled state and no read path. They are one inbox, in a schema with no URL.
+
+### Fixed
+
+- **Content was served up to an hour stale after an edit**, while the editor
+  reported that the cache had been cleared. `unstable_cache` with tags never
+  invalidated here, in any form, and neither did tagging the underlying fetch.
+  Measured, then removed: pages query per request, at 110ms for `/threads`.
+- **Anonymous readers could not see the site.** Every reader policy read
+  `status = 'published' or is_admin()`, and Postgres does not guarantee
+  short-circuit evaluation of `OR`, so a signed-out visitor got
+  `42501 permission denied` instead of rows.
+- The sidebar showed 7 of 93 channels, because a satellite was readable only when
+  its document was. The tree is public; the prose is what gets published.
+- Two admins editing one document was silently last-write-wins.
+- A production build that could not reach the database succeeded and prerendered
+  nothing. It now fails.
+
+### Security
+
+- **Being able to sign in never implies being an admin.** Signup is open, by
+  necessity: a student signing in with Google is a signup. The gate is a row in
+  `private.admins` and `is_admin()` in every write policy, never the subdomain,
+  which is routing. Verified by impersonating real JWT claims in both directions.
+- `private` is not exposed to PostgREST, so the admin list, the revisions and the
+  inbox have no URL at all.
 
 ## [0.4.2] - 2026-07-17
 

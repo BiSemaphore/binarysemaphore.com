@@ -121,7 +121,7 @@ Three rules that are easy to break:
 
 Runtime MDX evaluation makes an admin compromise a code-execution problem, which
 is why `private.admins` stays tiny. Recorded in
-[`docs/content-backend.md`](docs/content-backend.md).
+[`docs/database.md`](docs/database.md).
 
 ## Design system — repo tokens (rationale and palette concept in `docs/brand.md`; see `globals.css`)
 
