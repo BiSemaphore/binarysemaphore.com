@@ -29,7 +29,7 @@ export default async function AdminInbox() {
   const messages = (data ?? []) as Message[];
 
   return (
-    <>
+    <div className="max-w-4xl">
       <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground">
         Inbox
       </h1>
@@ -107,6 +107,6 @@ export default async function AdminInbox() {
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 }

@@ -35,7 +35,7 @@ export default async function WorkspaceLayout({
         remembered.
       */}
       <div className="border-b border-border bg-card">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-2.5 lg:px-10">
+        <div className="mx-auto flex w-full max-w-[1680px] items-center justify-between gap-4 px-6 py-2.5 lg:px-10">
           <span className="flex items-center gap-2.5">
             <span className="h-1.5 w-1.5 rounded-full bg-coral" />
             <span className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted">
@@ -57,7 +57,14 @@ export default async function WorkspaceLayout({
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8 lg:flex-row lg:gap-14 lg:px-10 lg:py-10">
+      {/*
+        Wide, because one page here genuinely needs it: the editor puts the MDX
+        and its preview side by side, and at max-w-6xl each pane was about
+        350px with several hundred pixels of empty screen beside it. The lists
+        do not want that width, so they set their own measure rather than the
+        shell imposing one on everything.
+      */}
+      <div className="mx-auto flex w-full max-w-[1680px] flex-col gap-8 px-6 py-8 lg:flex-row lg:gap-14 lg:px-10 lg:py-10">
         <aside className="shrink-0 lg:sticky lg:top-8 lg:h-fit lg:w-48">
           <Link
             href={`${base}/`}

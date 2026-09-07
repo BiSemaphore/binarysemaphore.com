@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { saveAction, type EditorState } from "@/app/admin/save";
 import { INPUT, AREA, LABEL, BUTTON, CONTROL_H } from "@/components/admin/ui";
 import { Select } from "@/components/select";
+import { PreviewPane } from "@/components/admin/preview-pane";
 
 type Initial = {
   title: string;
@@ -34,17 +35,22 @@ const initialState: EditorState = { ok: null };
 export function Editor({
   id,
   initial,
+  collection,
   readOnly = false,
 }: {
   id: string;
   initial: Initial;
+  collection: "thread" | "channel" | "notebook_section";
   readOnly?: boolean;
 }) {
   const [state, submit, pending] = useActionState(saveAction, initialState);
   const [dirty, setDirty] = useState(false);
-  const [words, setWords] = useState(
-    () => initial.body.trim().split(/\s+/).filter(Boolean).length,
-  );
+  const [body, setBody] = useState(initial.body);
+  const [preview, setPreview] = useState(true);
+
+  // Derived, not stored. A second piece of state for something computable from
+  // the first is a second thing that can be wrong.
+  const words = body.trim().split(/\s+/).filter(Boolean).length;
   const form = useRef<HTMLFormElement>(null);
 
   /**
@@ -106,7 +112,7 @@ export function Editor({
             defaultValue={initial.title}
             disabled={readOnly}
             required
-            className={`${INPUT} w-full max-w-2xl`}
+            className={`${INPUT} w-full max-w-3xl`}
           />
         </label>
 
@@ -117,15 +123,36 @@ export function Editor({
             defaultValue={initial.summary}
             disabled={readOnly}
             rows={2}
-            className={`${AREA} w-full max-w-2xl resize-y`}
+            className={`${AREA} w-full max-w-3xl resize-y`}
           />
         </label>
 
+        <div
+          className={
+            preview
+              ? "grid gap-6 lg:grid-cols-2 lg:items-start"
+              : "grid gap-5 max-w-4xl"
+          }
+        >
         <label className="grid gap-1.5">
           <span className="flex items-baseline justify-between gap-4">
             <span className={LABEL}>Body (MDX)</span>
-            <span className="font-mono text-[0.65rem] tabular-nums text-subtle">
-              {words.toLocaleString("en-GB")} words
+            <span className="flex items-baseline gap-4">
+              <span className="font-mono text-[0.65rem] tabular-nums text-subtle">
+                {words.toLocaleString("en-GB")} words
+              </span>
+              {/*
+                A toggle rather than always-on. Side by side halves the width of
+                the prose you are writing, which is the wrong trade when you are
+                editing a paragraph rather than building a page.
+              */}
+              <button
+                type="button"
+                onClick={() => setPreview((on) => !on)}
+                className="rounded font-mono text-[0.65rem] text-subtle underline decoration-border underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              >
+                {preview ? "hide preview" : "show preview"}
+              </button>
             </span>
           </span>
           {/*
@@ -136,19 +163,18 @@ export function Editor({
           */}
           <textarea
             name="body"
-            defaultValue={initial.body}
             disabled={readOnly}
             rows={24}
             spellCheck={false}
-            onChange={(event) =>
-              setWords(
-                event.target.value.trim().split(/\s+/).filter(Boolean).length,
-              )
-            }
+            value={body}
+            onChange={(event) => setBody(event.target.value)}
             style={{ fieldSizing: "content" } as React.CSSProperties}
             className={`${AREA} min-h-[28rem] w-full font-mono text-[13px] leading-relaxed`}
           />
         </label>
+
+        {preview ? <PreviewPane source={body} collection={collection} /> : null}
+        </div>
       </div>
 
       {/*
