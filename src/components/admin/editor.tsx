@@ -38,6 +38,7 @@ export function Editor({
   id,
   initial,
   collection,
+  updatedAt,
   revisions,
   details,
   back,
@@ -45,6 +46,8 @@ export function Editor({
 }: {
   id: string;
   initial: Initial;
+  /** The version this editor loaded, so a concurrent save can be detected. */
+  updatedAt: string;
   collection: "thread" | "channel" | "notebook_section";
   /** Server-rendered and handed in, so switching tabs costs no query. */
   revisions: React.ReactNode;
@@ -125,6 +128,7 @@ export function Editor({
       className="flex h-full min-h-0 flex-col"
     >
       <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="updatedAt" value={updatedAt} />
 
       {/* One bar. Everything that is not the prose. */}
       <header className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-4 py-2">
@@ -144,10 +148,6 @@ export function Editor({
         <span className="font-mono text-[0.65rem] tabular-nums text-subtle">
           {words.toLocaleString("en-GB")}w
         </span>
-
-        {/* The real value, since the visible select is presentational and the
-            form is what gets submitted. */}
-        <input type="hidden" name="status" value={status} />
 
         <StatusControl value={status} onChange={setStatus} disabled={readOnly}>
           <button

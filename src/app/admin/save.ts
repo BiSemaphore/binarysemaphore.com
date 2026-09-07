@@ -27,5 +27,8 @@ export async function saveAction(
       | "draft"
       | "published"
       | "archived",
+    // Carried by the form so the database can arbitrate, rather than the app
+    // re-reading and hoping nothing changed between the read and the write.
+    expectedUpdatedAt: String(formData.get("updatedAt") ?? "") || undefined,
   });
 }

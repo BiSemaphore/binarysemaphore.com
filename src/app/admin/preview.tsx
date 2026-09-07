@@ -41,9 +41,27 @@ export type Preview =
  * back to the caller, but because this compiles and runs arbitrary MDX, and an
  * open endpoint that does that is remote code execution with a friendly name.
  */
+/**
+ * Past this, previewing costs more than it is worth.
+ *
+ * Every pause in typing compiles the whole document and runs Shiki over every
+ * fence, on the server. That is unbounded work triggered by a keystroke, and
+ * although only an admin can trigger it, "only we can do it" is not a limit.
+ * 150KB is roughly 25,000 words: far beyond anything we write, and short of
+ * anything that would hurt.
+ */
+const MAX_PREVIEW_BYTES = 150_000;
+
 export async function previewMdx(source: string): Promise<Preview> {
   if (!(await isAdmin())) return { ok: false, error: "Not an admin." };
   if (!source.trim()) return { ok: true, node: null };
+
+  if (source.length > MAX_PREVIEW_BYTES) {
+    return {
+      ok: false,
+      error: `Too long to preview live (${Math.round(source.length / 1000)}KB of ${MAX_PREVIEW_BYTES / 1000}KB). Saving still works, and the page will render it.`,
+    };
+  }
 
   try {
     await compile(source, { remarkPlugins: [remarkGfm] });

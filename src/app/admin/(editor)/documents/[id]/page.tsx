@@ -41,6 +41,7 @@ export default async function EditDocument({
   return (
     <Editor
       id={doc.id}
+      updatedAt={doc.updated_at}
       collection={doc.collection}
       readOnly={doc.origin === "sync"}
       initial={{

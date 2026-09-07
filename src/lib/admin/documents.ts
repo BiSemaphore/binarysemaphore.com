@@ -82,6 +82,19 @@ export async function saveDocument(
     summary: string;
     body: string;
     status: DocumentRow["status"];
+    /**
+     * The `updated_at` the editor loaded.
+     *
+     * Two admins with the same page open used to be last-write-wins, silently:
+     * the second save overwrote the first with no sign that anything had been
+     * lost. The write now matches on this value, so a row that moved underneath
+     * matches nothing and the save is refused instead of applied.
+     *
+     * Optimistic rather than a lock: nothing is held between opening a document
+     * and saving it, which for prose is the right trade. The loser is told, and
+     * their text is still in the box.
+     */
+    expectedUpdatedAt?: string;
   },
 ): Promise<SaveResult> {
   const body = fields.body.trim();
@@ -113,7 +126,7 @@ export async function saveDocument(
   const firstPublish =
     fields.status === "published" && !current?.published_at;
 
-  const { error } = await db
+  let write = db
     .from("documents")
     .update({
       title: fields.title.trim(),
@@ -124,7 +137,24 @@ export async function saveDocument(
     })
     .eq("id", id);
 
+  if (fields.expectedUpdatedAt) {
+    write = write.eq("updated_at", fields.expectedUpdatedAt);
+  }
+
+  // `select()` so the count is knowable: an update that matched nothing is not
+  // an error to PostgREST, it is a successful update of zero rows, which is
+  // exactly what a lost race looks like.
+  const { data, error } = await write.select("id");
+
   if (error) return { ok: false, error: error.message };
+
+  if (fields.expectedUpdatedAt && (data?.length ?? 0) === 0) {
+    return {
+      ok: false,
+      error:
+        "Someone else saved this while you were editing. Your text is still here; open the page again in another tab to see theirs before overwriting it.",
+    };
+  }
 
   // No revalidateTag: reader pages hold no cache to clear. See the note at the
   // top of src/lib/threads.ts for the measurements behind that.

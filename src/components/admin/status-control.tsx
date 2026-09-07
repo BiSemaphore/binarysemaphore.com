@@ -57,7 +57,14 @@ export function StatusControl({
           className="pointer-events-none absolute right-2.5 h-3 w-3 opacity-60"
         />
 
+        {/*
+          Carries the name, so the form still submits a status without
+          JavaScript. Server Actions do work on a plain form post, and the
+          first version of this control moved the value into a hidden input
+          driven by React state, which quietly dropped that.
+        */}
         <select
+          name="status"
           value={value}
           disabled={disabled}
           onChange={(event) => onChange(event.target.value as Status)}

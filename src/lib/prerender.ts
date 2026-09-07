@@ -12,9 +12,16 @@
  * an empty params list costs a first request, not a page. Returning nothing
  * means "prerender none of them", and every route still works.
  *
- * It warns rather than staying silent, because a production build that
- * prerenders nothing is worth noticing in the log even though it is not worth
- * failing over.
+ * ## Except in production
+ *
+ * Degrading is right for a preview deploy, where the environment may genuinely
+ * lack Supabase config, and wrong for the real site: a production build that
+ * cannot reach the database would succeed, prerender nothing at all, and say so
+ * only in a log line nobody reads. That is a broken deploy wearing a green
+ * tick. There, the build fails.
+ *
+ * `VERCEL_ENV` is the distinction, not `NODE_ENV`: NODE_ENV is "production" for
+ * a preview build too, which is exactly the case this must not fail.
  */
 export async function prerenderParams<T>(
   label: string,
@@ -24,6 +31,13 @@ export async function prerenderParams<T>(
     return await load();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+
+    if (process.env.VERCEL_ENV === "production") {
+      throw new Error(
+        `[prerender] ${label}: the production build could not read the database, and shipping a site with nothing prerendered is worse than failing here. ${message}`,
+      );
+    }
+
     console.warn(
       `[prerender] ${label}: rendering on demand instead. ${message}`,
     );

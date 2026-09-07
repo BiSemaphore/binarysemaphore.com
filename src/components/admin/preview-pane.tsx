@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { previewMdx, type Preview } from "@/app/admin/preview";
 
 /**
@@ -32,10 +32,24 @@ export function PreviewPane({
   const [result, setResult] = useState<Preview | null>(null);
   const [pending, startTransition] = useTransition();
 
+  /**
+   * Which request is the current one.
+   *
+   * Two renders can be in flight at once, and a compile's duration depends on
+   * what is being compiled: add a fenced code block and that request takes
+   * longer than the one after it. Without this, the slower reply lands last and
+   * the pane shows an older document than the one on the left. Clearing the
+   * timeout is not enough, because the timeout only guards the gap before the
+   * request, not the request itself.
+   */
+  const latest = useRef(0);
+
   useEffect(() => {
     const timer = setTimeout(() => {
+      const ticket = ++latest.current;
       startTransition(async () => {
-        setResult(await previewMdx(source));
+        const next = await previewMdx(source);
+        if (ticket === latest.current) setResult(next);
       });
     }, 600);
 
