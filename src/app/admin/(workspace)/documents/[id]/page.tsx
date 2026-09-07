@@ -32,47 +32,13 @@ export default async function EditDocument({
       height in the layout.
     */
     <div className="flex h-full min-h-0 flex-col">
-      <div className="shrink-0">
+      <div className="shrink-0 pb-1">
       <Link
         href={doc.collection === "thread" ? `${base}/threads` : `${base}/topics`}
         className="font-mono text-xs text-subtle transition-colors hover:text-foreground"
       >
         ← {doc.collection === "thread" ? "Threads" : "Topics"}
       </Link>
-
-      <div className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-2">
-        <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground">
-          {doc.title}
-        </h1>
-        <StatusChip status={doc.status} />
-      </div>
-
-      <p className="mt-1.5 flex flex-wrap items-baseline gap-x-3 font-mono text-xs text-subtle">
-        <a
-          href={
-            doc.status === "published"
-              ? doc.collection === "thread"
-                ? `https://binarysemaphore.com/threads/${doc.slug}`
-                : `https://learn.binarysemaphore.com/topics/${doc.scope}/${doc.slug}`
-              : undefined
-          }
-          target="_blank"
-          rel="noreferrer noopener"
-          className={
-            doc.status === "published"
-              ? "underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
-              : "pointer-events-none"
-          }
-        >
-          {doc.collection === "thread"
-            ? `/threads/${doc.slug}`
-            : `/topics/${doc.scope}/${doc.slug}`}
-        </a>
-        <span>{doc.reading_minutes} min</span>
-        <span>
-          edited <When iso={doc.updated_at} />
-        </span>
-      </p>
 
       {doc.origin === "sync" ? (
         <p className="mt-6 rounded-card border border-coral/40 bg-card px-4 py-3 text-sm leading-6 text-muted">
@@ -93,6 +59,35 @@ export default async function EditDocument({
           status: doc.status,
         }}
         revisions={<Revisions documentId={doc.id} />}
+        meta={
+          <p className="mt-1 flex flex-wrap items-baseline gap-x-3 font-mono text-xs text-subtle">
+            <StatusChip status={doc.status} />
+            <a
+              href={
+                doc.status === "published"
+                  ? doc.collection === "thread"
+                    ? `https://binarysemaphore.com/threads/${doc.slug}`
+                    : `https://learn.binarysemaphore.com/topics/${doc.scope}/${doc.slug}`
+                  : undefined
+              }
+              target="_blank"
+              rel="noreferrer noopener"
+              className={
+                doc.status === "published"
+                  ? "underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
+                  : "pointer-events-none"
+              }
+            >
+              {doc.collection === "thread"
+                ? `/threads/${doc.slug}`
+                : `/topics/${doc.scope}/${doc.slug}`}
+            </a>
+            <span>{doc.reading_minutes} min</span>
+            <span>
+              edited <When iso={doc.updated_at} />
+            </span>
+          </p>
+        }
       />
     </div>
   );

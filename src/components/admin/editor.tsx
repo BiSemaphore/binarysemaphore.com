@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { saveAction, type EditorState } from "@/app/admin/save";
-import { INPUT, AREA, LABEL, BUTTON, CONTROL_H } from "@/components/admin/ui";
+import { AREA, LABEL, BUTTON, CONTROL_H } from "@/components/admin/ui";
 import { Select } from "@/components/select";
 import { PreviewPane } from "@/components/admin/preview-pane";
 import { MarkToolbar } from "@/components/admin/mark-toolbar";
@@ -38,6 +38,7 @@ export function Editor({
   initial,
   collection,
   revisions,
+  meta,
   readOnly = false,
 }: {
   id: string;
@@ -49,6 +50,8 @@ export function Editor({
    * so the history is not re-queried every time you glance at it.
    */
   revisions: React.ReactNode;
+  /** The slug, reading time and status line, rendered under the title. */
+  meta: React.ReactNode;
   readOnly?: boolean;
 }) {
   const [state, submit, pending] = useActionState(saveAction, initialState);
@@ -117,28 +120,44 @@ export function Editor({
     >
       <input type="hidden" name="id" value={id} />
 
-      <div className="grid shrink-0 gap-4 pb-5">
-        <label className="grid gap-1.5">
-          <span className={LABEL}>Title</span>
-          <input
-            name="title"
-            defaultValue={initial.title}
-            disabled={readOnly}
-            required
-            className={`${INPUT} w-full max-w-3xl`}
-          />
-        </label>
+      {/*
+        The title is the heading.
+        
+        It used to be both: an <h1> in the page header and a labelled field
+        below it, which said the same thing twice and cost about 130px of the
+        one screen this editor gets. Editing it in place removes the
+        duplication and the height at once.
 
-        <label className="grid gap-1.5">
-          <span className={LABEL}>Summary</span>
+        The summary is real but rarely touched, so it is a disclosure. Closed,
+        it costs a line; open, it is the same field it always was.
+      */}
+      <div className="shrink-0 pb-4">
+        <input
+          name="title"
+          defaultValue={initial.title}
+          disabled={readOnly}
+          required
+          aria-label="Title"
+          className="w-full max-w-3xl rounded border-0 bg-transparent px-0 font-display text-2xl font-semibold tracking-tight text-foreground outline-none focus-visible:ring-2 focus-visible:ring-foreground/15 disabled:opacity-60"
+        />
+
+        {meta}
+
+        <details className="group mt-2">
+          <summary className={`${LABEL} inline-flex cursor-pointer list-none items-center gap-1.5 rounded transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground`}>
+            <span className="font-mono text-[0.7rem] leading-none transition-transform group-open:rotate-90">
+              ›
+            </span>
+            Summary
+          </summary>
           <textarea
             name="summary"
             defaultValue={initial.summary}
             disabled={readOnly}
             rows={2}
-            className={`${AREA} w-full max-w-3xl resize-none`}
+            className={`${AREA} mt-1.5 w-full max-w-3xl resize-none`}
           />
-        </label>
+        </details>
       </div>
 
       {/*
