@@ -529,29 +529,6 @@ export const team: TeamMember[] = [
     experience: [
       {
         role: "Full-Stack Developer",
-        company: "SkillSnap Learning (company closed)",
-        period: "Jun 2026 - Jul 2026",
-        location: "Gurugram, India",
-        summary:
-          "Built the course platform and the CRM behind it, then spent the rest of the time making the public site fast.",
-        highlights: [
-          "Designed the MongoDB schema for courses and enrollments, the backend data model that the CRM and the public course pages both read from.",
-          "Moved the CRM to server-side NextAuth sessions with token refresh, rotation, reuse detection, and a grace window per OWASP, holding access tokens in memory rather than localStorage.",
-          "Migrated fifteen CRM modules from client-side rendering to React Server Components with colocated Server Actions, splitting the remaining client state between React Query and a Zustand store with SSR-safe persistence.",
-          "Built the YouTube Data API v3 integration behind one HTTP layer with a typed error taxonomy and backoff honoring Retry-After, batching statistics at the API maximum of 50 per call and caching daily with ISR behind a static fallback.",
-        ],
-        stack: [
-          "Next.js",
-          "React",
-          "TypeScript",
-          "MongoDB",
-          "NextAuth",
-          "React Query",
-          "Zustand",
-        ],
-      },
-      {
-        role: "Full-Stack Developer",
         company: "NewAgeSys Solutions",
         period: "Nov 2025 - May 2026",
         location: "Kochi, India",
@@ -668,12 +645,6 @@ export const team: TeamMember[] = [
           "Turns markdown into annotatable study-notebook PDFs: block directives, hand-drawn SVG figures, a linter that fails the build, and a generated question bank. Python 3 and headless Chrome, no third-party packages.",
         href: "https://github.com/shahid-io/notebook-kit",
       },
-      {
-        name: "Urban Waddle",
-        description:
-          "A Go backend service handling authentication, products, and orders over a REST API.",
-        href: "https://github.com/shahid-io/urban-waddle",
-      },
     ],
     certifications: [
       {
@@ -744,50 +715,6 @@ export const team: TeamMember[] = [
     email: "ksanny556@gmail.com",
     linkedin: "https://www.linkedin.com/in/supersanny/",
     github: "https://github.com/SuperSanny",
-  },
-  {
-    name: "Anand Singh",
-    slug: "anand-singh",
-    role: "Software Engineer",
-    focus: "Business analysis & requirements",
-    description:
-      "Builds features while shaping requirements and helping steer the decisions that keep projects on track.",
-    bio: [
-      "Anand sits between the code and the problem. He builds features while shaping requirements, translating what a business actually needs into something the team can design and ship.",
-      "He keeps projects honest about scope and trade-offs, and helps steer the decisions that decide whether a system ages well or not.",
-    ],
-    skills: [
-      "Business analysis",
-      "Requirements",
-      "Project planning",
-      "Backend",
-      "Stakeholder comms",
-    ],
-    email: "anandmevaparajitah04@gmail.com",
-    linkedin: "https://www.linkedin.com/in/anand-singh-03ab70201",
-    github: "https://github.com/hawkeyemehawk",
-  },
-  {
-    name: "Sanjita Sahu",
-    slug: "sanjita-sahu",
-    role: "Product Manager & Data Analyst",
-    focus: "Business problems & delivery",
-    description:
-      "Turns business problems into clear plans and reads the data that points to what we build next.",
-    bio: [
-      "Sanjita turns fuzzy business problems into clear plans the team can act on. She works closely with Anand on requirements and keeps delivery moving without losing sight of the goal.",
-      "As a data analyst she reads what the numbers are actually saying, so decisions about what to build next come from evidence rather than hunches.",
-    ],
-    skills: [
-      "Product management",
-      "Data analysis",
-      "Roadmapping",
-      "SQL",
-      "Delivery",
-    ],
-    email: "sahusanjita4@gmail.com",
-    linkedin: "https://www.linkedin.com/in/sanjitasahu/",
-    github: "https://github.com/sahu130",
   },
 ];
 

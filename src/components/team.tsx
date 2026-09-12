@@ -242,7 +242,15 @@ export function Team({ showHeading = true }: { showHeading?: boolean }) {
           <SectionHeading label="Team" title="The people behind it" />
         ) : null}
 
-        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ul
+          className={`grid gap-6 sm:grid-cols-2 ${
+            team.length >= 4
+              ? "lg:grid-cols-4"
+              : team.length === 3
+                ? "lg:grid-cols-3"
+                : "mx-auto max-w-4xl"
+          }`}
+        >
           {team.map((member, i) => (
             <li key={member.name} className="flex">
               <Reveal delay={(i % 4) * 80} className="flex w-full">
