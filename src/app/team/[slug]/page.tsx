@@ -45,7 +45,7 @@ export async function generateMetadata({
     title: member.name,
     description,
     openGraph: { title, description },
-    twitter: { card: "summary", title, description },
+    twitter: { card: "summary_large_image", title, description },
     alternates: { canonical: `/team/${slug}` },
   };
 }
