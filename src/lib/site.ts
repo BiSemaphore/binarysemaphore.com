@@ -522,9 +522,10 @@ export const team: TeamMember[] = [
       },
       { title: "Payments", items: ["Stripe", "Razorpay", "Paytm"] },
     ],
-    email: "razashahid@gmail.com",
+    email: "shahid@binarysemaphore.com",
     linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
     github: "https://github.com/shahid-io",
+    builds: ["inode", "notchify", "resume", "learn"],
     experience: [
       {
         role: "Full-Stack Developer",
@@ -644,28 +645,28 @@ export const team: TeamMember[] = [
         href: "https://github.com/BiSemaphore/ascent",
       },
       {
-        name: "inode",
-        description:
-          "A CLI knowledge base in Go. Save anything from the terminal, retrieve it later in plain English. End-to-end RAG pipeline over a pluggable adapter architecture: SQLite + sqlite-vec by default, Postgres + pgvector as a zero-CGO alternative, with swappable embedding and LLM providers. Encrypted at rest, and it exposes a read-only MCP server so AI clients can query it.",
-        href: "https://github.com/shahid-io/inode",
-      },
-      {
-        name: "Resume builder",
-        description:
-          "A browser-based resume builder on Next.js and Supabase. Preview and print share one pagination module that measures real DOM line boxes, so a page break lands between two lines of a bullet instead of through one; export runs headless Chromium inside a serverless function.",
-        href: "https://resume.binarysemaphore.com",
-      },
-      {
         name: "Booking.go",
         description:
           "A multi-tenant SaaS for slot-based booking, where one backend serves many independent businesses without their data crossing. Express and TypeScript on a strict route to service to repository path, with Postgres, MongoDB, and Redis each doing what they are good at.",
         href: "https://github.com/Booking-Go",
       },
       {
-        name: "notchify",
+        name: "beeline",
         description:
-          "A macOS developer toolbox that lives in the camera notch: a file shelf, clipboard history, a color picker, and port tools. Swift, AppKit, SwiftUI.",
-        href: "https://github.com/BiSemaphore/notchify",
+          "A command palette over 80,000 records that searches entirely in the browser, with no search server. A typed-array index answers at p95 of 1ms per keystroke at typing pace, forgives typos, and ships with a benchmark you can run inside the app.",
+        href: "https://github.com/shahid-io/beeline",
+      },
+      {
+        name: "Polaris",
+        description:
+          "Flight search across six providers that recognises the same marketed flight sold by different sellers, so each flight is one row carrying every price. A provider that fails becomes a visible status instead of a failed search. NestJS and Next.js in a Turborepo monorepo, 263 tests.",
+        href: "https://github.com/shahid-io/polaris",
+      },
+      {
+        name: "notebook-kit",
+        description:
+          "Turns markdown into annotatable study-notebook PDFs: block directives, hand-drawn SVG figures, a linter that fails the build, and a generated question bank. Python 3 and headless Chrome, no third-party packages.",
+        href: "https://github.com/shahid-io/notebook-kit",
       },
       {
         name: "Urban Waddle",
@@ -789,6 +790,23 @@ export const team: TeamMember[] = [
     github: "https://github.com/sahu130",
   },
 ];
+
+/**
+ * Learn is an offer, not a product, so it stays out of `projects` and the
+ * homepage grid. A team member can still list it under `builds`.
+ */
+const learnBuild: Project = {
+  name: mentorship.headline,
+  tagline: mentorship.summary.split(". ")[0] + ".",
+  description: mentorship.summary,
+  tags: ["Mentorship", "Computer science", "One to one"],
+  href: "https://learn.binarysemaphore.com",
+};
+
+/** Resolve a `builds` slug: a project, or "learn" for the mentorship offer. */
+export function getStudioBuild(slug: string): Project | undefined {
+  return slug === "learn" ? learnBuild : projects.find((p) => p.slug === slug);
+}
 
 /** Find a team member by slug (for the detail page). */
 export function getTeamMember(slug: string): TeamMember | undefined {

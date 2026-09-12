@@ -10,6 +10,8 @@ export const mentorship: Mentorship = {
   eyebrow: "binary semaphore",
   headline: "Learn",
   headlineHand: "stuck on a paper? sit with someone who has been there",
+  summary:
+    "One to one mentorship for college students stuck in a computer science paper. Core papers, JavaScript, and what AI is actually doing underneath.",
   lead: "Not a course, and not another playlist you will not finish. One person, one hour, on the exact thing that stopped making sense. You say which paper and where it broke, and we start there.",
   // TODO(shahid): confirm and extend. These are the subjects your own
   // notebooks already cover, plus the two you named.

@@ -2,7 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { team, getTeamMember, site } from "@/lib/site";
+import {
+  team,
+  getStudioBuild,
+  getTeamMember,
+  site,
+  type Project,
+} from "@/lib/site";
+import { projectLink } from "@/lib/subdomains";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import {
@@ -42,6 +49,54 @@ export async function generateMetadata({
   };
 }
 
+// Candy accents cycled across the studio product cards.
+const accents = ["bg-coral", "bg-blue", "bg-violet", "bg-sun"];
+
+function StudioProductCard({
+  project,
+  accent,
+}: {
+  project: Project;
+  accent: string;
+}) {
+  const { href, internal, host } = projectLink(project);
+  const cardClass =
+    "group flex h-full flex-col rounded-panel border border-border bg-card p-5 shadow-soft transition-transform duration-200 hover:-translate-y-1";
+  const content = (
+    <>
+      <span aria-hidden className={`mb-4 h-1.5 w-10 rounded-full ${accent}`} />
+      <h3 className="flex items-center justify-between gap-3 font-mono text-base font-medium text-foreground">
+        {project.name}
+        <ArrowUpRightIcon className="h-4 w-4 shrink-0 text-subtle transition-colors group-hover:text-accent" />
+      </h3>
+      {host ? (
+        <p className="mt-0.5 font-mono text-xs text-accent-strong">{host}</p>
+      ) : null}
+      <p className="mt-2 text-sm leading-6 text-muted">{project.tagline}</p>
+      <ul className="mt-auto flex flex-wrap gap-1.5 pt-4">
+        {project.tags.map((tag) => (
+          <li
+            key={tag}
+            className="rounded-full bg-background px-2.5 py-1 font-mono text-[11px] text-subtle ring-1 ring-inset ring-border"
+          >
+            {tag}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+
+  return internal ? (
+    <Link href={href} className={cardClass}>
+      {content}
+    </Link>
+  ) : (
+    <a href={href} target="_blank" rel="noreferrer noopener" className={cardClass}>
+      {content}
+    </a>
+  );
+}
+
 function initials(name: string): string {
   return name
     .split(/\s+/)
@@ -59,6 +114,10 @@ export default async function TeamMemberPage({
   const { slug } = await params;
   const member = getTeamMember(slug);
   if (!member) notFound();
+
+  const builds = (member.builds ?? [])
+    .map(getStudioBuild)
+    .filter((p): p is Project => Boolean(p));
 
   return (
     <>
@@ -144,6 +203,35 @@ export default async function TeamMemberPage({
               </a>
             ) : null}
           </div>
+        ) : null}
+
+        {/* What they build at the studio, ahead of everything else. */}
+        {builds.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
+              Building at {site.wordmark}
+            </h2>
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {builds.map((project, i) => (
+                <li key={project.name}>
+                  <StudioProductCard
+                    project={project}
+                    accent={accents[i % accents.length]}
+                  />
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 text-sm leading-6 text-muted">
+              The studio writes about how these tools work in{" "}
+              <Link
+                href="/threads"
+                className="font-medium text-accent-strong underline-offset-4 hover:underline"
+              >
+                threads
+              </Link>
+              .
+            </p>
+          </section>
         ) : null}
 
         {/* Bio */}
@@ -237,7 +325,7 @@ export default async function TeamMemberPage({
         {member.projects && member.projects.length > 0 ? (
           <section className="mt-12">
             <h2 className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-accent-strong">
-              Projects
+              {builds.length > 0 ? "Other projects" : "Projects"}
             </h2>
             <ul className="grid gap-4 sm:grid-cols-2">
               {member.projects.map((proj, i) => {
@@ -407,8 +495,32 @@ export default async function TeamMemberPage({
           </section>
         ) : null}
 
+        {/* Studio call to action */}
+        <section className="mt-14 rounded-panel border border-border bg-card p-6 shadow-soft sm:p-8">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">
+            Work with {site.wordmark}
+          </h2>
+          <p className="mt-2 text-[15px] leading-7 text-muted">
+            {site.services.lead}
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link
+              href="/#contact"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              Start a conversation
+            </Link>
+            <Link
+              href="/#projects"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-card-hover"
+            >
+              See what we have built
+            </Link>
+          </div>
+        </section>
+
         {/* Back link */}
-        <div className="mt-14 border-t border-border pt-8">
+        <div className="mt-10 border-t border-border pt-8">
           <Link
             href="/#team"
             className="inline-flex items-center gap-1.5 font-mono text-sm text-subtle transition-colors hover:text-foreground"
