@@ -8,9 +8,12 @@ test("homepage loads with the brand heading", async ({ page }) => {
 test("primary nav links are present in the header", async ({ page }) => {
   await page.goto("/");
   const header = page.locator("header");
-  for (const href of ["/", "/services", "/projects", "/threads"]) {
+  for (const href of ["/", "/projects", "/threads", "/team"]) {
     await expect(header.locator(`a[href="${href}"]`).first()).toBeVisible();
   }
+  // Services lives in the Company dropdown, so it is in the header but hidden
+  // until the menu opens.
+  await expect(header.locator('a[href="/services"]').first()).toBeAttached();
 });
 
 test("key routes return 200", async ({ page }) => {
