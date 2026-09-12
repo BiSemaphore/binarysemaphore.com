@@ -35,6 +35,12 @@ export type Project = {
   href: string;
   /** Optional banner image (path under /public), ~1.9:1 aspect. */
   image?: string;
+  /**
+   * Product screenshot for the compact build cards on team profiles (path
+   * under /public), 1200:627. Kept apart from `image` so the homepage grid,
+   * where only some products have one, is unaffected.
+   */
+  cover?: string;
   /** Optional: shown as a small monospace label on the card, e.g. "v0.3". */
   status?: string;
   featured?: boolean;
