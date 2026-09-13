@@ -4,7 +4,13 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { team, getTeamMember, site, type TeamMember } from "@/lib/site";
-import { groupStints, memberBuilds, memberFacts } from "@/lib/team";
+import {
+  formatEventDate,
+  groupStints,
+  latestEvent,
+  memberBuilds,
+  memberFacts,
+} from "@/lib/team";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
@@ -20,6 +26,7 @@ import { StudioBuildCard } from "@/components/team-member/studio-build-card";
 import { CardTile, TrayCard } from "@/components/team-member/tray-card";
 import { Experience } from "@/components/team-member/experience";
 import { Credentials } from "@/components/team-member/credentials";
+import { Events } from "@/components/team-member/events";
 
 type Params = { slug: string };
 
@@ -81,6 +88,7 @@ function initials(name: string): string {
 
 function Hero({ member }: { member: TeamMember }) {
   const firstName = member.name.split(/\s+/)[0];
+  const latest = latestEvent(member);
   return (
     <header className="grid items-center gap-12 lg:grid-cols-[1fr_auto] lg:gap-16">
       <div>
@@ -124,6 +132,25 @@ function Hero({ member }: { member: TeamMember }) {
             </a>
           ) : null}
         </div>
+
+        {latest ? (
+          <a
+            href="#events"
+            className="group mt-6 inline-flex max-w-full items-center gap-2.5 text-sm text-muted transition-colors hover:text-foreground"
+          >
+            <span className="shrink-0 rounded-full bg-sun px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.15em] text-[#111111]">
+              Latest
+            </span>
+            <span className="min-w-0 truncate">
+              <span className="font-medium text-foreground">{latest.name}</span>
+              {", "}
+              {formatEventDate(latest)}
+            </span>
+            <span aria-hidden className="shrink-0 transition-transform motion-safe:group-hover:translate-y-0.5">
+              &darr;
+            </span>
+          </a>
+        ) : null}
       </div>
 
       <div className="relative mx-auto w-fit lg:mx-0">
@@ -231,6 +258,14 @@ export default async function TeamMemberPage({
       id: "experience",
       label: "Experience",
       body: <Experience stints={stints} />,
+    });
+  }
+
+  if (member.events && member.events.length > 0) {
+    sections.push({
+      id: "events",
+      label: "Events & community",
+      body: <Events events={member.events} />,
     });
   }
 

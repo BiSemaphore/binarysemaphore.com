@@ -43,7 +43,7 @@ export const site: SiteConfig = {
   // DRAFT — edit freely. Frames the maker behind the studio.
   about: [
     "Binary Semaphore takes its name from the simplest synchronization primitive there is, and we treat software the same way: small, well-defined parts that coordinate cleanly and hide the right details behind each interface.",
-    "We work across applied AI, distributed systems, and developer tools. We spend our effort on the essential complexity of a problem and refuse to let the accidental kind pile up, designing for reliability and maintainability from the start rather than bolting them on later. The current focus is inode, a CLI knowledge base that retrieves by meaning, written in Go.",
+    "We work across applied AI, distributed systems, and developer tools. We spend our effort on the essential complexity of a problem and refuse to let the accidental kind pile up, designing for reliability and maintainability from the start rather than bolting them on later. The current focus is inode, a Go CLI that answers questions over your notes with retrieval-augmented generation.",
   ],
 
   // --- How we work -------------------------------------------------------
@@ -84,7 +84,7 @@ export const site: SiteConfig = {
         lede: "Retrieval, embeddings, and language-model features built into software people actually use.",
         overview: [
           "We treat a model as one component in a larger system, not the whole product. The interesting work is usually around it: getting the right context to it, handling the cases where it is wrong, and measuring whether it genuinely helps before shipping.",
-          "We have built this from the inside out with inode, a knowledge base that retrieves by meaning, so we know where retrieval quality, latency, and cost actually bite.",
+          "We have built this from the inside out with inode, a retrieval-augmented knowledge base, so we know where retrieval quality, latency, and cost actually bite.",
         ],
         offerings: [
           {
@@ -699,6 +699,62 @@ export const team: TeamMember[] = [
         year: "2022",
       },
     ],
+    events: [
+      {
+        name: "HackerRank Orchestrate",
+        kind: "hackathon",
+        host: "HackerRank",
+        date: "2026-09-13",
+        cover: "/events/hackerrank-orchestrate.jpg",
+        logo: "/events/logo-hackerrank.svg",
+        note: "A 24-hour hackathon. Built an agent that decides whether someone can safely afford a purchase: a deterministic cash-flow engine plans the payment, and a language model only reads the messages and receipts behind it.",
+      },
+      {
+        name: "IBM Bob Hands-on Lab",
+        kind: "workshop",
+        host: "IBM WatsonLabs India",
+        date: "2026-07-11",
+        location: "IBM India, Gurugram",
+        note: "A day of building with IBM Bob across the development lifecycle: code generation, GitHub integration, CI/CD, pull request review, and Java modernization.",
+        href: "https://luma.com/192h2elm",
+        cover: "/events/ibm-bob-lab.jpg",
+        logo: "/events/logo-ibm.png",
+      },
+      {
+        name: "AI Builders Mixer: Delhi Edition",
+        kind: "meetup",
+        host: "The AI Builders",
+        date: "2026-07-05",
+        location: "Masters' Union, Gurugram",
+        note: "Conversations with people building AI products in Delhi NCR about careers, learning paths, and where the work is.",
+        href: "https://luma.com/8sboash7",
+        cover: "/events/ai-builders-mixer.jpg",
+        logo: "/events/logo-ai-builders.png",
+      },
+      {
+        name: "AI Builders Meet-up 2026: Delhi NCR",
+        kind: "meetup",
+        host: "Indian Data Club",
+        date: "2026-06-13",
+        location: "ThoughtWorks, Gurugram",
+        note: "Panels on AI careers and industry trends, and a technical session on building autonomous agents with Google's Agent Development Kit.",
+        href: "https://luma.com/2782mgfb",
+        cover: "/events/idc-ai-builders.jpg",
+        logo: "/events/logo-indian-data-club.png",
+      },
+      {
+        name: "Kochi FOSS meetups",
+        kind: "meetup",
+        host: "FOSS United Kochi",
+        date: "2023",
+        until: "2026",
+        location: "Kochi",
+        note: "The monthly free and open source software meetup in Kochi, a regular stop while living there.",
+        href: "https://kochifoss.org/",
+        cover: "/events/kochi-foss.jpg",
+        logo: "/events/logo-kochi-foss.svg",
+      },
+    ],
   },
   {
     name: "Sanny Kumar",
@@ -827,9 +883,10 @@ export const projects: Project[] = [
   },
   {
     name: "inode",
-    tagline: "A CLI knowledge base that retrieves by meaning, not keywords.",
+    tagline:
+      "A Go CLI for retrieval-augmented search over notes, commands, and secrets.",
     description:
-      "Stores your notes, secrets, and commands and retrieves them by meaning using vector search and an LLM. Runs fully on your machine by default (Ollama + SQLite), with an optional Postgres/pgvector backend and an MCP server so tools like Claude Code can query it directly.",
+      "Embeds every note, fetches the nearest ones to a question with k-nearest-neighbour search, and has a language model answer only from those. SQLite with sqlite-vec and Ollama by default, so it runs on your machine; PostgreSQL with pgvector, Claude, OpenAI, and Voyage AI are opt-in, and a read-only MCP server lets Claude Code or Cursor query the same store.",
     tags: ["Go", "RAG", "pgvector", "MCP", "Ollama"],
     href: "https://github.com/shahid-io/inode",
     cover: "/projects/inode.png",
@@ -837,62 +894,62 @@ export const projects: Project[] = [
     slug: "inode",
     subdomain: "inode",
     detail: {
-      lede: "A privacy-focused CLI for storing and retrieving notes, secrets, and commands through natural-language semantic search.",
+      lede: "A Go CLI that stores notes, commands, and secrets as vector embeddings and answers natural-language questions over them with retrieval-augmented generation.",
       statements: [
-        "Save anything. Ask in plain English.",
-        "Runs on your machine. Encrypted. Yours.",
+        "Embed, search by distance, answer from the matches.",
+        "AES-256-GCM for secrets. SQLite and sqlite-vec for storage.",
       ],
       overview: [
         "Every developer accumulates a pile of scattered knowledge: the staging database password, the exact flags for a deploy, a snippet you wrote once and will need again. It ends up in notes apps, shell history, password managers, and stray text files. The problem is rarely storing it. The problem is finding it again, weeks later, when you no longer remember the exact words you used.",
-        "inode is a command-line knowledge base that solves the finding problem. You talk to it in plain English. Instead of grepping for an exact string, you ask for what you mean, like “the staging database password” or “how I deployed the worker last time”, and it returns the right entry even when none of those words appear in it. It matches meaning, not characters.",
+        "inode treats that as a retrieval problem. Every note is embedded into a vector space, a question is embedded into the same space, and the notes closest to it by L2 distance become the context a language model answers from. So “the staging database password” finds the entry you saved as “RDS creds for stage”: the two share no words, but their vectors sit close together.",
         "It is built to run entirely on your machine. By default there are no API keys, no accounts, and no network calls: embeddings and language-model inference run locally through Ollama, and everything is stored in a single SQLite file you own. When you want higher-quality results, you can point it at cloud backends without changing a single command you type.",
       ],
       howItWorks: [
         {
-          step: "Capture and classify",
-          body: "When you add an entry, inode classifies it into one of nine strict categories (credential, command, snippet, runbook, note, and so on) so retrieval stays precise and sensitive types can be handled differently.",
+          step: "Classify",
+          body: "On add, a language model assigns one of nine fixed categories (credentials, commands, snippets, decisions, runbooks, learnings, references, contacts, notes), proposes tags, and flags sensitive content. Anything outside the set falls back to notes, and an explicit --category always wins.",
         },
         {
           step: "Embed",
-          body: "The text is turned into a vector embedding, a list of numbers that captures its meaning. Local embeddings run through Ollama at zero cost; Voyage AI or Claude can be used for higher quality.",
+          body: "The note is embedded with nomic-embed-text through Ollama, or voyage-3 through Voyage AI. Both return L2-normalised vectors, so distances fall between 0 and 2 and a fixed relevance threshold means the same thing for every note.",
         },
         {
           step: "Store",
-          body: "Vectors and content live in SQLite with the sqlite-vec extension by default, or PostgreSQL with pgvector when you want a shared, larger store. Credentials are encrypted at rest before they touch disk.",
+          body: "Content goes into a notes table and the vector into a sqlite-vec vec0 virtual table in the same SQLite file, or into a vector(N) column when the backend is PostgreSQL with pgvector. Sensitive content is sealed with AES-256-GCM before it is written.",
         },
         {
-          step: "Retrieve and rerank",
-          body: "Your query is embedded the same way and matched by nearest-neighbor (cosine) similarity. The top candidates are then handed to an LLM that reads them and returns the answer that is actually there, rather than trusting the raw vector score alone.",
+          step: "Retrieve, filter, answer",
+          body: "The question is embedded the same way and the five nearest notes come back by L2 distance. Any candidate further than 1.0 (cosine similarity below 0.5) is dropped, sensitive notes are decrypted in memory, and the rest become the model's only context. The model reports which notes it used, and only those are listed as sources.",
         },
       ],
       features: [
         {
-          title: "Semantic search that understands intent",
-          body: "Retrieval is built on vector embeddings and LLM reranking, so a query like “prod logging config” surfaces the right runbook even if it was titled “observability setup”. Content is auto-classified into nine categories, which keeps results sharp and lets inode treat a credential differently from a note.",
+          title: "Retrieval that survives different wording",
+          body: "Matching happens between embeddings, not strings, so “prod logging config” finds a runbook titled “observability setup”. The distance ceiling keeps weak matches out of the context window rather than letting the model improvise from them, and when nothing clears it inode says so instead of answering.",
         },
         {
           title: "Runs on your machine, cloud is opt-in",
-          body: "The default stack is SQLite + sqlite-vec + Ollama: no API keys, no internet, nothing leaves your laptop. The same commands work unchanged against PostgreSQL/pgvector for storage and Claude or Voyage AI for embeddings when you want more power. The architecture treats backends as a swappable detail, not a rewrite.",
+          body: "Storage, embeddings, and the language model each sit behind an adapter interface: SQLite or PostgreSQL, Ollama or Voyage AI, and Ollama, Claude, or OpenAI. The default is SQLite, nomic-embed-text, and llama3.2, with no API keys and nothing leaving your laptop. Switching a backend is a config change; the commands stay the same.",
         },
         {
           title: "Secrets handled like secrets",
-          body: "Sensitive values are encrypted at rest with AES-256-GCM and masked in terminal output by default, so a screen-share or a scrollback never leaks them. You reveal a value explicitly, only when you mean to.",
+          body: "Sensitive notes are sealed with AES-256-GCM under a fresh random nonce, with the note ID bound as additional authenticated data, so a ciphertext copied onto another row fails to decrypt. The key is derived with Argon2id from a 32-byte master secret held in the OS keyring. Values stay masked in output until you pass --reveal.",
         },
         {
           title: "An MCP server your editor can read",
-          body: "inode ships a read-only Model Context Protocol server, so assistants like Claude Code and Cursor can query your knowledge base directly and answer from your real notes and runbooks. Read-only by design: the model can look, but it cannot rewrite or delete what you have stored.",
+          body: "inode mcp serves the Model Context Protocol over stdio with three read-only tools: search_notes, list_notes, and get_note. Search skips the local model and returns the raw candidates, because the calling agent is a language model already. Sensitive notes are excluded from search and masked in get_note unless you opt in.",
         },
       ],
       usage: [
         {
           command: 'inode add "My Stripe test key is sk_test_xxxxx"',
           description:
-            "Save anything. The LLM auto-detects the category (credentials), adds tags, and flags it sensitive, then encrypts it at rest.",
+            "The model classifies it as credentials, adds tags, and flags it sensitive, so it is encrypted before it is stored.",
         },
         {
           command: 'inode get "stripe test key"',
           description:
-            "Ask in plain English. inode embeds the query, finds the closest notes by meaning, and answers from them. Aliases: ask, find, search.",
+            "Embeds the query, runs k-nearest-neighbour search, drops weak matches, and answers from what is left. Aliases: ask, find, search.",
         },
         {
           command: 'inode get "stripe test key" --reveal',
@@ -902,7 +959,7 @@ export const projects: Project[] = [
         {
           command: "inode list --category credentials",
           description:
-            "Browse by category or tag. inode sorts everything into nine strict categories.",
+            "Lists notes by category or tag straight from the table, without touching the vector index.",
         },
         {
           command: "inode mcp",
@@ -912,19 +969,17 @@ export const projects: Project[] = [
       ],
       facts: [
         { label: "Language", value: "Go" },
-        { label: "Default storage", value: "SQLite + sqlite-vec" },
-        {
-          label: "Optional backends",
-          value: "PostgreSQL/pgvector · Claude · Voyage AI",
-        },
-        { label: "Embeddings", value: "Ollama (local) · Voyage AI" },
-        { label: "Security", value: "AES-256-GCM, on-device" },
-        { label: "Integrations", value: "MCP (Claude Code, Cursor)" },
+        { label: "Retrieval", value: "k-NN by L2 distance, cutoff 1.0" },
+        { label: "Storage", value: "SQLite + sqlite-vec · PostgreSQL + pgvector" },
+        { label: "Embeddings", value: "nomic-embed-text (Ollama) · voyage-3" },
+        { label: "Language models", value: "Ollama · Claude · OpenAI" },
+        { label: "Encryption", value: "AES-256-GCM, Argon2id-derived key" },
+        { label: "Integrations", value: "MCP over stdio, read-only" },
         {
           label: "Categories",
           value: "9 (credentials, commands, runbooks, …)",
         },
-        { label: "Platforms", value: "macOS · Linux · Windows" },
+        { label: "Install", value: "go install · Linux release binary" },
       ],
     },
   },

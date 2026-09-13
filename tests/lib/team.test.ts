@@ -1,7 +1,10 @@
 import { describe, it, expect } from "vitest";
 import type { TeamMember } from "@/lib/site";
 import {
+  formatEventDate,
   groupCertsByYear,
+  groupEventsByYear,
+  latestEvent,
   groupStints,
   memberBuilds,
   memberFacts,
@@ -82,5 +85,33 @@ describe("splitDegree", () => {
       name: "Master of Computer Applications",
     });
     expect(splitDegree("BSc Physics")).toEqual({ short: null, name: "BSc Physics" });
+  });
+});
+
+describe("events", () => {
+  const events: TeamMember["events"] = [
+    { name: "Meetups", kind: "meetup", date: "2023", until: "2026" },
+    { name: "Lab", kind: "workshop", date: "2026-07-11" },
+    { name: "Hack", kind: "hackathon", date: "2026-09-13" },
+    { name: "Mixer", kind: "meetup", date: "2026-07" },
+  ];
+
+  it("groups by start year, newest first", () => {
+    expect(groupEventsByYear(events).map((g) => [g.year, g.events.map((e) => e.name)])).toEqual([
+      ["2026", ["Hack", "Lab", "Mixer"]],
+      ["2023", ["Meetups"]],
+    ]);
+  });
+
+  it("picks the latest event regardless of listed order", () => {
+    expect(latestEvent({ ...base, events })?.name).toBe("Hack");
+    expect(latestEvent(base)).toBeUndefined();
+  });
+
+  it("formats whatever precision the date has", () => {
+    expect(formatEventDate({ date: "2026-09-03" })).toBe("3 Sep 2026");
+    expect(formatEventDate({ date: "2026-07" })).toBe("Jul 2026");
+    expect(formatEventDate({ date: "2023", until: "2026" })).toBe("2023 to 2026");
+    expect(formatEventDate({ date: "2026", until: "2026" })).toBe("2026");
   });
 });

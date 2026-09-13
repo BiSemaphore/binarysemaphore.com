@@ -174,8 +174,10 @@ export default async function ProjectPage({
             {/* inode-specific install pill. Other products can set `statements`
                 too (e.g. notchify), so this is gated to inode by slug. */}
             {project.slug === "inode" ? (
-              <p className="relative mt-6 inline-flex items-center rounded-full bg-white/95 px-4 py-2 font-mono text-sm font-semibold text-neutral-900">
-                $ go install inode
+              <p className="relative mt-6 inline-block max-w-full rounded-2xl bg-white/95 px-4 py-2 font-mono text-sm font-semibold text-neutral-900 sm:rounded-full">
+                $ go install github.com/
+                <wbr />
+                shahid-io/inode@latest
               </p>
             ) : null}
           </div>

@@ -52,6 +52,30 @@ export type Project = {
   detail?: ProjectDetail;
 };
 
+export type TeamEvent = {
+  name: string;
+  kind: "hackathon" | "workshop" | "meetup" | "conference";
+  /** Who ran it. */
+  host?: string;
+  /**
+   * ISO date: "2026-09-13", or "2026-09" / "2026" when the day is not known.
+   * For a recurring meetup, when attendance began.
+   */
+  date: string;
+  /** For a recurring meetup, the year attendance ended, e.g. "2026". */
+  until?: string;
+  /** Venue and city, e.g. "ThoughtWorks, Gurugram". */
+  location?: string;
+  /** What happened there, one plain sentence. */
+  note?: string;
+  /** Public event page or the repo of what was built. */
+  href?: string;
+  /** Event poster or photo under /public, shown square on the left of the card. */
+  cover?: string;
+  /** Host logo under /public, shown as a small badge on the cover. */
+  logo?: string;
+};
+
 export type TeamMember = {
   name: string;
   /** URL slug for the detail page (/team/<slug>). */
@@ -111,6 +135,12 @@ export type TeamMember = {
     year?: string;
     href?: string;
   }[];
+  /**
+   * Hackathons, workshops, meetups and conferences attended, in any order: the
+   * page sorts them newest first and shows the latest in the hero. Add one
+   * object per event; nothing else needs touching.
+   */
+  events?: TeamEvent[];
   /** Optional contact / profile links (omit any to hide that icon). */
   email?: string;
   linkedin?: string;
