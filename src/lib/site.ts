@@ -728,6 +728,7 @@ const learnBuild: Project = {
   description: mentorship.summary,
   tags: ["Mentorship", "Computer science", "One to one"],
   href: "https://learn.binarysemaphore.com",
+  cover: "/projects/learn.jpg",
 };
 
 /** Resolve a `builds` slug: a project, or "learn" for the mentorship offer. */
@@ -753,6 +754,7 @@ export const projects: Project[] = [
       "A resume builder with 21 templates, a live side-by-side editor, rich text, and one-click PDF export. Free, runs in your browser, and your data stays in your account.",
     tags: ["Next.js", "Supabase", "PDF", "Templates"],
     href: "https://resume.binarysemaphore.com",
+    cover: "/projects/resume.jpg",
     status: "live",
     featured: true,
     slug: "resume",
@@ -830,6 +832,7 @@ export const projects: Project[] = [
       "Stores your notes, secrets, and commands and retrieves them by meaning using vector search and an LLM. Runs fully on your machine by default (Ollama + SQLite), with an optional Postgres/pgvector backend and an MCP server so tools like Claude Code can query it directly.",
     tags: ["Go", "RAG", "pgvector", "MCP", "Ollama"],
     href: "https://github.com/shahid-io/inode",
+    cover: "/projects/inode.png",
     featured: true,
     slug: "inode",
     subdomain: "inode",
@@ -1020,6 +1023,7 @@ export const projects: Project[] = [
       "Stays hidden until you move the cursor to the notch (or press a global hotkey), then drops a panel of small tools you reach for while building: a file shelf you can drag in and out of any app, searchable clipboard history grouped into links, colors, code, and text, format converters for JSON, Base64, and URLs, a screen color picker and generators (UUID, timestamps), and a port peek that shows what is listening and lets you free it. Follows light or dark mode, and runs entirely on your machine with no dock or menu-bar icon.",
     tags: ["Swift", "macOS", "AppKit", "SwiftUI"],
     href: "https://github.com/BiSemaphore/notchify",
+    cover: "/projects/notchify/cover.jpg",
     featured: true,
     slug: "notchify",
     detail: {
