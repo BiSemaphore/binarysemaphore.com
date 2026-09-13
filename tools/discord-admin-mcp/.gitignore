@@ -1,0 +1,4 @@
+node_modules/
+.env
+# Snapshots hold the server's full role and channel layout. Keep them local.
+snapshots/

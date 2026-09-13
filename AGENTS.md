@@ -123,6 +123,22 @@ Runtime MDX evaluation makes an admin compromise a code-execution problem, which
 is why `private.admins` stays tiny. Recorded in
 [`docs/database.md`](docs/database.md).
 
+## Discord admin MCP (`tools/discord-admin-mcp`)
+
+A local MCP server, registered in `.mcp.json` as `discord-admin`, that manages
+the Discord server's channels, roles, and permissions. It is its own package:
+root lint and typecheck skip `tools/`, so run `npm run check` and `npm test`
+inside it. Setup is in its README.
+
+When using it:
+
+- Call `snapshot_server` and show the complete plan (every channel, role, and
+  permission change) before any change touching more than one channel or role.
+  Wait for approval.
+- Ask before each `delete_channel`, `delete_role`, `remove_member_role`,
+  `update_server_settings`, or `send_message`, even inside an approved plan.
+- Never put the bot token anywhere but `tools/discord-admin-mcp/.env`.
+
 ## Design system — repo tokens (rationale and palette concept in `docs/brand.md`; see `globals.css`)
 
 - Palette tokens drive Tailwind utilities: `bg-coral`, `text-accent-strong`, etc. Candy panels: `coral`, `blue`, `violet`, `sun`.

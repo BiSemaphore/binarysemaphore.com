@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone tools carry their own package.json and check script.
+    "tools/**",
   ]),
 ]);
 
