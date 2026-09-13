@@ -156,7 +156,10 @@ function safeJson(text: string): unknown {
 
 // --- Permissions -----------------------------------------------------------
 
-/** Bit positions from the Discord permissions reference. 47 and 48 are unassigned. */
+/**
+ * Bit positions from the Discord permissions reference. Bit 47 is used by
+ * Discord but not documented, so it decodes as BIT_47.
+ */
 export const PERMISSION_BITS = {
   CREATE_INSTANT_INVITE: 0,
   KICK_MEMBERS: 1,
@@ -205,6 +208,7 @@ export const PERMISSION_BITS = {
   CREATE_EVENTS: 44,
   USE_EXTERNAL_SOUNDS: 45,
   SEND_VOICE_MESSAGES: 46,
+  SET_VOICE_CHANNEL_STATUS: 48,
   SEND_POLLS: 49,
   USE_EXTERNAL_APPS: 50,
   PIN_MESSAGES: 51,
