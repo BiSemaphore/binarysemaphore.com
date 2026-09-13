@@ -6,11 +6,19 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 
 // Starts the real server over stdio with a fake token. Every call below is
 // refused by a guard before any request is made, so nothing reaches Discord.
+// Every variable is set here because the server fills unset ones from a real
+// .env when one exists.
 async function connect(env: Record<string, string>) {
   const transport = new StdioClientTransport({
     command: process.execPath,
     args: [resolve(import.meta.dirname, "../src/index.ts")],
-    env: { PATH: process.env.PATH ?? "", DISCORD_BOT_TOKEN: "fake", DISCORD_GUILD_IDS: "111111111111111111", ...env },
+    env: {
+      PATH: process.env.PATH ?? "",
+      DISCORD_BOT_TOKEN: "fake",
+      DISCORD_GUILD_IDS: "111111111111111111",
+      DISCORD_READ_ONLY: "false",
+      ...env,
+    },
     stderr: "ignore",
   });
   const client = new Client({ name: "test", version: "0.0.0" });
