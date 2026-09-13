@@ -3,7 +3,7 @@
  * every value is computed from `src/lib/site.ts`, so the page cannot claim a
  * number the data does not back.
  */
-import { getStudioBuild, type Project, type TeamMember } from "@/lib/site";
+import { getStudioBuild, type Project, type TeamEvent, type TeamMember } from "@/lib/site";
 
 export type Fact = { value: string; label: string };
 
@@ -103,6 +103,46 @@ export function groupCertsByYear(certs: TeamMember["certifications"]): CertYear[
   return [...byYear.entries()]
     .sort(([a], [b]) => (a === "Undated" ? 1 : b === "Undated" ? -1 : Number(b) - Number(a)))
     .map(([year, certs]) => ({ year, certs }));
+}
+
+/** Events newest first. ISO dates sort as strings; ties keep listed order. */
+export function sortEvents(events: TeamEvent[] | undefined): TeamEvent[] {
+  return [...(events ?? [])].sort((a, b) => b.date.localeCompare(a.date));
+}
+
+/** The most recent event, for the hero line. */
+export function latestEvent(member: TeamMember): TeamEvent | undefined {
+  return sortEvents(member.events)[0];
+}
+
+/** Events sharing a start year, newest first. */
+export type EventYear = { year: string; events: TeamEvent[] };
+
+export function groupEventsByYear(events: TeamEvent[] | undefined): EventYear[] {
+  const groups: EventYear[] = [];
+  for (const event of sortEvents(events)) {
+    const year = event.date.slice(0, 4);
+    const last = groups.at(-1);
+    if (last?.year === year) last.events.push(event);
+    else groups.push({ year, events: [event] });
+  }
+  return groups;
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/**
+ * "2026-09-13" to "13 Sep 2026", "2026-09" to "Sep 2026", "2023" as is, and a
+ * recurring event to "2023 to 2026". Parsed by hand so no timezone can shift
+ * the day.
+ */
+export function formatEventDate(event: Pick<TeamEvent, "date" | "until">): string {
+  const [year, month, day] = event.date.split("-");
+  const monthName = month ? MONTHS[Number(month) - 1] : undefined;
+  const start = [day ? String(Number(day)) : undefined, monthName, year]
+    .filter(Boolean)
+    .join(" ");
+  return event.until && event.until !== year ? `${start} to ${event.until}` : start;
 }
 
 /** "Master of Computer Applications (MCA)" to its short form and full name. */
