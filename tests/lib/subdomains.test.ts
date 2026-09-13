@@ -6,6 +6,7 @@ import {
   isTrustedHost,
   parseHost,
   productSubdomainUrl,
+  projectLink,
   slugToSub,
   subToSlug,
 } from "@/lib/subdomains";
@@ -95,5 +96,33 @@ describe("subdomain registries", () => {
     expect(isTrustedHost("evil.com")).toBe(false);
     expect(isTrustedHost("binarysemaphore.com.evil.com")).toBe(false);
     expect(isTrustedHost(null)).toBe(false);
+  });
+});
+
+describe("projectLink", () => {
+  it("opens a product subdomain when the project has one", () => {
+    expect(projectLink({ slug: "inode", href: "https://github.com/x/inode" })).toEqual({
+      href: "https://inode.binarysemaphore.com",
+      internal: false,
+      host: "inode.binarysemaphore.com",
+    });
+  });
+
+  it("links a slugged project to its detail page, keeping a live host", () => {
+    expect(
+      projectLink({ slug: "resume", href: "https://resume.binarysemaphore.com" }),
+    ).toEqual({
+      href: "/projects/resume",
+      internal: true,
+      host: "resume.binarysemaphore.com",
+    });
+  });
+
+  it("falls back to href with no host for an off-site project", () => {
+    expect(projectLink({ href: "https://github.com/x/y" })).toEqual({
+      href: "https://github.com/x/y",
+      internal: false,
+      host: null,
+    });
   });
 });

@@ -28,8 +28,7 @@ import { TONES, toneAt } from "@/lib/learn/tones";
 
 export const metadata: Metadata = {
   title: "Mentorship",
-  description:
-    "One to one mentorship for college students stuck in a computer science paper. Core papers, JavaScript, and what AI is actually doing underneath.",
+  description: site.mentorship.summary,
   alternates: { canonical: "https://learn.binarysemaphore.com" },
 };
 

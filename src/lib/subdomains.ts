@@ -7,7 +7,7 @@
  * `subdomain` field on `projects` in `src/lib/site.ts`, so adding a product is a
  * one-line data change there (plus DNS + a Vercel domain).
  */
-import { projects } from "@/lib/site";
+import { projects, type Project } from "@/lib/site";
 
 /** The apex domain everything hangs off. */
 export const ROOT_DOMAIN = "binarysemaphore.com";
@@ -97,6 +97,36 @@ export function productSubdomainUrl(slug: string): string | null {
 /** True when a project slug is showcased on its own product subdomain. */
 export function hasProductSubdomain(slug: string | undefined): boolean {
   return Boolean(slug && slugToSub.has(slug));
+}
+
+/**
+ * Where a project card links. Products with their own subdomain open there;
+ * projects with a slug get an internal detail page; the rest link to `href`.
+ * `host` is the binarysemaphore.com address the project lives at, if any, for
+ * showing next to the name.
+ */
+export function projectLink(project: Pick<Project, "slug" | "href">): {
+  href: string;
+  internal: boolean;
+  host: string | null;
+} {
+  const subdomainUrl = project.slug ? productSubdomainUrl(project.slug) : null;
+  const liveUrl =
+    subdomainUrl ??
+    (isTrustedHost(hostOf(project.href)) ? project.href : null);
+  const host = liveUrl ? hostOf(liveUrl) : null;
+  if (subdomainUrl) return { href: subdomainUrl, internal: false, host };
+  if (project.slug)
+    return { href: `/projects/${project.slug}`, internal: true, host };
+  return { href: project.href, internal: false, host };
+}
+
+function hostOf(url: string): string | null {
+  try {
+    return new URL(url).host;
+  } catch {
+    return null;
+  }
 }
 
 /**

@@ -10,21 +10,11 @@ export type NavItem =
   | { type: "link"; href: string; label: string; external?: boolean }
   | { type: "dropdown"; label: string; items: { href: string; label: string }[] };
 
-// Company-style structure: a couple of flat links plus a grouped "Company"
-// dropdown, mirroring the reference site's navbar. Absolute hrefs so links work
-// from any sub-page.
+// Ordered for what visitors come for: the products and live apps first, then
+// the people, with company pages (including Services) grouped at the end next
+// to "Get in touch". Absolute hrefs so links work from any sub-page.
 export const navItems: NavItem[] = [
   { type: "link", href: "/", label: "Home" },
-  {
-    type: "dropdown",
-    label: "Company",
-    items: [
-      { href: "/about", label: "About" },
-      { href: "/team", label: "Team" },
-      { href: "/contact", label: "Contact" },
-    ],
-  },
-  { type: "link", href: "/services", label: "Services" },
   { type: "link", href: "/projects", label: "Products" },
   {
     type: "link",
@@ -39,6 +29,16 @@ export const navItems: NavItem[] = [
     external: true,
   },
   { type: "link", href: "/threads", label: "Threads" },
+  { type: "link", href: "/team", label: "Team" },
+  {
+    type: "dropdown",
+    label: "Company",
+    items: [
+      { href: "/about", label: "About" },
+      { href: "/services", label: "Services" },
+      { href: "/contact", label: "Contact" },
+    ],
+  },
 ];
 
 export async function Header({ linkBase = "" }: { linkBase?: string } = {}) {

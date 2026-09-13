@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { site, projects, team, getTeamMember, getService } from "@/lib/site";
+import {
+  site,
+  projects,
+  team,
+  getStudioBuild,
+  getTeamMember,
+  getService,
+} from "@/lib/site";
 
 describe("site config", () => {
   it("has the core identity fields", () => {
@@ -44,6 +51,17 @@ describe("team", () => {
     for (const m of team) {
       expect(getTeamMember(m.slug)?.name).toBe(m.name);
     }
+  });
+
+  it("only lists studio builds that resolve", () => {
+    for (const m of team) {
+      for (const b of m.builds ?? []) expect(getStudioBuild(b)?.name).toBeTruthy();
+    }
+  });
+
+  it("resolves learn without adding it to projects", () => {
+    expect(getStudioBuild("learn")?.href).toBe("https://learn.binarysemaphore.com");
+    expect(projects.some((p) => p.href.includes("learn."))).toBe(false);
   });
 });
 

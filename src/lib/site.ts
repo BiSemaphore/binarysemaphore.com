@@ -522,33 +522,11 @@ export const team: TeamMember[] = [
       },
       { title: "Payments", items: ["Stripe", "Razorpay", "Paytm"] },
     ],
-    email: "razashahid@gmail.com",
+    email: "shahid@binarysemaphore.com",
     linkedin: "https://www.linkedin.com/in/shahid-raza-2615b4129/",
     github: "https://github.com/shahid-io",
+    builds: ["inode", "notchify", "resume", "learn"],
     experience: [
-      {
-        role: "Full-Stack Developer",
-        company: "SkillSnap Learning (company closed)",
-        period: "Jun 2026 - Jul 2026",
-        location: "Gurugram, India",
-        summary:
-          "Built the course platform and the CRM behind it, then spent the rest of the time making the public site fast.",
-        highlights: [
-          "Designed the MongoDB schema for courses and enrollments, the backend data model that the CRM and the public course pages both read from.",
-          "Moved the CRM to server-side NextAuth sessions with token refresh, rotation, reuse detection, and a grace window per OWASP, holding access tokens in memory rather than localStorage.",
-          "Migrated fifteen CRM modules from client-side rendering to React Server Components with colocated Server Actions, splitting the remaining client state between React Query and a Zustand store with SSR-safe persistence.",
-          "Built the YouTube Data API v3 integration behind one HTTP layer with a typed error taxonomy and backoff honoring Retry-After, batching statistics at the API maximum of 50 per call and caching daily with ISR behind a static fallback.",
-        ],
-        stack: [
-          "Next.js",
-          "React",
-          "TypeScript",
-          "MongoDB",
-          "NextAuth",
-          "React Query",
-          "Zustand",
-        ],
-      },
       {
         role: "Full-Stack Developer",
         company: "NewAgeSys Solutions",
@@ -644,34 +622,28 @@ export const team: TeamMember[] = [
         href: "https://github.com/BiSemaphore/ascent",
       },
       {
-        name: "inode",
-        description:
-          "A CLI knowledge base in Go. Save anything from the terminal, retrieve it later in plain English. End-to-end RAG pipeline over a pluggable adapter architecture: SQLite + sqlite-vec by default, Postgres + pgvector as a zero-CGO alternative, with swappable embedding and LLM providers. Encrypted at rest, and it exposes a read-only MCP server so AI clients can query it.",
-        href: "https://github.com/shahid-io/inode",
-      },
-      {
-        name: "Resume builder",
-        description:
-          "A browser-based resume builder on Next.js and Supabase. Preview and print share one pagination module that measures real DOM line boxes, so a page break lands between two lines of a bullet instead of through one; export runs headless Chromium inside a serverless function.",
-        href: "https://resume.binarysemaphore.com",
-      },
-      {
         name: "Booking.go",
         description:
           "A multi-tenant SaaS for slot-based booking, where one backend serves many independent businesses without their data crossing. Express and TypeScript on a strict route to service to repository path, with Postgres, MongoDB, and Redis each doing what they are good at.",
         href: "https://github.com/Booking-Go",
       },
       {
-        name: "notchify",
+        name: "beeline",
         description:
-          "A macOS developer toolbox that lives in the camera notch: a file shelf, clipboard history, a color picker, and port tools. Swift, AppKit, SwiftUI.",
-        href: "https://github.com/BiSemaphore/notchify",
+          "A command palette over 80,000 records that searches entirely in the browser, with no search server. A typed-array index answers at p95 of 1ms per keystroke at typing pace, forgives typos, and ships with a benchmark you can run inside the app.",
+        href: "https://github.com/shahid-io/beeline",
       },
       {
-        name: "Urban Waddle",
+        name: "Polaris",
         description:
-          "A Go backend service handling authentication, products, and orders over a REST API.",
-        href: "https://github.com/shahid-io/urban-waddle",
+          "Flight search across six providers that recognises the same marketed flight sold by different sellers, so each flight is one row carrying every price. A provider that fails becomes a visible status instead of a failed search. NestJS and Next.js in a Turborepo monorepo, 263 tests.",
+        href: "https://github.com/shahid-io/polaris",
+      },
+      {
+        name: "notebook-kit",
+        description:
+          "Turns markdown into annotatable study-notebook PDFs: block directives, hand-drawn SVG figures, a linter that fails the build, and a generated question bank. Python 3 and headless Chrome, no third-party packages.",
+        href: "https://github.com/shahid-io/notebook-kit",
       },
     ],
     certifications: [
@@ -744,51 +716,24 @@ export const team: TeamMember[] = [
     linkedin: "https://www.linkedin.com/in/supersanny/",
     github: "https://github.com/SuperSanny",
   },
-  {
-    name: "Anand Singh",
-    slug: "anand-singh",
-    role: "Software Engineer",
-    focus: "Business analysis & requirements",
-    description:
-      "Builds features while shaping requirements and helping steer the decisions that keep projects on track.",
-    bio: [
-      "Anand sits between the code and the problem. He builds features while shaping requirements, translating what a business actually needs into something the team can design and ship.",
-      "He keeps projects honest about scope and trade-offs, and helps steer the decisions that decide whether a system ages well or not.",
-    ],
-    skills: [
-      "Business analysis",
-      "Requirements",
-      "Project planning",
-      "Backend",
-      "Stakeholder comms",
-    ],
-    email: "anandmevaparajitah04@gmail.com",
-    linkedin: "https://www.linkedin.com/in/anand-singh-03ab70201",
-    github: "https://github.com/hawkeyemehawk",
-  },
-  {
-    name: "Sanjita Sahu",
-    slug: "sanjita-sahu",
-    role: "Product Manager & Data Analyst",
-    focus: "Business problems & delivery",
-    description:
-      "Turns business problems into clear plans and reads the data that points to what we build next.",
-    bio: [
-      "Sanjita turns fuzzy business problems into clear plans the team can act on. She works closely with Anand on requirements and keeps delivery moving without losing sight of the goal.",
-      "As a data analyst she reads what the numbers are actually saying, so decisions about what to build next come from evidence rather than hunches.",
-    ],
-    skills: [
-      "Product management",
-      "Data analysis",
-      "Roadmapping",
-      "SQL",
-      "Delivery",
-    ],
-    email: "sahusanjita4@gmail.com",
-    linkedin: "https://www.linkedin.com/in/sanjitasahu/",
-    github: "https://github.com/sahu130",
-  },
 ];
+
+/**
+ * Learn is an offer, not a product, so it stays out of `projects` and the
+ * homepage grid. A team member can still list it under `builds`.
+ */
+const learnBuild: Project = {
+  name: mentorship.headline,
+  tagline: mentorship.summary.split(". ")[0] + ".",
+  description: mentorship.summary,
+  tags: ["Mentorship", "Computer science", "One to one"],
+  href: "https://learn.binarysemaphore.com",
+};
+
+/** Resolve a `builds` slug: a project, or "learn" for the mentorship offer. */
+export function getStudioBuild(slug: string): Project | undefined {
+  return slug === "learn" ? learnBuild : projects.find((p) => p.slug === slug);
+}
 
 /** Find a team member by slug (for the detail page). */
 export function getTeamMember(slug: string): TeamMember | undefined {

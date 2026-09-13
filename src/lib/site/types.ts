@@ -88,6 +88,13 @@ export type TeamMember = {
     period?: string;
     location?: string;
   }[];
+  /**
+   * Slugs from `projects` (or "learn") this person builds at the studio,
+   * resolved by `getStudioBuild`. Rendered near the top of the detail page as
+   * product cards, so the studio's work leads and `projects` below becomes
+   * "Other projects". Unknown slugs are skipped.
+   */
+  builds?: string[];
   /** Projects (paste from LinkedIn). Rendered only when present. */
   projects?: { name: string; description?: string; href?: string }[];
   /** Certifications (paste from LinkedIn). Rendered only when present. */
@@ -130,6 +137,8 @@ export type Mentorship = {
   headline: string;
   /** The half set in the handwritten face, as if annotated afterwards. */
   headlineHand: string;
+  /** One sentence on the offer, for metadata and cards that link to Learn. */
+  summary: string;
   lead: string;
   /**
    * What a student might say they are stuck on, in their words. Shown as
