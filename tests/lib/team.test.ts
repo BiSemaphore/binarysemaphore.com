@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest";
 import type { TeamMember } from "@/lib/site";
-import { groupStints, memberBuilds, memberFacts } from "@/lib/team";
+import {
+  groupCertsByYear,
+  groupStints,
+  memberBuilds,
+  memberFacts,
+  splitDegree,
+} from "@/lib/team";
 
 const base: TeamMember = { name: "A B", slug: "a-b", role: "Engineer" };
 
@@ -49,5 +55,32 @@ describe("groupStints", () => {
       ["Y", 2],
       ["X", 1],
     ]);
+  });
+});
+
+describe("groupCertsByYear", () => {
+  it("groups newest first, keeps order within a year, and puts undated last", () => {
+    const groups = groupCertsByYear([
+      { name: "A", year: "2022" },
+      { name: "B" },
+      { name: "C", year: "2025" },
+      { name: "D", year: "2022" },
+      { name: "E", year: "Mar 2025" },
+    ]);
+    expect(groups.map((g) => [g.year, g.certs.map((c) => c.name)])).toEqual([
+      ["2025", ["C", "E"]],
+      ["2022", ["A", "D"]],
+      ["Undated", ["B"]],
+    ]);
+  });
+});
+
+describe("splitDegree", () => {
+  it("splits a trailing abbreviation off the degree name", () => {
+    expect(splitDegree("Master of Computer Applications (MCA)")).toEqual({
+      short: "MCA",
+      name: "Master of Computer Applications",
+    });
+    expect(splitDegree("BSc Physics")).toEqual({ short: null, name: "BSc Physics" });
   });
 });

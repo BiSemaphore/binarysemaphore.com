@@ -19,6 +19,7 @@ import { ProfileSection } from "@/components/team-member/section";
 import { StudioBuildCard } from "@/components/team-member/studio-build-card";
 import { CardTile, TrayCard } from "@/components/team-member/tray-card";
 import { Experience } from "@/components/team-member/experience";
+import { Credentials } from "@/components/team-member/credentials";
 
 type Params = { slug: string };
 
@@ -52,9 +53,6 @@ export async function generateMetadata({
 
 // Static class names so Tailwind sees them; indexed by fact count.
 const factCols = ["", "", "sm:grid-cols-2", "sm:grid-cols-3", "sm:grid-cols-4"];
-
-// Certifications shown before the rest fold into a disclosure.
-const CERTS_SHOWN = 4;
 
 const chip =
   "rounded-full bg-background px-3 py-1.5 font-mono text-xs text-subtle ring-1 ring-inset ring-border";
@@ -313,77 +311,10 @@ export default async function TeamMemberPage({
   }
 
   if ((member.education && member.education.length > 0) || certs.length > 0) {
-    const certRow = (cert: (typeof certs)[number], i: number) => {
-      const label = (
-        <>
-          <span className="font-medium text-foreground">{cert.name}</span>
-          <span className="mt-0.5 block text-xs text-subtle">
-            {[cert.issuer, cert.year].filter(Boolean).join(" · ")}
-          </span>
-        </>
-      );
-      return (
-        <li key={i} className="border-b border-border py-3 text-sm last:border-b-0">
-          {cert.href ? (
-            <a
-              href={cert.href}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="block transition-colors hover:text-accent-strong"
-            >
-              {label}
-            </a>
-          ) : (
-            label
-          )}
-        </li>
-      );
-    };
-
     sections.push({
       id: "education",
       label: certs.length > 0 ? "Education & certifications" : "Education",
-      body: (
-        <div className="grid gap-5 lg:grid-cols-2">
-          {member.education && member.education.length > 0 ? (
-            <ul className="space-y-4">
-              {member.education.map((edu, i) => (
-                <li
-                  key={i}
-                  className="rounded-card border border-border bg-card p-5 shadow-soft"
-                >
-                  <span className="font-mono text-xs text-subtle">{edu.period}</span>
-                  <h3 className="mt-1 font-semibold text-foreground">{edu.degree}</h3>
-                  <p className="mt-0.5 text-sm text-muted">
-                    {edu.school}
-                    {edu.location ? (
-                      <span className="text-subtle"> · {edu.location}</span>
-                    ) : null}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          {certs.length > 0 ? (
-            <div className="rounded-card border border-border bg-card px-5 py-2 shadow-soft">
-              <ul>{certs.slice(0, CERTS_SHOWN).map(certRow)}</ul>
-              {certs.length > CERTS_SHOWN ? (
-                <details className="group">
-                  <summary className="cursor-pointer list-none border-t border-border py-3 text-sm font-medium text-accent-strong [&::-webkit-details-marker]:hidden">
-                    <span className="group-open:hidden">
-                      Show {certs.length - CERTS_SHOWN} more
-                    </span>
-                    <span className="hidden group-open:inline">Show fewer</span>
-                  </summary>
-                  <ul>
-                    {certs.slice(CERTS_SHOWN).map((c, i) => certRow(c, i + CERTS_SHOWN))}
-                  </ul>
-                </details>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-      ),
+      body: <Credentials member={member} />,
     });
   }
 

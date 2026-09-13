@@ -83,3 +83,30 @@ export function groupStints(experience: TeamMember["experience"]): Stint[] {
   }
   return stints;
 }
+
+type Certification = NonNullable<TeamMember["certifications"]>[number];
+
+/** Certifications sharing an issue year, for the grouped credentials list. */
+export type CertYear = { year: string; certs: Certification[] };
+
+/**
+ * Groups certifications by the four-digit year in `year`, newest first,
+ * keeping each group in its listed order. Undated ones form a trailing
+ * "Undated" group so nothing is dropped.
+ */
+export function groupCertsByYear(certs: TeamMember["certifications"]): CertYear[] {
+  const byYear = new Map<string, Certification[]>();
+  for (const cert of certs ?? []) {
+    const year = cert.year?.match(/\b(?:19|20)\d{2}\b/)?.[0] ?? "Undated";
+    byYear.set(year, [...(byYear.get(year) ?? []), cert]);
+  }
+  return [...byYear.entries()]
+    .sort(([a], [b]) => (a === "Undated" ? 1 : b === "Undated" ? -1 : Number(b) - Number(a)))
+    .map(([year, certs]) => ({ year, certs }));
+}
+
+/** "Master of Computer Applications (MCA)" to its short form and full name. */
+export function splitDegree(degree: string): { short: string | null; name: string } {
+  const match = degree.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  return match ? { short: match[2], name: match[1] } : { short: null, name: degree };
+}
