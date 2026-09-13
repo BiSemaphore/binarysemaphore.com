@@ -1,5 +1,6 @@
 import "server-only";
 import { compile } from "@mdx-js/mdx";
+import { announceThread } from "@/lib/discord";
 import { isSituationalSlug } from "@/lib/learn/topics";
 import { createClient } from "@/utils/supabase/server";
 
@@ -119,7 +120,7 @@ export async function saveDocument(
   // three-month-old post ends up at the top of the list.
   const { data: current } = await db
     .from("documents")
-    .select("published_at")
+    .select("published_at, collection, slug")
     .eq("id", id)
     .maybeSingle();
 
@@ -154,6 +155,17 @@ export async function saveDocument(
       error:
         "Someone else saved this while you were editing. Your text is still here; open the page again in another tab to see theirs before overwriting it.",
     };
+  }
+
+  // A thread's first publish is announced in Discord. Awaited, because a
+  // serverless function may be frozen once the response is sent; never
+  // fatal, because the row is already published and the reader can see it.
+  if (firstPublish && current?.collection === "thread" && current.slug) {
+    await announceThread({
+      title: fields.title.trim(),
+      summary: fields.summary.trim() || null,
+      slug: current.slug,
+    });
   }
 
   // No revalidateTag: reader pages hold no cache to clear. See the note at the
