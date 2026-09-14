@@ -414,7 +414,7 @@ export default async function TeamMemberPage({
                   {site.wordmark}
                 </p>
                 <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-                  Work with {site.wordmark}
+                  Need a hand with something?
                 </h2>
                 <p className="mt-3 max-w-2xl text-base leading-7 text-white/75">
                   {site.services.lead}
@@ -424,7 +424,7 @@ export default async function TeamMemberPage({
                     href="/#contact"
                     className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                   >
-                    Start a conversation
+                    Write to us
                     <ArrowUpRightIcon className="h-3.5 w-3.5" />
                   </Link>
                   <Link

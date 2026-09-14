@@ -31,7 +31,7 @@ describe("memberFacts", () => {
     };
     expect(memberFacts(member, new Date("2026-09-13"))).toEqual([
       { value: "4+", label: "years shipping" },
-      { value: "2", label: "studio builds" },
+      { value: "2", label: "things built here" },
       { value: "2", label: "companies" },
       { value: "1", label: "certification" },
     ]);

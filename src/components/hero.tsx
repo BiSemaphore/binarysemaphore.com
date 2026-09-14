@@ -51,6 +51,15 @@ export function Hero() {
             <p className="mt-7 max-w-2xl text-balance text-xl font-medium leading-snug tracking-[-0.02em] text-foreground sm:text-2xl lg:text-[1.9375rem] lg:leading-[1.3]">
               {site.hero.subhead}
             </p>
+            {/* Quiet second way in: the writing. Desktop only; the mobile row
+                below carries it next to the button. */}
+            <Link
+              href={site.hero.secondary.href}
+              className="group mt-8 hidden items-center gap-2 text-base font-medium text-muted transition-colors hover:text-foreground lg:inline-flex"
+            >
+              {site.hero.secondary.label}
+              <ArrowUpRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
           </div>
 
           {/* Circular outlined CTA, matching the reference's "Start Work" mark. */}
@@ -74,6 +83,13 @@ export function Hero() {
             className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-base font-semibold text-background transition-transform duration-300 hover:-translate-y-0.5"
           >
             {site.hero.primary.label}
+            <ArrowUpRightIcon className="h-4 w-4" />
+          </Link>
+          <Link
+            href={site.hero.secondary.href}
+            className="inline-flex items-center gap-1.5 px-2 text-base font-medium text-muted transition-colors hover:text-foreground"
+          >
+            {site.hero.secondary.label}
             <ArrowUpRightIcon className="h-4 w-4" />
           </Link>
         </div>
