@@ -1,7 +1,20 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
 
+// Baseline response headers. No content security policy yet: runtime MDX and
+// the inline theme script would need nonces, and a wrong CSP breaks pages
+// silently. HSTS is set by Vercel.
+const securityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
 const nextConfig: NextConfig = {
+  async headers() {
+    return [{ source: "/(.*)", headers: securityHeaders }];
+  },
   // Let .md/.mdx files be treated as pages/modules.
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   // Pin the workspace root so Turbopack doesn't pick up a stray

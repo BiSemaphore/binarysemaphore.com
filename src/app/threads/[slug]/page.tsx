@@ -13,6 +13,7 @@ import { MdxBody } from "@/lib/mdx/runtime";
 import { threadCovers } from "@/lib/thread-covers";
 import { Photo } from "@/components/photo";
 import { Header } from "@/components/header";
+import { JsonLd, articleJsonLd } from "@/components/json-ld";
 import { Footer } from "@/components/footer";
 import { TableOfContents } from "@/components/table-of-contents";
 
@@ -74,6 +75,7 @@ export default async function ThreadPage({
 
   return (
     <>
+      <JsonLd data={articleJsonLd(thread)} />
       <Header />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-6 pb-20">

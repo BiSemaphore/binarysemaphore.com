@@ -9,6 +9,7 @@ import {
   Caveat,
 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { JsonLd, organizationJsonLd } from "@/components/json-ld";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -128,6 +129,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <JsonLd data={organizationJsonLd()} />
       </head>
       <body className="flex min-h-full flex-col">
         <ProgressBar />
