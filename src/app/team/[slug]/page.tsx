@@ -12,6 +12,7 @@ import {
   memberFacts,
 } from "@/lib/team";
 import { Header } from "@/components/header";
+import { JsonLd, personJsonLd } from "@/components/json-ld";
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import {
@@ -355,6 +356,7 @@ export default async function TeamMemberPage({
 
   return (
     <>
+      <JsonLd data={personJsonLd(member)} />
       <Header />
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 pb-20 lg:px-10">
