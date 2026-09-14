@@ -395,6 +395,7 @@ export const site: SiteConfig = {
       title: "Contact",
       links: [
         { label: "Get in touch", href: "/contact" },
+        { label: "Privacy", href: "/privacy" },
         { label: "Discord", href: "/discord" },
         { label: "GitHub", href: "https://github.com/BiSemaphore" },
         {
