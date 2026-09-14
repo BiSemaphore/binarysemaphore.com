@@ -362,7 +362,7 @@ export default async function TeamMemberPage({
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 pb-20 lg:px-10">
         <nav className="pt-10 pb-10 text-sm" aria-label="Breadcrumb">
           <Link
-            href="/#team"
+            href="/team"
             className="inline-flex items-center gap-1.5 font-mono text-subtle transition-colors hover:text-foreground"
           >
             <span aria-hidden="true">&larr;</span> Team
@@ -439,7 +439,7 @@ export default async function TeamMemberPage({
 
             <div className="border-t border-border pt-8">
               <Link
-                href="/#team"
+                href="/team"
                 className="inline-flex items-center gap-1.5 font-mono text-sm text-subtle transition-colors hover:text-foreground"
               >
                 <span aria-hidden="true">&larr;</span> Meet the rest of the team
