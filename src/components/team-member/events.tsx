@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { TeamEvent } from "@/lib/site";
-import { formatEventDate, groupEventsByYear } from "@/lib/team";
+import { formatEventDate, sortEvents } from "@/lib/team";
+import { Carousel } from "@/components/team-member/carousel";
 import { ArrowUpRightIcon } from "@/components/icons";
 import { CardTile } from "@/components/team-member/tray-card";
 
@@ -14,8 +15,9 @@ const kindDot: Record<TeamEvent["kind"], string> = {
 };
 
 /**
- * The event poster, square, with the host's logo pinned to its corner. Without
- * a cover the logo (or the initial tile) stands in on its own.
+ * The event poster across the top of the card, with the host's logo pinned
+ * to its corner. Without a cover, a neutral band carries the logo or the
+ * initial tile so every card is the same shape.
  */
 function EventArt({ event }: { event: TeamEvent }) {
   const logo = event.logo ? (
@@ -31,23 +33,25 @@ function EventArt({ event }: { event: TeamEvent }) {
     </span>
   ) : null;
 
-  if (!event.cover) {
-    return <div className="shrink-0">{logo ?? <CardTile label={event.host ?? event.name} />}</div>;
-  }
-
   return (
-    <div className="relative w-24 shrink-0 self-start sm:w-36">
-      <div className="aspect-square overflow-hidden rounded-xl border border-border bg-background">
-        <Image
-          src={event.cover}
-          alt={`${event.name} poster`}
-          width={288}
-          height={288}
-          sizes="(min-width: 640px) 144px, 96px"
-          className="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-[1.03]"
-        />
+    <div className="relative">
+      <div className="aspect-[16/10] overflow-hidden rounded-xl border border-border bg-background">
+        {event.cover ? (
+          <Image
+            src={event.cover}
+            alt={`${event.name} poster`}
+            width={640}
+            height={400}
+            sizes="(min-width: 640px) 352px, 304px"
+            className="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <CardTile label={event.host ?? event.name} />
+          </div>
+        )}
       </div>
-      {logo ? <div className="absolute -right-2.5 -bottom-2.5">{logo}</div> : null}
+      {logo ? <div className="absolute right-3 -bottom-3">{logo}</div> : null}
     </div>
   );
 }
@@ -57,8 +61,8 @@ function EventCard({ event }: { event: TeamEvent }) {
   const body = (
     <>
       <EventArt event={event} />
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+      <div className="mt-5 flex flex-1 flex-col">
+        <div className="flex items-center justify-between gap-3">
           <p className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-subtle">
             <span aria-hidden className={`h-2 w-2 rounded-full ${kindDot[event.kind]}`} />
             {event.kind}
@@ -75,16 +79,12 @@ function EventCard({ event }: { event: TeamEvent }) {
         </div>
         {where ? <p className="mt-1 text-sm text-muted">{where}</p> : null}
         {event.note ? (
-          <p className="mt-3 hidden text-[15px] leading-7 text-muted sm:block">{event.note}</p>
+          <p className="mt-3 line-clamp-3 text-[15px] leading-7 text-muted">{event.note}</p>
         ) : null}
       </div>
-      {event.note ? (
-        <p className="basis-full text-[15px] leading-7 text-muted sm:hidden">{event.note}</p>
-      ) : null}
     </>
   );
-  const card =
-    "group flex h-full flex-wrap gap-x-5 gap-y-4 rounded-2xl border border-border bg-card p-4 shadow-soft sm:flex-nowrap sm:gap-6 sm:p-5";
+  const card = "group flex h-full flex-col rounded-2xl border border-border bg-card p-4 shadow-soft";
   return event.href ? (
     <a
       href={event.href}
@@ -99,24 +99,16 @@ function EventCard({ event }: { event: TeamEvent }) {
   );
 }
 
-/** Hackathons, workshops and meetups, grouped by year, newest first. */
+/** Hackathons, workshops and meetups in one sideways row, newest first. */
 export function Events({ events }: { events: TeamEvent[] }) {
   return (
-    <div className="space-y-8">
-      {groupEventsByYear(events).map((group) => (
-        <div key={group.year} className="sm:grid sm:grid-cols-[5.5rem_1fr] sm:gap-6">
-          <p className="font-display text-2xl font-bold tracking-tight text-subtle sm:pt-4">
-            {group.year}
-          </p>
-          <ul className="mt-3 space-y-4 sm:mt-0">
-            {group.events.map((event) => (
-              <li key={`${event.date}-${event.name}`} className="min-w-0">
-                <EventCard event={event} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
+    <Carousel
+      label="Events and community"
+      itemClassName="flex-[0_0_19rem] sm:flex-[0_0_22rem]"
+      items={sortEvents(events).map((event) => ({
+        key: `${event.date}-${event.name}`,
+        node: <EventCard event={event} />,
+      }))}
+    />
   );
 }

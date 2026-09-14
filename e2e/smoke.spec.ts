@@ -40,11 +40,11 @@ test("the contact email is reachable on the contact page", async ({ page }) => {
 test("an engineer row opens the profile", async ({ page }) => {
   await page.goto("/engineers");
   await page.getByRole("link", { name: /Shahid Raza.*open profile/ }).click();
-  await expect(page).toHaveURL(/\/engineers\/shahid-raza$/);
+  await expect(page).toHaveURL(/\/engineers\/shahid$/);
 });
 
 test("an engineer profile links back to the engineers page, not the home page", async ({ page }) => {
-  await page.goto("/engineers/shahid-raza");
+  await page.goto("/engineers/shahid");
   await page.locator('main a[href="/engineers"]').first().click();
   await expect(page).toHaveURL(/\/engineers$/);
 });
