@@ -1,19 +1,12 @@
 import { ImageResponse } from "next/og";
-import { prerenderParams } from "@/lib/prerender";
-import { getAllThreads, getThread } from "@/lib/threads";
+import { getThread } from "@/lib/threads";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "Binary Semaphore Threads";
 
-// Prerender an OG image for every thread that exists at build time. A thread
-// written in the admin afterwards renders its image on first request instead,
-// which is the trade for content that no longer needs a deploy.
-export async function generateStaticParams() {
-  return prerenderParams("thread og images", async () =>
-    (await getAllThreads()).map((t) => ({ slug: t.slug })),
-  );
-}
+// Rendered on request, like the thread page: the build never reads the
+// database. Share images are fetched by crawlers once and cached by them.
 
 export default async function Image({
   params,

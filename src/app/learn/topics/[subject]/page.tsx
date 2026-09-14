@@ -1,13 +1,6 @@
 import { notFound, redirect } from "next/navigation";
-import { prerenderParams } from "@/lib/prerender";
-import { getSubject, getSubjects } from "@/lib/learn/topics";
+import { getSubject } from "@/lib/learn/topics";
 import { learnBase } from "@/lib/learn/paths";
-
-export async function generateStaticParams() {
-  return prerenderParams("subjects", async () =>
-    (await getSubjects()).map((subject) => ({ subject: subject.slug })),
-  );
-}
 
 /**
  * A subject on its own has no page: it is a rail item, and picking one should
