@@ -5,6 +5,8 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { Photo } from "@/components/photo";
 import { ArrowUpRightIcon } from "@/components/icons";
+import { Honeypot } from "@/components/forms/honeypot";
+import { HONEYPOT_FIELD, STARTED_FIELD } from "@/lib/forms/spam";
 import notesDark from "@/images/notes-dark.jpg";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -20,6 +22,8 @@ function ContactForm() {
       name: String(data.get("name") ?? ""),
       email: String(data.get("email") ?? ""),
       message: String(data.get("message") ?? ""),
+      [HONEYPOT_FIELD]: String(data.get(HONEYPOT_FIELD) ?? ""),
+      [STARTED_FIELD]: String(data.get(STARTED_FIELD) ?? ""),
     };
     setStatus("submitting");
     try {
@@ -48,7 +52,8 @@ function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid w-full max-w-xl gap-4 text-left">
+    <form onSubmit={onSubmit} className="relative grid w-full max-w-xl gap-4 text-left">
+      <Honeypot />
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm">
           <span className="text-white/70">Name</span>
