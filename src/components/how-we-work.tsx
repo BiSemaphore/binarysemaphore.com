@@ -18,8 +18,8 @@ export function HowWeWork() {
 
         <ol className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((step, i) => (
-            <Reveal key={step.title} delay={i * 80}>
-              <li className="border-t border-border pt-5">
+            <li key={step.title} className="border-t border-border pt-5">
+              <Reveal delay={i * 80}>
                 <span className="font-mono text-sm font-medium text-accent-strong">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -29,8 +29,8 @@ export function HowWeWork() {
                 <p className="mt-2 text-[15px] leading-7 text-muted">
                   {step.body}
                 </p>
-              </li>
-            </Reveal>
+              </Reveal>
+            </li>
           ))}
         </ol>
       </div>

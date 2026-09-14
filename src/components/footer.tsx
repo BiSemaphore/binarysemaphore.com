@@ -106,7 +106,7 @@ export function Footer({ linkBase = "" }: { linkBase?: string } = {}) {
         {/* Link columns */}
         {site.footerColumns.map((col) => (
           <div key={col.title}>
-            <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-white/40">
+            <h3 className="font-mono text-xs uppercase tracking-[0.2em] text-white/60">
               {col.title}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -127,7 +127,7 @@ export function Footer({ linkBase = "" }: { linkBase?: string } = {}) {
         ))}
       </div>
 
-      <p className="mt-12 border-t border-white/10 pt-6 font-mono text-xs text-white/40">
+      <p className="mt-12 border-t border-white/10 pt-6 font-mono text-xs text-white/60">
         © {year} {site.wordmark}
       </p>
       </div>
