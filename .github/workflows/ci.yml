@@ -109,6 +109,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: quality
     runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
     environment:
       name: production
       url: ${{ steps.deploy.outputs.url }}
@@ -127,25 +129,69 @@ jobs:
         run: |
           url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes)
           echo "url=$url" >> "$GITHUB_OUTPUT"
-      # Posts to #ship-log through a channel webhook. Skips when the secret is
-      # unset and never fails the deploy: the site is live either way.
-      - name: Announce in Discord
-        if: success()
-        continue-on-error: true
-        env:
-          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_SHIP_LOG }}
-          URL: ${{ steps.deploy.outputs.url }}
-          SUBJECT: ${{ github.event.head_commit.message }}
+
+  # One report per run, whatever happened. A green production deploy posts the
+  # version and URL to #ship-log. Any failure, on a PR or on main, posts which
+  # job failed and the first error line from its log, so the reason is in the
+  # channel and not behind a login. Green PR runs stay quiet.
+  report:
+    name: Report to Discord
+    if: always()
+    needs: [quality, e2e, deploy-preview, deploy-production]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    env:
+      WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_SHIP_LOG }}
+      GH_TOKEN: ${{ github.token }}
+      RESULTS: ${{ toJSON(needs) }}
+      DEPLOY_URL: ${{ needs.deploy-production.outputs.url }}
+      SUBJECT: ${{ github.event.head_commit.message || github.event.pull_request.title }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: package.json
+      - name: Post
         run: |
           if [ -z "$WEBHOOK" ]; then echo "No DISCORD_WEBHOOK_SHIP_LOG, skipping."; exit 0; fi
-          node --input-type=module -e '
-            const version = (await import("./package.json", { with: { type: "json" } })).default.version;
-            const subject = (process.env.SUBJECT ?? "").split("\n")[0];
-            const content = `Deployed v${version} to production: ${subject}\n${process.env.URL}`;
-            const res = await fetch(process.env.WEBHOOK, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ content, username: "Binary Semaphore", allowed_mentions: { parse: [] } }),
-            });
-            console.log(res.ok ? "Announced." : `Webhook returned ${res.status}`);
-          '
+          failed=$(node -e '
+            const r = JSON.parse(process.env.RESULTS);
+            console.log(Object.entries(r).filter(([, v]) => v.result === "failure").map(([k]) => k).join(" "));
+          ')
+          if [ -n "$failed" ]; then
+            # First real error line of the failed jobs. Log lines arrive as
+            # "job<TAB>step<TAB>timestamp text"; drop the prefix, skip HTML
+            # error pages a gateway may return, prefer a line starting with
+            # "Error", and fall back to anything mentioning an error.
+            gh run view "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --log-failed 2>/dev/null \
+              | cut -f3- | sed -E "s/^[0-9TZ:.-]+ //" | grep -vE "^\s*<|^\s*$" > failed.log || true
+            error=$(grep -m1 -E "^(Error|error)[: ]" failed.log || grep -m1 -iE "error|failed" failed.log || true)
+            error=$(printf "%s" "$error" | cut -c1-300)
+            export FAILED="$failed" ERROR="$error"
+            node -e '
+              const where = process.env.PR_NUMBER ? `PR #${process.env.PR_NUMBER}` : process.env.GITHUB_REF_NAME;
+              const subject = (process.env.SUBJECT ?? "").split("\n")[0];
+              const lines = [
+                `CI failed on ${where}: ${subject}`,
+                `Failed: ${process.env.FAILED}`,
+                process.env.ERROR ? `Error: ${process.env.ERROR}` : null,
+                process.env.RUN_URL,
+              ].filter(Boolean);
+              process.stdout.write(JSON.stringify({ content: lines.join("\n"), username: "Binary Semaphore", allowed_mentions: { parse: [] } }));
+            ' > payload.json
+          elif [ "${{ needs.deploy-production.result }}" = "success" ]; then
+            node -e '
+              const version = require("./package.json").version;
+              const subject = (process.env.SUBJECT ?? "").split("\n")[0];
+              const content = `Deployed v${version} to production: ${subject}\n${process.env.DEPLOY_URL}`;
+              process.stdout.write(JSON.stringify({ content, username: "Binary Semaphore", allowed_mentions: { parse: [] } }));
+            ' > payload.json
+          else
+            echo "Green run on a PR; nothing to report."; exit 0
+          fi
+          code=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" --data @payload.json "$WEBHOOK")
+          echo "Discord webhook: $code"
+          [ "$code" -lt 300 ]

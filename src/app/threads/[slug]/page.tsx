@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { prerenderParams } from "@/lib/prerender";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
-  getAllThreads,
   getThread,
   getThreadBody,
   getRelatedThreads,
@@ -19,17 +17,12 @@ import { TableOfContents } from "@/components/table-of-contents";
 
 type Params = { slug: string };
 
-// Threads that exist at build time are prerendered; one written in the admin
-// afterwards renders on first request. `dynamicParams` is therefore no longer
-// false: refusing an unknown slug at the routing layer would 404 every thread
-// published since the last deploy, which is the thing this move was for.
-// getThread() still returns undefined for a slug that does not exist, and the
-// page still calls notFound().
-export async function generateStaticParams() {
-  return prerenderParams("threads", async () =>
-    (await getAllThreads()).map((t) => ({ slug: t.slug })),
-  );
-}
+// No generateStaticParams: threads render on request, never at build time.
+// Content lives in Postgres and is read on every request anyway (no cache
+// layer, see src/lib/threads.ts), so prerendering bought a few milliseconds on
+// the first hit after a deploy and, in exchange, failed the build whenever the
+// database had a bad minute. getThread() returns undefined for an unknown slug
+// and the page calls notFound().
 
 export async function generateMetadata({
   params,
