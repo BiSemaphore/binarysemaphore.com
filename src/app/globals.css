@@ -26,7 +26,7 @@
   --background: #f6f6f4; /* neutral white-smoke */
   --foreground: #111111; /* near-black ink */
   --muted: #525252; /* secondary text (dark-gray) */
-  --subtle: #999999; /* tertiary text */
+  --subtle: #6b6b6b; /* tertiary text; 5.3:1 on the canvas, AA for small text */
   --border: #e6e6e6; /* hairline */
   --card: #ffffff; /* raised surface */
   --card-hover: #fafafa;
