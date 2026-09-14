@@ -20,7 +20,7 @@ export default function TeamPage() {
           title="The people behind it"
           lead="A small group of engineers who care about getting the fundamentals right."
         />
-        <Team showHeading={false} />
+        <Team />
       </main>
       <Footer />
     </>

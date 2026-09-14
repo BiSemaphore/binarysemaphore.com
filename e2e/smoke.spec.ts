@@ -37,6 +37,12 @@ test("the contact email is reachable on the contact page", async ({ page }) => {
   ).toHaveAttribute("href", /@binarysemaphore\.com$/);
 });
 
+test("a team row opens the profile", async ({ page }) => {
+  await page.goto("/team");
+  await page.getByRole("link", { name: /Shahid Raza.*open profile/ }).click();
+  await expect(page).toHaveURL(/\/team\/shahid-raza$/);
+});
+
 test("a team profile links back to the team page, not the home page", async ({ page }) => {
   await page.goto("/team/shahid-raza");
   await page.locator('main a[href="/team"]').first().click();
