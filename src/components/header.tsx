@@ -29,7 +29,7 @@ export const navItems: NavItem[] = [
     external: true,
   },
   { type: "link", href: "/threads", label: "Threads" },
-  { type: "link", href: "/team", label: "Team" },
+  { type: "link", href: "/engineers", label: "Engineers" },
   {
     type: "dropdown",
     label: "Company",

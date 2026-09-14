@@ -55,7 +55,7 @@ export async function generateMetadata({
     description,
     openGraph: { title, description },
     twitter: { card: "summary_large_image", title, description },
-    alternates: { canonical: `/team/${slug}` },
+    alternates: { canonical: `/engineers/${slug}` },
   };
 }
 
@@ -94,7 +94,7 @@ function Hero({ member }: { member: TeamMember }) {
     <header className="grid items-center gap-12 lg:grid-cols-[1fr_auto] lg:gap-16">
       <div>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-subtle">
-          {site.wordmark} <span className="text-accent-strong">/</span> Team
+          {site.wordmark} <span className="text-accent-strong">/</span> Engineers
         </p>
         <h1 className="mt-5 font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
           {member.name}
@@ -362,10 +362,10 @@ export default async function TeamMemberPage({
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 pb-20 lg:px-10">
         <nav className="pt-10 pb-10 text-sm" aria-label="Breadcrumb">
           <Link
-            href="/team"
+            href="/engineers"
             className="inline-flex items-center gap-1.5 font-mono text-subtle transition-colors hover:text-foreground"
           >
-            <span aria-hidden="true">&larr;</span> Team
+            <span aria-hidden="true">&larr;</span> Engineers
           </Link>
         </nav>
 
@@ -439,10 +439,10 @@ export default async function TeamMemberPage({
 
             <div className="border-t border-border pt-8">
               <Link
-                href="/team"
+                href="/engineers"
                 className="inline-flex items-center gap-1.5 font-mono text-sm text-subtle transition-colors hover:text-foreground"
               >
-                <span aria-hidden="true">&larr;</span> Meet the rest of the team
+                <span aria-hidden="true">&larr;</span> The other engineers
               </Link>
             </div>
           </div>

@@ -72,7 +72,7 @@ function Row({ member }: { member: TeamMember }) {
     <article className="group relative grid gap-8 py-12 lg:grid-cols-[1fr_auto] lg:gap-16 lg:py-16">
       {/* Stretched link: the row is the profile. */}
       <Link
-        href={`/team/${member.slug}`}
+        href={`/engineers/${member.slug}`}
         aria-label={`${member.name}, ${member.role}: open profile`}
         className="absolute inset-0 z-0 rounded-panel focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-accent"
       />
@@ -161,7 +161,7 @@ export function Team() {
   if (team.length === 0) return null;
 
   return (
-    <section id="team" className="mx-auto w-full max-w-7xl px-6 pb-8 lg:px-10">
+    <section id="engineers" className="mx-auto w-full max-w-7xl px-6 pb-8 lg:px-10">
       <div className="divide-y divide-border">
         {team.map((member, i) => (
           <Reveal key={member.slug} delay={i * 80}>

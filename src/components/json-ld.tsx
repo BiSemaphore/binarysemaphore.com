@@ -61,7 +61,7 @@ export function personJsonLd(member: TeamMember): Record<string, unknown> {
     "@type": "Person",
     name: member.name,
     jobTitle: member.role,
-    url: `${BASE}/team/${member.slug}`,
+    url: `${BASE}/engineers/${member.slug}`,
     ...(member.avatar ? { image: `${BASE}${member.avatar}` } : {}),
     ...(member.description ? { description: member.description } : {}),
     worksFor: { "@type": "Organization", name: site.name, url: BASE },

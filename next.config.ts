@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  // /team was the engineers page until September 2026. Links were shared.
+  async redirects() {
+    return [
+      { source: "/team", destination: "/engineers", permanent: true },
+      { source: "/team/:slug", destination: "/engineers/:slug", permanent: true },
+    ];
+  },
   // Let .md/.mdx files be treated as pages/modules.
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   // Pin the workspace root so Turbopack doesn't pick up a stray
