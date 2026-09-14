@@ -17,13 +17,15 @@ The full landing-page playbook lives alongside this at
 
 ## Who Binary Semaphore is
 
-- A **small software studio/team**, working across **AI, distributed systems,
-  and developer tools**.
-- We do **both**: open-source tools/products **and** custom software for
-  clients. Copy and positioning must reflect both, never products-only or
-  agency-only.
-- Identity is the **company** ("we" / "the studio"), **not** a single person.
-  The team is shown in a Team section; the brand speaks as the studio.
+- **Not a company.** Binary Semaphore is a platform where two engineers show
+  what they build, host their tools (inode, notchify, resume, learn), write
+  threads, and present themselves. Work across **AI, distributed systems, and
+  developer tools**.
+- People can ask for help or bring a problem, and we take it on. That is a
+  consequence of the showcase, never the pitch. No sales framing, no "clients
+  and engagements" language, no primary call to action that asks for business.
+- Voice is **"we"**: the engineers behind the site, speaking together. Not a
+  firm, and not one person. The team page shows who "we" is.
 
 ## Positioning & register
 

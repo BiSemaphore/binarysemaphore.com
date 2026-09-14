@@ -44,7 +44,7 @@ export function memberFacts(member: TeamMember, now = new Date()): Fact[] {
   if (builds > 0) {
     facts.push({
       value: String(builds),
-      label: builds === 1 ? "studio build" : "studio builds",
+      label: builds === 1 ? "thing built here" : "things built here",
     });
   }
 

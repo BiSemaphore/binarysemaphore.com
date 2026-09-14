@@ -16,7 +16,7 @@ export const site: SiteConfig = {
   wordmark: "Binary Semaphore",
   /** Small status line above the hero headline. */
   eyebrow: "AI · distributed systems · developer tools",
-  /** One-line studio statement (hero subhead + metadata). */
+  /** One-line statement of what we do (hero subhead + metadata). */
   role: "Building software across AI, distributed systems, and developer tools",
   tagline:
     "We build software across AI, distributed systems, and developer tools.",
@@ -40,7 +40,7 @@ export const site: SiteConfig = {
   formspreeId: "", // TODO: e.g. "xrgkabcd" from https://formspree.io/f/xrgkabcd
 
   // --- Behind the work ---------------------------------------------------
-  // DRAFT — edit freely. Frames the maker behind the studio.
+  // Frames the people behind the site.
   about: [
     "Binary Semaphore takes its name from the simplest synchronization primitive there is, and we treat software the same way: small, well-defined parts that coordinate cleanly and hide the right details behind each interface.",
     "We work across applied AI, distributed systems, and developer tools. We spend our effort on the essential complexity of a problem and refuse to let the accidental kind pile up, designing for reliability and maintainability from the start rather than bolting them on later. The current focus is inode, a Go CLI that answers questions over your notes with retrieval-augmented generation.",
@@ -75,7 +75,7 @@ export const site: SiteConfig = {
   services: {
     label: "Services",
     title: "What we work on",
-    lead: "We take on a small number of problems at a time and see them through, from the first design to something reliable in production.",
+    lead: "The kinds of problems we keep coming back to, in our own tools and when someone asks for help with theirs.",
     items: [
       {
         slug: "applied-ai",
@@ -237,16 +237,16 @@ export const site: SiteConfig = {
     title: "Questions, answered plainly",
     items: [
       {
-        q: "What kind of work do you take on?",
-        a: "Two kinds. We build and maintain our own tools and products, and we build software for a specific need when a team brings us a real problem. Most of it sits across applied AI, distributed systems, and developer tools.",
+        q: "What is this site?",
+        a: "Two engineers showing their work. We build tools like inode and notchify, write threads about what we learn, and put study notebooks up for people preparing for exams. When someone brings us a real problem, we help with that too. Most of it sits across applied AI, distributed systems, and developer tools.",
       },
       {
         q: "Is everything open source?",
-        a: "What we build for ourselves usually is. Work we do for a client belongs to the client; whether any of it is open-sourced is their call, and we are happy either way.",
+        a: "What we build for ourselves usually is. When we help someone with their own project, the code is theirs, and whether it is opened up is their call.",
       },
       {
-        q: "How do you engage on a project?",
-        a: "We take on a small number of things at a time and see them through, from the first design to something reliable in production. We scope each piece of work to the problem rather than selling fixed packages.",
+        q: "Can you help with my project?",
+        a: "Often, yes. Write to us with the actual problem. We take on a small number of things at a time and see them through, from the first design to something reliable in production, and we say no when we are not the right people for it.",
       },
       {
         q: "Do you do design too?",
@@ -258,7 +258,7 @@ export const site: SiteConfig = {
       },
       {
         q: "How do we start?",
-        a: "Get in touch with a short description of the problem. The first conversation is about understanding it, not pitching you a package.",
+        a: "Get in touch with a short description of the problem. The first conversation is about understanding it. There is nothing to buy."
       },
     ],
   },
@@ -270,10 +270,7 @@ export const site: SiteConfig = {
     subhead:
       "We build on the fundamentals: correct concurrency, honest abstractions, and systems that stay reliable as they scale.",
     primary: { label: "See our work", href: "/#projects" },
-    secondary: {
-      label: "View on GitHub",
-      href: "https://github.com/BiSemaphore",
-    },
+    secondary: { label: "Read the threads", href: "/threads" },
   },
 
   builtWith: [
@@ -425,7 +422,7 @@ export const team: TeamMember[] = [
       "Shahid leads core development at Binary Semaphore. He spends most of his time on the essential complexity of a problem: modeling it well, drawing clean boundaries, and turning that into software that holds up.",
       "Three years of full-stack work, owning modules end to end: data modeling and API design through deployment and the performance work that comes after. Mostly Node.js, NestJS, and TypeScript over MongoDB and PostgreSQL, with React and Next.js on the front, shipped for B2B enterprise clients and US platforms across CMS, LMS, ERP, and community events.",
       "The parts he keeps coming back to are the ones where getting it wrong is expensive: authentication and authorization, payments and subscription billing, database transactions, message queues, and concurrency control.",
-      "Outside client work he writes Go, with a soft spot for tools that run on your own machine and the Unix philosophy. inode, the studio's CLI knowledge base, started as one of his side projects.",
+      "Outside his day job he writes Go, with a soft spot for tools that run on your own machine and the Unix philosophy. inode, the CLI knowledge base on this site, started as one of his side projects.",
     ],
     skillGroups: [
       {
@@ -768,7 +765,7 @@ export const team: TeamMember[] = [
     bio: [
       "Sanny is a full-stack engineer at Binary Semaphore. He has spent nearly three years at Mosh Ecom Services in Bengaluru, building and running an e-commerce platform: the storefront, the APIs behind it, the Amazon Seller Central integration, and the file storage on S3.",
       "He works across the MERN stack, Java, PHP and Laravel, with SQL underneath, and started out shipping Android and Java projects during his MCA at Cochin University, where he and Shahid studied together.",
-      "At the studio he works alongside Shahid on the core product, with a preference for code that reads plainly and abstractions that stay honest as the system grows.",
+      "Here he works alongside Shahid on what the two of them build together, with a preference for code that reads plainly and abstractions that stay honest as the system grows.",
     ],
     skillGroups: [
       { title: "Languages", items: ["JavaScript", "Java", "Python", "PHP", "SQL"] },
