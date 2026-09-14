@@ -127,3 +127,25 @@ jobs:
         run: |
           url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes)
           echo "url=$url" >> "$GITHUB_OUTPUT"
+      # Posts to #ship-log through a channel webhook. Skips when the secret is
+      # unset and never fails the deploy: the site is live either way.
+      - name: Announce in Discord
+        if: success()
+        continue-on-error: true
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_SHIP_LOG }}
+          URL: ${{ steps.deploy.outputs.url }}
+          SUBJECT: ${{ github.event.head_commit.message }}
+        run: |
+          if [ -z "$WEBHOOK" ]; then echo "No DISCORD_WEBHOOK_SHIP_LOG, skipping."; exit 0; fi
+          node --input-type=module -e '
+            const version = (await import("./package.json", { with: { type: "json" } })).default.version;
+            const subject = (process.env.SUBJECT ?? "").split("\n")[0];
+            const content = `Deployed v${version} to production: ${subject}\n${process.env.URL}`;
+            const res = await fetch(process.env.WEBHOOK, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ content, username: "Binary Semaphore", allowed_mentions: { parse: [] } }),
+            });
+            console.log(res.ok ? "Announced." : `Webhook returned ${res.status}`);
+          '
