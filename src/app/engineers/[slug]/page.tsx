@@ -24,6 +24,7 @@ import {
 import { SectionNav } from "@/components/team-member/section-nav";
 import { ProfileSection } from "@/components/team-member/section";
 import { StudioBuildCard } from "@/components/team-member/studio-build-card";
+import { ScrollRow } from "@/components/team-member/scroll-row";
 import { CardTile, TrayCard } from "@/components/team-member/tray-card";
 import { Experience } from "@/components/team-member/experience";
 import { Credentials } from "@/components/team-member/credentials";
@@ -212,14 +213,15 @@ export default async function TeamMemberPage({
       label: `Building at ${site.wordmark}`,
       body: (
         <>
-          <ul className="grid gap-6 sm:grid-cols-2">
-            {builds.map((project) => (
-              <li key={project.name} className="min-w-0">
-                <StudioBuildCard project={project} />
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-sm leading-6 text-muted">
+          <ScrollRow
+            label={`Things ${member.name.split(/\s+/)[0]} builds here`}
+            itemClassName="w-[20rem] sm:w-[24rem]"
+            items={builds.map((project) => ({
+              key: project.name,
+              node: <StudioBuildCard project={project} />,
+            }))}
+          />
+          <p className="mt-4 text-sm leading-6 text-muted">
             How these tools work is written up in{" "}
             <Link
               href="/threads"

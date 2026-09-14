@@ -413,7 +413,7 @@ export const site: SiteConfig = {
 export const team: TeamMember[] = [
   {
     name: "Shahid Raza",
-    slug: "shahid-raza",
+    slug: "shahid",
     role: "Software Engineer",
     focus: "Core development",
     description:
@@ -760,7 +760,7 @@ export const team: TeamMember[] = [
   },
   {
     name: "Sanny Kumar",
-    slug: "sanny-kumar",
+    slug: "sanny",
     role: "Software Engineer",
     focus: "Core development",
     description:
