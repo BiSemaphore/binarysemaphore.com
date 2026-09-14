@@ -23,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/team`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/contact`, changeFrequency: "yearly", priority: 0.5 },
     { url: `${BASE}/privacy`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE}/terms`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   // Same rule as the project page itself: no detail, no page. A product with

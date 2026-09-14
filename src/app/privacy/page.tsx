@@ -135,6 +135,10 @@ export default function PrivacyPage() {
               <Link href="/contact" className="underline underline-offset-4 hover:text-foreground">
                 the contact page
               </Link>
+              . What you may do with the site and the notebooks is on the{" "}
+              <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
+                terms page
+              </Link>
               .
             </p>
           </div>
