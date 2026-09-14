@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { TeamEvent } from "@/lib/site";
 import { formatEventDate, sortEvents } from "@/lib/team";
-import { ScrollRow } from "@/components/team-member/scroll-row";
+import { Carousel } from "@/components/team-member/carousel";
 import { ArrowUpRightIcon } from "@/components/icons";
 import { CardTile } from "@/components/team-member/tray-card";
 
@@ -102,9 +102,9 @@ function EventCard({ event }: { event: TeamEvent }) {
 /** Hackathons, workshops and meetups in one sideways row, newest first. */
 export function Events({ events }: { events: TeamEvent[] }) {
   return (
-    <ScrollRow
+    <Carousel
       label="Events and community"
-      itemClassName="w-[19rem] sm:w-[22rem]"
+      itemClassName="flex-[0_0_19rem] sm:flex-[0_0_22rem]"
       items={sortEvents(events).map((event) => ({
         key: `${event.date}-${event.name}`,
         node: <EventCard event={event} />,

@@ -24,7 +24,7 @@ import {
 import { SectionNav } from "@/components/team-member/section-nav";
 import { ProfileSection } from "@/components/team-member/section";
 import { StudioBuildCard } from "@/components/team-member/studio-build-card";
-import { ScrollRow } from "@/components/team-member/scroll-row";
+import { Carousel } from "@/components/team-member/carousel";
 import { CardTile, TrayCard } from "@/components/team-member/tray-card";
 import { Experience } from "@/components/team-member/experience";
 import { Credentials } from "@/components/team-member/credentials";
@@ -213,9 +213,9 @@ export default async function TeamMemberPage({
       label: `Building at ${site.wordmark}`,
       body: (
         <>
-          <ScrollRow
+          <Carousel
             label={`Things ${member.name.split(/\s+/)[0]} builds here`}
-            itemClassName="w-[20rem] sm:w-[24rem]"
+            itemClassName="flex-[0_0_20rem] sm:flex-[0_0_24rem]"
             items={builds.map((project) => ({
               key: project.name,
               node: <StudioBuildCard project={project} />,
