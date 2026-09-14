@@ -47,6 +47,10 @@ const ubuntuMono = Ubuntu_Mono({
   style: ["normal", "italic"],
   subsets: ["latin"],
   display: "swap",
+  // Four files used on one surface. Fetched when that surface renders, not
+  // preloaded on every page: with all nine fonts preloaded, mobile LCP on a
+  // thread was 3.7s and the largest text waited on the whole set.
+  preload: false,
 });
 
 // Doodle accent — a marker variable font for the occasional hand-drawn moment.
@@ -54,6 +58,7 @@ const shantellSans = Shantell_Sans({
   variable: "--font-shantell",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 // Handwritten — for annotations, asides, and doodle accents.
@@ -61,6 +66,7 @@ const caveat = Caveat({
   variable: "--font-caveat",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const siteUrl = "https://binarysemaphore.com";
