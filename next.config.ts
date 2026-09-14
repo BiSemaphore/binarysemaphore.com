@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/team", destination: "/engineers", permanent: true },
+      // Profiles used full-name slugs before; first names now.
+      { source: "/team/shahid-raza", destination: "/engineers/shahid", permanent: true },
+      { source: "/team/sanny-kumar", destination: "/engineers/sanny", permanent: true },
+      { source: "/engineers/shahid-raza", destination: "/engineers/shahid", permanent: true },
+      { source: "/engineers/sanny-kumar", destination: "/engineers/sanny", permanent: true },
       { source: "/team/:slug", destination: "/engineers/:slug", permanent: true },
     ];
   },
