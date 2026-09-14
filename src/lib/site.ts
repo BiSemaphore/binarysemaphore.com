@@ -763,12 +763,61 @@ export const team: TeamMember[] = [
     role: "Software Engineer",
     focus: "Core development",
     description:
-      "Works hands-on across the codebase, building and refining the core product alongside the team.",
+      "Full-stack engineer who has spent three years building and running an e-commerce platform end to end.",
     bio: [
-      "Sanny works hands-on across the stack, building and refining the core product alongside Shahid. He cares about code that reads well and abstractions that stay honest as the system grows.",
-      "He enjoys the parts other people avoid: tightening hot paths, paying down accidental complexity, and making the tooling pleasant to work in.",
+      "Sanny is a full-stack engineer at Binary Semaphore. He has spent nearly three years at Mosh Ecom Services in Bengaluru, building and running an e-commerce platform: the storefront, the APIs behind it, the Amazon Seller Central integration, and the file storage on S3.",
+      "He works across the MERN stack, Java, PHP and Laravel, with SQL underneath, and started out shipping Android and Java projects during his MCA at Cochin University, where he and Shahid studied together.",
+      "At the studio he works alongside Shahid on the core product, with a preference for code that reads plainly and abstractions that stay honest as the system grows.",
     ],
-    skills: ["Backend", "APIs", "Testing", "Performance", "Refactoring"],
+    skillGroups: [
+      { title: "Languages", items: ["JavaScript", "Java", "Python", "PHP", "SQL"] },
+      { title: "Web", items: ["React", "Node.js", "Express", "Laravel", "REST APIs", "HTML", "CSS"] },
+      { title: "Data and cloud", items: ["MongoDB", "MySQL", "Amazon S3", "Amazon Seller Central"] },
+      { title: "Foundations", items: ["Data structures and algorithms"] },
+    ],
+    experience: [
+      {
+        role: "Full Stack Developer",
+        company: "Mosh Ecom Services",
+        period: "Nov 2023 - Present",
+        location: "Bengaluru, India",
+        summary:
+          "Builds and runs an e-commerce platform end to end, from the storefront and its APIs to the Amazon Seller Central integration and S3 storage.",
+        stack: ["React", "Node.js", "Laravel", "PHP", "MySQL", "Amazon S3"],
+      },
+      {
+        role: "Java Developer",
+        company: "Oasis Infobyte",
+        period: "Jun 2023 - Jul 2023",
+        summary: "Two Java projects delivered during a short engagement.",
+        stack: ["Java"],
+      },
+      {
+        role: "Android Developer",
+        company: "PHN Technology",
+        period: "Apr 2023 - Jun 2023",
+        stack: ["Android", "Java"],
+      },
+    ],
+    education: [
+      {
+        degree: "Master of Computer Applications (MCA)",
+        school: "Cochin University of Science and Technology",
+        period: "2021 - 2023",
+        location: "Kochi, India",
+      },
+      {
+        degree: "Bachelor of Computer Applications (BCA)",
+        school: "Nalanda Open University",
+        period: "2017 - 2020",
+        location: "Patna, India",
+      },
+    ],
+    certifications: [
+      { name: "Java (Basic)" },
+      { name: "HTML" },
+      { name: "CSS" },
+    ],
     email: "ksanny556@gmail.com",
     linkedin: "https://www.linkedin.com/in/supersanny/",
     github: "https://github.com/SuperSanny",
