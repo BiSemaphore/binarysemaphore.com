@@ -78,7 +78,7 @@ export type TeamEvent = {
 
 export type TeamMember = {
   name: string;
-  /** URL slug for the detail page (/team/<slug>). */
+  /** URL slug for the detail page (/engineers/<slug>). */
   slug: string;
   /** Primary title/role — edit freely. */
   role: string;

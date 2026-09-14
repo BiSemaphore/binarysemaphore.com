@@ -39,7 +39,7 @@ describe("shapes", () => {
     const p = personJsonLd(team[0]);
     expect(p["@type"]).toBe("Person");
     expect(p.name).toBe(team[0].name);
-    expect(p.url).toBe(`https://binarysemaphore.com/team/${team[0].slug}`);
+    expect(p.url).toBe(`https://binarysemaphore.com/engineers/${team[0].slug}`);
     expect((p.worksFor as { name: string }).name).toBe("Binary Semaphore");
   });
 });

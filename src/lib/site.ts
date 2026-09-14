@@ -377,7 +377,7 @@ export const site: SiteConfig = {
       links: [
         { label: "About", href: "/about" },
         { label: "Services", href: "/services" },
-        { label: "Team", href: "/team" },
+        { label: "Engineers", href: "/engineers" },
       ],
     },
     {
@@ -409,7 +409,7 @@ export const site: SiteConfig = {
 };
 
 // The team. `bio` paragraphs are DRAFTS (LinkedIn can't be read automatically);
-// edit them or paste real profile text. Detail pages live at /team/<slug>.
+// edit them or paste real profile text. Detail pages live at /engineers/<slug>.
 export const team: TeamMember[] = [
   {
     name: "Shahid Raza",

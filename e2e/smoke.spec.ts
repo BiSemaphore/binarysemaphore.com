@@ -8,7 +8,7 @@ test("homepage loads with the brand heading", async ({ page }) => {
 test("primary nav links are present in the header", async ({ page }) => {
   await page.goto("/");
   const header = page.locator("header");
-  for (const href of ["/", "/projects", "/threads", "/team"]) {
+  for (const href of ["/", "/projects", "/threads", "/engineers"]) {
     await expect(header.locator(`a[href="${href}"]`).first()).toBeVisible();
   }
   // Services lives in the Company dropdown, so it is in the header but hidden
@@ -21,7 +21,7 @@ test("key routes return 200", async ({ page }) => {
     "/about",
     "/services",
     "/projects",
-    "/team",
+    "/engineers",
     "/contact",
     "/threads",
   ]) {
@@ -37,14 +37,14 @@ test("the contact email is reachable on the contact page", async ({ page }) => {
   ).toHaveAttribute("href", /@binarysemaphore\.com$/);
 });
 
-test("a team row opens the profile", async ({ page }) => {
-  await page.goto("/team");
+test("an engineer row opens the profile", async ({ page }) => {
+  await page.goto("/engineers");
   await page.getByRole("link", { name: /Shahid Raza.*open profile/ }).click();
-  await expect(page).toHaveURL(/\/team\/shahid-raza$/);
+  await expect(page).toHaveURL(/\/engineers\/shahid-raza$/);
 });
 
-test("a team profile links back to the team page, not the home page", async ({ page }) => {
-  await page.goto("/team/shahid-raza");
-  await page.locator('main a[href="/team"]').first().click();
-  await expect(page).toHaveURL(/\/team$/);
+test("an engineer profile links back to the engineers page, not the home page", async ({ page }) => {
+  await page.goto("/engineers/shahid-raza");
+  await page.locator('main a[href="/engineers"]').first().click();
+  await expect(page).toHaveURL(/\/engineers$/);
 });

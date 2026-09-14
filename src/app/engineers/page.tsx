@@ -5,9 +5,9 @@ import { PageIntro } from "@/components/page-intro";
 import { Team } from "@/components/team";
 
 export const metadata: Metadata = {
-  title: "Team",
-  description: "The people behind Binary Semaphore.",
-  alternates: { canonical: "/team" },
+  title: "Engineers",
+  description: "The engineers who build Binary Semaphore.",
+  alternates: { canonical: "/engineers" },
 };
 
 export default function TeamPage() {
@@ -16,9 +16,9 @@ export default function TeamPage() {
       <Header />
       <main className="flex-1">
         <PageIntro
-          label="Team"
-          title="The people behind it"
-          lead="A small group of engineers who care about getting the fundamentals right."
+          label="Engineers"
+          title="The engineers behind it"
+          lead="Two engineers who build things and care about getting the fundamentals right."
         />
         <Team />
       </main>

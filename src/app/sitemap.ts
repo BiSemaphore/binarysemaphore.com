@@ -44,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const people = team.map((m) => ({
-    url: `${BASE}/team/${m.slug}`,
+    url: `${BASE}/engineers/${m.slug}`,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));

@@ -6,7 +6,7 @@ import { memberBuilds } from "@/lib/team";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Team member profile at Binary Semaphore";
+export const alt = "Engineer profile at Binary Semaphore";
 
 // One image per team member, rendered at build like the page itself.
 export function generateStaticParams() {
@@ -186,7 +186,7 @@ export default async function Image({
             ))}
           </div>
           <div style={{ display: "flex", fontSize: "22px", color: subtle }}>
-            binarysemaphore.com/team/{slug}
+            binarysemaphore.com/engineers/{slug}
           </div>
         </div>
       </div>
