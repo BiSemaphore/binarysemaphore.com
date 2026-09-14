@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Honeypot } from "@/components/forms/honeypot";
+import { HONEYPOT_FIELD, STARTED_FIELD } from "@/lib/forms/spam";
 
 /**
  * The way a student asks for a session.
@@ -60,7 +62,10 @@ export function MentorshipForm() {
 
     const form = new FormData(event.currentTarget);
     const payload = Object.fromEntries(
-      FIELDS.map((f) => [f.name, String(form.get(f.name) ?? "")]),
+      [...FIELDS.map((f) => f.name), HONEYPOT_FIELD, STARTED_FIELD].map((name) => [
+        name,
+        String(form.get(name) ?? ""),
+      ]),
     );
 
     try {
@@ -99,7 +104,8 @@ export function MentorshipForm() {
     "mt-1.5 w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-[15px] text-foreground outline-none transition-colors placeholder:text-subtle focus:border-foreground/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue";
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-5 px-6 py-8 sm:px-10 sm:py-10">
+    <form onSubmit={onSubmit} className="relative grid gap-5 px-6 py-8 sm:px-10 sm:py-10">
+      <Honeypot />
       {FIELDS.map((field) => (
         <div key={field.name}>
           <label

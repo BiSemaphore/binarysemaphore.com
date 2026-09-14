@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient, isAdminConfigured } from "@/utils/supabase/admin";
+import { isRateLimited, spamVerdict } from "@/lib/forms/spam";
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -34,6 +35,13 @@ export async function POST(request: Request) {
   }
 
   const data = body as Record<string, unknown>;
+
+  // A bot gets the same answer as a person and nothing is stored.
+  const verdict = spamVerdict(data);
+  if (verdict !== "ok") {
+    console.warn(`mentorship: dropped (${verdict})`);
+    return NextResponse.json({ ok: true }, { status: 201 });
+  }
   const name = String(data.name ?? "").trim();
   const email = String(data.email ?? "").trim();
   const college = String(data.college ?? "").trim();
@@ -77,6 +85,12 @@ export async function POST(request: Request) {
     p_context: { college: college || null, paper },
   });
 
+  if (isRateLimited(error)) {
+    return NextResponse.json(
+      { error: "That address has sent several requests today. Please try again tomorrow." },
+      { status: 429 },
+    );
+  }
   if (error) {
     console.error("mentorship insert failed:", error.message);
     return NextResponse.json(
