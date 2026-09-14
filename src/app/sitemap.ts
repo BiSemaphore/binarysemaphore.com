@@ -25,9 +25,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/privacy`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
+  // Same rule as the project page itself: no detail, no page. A product with
+  // a subdomain is listed at the subdomain, because /projects/<slug> redirects
+  // there in production and a sitemap must not list redirects.
   const products = projects
-    .filter((p) => p.slug)
-    .map((p) => ({ url: `${BASE}/projects/${p.slug}`, changeFrequency: "monthly" as const, priority: 0.8 }));
+    .filter((p) => p.slug && p.detail)
+    .map((p) => ({
+      url: p.subdomain ? `https://${p.subdomain}.binarysemaphore.com` : `${BASE}/projects/${p.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    }));
 
   const services = site.services.items.map((s) => ({
     url: `${BASE}/services/${s.slug}`,

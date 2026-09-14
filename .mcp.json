@@ -2,9 +2,7 @@
   "mcpServers": {
     "discord-admin": {
       "command": "node",
-      "args": [
-        "/Users/shahidraza/workspace/binarysemaphore/tools/discord-admin-mcp/src/index.ts"
-      ]
+      "args": ["tools/discord-admin-mcp/src/index.ts"]
     }
   }
 }

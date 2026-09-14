@@ -162,12 +162,18 @@ jobs:
             console.log(Object.entries(r).filter(([, v]) => v.result === "failure").map(([k]) => k).join(" "));
           ')
           if [ -n "$failed" ]; then
-            # First real error line of the failed jobs. Log lines arrive as
-            # "job<TAB>step<TAB>timestamp text"; drop the prefix, skip HTML
+            # First real error line of the failed jobs. `gh run view --log-failed`
+            # refuses a run that is still in progress, which this one is, so
+            # read each completed failed job's log through the API instead.
+            # Lines arrive as "timestamp text": drop the timestamp, skip HTML
             # error pages a gateway may return, prefer a line starting with
-            # "Error", and fall back to anything mentioning an error.
-            gh run view "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --log-failed 2>/dev/null \
-              | cut -f3- | sed -E "s/^[0-9TZ:.-]+ //" | grep -vE "^\s*<|^\s*$" > failed.log || true
+            # "Error", fall back to anything mentioning an error.
+            : > failed.log
+            for job in $(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs" \
+                --jq '.jobs[] | select(.conclusion == "failure") | .id'); do
+              gh api "repos/$GITHUB_REPOSITORY/actions/jobs/$job/logs" 2>/dev/null \
+                | sed -E "s/^[0-9TZ:.-]+ //" | grep -vE "^\s*<|^\s*$" >> failed.log || true
+            done
             error=$(grep -m1 -E "^(Error|error)[: ]" failed.log || grep -m1 -iE "error|failed" failed.log || true)
             error=$(printf "%s" "$error" | cut -c1-300)
             export FAILED="$failed" ERROR="$error"
@@ -192,6 +198,7 @@ jobs:
           else
             echo "Green run on a PR; nothing to report."; exit 0
           fi
+          # curl prints 000 when it cannot connect, so check both bounds.
           code=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" --data @payload.json "$WEBHOOK")
           echo "Discord webhook: $code"
-          [ "$code" -lt 300 ]
+          [ "$code" -ge 200 ] && [ "$code" -lt 300 ]

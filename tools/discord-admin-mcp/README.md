@@ -45,8 +45,7 @@ Start with `DISCORD_READ_ONLY=true` for a first look.
 
 **5. Use it.** The server is registered in the repo's `.mcp.json` as
 `discord-admin`. Restart Claude Code in the repo and approve the server when
-asked. `.mcp.json` holds an absolute path to `src/index.ts`, so a clone anywhere
-else needs that path changed.
+asked. The path in `.mcp.json` is relative to the repo root, so any clone works.
 
 ## Tools
 
