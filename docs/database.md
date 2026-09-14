@@ -169,6 +169,14 @@ It runs **once, in one direction**: git to Postgres. After that the MDX files
 are deleted and Postgres is the source of truth. Two-way sync, or leaving both
 live and editable, is how content is silently lost.
 
+## Retention
+
+`private.inbox` is purged by a pg_cron job (`purge-old-inbox`, daily at 03:10
+UTC) that deletes rows older than 12 months regardless of status. The privacy
+page at `/privacy` promises exactly that, so the two must move together: change
+the interval in `private.purge_old_inbox()` and on the page in the same PR.
+Nothing else in the database is purged; accounts are deleted on request.
+
 ## Deliberately not built
 
 - **A `profiles` table.** `auth.users` already holds the email. A copy is a
