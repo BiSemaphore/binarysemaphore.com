@@ -277,29 +277,28 @@ export default async function TeamMemberPage({
       id: "projects",
       label: builds.length > 0 ? "Other projects" : "Projects",
       body: (
-        <ul className="grid gap-6 sm:grid-cols-2">
-          {member.projects.map((proj, i, all) => {
-            // An odd last card spans the row rather than sitting alone.
-            const span = all.length % 2 === 1 && i === all.length - 1 ? "sm:col-span-2" : "";
-            return (
-              <li key={proj.name} className={`min-w-0 ${span}`}>
-                <TrayCard href={proj.href} footer={repoLabel(proj.href)}>
-                  <div className="flex items-center gap-3">
-                    <CardTile label={proj.name} />
-                    <h3 className="font-display text-lg font-bold tracking-tight text-foreground">
-                      {proj.name}
-                    </h3>
-                  </div>
-                  {proj.description ? (
-                    <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted">
-                      {proj.description}
-                    </p>
-                  ) : null}
-                </TrayCard>
-              </li>
-            );
-          })}
-        </ul>
+        <Carousel
+          label={builds.length > 0 ? "Other projects" : "Projects"}
+          itemClassName="flex-[0_0_19rem] sm:flex-[0_0_22rem]"
+          items={member.projects.map((proj) => ({
+            key: proj.name,
+            node: (
+              <TrayCard href={proj.href} footer={repoLabel(proj.href)}>
+                <div className="flex items-center gap-3">
+                  <CardTile label={proj.name} />
+                  <h3 className="font-display text-lg font-bold tracking-tight text-foreground">
+                    {proj.name}
+                  </h3>
+                </div>
+                {proj.description ? (
+                  <p className="mt-3 line-clamp-4 text-sm leading-6 text-muted">
+                    {proj.description}
+                  </p>
+                ) : null}
+              </TrayCard>
+            ),
+          }))}
+        />
       ),
     });
   }
